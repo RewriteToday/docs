@@ -56,6 +56,12 @@
             "pages": [
               "pt-br/start/welcome"
             ]
+          },
+          {
+            "tab": "SDKs",
+            "pages": [
+              "pt-br/sdks/introduction"
+            ]
           }
         ]
       },
@@ -67,6 +73,12 @@
             "tab": "Welcome",
             "pages": [
               "en/start/welcome"
+            ]
+          },
+          {
+            "tab": "SDKs",
+            "pages": [
+              "en/sdks/introduction"
             ]
           }
         ]
