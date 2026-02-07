@@ -1,0 +1,197 @@
+---
+title: "Remessage"
+mode: "custom"
+description: "SMS infrastructure for modern product teams."
+---
+
+<div
+  style={{
+    position: "relative",
+    padding: "88px 20px 64px",
+    borderBottom: "1px solid rgba(248, 248, 248, 0.08)",
+    background:
+      "radial-gradient(1200px 600px at 20% -10%, rgba(255, 255, 255, 0.08), transparent 45%), linear-gradient(180deg, #050505 0%, #070707 55%, #050505 100%)",
+  }}
+>
+  <div style={{ maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
+    <h1
+      style={{
+        fontSize: "44px",
+        lineHeight: "1.05",
+        fontWeight: 650,
+        letterSpacing: "-0.03em",
+        margin: "0 0 14px",
+        color: "#fff",
+      }}
+    >
+      Remessage.
+      <br />
+      SMS infrastructure for modern apps.
+    </h1>
+
+    <p
+      style={{
+        maxWidth: 820,
+        margin: "0 auto 28px",
+        fontSize: 18,
+        lineHeight: 1.6,
+        color: "rgba(255,255,255,0.78)",
+        fontWeight: 350,
+      }}
+    >
+      Send transactional SMS with a developer-first API, templates, i18n, delivery tracking,
+      webhooks, multi-providers and production-grade security—without the pain.
+    </p>
+
+    <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
+      <a
+        href="/quickstart"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 10,
+          padding: "12px 18px",
+          borderRadius: 999,
+          background: "rgba(255,255,255,0.03)",
+          color: "#fff",
+          fontWeight: 600,
+          border: "1px solid rgba(255,255,255,0.12)",
+          textDecoration: "none",
+          boxShadow: "0 14px 50px rgba(255,255,255,0.12)",
+        }}
+      >
+        Get started
+        <span style={{ opacity: 0.8 }}>→</span>
+      </a>
+
+      <a
+        href="/api/overview"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 10,
+          padding: "12px 18px",
+          borderRadius: 999,
+          background: "rgba(255,255,255,0.03)",
+          color: "#fff",
+          fontWeight: 550,
+          border: "1px solid rgba(255,255,255,0.12)",
+          textDecoration: "none",
+        }}
+      >
+        API Reference
+        <span style={{ opacity: 0.6 }}>↗</span>
+      </a>
+
+      <a
+        href="/webhooks/overview"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 10,
+          padding: "12px 18px",
+          borderRadius: 999,
+          background: "rgba(255,255,255,0.03)",
+          color: "#fff",
+          fontWeight: 550,
+          border: "1px solid rgba(255,255,255,0.12)",
+          textDecoration: "none",
+        }}
+      >
+        Webhooks
+        <span style={{ opacity: 0.6 }}>↗</span>
+      </a>
+    </div>
+
+    <div
+      style={{
+        marginTop: 26,
+        display: "flex",
+        justifyContent: "center",
+        gap: 18,
+        flexWrap: "wrap",
+        color: "rgba(255,255,255,0.6)",
+        fontSize: 13,
+      }}
+    >
+      <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+        <span style={{ width: 6, height: 6, borderRadius: 999, background: "rgba(255,255,255,0.25)" }} />
+        Bearer auth
+      </span>
+      <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+        <span style={{ width: 6, height: 6, borderRadius: 999, background: "rgba(255,255,255,0.25)" }} />
+        Idempotency-ready
+      </span>
+      <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+        <span style={{ width: 6, height: 6, borderRadius: 999, background: "rgba(255,255,255,0.25)" }} />
+        Webhooks + delivery tracking
+      </span>
+    </div>
+  </div>
+</div>
+
+  <div style={{ padding: "56px 20px", maxWidth: "1100px", margin: "0 auto" }}>
+  <h2
+    style={{
+      fontSize: 22,
+      fontWeight: 650,
+      letterSpacing: "-0.02em",
+      margin: "0 0 18px",
+      color: "#fff",
+    }}
+  >
+    Start here
+  </h2>
+
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+      gap: 18,
+      marginBottom: 18,
+    }}
+  >
+    <Card icon="rocket" title="Quickstart" href="/quickstart" color="#C9CBD1">
+      Your first SMS in minutes: create an API key, send a message, track delivery.
+    </Card>
+
+    <Card icon="message" title="Send SMS" href="/sms/send" color="#C9CBD1">
+      Core endpoint, required fields, and response format.
+    </Card>
+
+    <Card icon="pen-nib" title="Templates" href="/sms/templating" color="#C9CBD1">
+      Reusable templates with variables and safe rendering.
+    </Card>
+
+    <Card icon="boxes-stacked" title="SDKs" href="/sdks" color="#C9CBD1">
+      Official SDKs and examples for the fastest integration.
+    </Card>
+
+    <Card icon="bell" title="Webhooks" href="/webhooks/overview" color="#C9CBD1">
+      Delivery events, retries, and signature verification.
+    </Card>
+
+    <Card icon="shuffle" title="Multi-Providers" href="/providers" color="#C9CBD1">
+      Route traffic across providers with fallback and smart selection.
+    </Card>
+
+    <Card icon="globe" title="i18n" href="/i18n" color="#C9CBD1">
+      Localize templates and flows for multiple languages and regions.
+    </Card>
+
+    <Card icon="gauge" title="Usage limits" href="/limits" color="#C9CBD1">
+      Rate limits, quotas, and how to request increases.
+    </Card>
+
+    <Card icon="arrows-left-right" title="Pagination" href="/api/pagination" color="#C9CBD1">
+      Cursor pagination for listing messages, events, and resources.
+    </Card>
+    <Card icon="list-check" title="Deliverability" href="/sms/deliverability" color="#C9CBD1">
+      Practical checklist to improve delivery and reduce carrier filtering.
+    </Card>
+
+    <Card icon="triangle-exclamation" title="Errors & retries" href="/sms/errors" color="#C9CBD1">
+      Error model, retry strategy, idempotency, and timeouts.
+    </Card>
+  </div>
+</div>

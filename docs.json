@@ -1,122 +1,76 @@
 {
   "$schema": "https://mintlify.com/docs.json",
+  "name": "Remessage",
   "theme": "mint",
-  "name": "Mint Starter Kit",
-  "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+  "appearance": {
+    "default": "dark",
+    "strict": true
   },
-  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#9EEA6C",
+    "light": "#9EEA6C",
+    "dark": "#9EEA6C"
+  },
+  "fonts": {
+    "heading": {
+      "family": "Inter"
+    },
+    "body": {
+      "family": "Lato"
+    }
+  },
+  "favicon": "/favicon.ico",
+  "logo": {
+    "light": "/images/hero-light.png",
+    "dark": "/images/hero-dark.png"
+  },
+  "navbar": {
+    "links": [
+      { "label": "Status", "href": "https://status.remessage.io" },
+      { "label": "Changelog", "href": "https://remessage.io/changelog" },
+      { "label": "Repository", "href": "https://github.com/remessage/docs" }
+    ]
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/remessages",
+      "github": "https://github.com/remessage"
+    }
+  },
+  "api": {
+    "mdx": {
+      "server": "https://api.remessages.com/v1",
+      "auth": {
+        "method": "bearer",
+        "name": "Bearer"
+      }
+    }
+  },
   "navigation": {
-    "tabs": [
+    "languages": [
       {
-        "tab": "Guides",
-        "groups": [
+        "language": "pt-BR",
+        "tabs": [
           {
-            "group": "Getting started",
+            "tab": "Bem-vindo",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
-            ]
-          },
-          {
-            "group": "Customization",
-            "pages": [
-              "essentials/settings",
-              "essentials/navigation"
-            ]
-          },
-          {
-            "group": "Writing content",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "pt-br/start/welcome"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
-        "groups": [
+        "language": "en",
+        "default": true,
+        "tabs": [
           {
-            "group": "API documentation",
+            "tab": "Welcome",
             "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Endpoint examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "en/start/welcome"
             ]
           }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
-  },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
-  },
-  "contextual": {
-    "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
-  },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
+    ]
   }
 }

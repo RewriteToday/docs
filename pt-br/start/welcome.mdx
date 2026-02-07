@@ -1,0 +1,198 @@
+---
+title: "Remessage"
+mode: "custom"
+description: "Infraestrutura de SMS para times de produto modernos."
+---
+
+<div
+  style={{
+    position: "relative",
+    padding: "88px 20px 64px",
+    borderBottom: "1px solid rgba(248, 248, 248, 0.08)",
+    background:
+      "radial-gradient(1200px 600px at 20% -10%, rgba(255, 255, 255, 0.08), transparent 45%), linear-gradient(180deg, #050505 0%, #070707 55%, #050505 100%)",
+  }}
+>
+  <div style={{ maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
+    <h1
+      style={{
+        fontSize: "44px",
+        lineHeight: "1.05",
+        fontWeight: 650,
+        letterSpacing: "-0.03em",
+        margin: "0 0 14px",
+        color: "#fff",
+      }}
+    >
+      Remessage.
+      <br />
+      Infraestrutura de SMS para aplicações modernas.
+    </h1>
+
+    <p
+      style={{
+        maxWidth: 820,
+        margin: "0 auto 28px",
+        fontSize: 18,
+        lineHeight: 1.6,
+        color: "rgba(255,255,255,0.78)",
+        fontWeight: 350,
+      }}
+    >
+      Envie SMS transacionais com uma API developer-first, templates, i18n, rastreamento de entrega,
+      webhooks, múltiplos provedores e segurança de nível produção — sem dor de cabeça.
+    </p>
+
+    <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
+      <a
+        href="/quickstart"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 10,
+          padding: "12px 18px",
+          borderRadius: 999,
+          background: "rgba(255,255,255,0.03)",
+          color: "#fff",
+          fontWeight: 600,
+          border: "1px solid rgba(255,255,255,0.12)",
+          textDecoration: "none",
+          boxShadow: "0 14px 50px rgba(255,255,255,0.12)",
+        }}
+      >
+        Começar
+        <span style={{ opacity: 0.8 }}>→</span>
+      </a>
+
+      <a
+        href="/api/overview"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 10,
+          padding: "12px 18px",
+          borderRadius: 999,
+          background: "rgba(255,255,255,0.03)",
+          color: "#fff",
+          fontWeight: 550,
+          border: "1px solid rgba(255,255,255,0.12)",
+          textDecoration: "none",
+        }}
+      >
+        Referência da API
+        <span style={{ opacity: 0.6 }}>↗</span>
+      </a>
+
+      <a
+        href="/webhooks/overview"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 10,
+          padding: "12px 18px",
+          borderRadius: 999,
+          background: "rgba(255,255,255,0.03)",
+          color: "#fff",
+          fontWeight: 550,
+          border: "1px solid rgba(255,255,255,0.12)",
+          textDecoration: "none",
+        }}
+      >
+        Webhooks
+        <span style={{ opacity: 0.6 }}>↗</span>
+      </a>
+    </div>
+
+    <div
+      style={{
+        marginTop: 26,
+        display: "flex",
+        justifyContent: "center",
+        gap: 18,
+        flexWrap: "wrap",
+        color: "rgba(255,255,255,0.6)",
+        fontSize: 13,
+      }}
+    >
+      <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+        <span style={{ width: 6, height: 6, borderRadius: 999, background: "rgba(255,255,255,0.25)" }} />
+        Autenticação Bearer
+      </span>
+      <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+        <span style={{ width: 6, height: 6, borderRadius: 999, background: "rgba(255,255,255,0.25)" }} />
+        Pronto para idempotência
+      </span>
+      <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+        <span style={{ width: 6, height: 6, borderRadius: 999, background: "rgba(255,255,255,0.25)" }} />
+        Webhooks + rastreamento de entrega
+      </span>
+    </div>
+  </div>
+</div>
+
+<div style={{ padding: "56px 20px", maxWidth: "1100px", margin: "0 auto" }}>
+  <h2
+    style={{
+      fontSize: 22,
+      fontWeight: 650,
+      letterSpacing: "-0.02em",
+      margin: "0 0 18px",
+      color: "#fff",
+    }}
+  >
+    Comece por aqui
+  </h2>
+
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+      gap: 18,
+      marginBottom: 18,
+    }}
+  >
+    <Card icon="rocket" title="Quickstart" href="/quickstart" color="#C9CBD1">
+      Seu primeiro SMS em minutos: crie uma chave de API, envie uma mensagem e acompanhe a entrega.
+    </Card>
+
+    <Card icon="message" title="Enviar SMS" href="/sms/send" color="#C9CBD1">
+      Endpoint principal, campos obrigatórios e formato de resposta.
+    </Card>
+
+    <Card icon="pen-nib" title="Templates" href="/sms/templating" color="#C9CBD1">
+      Templates reutilizáveis com variáveis e renderização segura.
+    </Card>
+
+    <Card icon="boxes-stacked" title="SDKs" href="/sdks" color="#C9CBD1">
+      SDKs oficiais e exemplos para a integração mais rápida.
+    </Card>
+
+    <Card icon="bell" title="Webhooks" href="/webhooks/overview" color="#C9CBD1">
+      Eventos de entrega, retentativas e verificação de assinatura.
+    </Card>
+
+    <Card icon="shuffle" title="Multi-Provedores" href="/providers" color="#C9CBD1">
+      Roteie o tráfego entre provedores com fallback e seleção inteligente.
+    </Card>
+
+    <Card icon="globe" title="i18n" href="/i18n" color="#C9CBD1">
+      Localize templates e fluxos para múltiplos idiomas e regiões.
+    </Card>
+
+    <Card icon="gauge" title="Limites de uso" href="/limits" color="#C9CBD1">
+      Rate limits, cotas e como solicitar aumentos.
+    </Card>
+
+    <Card icon="arrows-left-right" title="Paginação" href="/api/pagination" color="#C9CBD1">
+      Paginação por cursor para listar mensagens, eventos e recursos.
+    </Card>
+
+    <Card icon="list-check" title="Entregabilidade" href="/sms/deliverability" color="#C9CBD1">
+      Checklist prático para melhorar a entrega e reduzir filtros das operadoras.
+    </Card>
+
+    <Card icon="triangle-exclamation" title="Erros e retentativas" href="/sms/errors" color="#C9CBD1">
+      Modelo de erros, estratégia de retentativa, idempotência e timeouts.
+    </Card>
+  </div>
+</div>
