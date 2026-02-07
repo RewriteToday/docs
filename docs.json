@@ -6,6 +6,13 @@
     "default": "dark",
     "strict": true
   },
+  "errors": {
+    "404": {
+      "redirect": false,
+      "title": "Remessage - Not Found",
+      "description": "Hey, where did the page go?"
+    }
+  },
   "colors": {
     "primary": "#9EEA6C",
     "light": "#9EEA6C",
