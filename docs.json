@@ -56,6 +56,11 @@
 			}
 		}
 	},
+	"styling": {
+	"codeblocks": {
+	"theme":"vesper"
+	}
+	},
 	"navigation": {
 		"languages": [
 			{
@@ -68,7 +73,12 @@
 					},
 					{
 						"tab": "SDKs",
-						"pages": ["en/sdks/introduction"]
+						"groups": [
+							{
+								"group": "Node.js",
+								"pages": ["en/sdks/node/introduction"]
+							}
+						]
 					}
 				]
 			},

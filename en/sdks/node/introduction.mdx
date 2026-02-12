@@ -1,0 +1,83 @@
+---
+title: Introduction
+description: Learn how to use the Node.js SDK to send SMS with the API.
+icon: node-js
+---
+
+## Before you start
+
+- You need to have Node.js installed on your machine.
+- You need to have a Rewrite API key with the permissions.
+
+
+<Steps>
+    <Step title="Install the SDK" titleSize="h2">
+        To install the Node.js SDK, run the following command:
+        
+        <CodeGroup>
+        
+        ```bash npm
+        npm install rewritejs
+        ```
+        
+        ```bash yarn
+        yarn add rewritejs
+        ```
+        
+        ```bash pnpm
+        pnpm add rewritejs
+        ```
+        
+        ```bash bun
+        bun install rewritejs
+        ```
+        
+        </CodeGroup>
+    </Step>
+    
+    <Step title="Send your SMS" titleSize="h2">
+    Now, all you need to do is pass the message content and that's it!
+    
+    ```ts sms.ts
+      import { Rewrite } from 'rewritejs';
+
+      const rewrite = new Rewrite(process.env.REWRITE_API_KEY);
+
+      const { data, error } = await rewrite.messages.send({
+        to: '+1234567890',
+        from: '+0987654321',
+        message: 'Your OTP code is 478201',
+      });
+      
+      if (error) {
+        return console.error(error);
+      }
+      
+      console.log(data);
+    ```
+    </Step>
+    
+    <Step title="Interact with the API" titleSize="h3">
+      You can also interaction with the API with the SDK methods
+      
+      ```ts webhooks.ts
+        import { Rewrite } from 'rewritejs';
+        
+        const rewrite = new Rewrite(process.env.REWRITE_API_KEY);
+        
+        const { data, error } = await rewrite.webhooks.create({
+          name: 'My Webhook',
+          events: ['sms.delivered'],          
+          url: 'https://example.com/webhook',
+        });
+        
+        if (error) {
+          return console.error(error);
+        }
+        
+        console.log(data)
+      ```
+      
+      You can do everything with our SDK, keep exploring!
+    </Step>
+</Steps>
