@@ -10,7 +10,7 @@ pre-commit:
         fi
 
         echo "$FILES" \
-          | grep -E '\.(ts|js|json)$' \
+          | grep -E '\.(ts|css|json)$' \
           | xargs bun run biome:check --write
 
         git add $FILES

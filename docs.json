@@ -1,95 +1,90 @@
 {
-  "$schema": "https://mintlify.com/docs.json",
-  "name": "Rewrite",
-  "theme": "mint",
-  "appearance": {
-    "default": "dark",
-    "strict": true
-  },
-  "errors": {
-    "404": {
-      "redirect": false,
-      "title": "Rewrite - Not Found",
-      "description": "Hey, where did the page go?"
-    }
-  },
-  "colors": {
-    "primary": "#9EEA6C",
-    "light": "#9EEA6C",
-    "dark": "#9EEA6C"
-  },
-  "fonts": {
-    "heading": {
-      "family": "Inter"
-    },
-    "body": {
-      "family": "Lato"
-    }
-  },
-  "favicon": "/favicon.ico",
-  "logo": {
-    "light": "/images/hero-light.png",
-    "dark": "/images/hero-dark.png"
-  },
-  "navbar": {
-    "links": [
-      { "label": "Status", "href": "https://status.userewrite.me" },
-      { "label": "Changelog", "href": "https://userewrite.me/changelog" },
-      { "label": "Repository", "href": "https://github.com/rewritestudios/docs" }
-    ]
-  },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/userewrite",
-      "github": "https://github.com/rewritestudios"
-    }
-  },
-  "api": {
-    "mdx": {
-      "server": "https://api.userewrite.me/v1",
-      "auth": {
-        "method": "bearer",
-        "name": "Bearer"
-      }
-    }
-  },
-  "navigation": {
-    "languages": [
-      {
-        "language": "en",
-        "default": true,
-        "tabs": [
-          {
-            "tab": "Welcome",
-            "pages": [
-              "en/start/welcome"
-            ]
-          },
-          {
-            "tab": "SDKs",
-            "pages": [
-              "en/sdks/introduction"
-            ]
-          }
-        ]
-      },
-      {
-        "language": "pt-BR",
-        "tabs": [
-          {
-            "tab": "Bem-vindo",
-            "pages": [
-              "pt-br/start/welcome"
-            ]
-          },
-          {
-            "tab": "SDKs",
-            "pages": [
-              "pt-br/sdks/introduction"
-            ]
-          }
-        ]
-      }
-    ]
-  }
+	"$schema": "https://mintlify.com/docs.json",
+	"name": "Rewrite",
+	"theme": "mint",
+	"appearance": {
+		"default": "dark",
+		"strict": true
+	},
+	"errors": {
+		"404": {
+			"redirect": false,
+			"title": "Rewrite - Not Found",
+			"description": "Hey, where did the page go?"
+		}
+	},
+	"colors": {
+		"primary": "#9EEA6C",
+		"light": "#9EEA6C",
+		"dark": "#9EEA6C"
+	},
+	"fonts": {
+		"heading": {
+			"family": "Inter"
+		},
+		"body": {
+			"family": "Lato"
+		}
+	},
+	"favicon": "/favicon.ico",
+	"logo": {
+		"light": "/images/hero-light.png",
+		"dark": "/images/hero-dark.png"
+	},
+	"navbar": {
+		"links": [
+			{ "label": "Status", "href": "https://status.userewrite.me" },
+			{ "label": "Changelog", "href": "https://userewrite.me/changelog" },
+			{
+				"label": "Repository",
+				"href": "https://github.com/rewritestudios/docs"
+			}
+		]
+	},
+	"footer": {
+		"socials": {
+			"x": "https://x.com/userewrite",
+			"github": "https://github.com/rewritestudios"
+		}
+	},
+	"api": {
+		"mdx": {
+			"server": "https://api.userewrite.me/v1",
+			"auth": {
+				"method": "bearer",
+				"name": "Bearer"
+			}
+		}
+	},
+	"navigation": {
+		"languages": [
+			{
+				"language": "en",
+				"default": true,
+				"tabs": [
+					{
+						"tab": "Welcome",
+						"pages": ["en/start/welcome"]
+					},
+					{
+						"tab": "SDKs",
+						"pages": ["en/sdks/introduction"]
+					}
+				]
+			},
+			{
+				"language": "pt-BR",
+				"tabs": [
+					{
+						"tab": "Bem-vindo",
+						"pages": ["pt-br/start/welcome"]
+					},
+					{
+						"tab": "SDKs",
+						"pages": ["pt-br/sdks/introduction"]
+					}
+				]
+			}
+		]
+	}
 }

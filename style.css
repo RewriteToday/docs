@@ -6,54 +6,53 @@
    Core tokens
 -------------------------------- */
 :root {
-  color-scheme: dark;
+	color-scheme: dark;
 
-  /* Brand */
-  --rm-accent: #9EEA6C;
+	/* Brand */
+	--rm-accent: #9eea6c;
 
-  /* Backgrounds */
-  --rm-bg-0: #050505;
-  --rm-bg-1: #080808;
-  --rm-bg-2: #0b0b0b;
+	/* Backgrounds */
+	--rm-bg-0: #050505;
+	--rm-bg-1: #080808;
+	--rm-bg-2: #0b0b0b;
 
-  /* Text */
-  --rm-text-strong: #ffffff;
-  --rm-text: #e6e6e6;
-  --rm-text-muted: #9a9a9a;
+	/* Text */
+	--rm-text-strong: #ffffff;
+	--rm-text: #e6e6e6;
+	--rm-text-muted: #9a9a9a;
 
-  /* Borders */
-  --rm-border-soft: rgba(255, 255, 255, 0.08);
-  --rm-border-strong: rgba(255, 255, 255, 0.12);
+	/* Borders */
+	--rm-border-soft: rgba(255, 255, 255, 0.08);
+	--rm-border-strong: rgba(255, 255, 255, 0.12);
 
-  /* Shadows */
-  --rm-shadow-soft: 0 0 0 1px rgba(255,255,255,0.02),
-                    0 8px 30px rgba(0,0,0,0.6);
+	/* Shadows */
+	--rm-shadow-soft:
+		0 0 0 1px rgba(255, 255, 255, 0.02), 0 8px 30px rgba(0, 0, 0, 0.6);
 }
 
 [data-selector="card"]:hover,
 [data-selector="card"]:focus-within {
-  border-color: rgba(255,255,255,0.10) !important;
-  box-shadow: none !important;
+	border-color: rgba(255, 255, 255, 0.1) !important;
+	box-shadow: none !important;
 }
-
 
 /* -------------------------------
    Mintlify variables override
 -------------------------------- */
 :root {
-  --mint-background-primary: #050505;
-  --mint-background-secondary: #080808;
-  --mint-background-tertiary: #0b0b0b;
+	--mint-background-primary: #050505;
+	--mint-background-secondary: #080808;
+	--mint-background-tertiary: #0b0b0b;
 
-  --mint-text-primary: var(--rm-text);
-  --mint-text-secondary: var(--rm-text-muted);
+	--mint-text-primary: var(--rm-text);
+	--mint-text-secondary: var(--rm-text-muted);
 
-  --mint-primary: var(--rm-accent);
-  --mint-link: var(--rm-text-strong);
-  --mint-link-hover: var(--rm-accent);
+	--mint-primary: var(--rm-accent);
+	--mint-link: var(--rm-text-strong);
+	--mint-link-hover: var(--rm-accent);
 
-  --mint-border-color: var(--rm-border-soft);
-  --mint-card-border: var(--rm-border-soft);
+	--mint-border-color: var(--rm-border-soft);
+	--mint-card-border: var(--rm-border-soft);
 }
 
 /* -------------------------------
@@ -61,34 +60,29 @@
 -------------------------------- */
 html,
 body {
-  background:
-    radial-gradient(
-      1200px 600px at 20% -10%,
-      rgba(158, 234, 108, 0.04),
-      transparent 40%
-    ),
-    linear-gradient(
-      180deg,
-      #050505 0%,
-      #070707 60%,
-      #050505 100%
-    ) !important;
+	background:
+		radial-gradient(
+			1200px 600px at 20% -10%,
+			rgba(158, 234, 108, 0.04),
+			transparent 40%
+		),
+		linear-gradient(180deg, #050505 0%, #070707 60%, #050505 100%) !important;
 
-  color: var(--rm-text);
+	color: var(--rm-text);
 }
 
 /* Icon container (tenta pegar qualquer wrapper próximo do svg) */
 [data-selector="card"] svg {
-  padding: 8px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
+	padding: 8px;
+	border-radius: 12px;
+	background: rgba(255, 255, 255, 0.04);
+	border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* Hover: chip fica levemente mais vivo */
 [data-selector="card"]:hover svg {
-  background: rgba(158,234,108,0.06);
-  border-color: rgba(158,234,108,0.18);
+	background: rgba(158, 234, 108, 0.06);
+	border-color: rgba(158, 234, 108, 0.18);
 }
 
 /* -------------------------------
@@ -96,14 +90,14 @@ body {
 -------------------------------- */
 #navbar,
 #sidebar {
-  background: rgba(5,5,5,0.75) !important;
-  backdrop-filter: blur(8px);
-  border-color: var(--rm-border-soft) !important;
+	background: rgba(5, 5, 5, 0.75) !important;
+	backdrop-filter: blur(8px);
+	border-color: var(--rm-border-soft) !important;
 }
 
 #content-container,
 #content-area {
-  background: transparent !important;
+	background: transparent !important;
 }
 
 /* -------------------------------
@@ -113,30 +107,30 @@ body {
 .prose h2,
 .prose h3,
 .prose h4 {
-  color: var(--rm-text-strong);
-  letter-spacing: -0.02em;
+	color: var(--rm-text-strong);
+	letter-spacing: -0.02em;
 }
 
 .prose p {
-  color: var(--rm-text);
+	color: var(--rm-text);
 }
 
 .prose strong {
-  color: var(--rm-text-strong);
+	color: var(--rm-text-strong);
 }
 
 /* -------------------------------
    Links
 -------------------------------- */
 .prose a {
-  color: var(--rm-text-strong);
-  text-decoration-color: rgba(255,255,255,0.25);
-  text-underline-offset: 3px;
+	color: var(--rm-text-strong);
+	text-decoration-color: rgba(255, 255, 255, 0.25);
+	text-underline-offset: 3px;
 }
 
 .prose a:hover {
-  color: var(--rm-accent);
-  text-decoration-color: rgba(158,234,108,0.6);
+	color: var(--rm-accent);
+	text-decoration-color: rgba(158, 234, 108, 0.6);
 }
 
 /* -------------------------------
@@ -144,28 +138,28 @@ body {
 -------------------------------- */
 [data-selector="card"],
 [data-selector="callout"] {
-  background: rgba(255,255,255,0.03) !important;
-  border: 1px solid var(--rm-border-soft) !important;
-  border-radius: 14px;
-  box-shadow: var(--rm-shadow-soft);
+	background: rgba(255, 255, 255, 0.03) !important;
+	border: 1px solid var(--rm-border-soft) !important;
+	border-radius: 14px;
+	box-shadow: var(--rm-shadow-soft);
 }
 
 /* -------------------------------
    Tables
 -------------------------------- */
 .prose table {
-  border-collapse: separate;
-  border-spacing: 0;
+	border-collapse: separate;
+	border-spacing: 0;
 }
 
 .prose th {
-  background: rgba(255,255,255,0.04);
-  color: var(--rm-text-strong);
+	background: rgba(255, 255, 255, 0.04);
+	color: var(--rm-text-strong);
 }
 
 .prose td,
 .prose th {
-  border-color: var(--rm-border-soft);
+	border-color: var(--rm-border-soft);
 }
 
 /* -------------------------------
@@ -173,66 +167,91 @@ body {
 -------------------------------- */
 pre,
 code {
-  font-feature-settings: "liga" 1, "calt" 1;
+	font-feature-settings:
+		"liga" 1,
+		"calt" 1;
 }
 
 [data-selector="code-block"],
 pre {
-  background: #0b0b0b !important;
-  border: 1px solid var(--rm-border-soft) !important;
-  border-radius: 12px;
+	background: #0b0b0b !important;
+	border: 1px solid var(--rm-border-soft) !important;
+	border-radius: 12px;
 }
 
 code:not(pre code) {
-  background: rgba(255,255,255,0.06);
-  padding: 0.15em 0.4em;
-  border-radius: 6px;
-  color: var(--rm-text-strong);
+	background: rgba(255, 255, 255, 0.06);
+	padding: 0.15em 0.4em;
+	border-radius: 6px;
+	color: var(--rm-text-strong);
 }
 
 /* -------------------------------
    TOC (Right sidebar)
 -------------------------------- */
 #table-of-contents {
-  background: transparent !important;
+	background: transparent !important;
 }
 
 #table-of-contents a {
-  color: var(--rm-text-muted);
+	color: var(--rm-text-muted);
 }
 
 #table-of-contents a:hover,
 #table-of-contents a[data-active="true"] {
-  color: var(--rm-text-strong);
+	color: var(--rm-text-strong);
 }
 
 /* -------------------------------
    Scrollbar (Webkit)
 -------------------------------- */
 ::-webkit-scrollbar {
-  width: 10px;
+	width: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.12);
-  border-radius: 10px;
+	background: rgba(255, 255, 255, 0.12);
+	border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255,255,255,0.2);
+	background: rgba(255, 255, 255, 0.2);
 }
 
 /* Robust selectors for Mintlify identifiers */
-#content-area, [id="content-area"] { background: transparent !important; }
-#content-container, [id="content-container"] { background: transparent !important; }
-#body-content, [id="body-content"] { background: transparent !important; }
+#content-area,
+[id="content-area"] {
+	background: transparent !important;
+}
+#content-container,
+[id="content-container"] {
+	background: transparent !important;
+}
+#body-content,
+[id="body-content"] {
+	background: transparent !important;
+}
 
 /* Keep these (official selectors) */
-#navbar, [id="navbar"] { /* ... */ }
-#sidebar, [id="sidebar"] { /* ... */ }
-#table-of-contents, [id="table-of-contents"] { /* ... */ }
+#navbar,
+[id="navbar"] {
+	/* ... */
+}
+#sidebar,
+[id="sidebar"] {
+	/* ... */
+}
+#table-of-contents,
+[id="table-of-contents"] {
+	/* ... */
+}
 
-[data-selector="card"] { /* ... */ }
-[data-selector="callout"] { /* ... */ }
-[data-selector="code-block"] { /* ... */ }
-
+[data-selector="card"] {
+	/* ... */
+}
+[data-selector="callout"] {
+	/* ... */
+}
+[data-selector="code-block"] {
+	/* ... */
+}
