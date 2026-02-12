@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "name": "Remessage",
+  "name": "Rewrite",
   "theme": "mint",
   "appearance": {
     "default": "dark",
@@ -9,7 +9,7 @@
   "errors": {
     "404": {
       "redirect": false,
-      "title": "Remessage - Not Found",
+      "title": "Rewrite - Not Found",
       "description": "Hey, where did the page go?"
     }
   },
@@ -33,20 +33,20 @@
   },
   "navbar": {
     "links": [
-      { "label": "Status", "href": "https://status.remessage.io" },
-      { "label": "Changelog", "href": "https://remessage.io/changelog" },
-      { "label": "Repository", "href": "https://github.com/remessage/docs" }
+      { "label": "Status", "href": "https://status.userewrite.me" },
+      { "label": "Changelog", "href": "https://userewrite.me/changelog" },
+      { "label": "Repository", "href": "https://github.com/rewritestudios/docs" }
     ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/remessages",
-      "github": "https://github.com/remessage"
+      "x": "https://x.com/userewrite",
+      "github": "https://github.com/rewritestudios"
     }
   },
   "api": {
     "mdx": {
-      "server": "https://api.remessages.com/v1",
+      "server": "https://api.userewrite.me/v1",
       "auth": {
         "method": "bearer",
         "name": "Bearer"
@@ -55,23 +55,6 @@
   },
   "navigation": {
     "languages": [
-      {
-        "language": "pt-BR",
-        "tabs": [
-          {
-            "tab": "Bem-vindo",
-            "pages": [
-              "pt-br/start/welcome"
-            ]
-          },
-          {
-            "tab": "SDKs",
-            "pages": [
-              "pt-br/sdks/introduction"
-            ]
-          }
-        ]
-      },
       {
         "language": "en",
         "default": true,
@@ -86,6 +69,23 @@
             "tab": "SDKs",
             "pages": [
               "en/sdks/introduction"
+            ]
+          }
+        ]
+      },
+      {
+        "language": "pt-BR",
+        "tabs": [
+          {
+            "tab": "Bem-vindo",
+            "pages": [
+              "pt-br/start/welcome"
+            ]
+          },
+          {
+            "tab": "SDKs",
+            "pages": [
+              "pt-br/sdks/introduction"
             ]
           }
         ]
