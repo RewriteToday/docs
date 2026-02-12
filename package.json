@@ -1,0 +1,19 @@
+{
+  "name": "docs",
+  "private": true,
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.15",
+    "@commitlint/config-conventional": "^20.4.1",
+    "@types/bun": "latest",
+    "commitlint": "^20.4.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "lefthook": "^2.1.1"
+  },
+  "scripts": {
+    "biome:check": "bunx biome check --write ."
+  }
+}
