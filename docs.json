@@ -57,9 +57,9 @@
 		}
 	},
 	"styling": {
-	"codeblocks": {
-	"theme":"vesper"
-	}
+		"codeblocks": {
+			"theme": "vesper"
+		}
 	},
 	"navigation": {
 		"languages": [
