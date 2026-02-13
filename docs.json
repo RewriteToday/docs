@@ -86,6 +86,10 @@
 							{
 								"group": "Node.js",
 								"pages": ["en/sdks/node/introduction"]
+							},
+							{
+								"group": "Go",
+								"pages": ["en/sdks/golang"]
 							}
 						]
 					}
