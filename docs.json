@@ -26,10 +26,10 @@
 			"family": "Lato"
 		}
 	},
-	"favicon": "/favicon.ico",
+	"favicon": "/favicon.svg",
 	"logo": {
-		"light": "/images/hero-light.png",
-		"dark": "/images/hero-dark.png"
+		"light": "/images/icon.png",
+		"dark": "/images/icon.png"
 	},
 	"navbar": {
 		"links": [
@@ -77,6 +77,10 @@
 							{
 								"group": "Reference",
 								"pages": ["en/api/introduction", "en/api/pagination"]
+							},
+							{
+								"group": "SMS",
+								"openapi": "en/api/openapi.json"
 							}
 						]
 					},
