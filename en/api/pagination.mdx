@@ -1,0 +1,192 @@
+---
+title: Pagination
+description: Learn how to paginate through results using Rewrite’s cursor-based pagination.
+---
+
+# Overview
+
+Rewrite list endpoints use **cursor-based pagination** (no pages, no offsets).  
+Every response includes a `cursor` object telling you whether you should keep fetching and what to request next.
+
+## Response format
+
+All paginated list responses follow this shape:
+
+```json
+{
+  "ok": true,
+  "data": [],
+  "cursor": {
+    "persist": false,
+    "next": null
+  }
+}
+```
+
+## Cursor fields
+
+`persist`: Whether more results exist. This is equivalent to a `has_more` flag.<br/>
+`next`: The next cursor to use on the following request. When present, it is a ID encoded as a string.
+
+\- Treat `cursor.next` as an opaque value. Don’t parse or generate it client-side.
+## Query parameters
+
+- `after`: Fetch results after a given ID.
+- `before`: Fetch results before a given ID.
+- `limit`: How many items to return (2 to 100).
+
+## Forward pagination
+
+To paginate forward through results (newer to older items), use `after` param.
+
+<CodeGroup>
+    ```bash CLI
+    rewrite webhooks list --limit 25 --after 9213923891293040
+    ```
+
+    ```ts Node.js
+    const rewrite = new Rewrite(process.env.REWRITE_API_KEY);
+    
+    const { data } = await rewrite.webhooks.list({
+      limit: 25,
+    });
+    
+    if (data.cursor.persist) {
+      const { next } = data.cursor;
+      
+      const { data: nextData } = await rewrite.webhooks.list({
+        limit: 25,
+        after: next,
+      });
+    }
+    ```
+    
+    ```go Golang
+    package main
+    
+    import (
+        "github.com/rewritestudios/go"
+    )
+    
+    func main() {
+      rewrite := rewrite.New("rw_abcxyz")
+    
+      data, err := rewrite.Webhooks.List(25)
+      
+      if err != nil {
+        panic(err)
+      }
+    
+      if data.Cursor.Persist {
+          next, err := rewrite.Webhooks.List(25, rewrite.Webhooks.ListOptions{After: data.Cursor.Next})
+        }
+    }
+    
+    ```
+    
+    ```py Python
+    import rewrite
+    
+    rewrite = rewrite.Rewrite("rw_abcxyz")
+    
+    data = rewrite.webhooks.list(limit=25)
+    
+    if data.cursor.persist:
+      next_data = rewrite.webhooks.list(limit=25, after=data.cursor.next)
+    ```
+    
+    ```bash cURL
+    curl -X GET 'https://api.userewrite.me/v1/webhooks?limit=25&after=9213923891293040' \
+         -H 'Authorization: Bearer rw_abcxyz'
+    ```
+    
+    ```bash HTTPie
+    http GET 'https://api.userewrite.me/v1/webhooks?limit=25&after=9213923891293040' \
+         'Authorization: Bearer rw_abcxyz'
+    ```
+</CodeGroup>
+
+## Backward pagination
+
+To paginate Backward through results (older to newer items), use `before` param.
+
+<CodeGroup>
+    ```bash CLI
+    rewrite webhooks list --limit 25 --before 9213923891293040
+    ```
+
+    ```ts Node.js
+    const rewrite = new Rewrite(process.env.REWRITE_API_KEY);
+    
+    const { data } = await rewrite.webhooks.list({
+      limit: 25,
+    });
+    
+    if (data.cursor.persist) {
+      const { next } = data.cursor;
+      
+      const { data: nextData } = await rewrite.webhooks.list({
+        limit: 25,
+        before: next,
+      });
+    }
+    ```
+    
+    ```go Golang
+    package main
+    
+    import (
+        "github.com/rewritestudios/go"
+    )
+    
+    func main() {
+      rewrite := rewrite.New("rw_abcxyz")
+    
+      data, err := rewrite.Webhooks.List(25)
+      
+      if err != nil {
+        panic(err)
+      }
+    
+      if data.Cursor.Persist {
+          next, err := rewrite.Webhooks.List(25, rewrite.Webhooks.ListOptions{Before: data.Cursor.Next})
+        }
+    }
+    
+    ```
+    
+    ```py Python
+    import rewrite
+    
+    rewrite = rewrite.Rewrite("rw_abcxyz")
+    
+    data = rewrite.webhooks.list(limit=25)
+    
+    if data.cursor.persist:
+      next_data = rewrite.webhooks.list(limit=25, before=data.cursor.next)
+    ```
+    
+    ```bash cURL
+    curl -X GET 'https://api.userewrite.me/v1/webhooks?limit=25&before=9213923891293040' \
+         -H 'Authorization: Bearer rw_abcxyz'
+    ```
+    
+    ```bash HTTPie
+    http GET 'https://api.userewrite.me/v1/webhooks?limit=25&before=9213923891293040' \
+         'Authorization: Bearer rw_abcxyz'
+    ```
+</CodeGroup>
+
+### Common mistakes
+
+<Tabs sync={false}>
+  <Tab title="Using before and after">
+      You can not send both `before` and `after` in the same request.
+  </Tab>
+  <Tab title="Avoid compare with data length">
+      Do NOT compare `length < limit` as "End of list". Use `cursor.persist` instead.
+  </Tab>
+  <Tab title="Treat Snowflakes as numbers in JS">
+      Do NOT treat Snowflakes as numbers in JS. Always use `BigInt` instead.
+  </Tab>
+</Tabs>

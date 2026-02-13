@@ -72,6 +72,15 @@
 						"pages": ["en/start/welcome"]
 					},
 					{
+						"tab": "API",
+						"groups": [
+							{
+								"group": "Reference",
+								"pages": ["en/api/introduction", "en/api/pagination"]
+							}
+						]
+					},
+					{
 						"tab": "SDKs",
 						"groups": [
 							{
