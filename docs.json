@@ -82,7 +82,7 @@
 					},
 					{
 						"tab": "CLI",
-						"pages": ["en/cli/introduction"]
+						"pages": ["en/cli/introduction", "en/cli/config"]
 					},
 					{
 						"tab": "SDKs",

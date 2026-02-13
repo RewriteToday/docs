@@ -1,0 +1,96 @@
+---
+title: 'Configuration'
+icon: 'sliders'
+description: 'Global flags, output formats, environments, and runtime configuration for the Rewrite CLI.'
+---
+
+## Global Flags
+
+Available in all commands:
+
+| Flag | Alias | Type | Default | Description |
+|------|-------|------|---------|-------------|
+| `--verbose` | `-v` | boolean | `false` | Enable debug-level logging |
+| `--output` | `-o` | string | `text` | Output format: `text` or `json` |
+| `--no-color` | `-nc` | boolean | `false` | Disable ANSI colors |
+
+```bash
+# Example combining flags
+rewrite -v -o -nc json messages send "Hello" --to +5511999999999
+```
+
+## Output Formats
+
+The **CLI** supports two output formats configurable via `--output` or `-o`.
+
+### Text (Default)
+
+Human-friendly output optimized for interactive usage.
+
+```bash
+rewrite whoami
+```
+
+```
+You are logged in project almeida's project
+```
+
+### JSON
+
+Structured output for scripts, pipelines, and CI/CD.
+
+```bash
+rewrite -o json whoami
+```
+
+```json
+{
+  "project": "almeida",
+  "api_key": "rw_...",
+  "status": "authenticated"
+}
+```
+
+#### Use with jq for filtering
+
+```bash
+rewrite -o json messages list | jq '.data[] | select(.status=="failed")'
+```
+
+## Authentication & Token Storage
+
+Your API token is securely stored in the system’s native keyring
+
+- macOS: Keychain
+- Windows: Credential Manager
+- Linux: gnome-keyring or kwallet
+
+<Accordion title="Linux: token not saving?">
+
+Install a keyring backend
+
+```bash
+# Debian / Ubuntu
+sudo apt install gnome-keyring
+```
+
+```bash
+# Fedora
+sudo dnf install gnome-keyring
+```
+
+Then retry:
+
+```bash
+rewrite login
+```
+
+</Accordion>
+
+## Color & CI Behavior
+
+- Colors are automatically disabled when:
+  - `--no-color` flag is used.
+  - `NO_COLOR=true` in environment variables.
+  - Output is not a **TTY**.
+- When `CI=true`, interactive prompts are disabled automatically.
