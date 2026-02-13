@@ -1,5 +1,107 @@
 ---
 title: 'Overview'
-description: ''
+description: "Rewrite's official command-line tool for development, testing, and automations."
 icon: terminal
 ---
+
+The **Rewrite CLI** is the official command-line tool to interact with Rewrite directly from your terminal.
+
+Built for developers, it lets you send SMS, manage resend flows, listen to webhooks, simulate deliveries, and automate messaging pipelines — all without leaving your shell.
+
+## Capabilities
+
+<CardGroup cols={3}>
+  <Card title="Authentication" icon="key" href="./auth" color="#C9CBD1">
+    Secure login, API key management, and multiple profiles.
+  </Card>
+
+  <Card title="SMS" icon="message" color="#C9CBD1">
+    Send, inspect, and resend messages directly from your terminal.
+  </Card>
+
+  <Card title="Webhooks" icon="webhook" href="./webhooks" color="#C9CBD1">
+    Listen, forward, and debug webhook events in real time.
+  </Card>
+
+  <Card title="Simulation" icon="flask" color="#C9CBD1">
+    Simulate delivery statuses and edge cases safely.
+  </Card>
+
+  <Card title="Automation" icon="gear" color="#C9CBD1">
+    JSON output, non-interactive mode, and scriptable workflows.
+  </Card>
+
+  <Card title="Configuration" icon="sliders" href="./flags" color="#C9CBD1">
+    Global flags, environments, and output formatting.
+  </Card>
+</CardGroup>
+
+## Installation
+
+<CodeGroup>
+```bash Go (recommended)
+go install github.com/rewritestudios/cli@latest
+```
+```bash Brew
+brew install rewrite-cli
+```
+```bash Docker
+docker pull rewrite/cli
+```
+</CodeGroup>
+
+## Verify installation
+
+```bash
+rewrite --version
+```
+
+<Steps>
+  <Step title="Authenticate">
+      ```bash
+      rewrite login
+      ```
+      Authenticate using your **API key** or **OAuth flow**.
+  </Step>
+  <Step title="Send a SMS">
+      ```bash
+      rewrite messages send \
+      "Hello from Rewrite" \
+      --to +5511999999999 \
+      ```
+  </Step>
+  <Step title="Listen for webhooks">
+    ```bash
+    rewrite listen --forward-to http://localhost:3000/webhooks/rewrite
+    ```
+    Events will stream in real time and optionally forward to your local server.
+  </Step>
+</Steps>
+
+## Design Principles
+Rewrite CLI was built to be:
+
+- Explicit — No hidden behavior
+- Scriptable — Predictable structured output
+- CI-friendly — Fully non-interactive via flags
+- Fast — Minimal startup time and low footprint
+
+<CardGroup cols={2}>
+  <Card title="Unix-friendly" icon="terminal" color="#C9CBD1">
+      Clean output, easy to pipe and integrate.
+  </Card>
+  <Card title="Single Binary" icon="box" color="#C9CBD1">
+      No heavy runtime dependencies.
+  </Card>
+</CardGroup>
+<CardGroup cols={2}>
+  <Card title="REST API" icon="repeat" href="../api" color="#C9CBD1">
+      Full HTTP API for advanced integrations.
+  </Card>
+  <Card title="SDKs" icon="boxes-stacked" href="../sdks" color="#C9CBD1">
+      Official libraries for multiple languages.
+  </Card>
+</CardGroup>
+<Card title="Open Source" icon="github" href="https://github.com/rewritestudios/cli" color="#C9CBD1">
+    Source code, issues, and contributions.
+</Card>

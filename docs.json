@@ -81,7 +81,7 @@
 						]
 					},
 					{
-					  "tab": "CLI",
+						"tab": "CLI",
 						"pages": ["en/cli/introduction"]
 					},
 					{
