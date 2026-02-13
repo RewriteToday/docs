@@ -1,0 +1,62 @@
+---
+title: Introduction
+description: Learn how to use the Python SDK to send SMS with the API.
+icon: python
+---
+
+## Before you start
+
+- You need to have Python installed on your machine.
+- You need to have a Rewrite API key with the permissions.
+
+<Steps>
+    <Step title="Install the SDK" titleSize="h2">
+        To install the Python SDK, run the following command:
+        
+        ```bash
+        pip install rewrite
+        ```
+    </Step>
+    
+    <Step title="Send your SMS" titleSize="h2">
+    Now, all you need to do is pass the message content and that's it!
+    
+    ```py main.py
+    import os
+    import rewrite
+    
+    rewrite.api_key = os.environ["REWRITE_API_KEY"]
+    
+    params: rewrite.Messages.SendOptions = {
+        "to": "+1234567890",
+        "message": "Your OTP code is 478201",
+    }
+    
+    message = rewrite.messages.send(params)
+    
+    print(message)
+    ```
+    </Step>
+    
+    <Step title="Interact with the API" titleSize="h3">
+      You can also interact with the API with the SDK methods
+      
+      ```py webhooks.py
+      import os
+      import rewrite
+    
+      rewrite.api_key = os.environ["REWRITE_API_KEY"]
+      
+      params: rewrite.Webhooks.CreateOptions = {
+          "name": "My Webhook",
+          "events": ["sms.delivered"],
+          "url": "https://example.com/webhook",
+      }
+      
+      webhook = rewrite.webhooks.create(params)
+      
+      print(webhook)
+      ```
+      You can do everything with our SDK, keep exploring!
+    </Step>
+</Steps>

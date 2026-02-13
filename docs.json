@@ -90,6 +90,10 @@
 							{
 								"group": "Go",
 								"pages": ["en/sdks/golang"]
+							},
+							{
+								"group": "Python",
+								"pages": ["en/sdks/python"]
 							}
 						]
 					}
