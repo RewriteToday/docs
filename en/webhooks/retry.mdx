@@ -1,0 +1,118 @@
+---
+title: "Retries"
+description: "How **Rewrite** retries failed webhooks and how to manually replay events."
+---
+
+# Retries & Replays
+
+\- Understand how **Rewrite** guarantees webhook delivery — and what happens when your endpoint fails.
+
+When **Rewrite** sends a webhook event, your server **must respond with `HTTP 200 OK`** to confirm successful delivery.
+
+If your endpoint does not return a `2xx` status code (or times out), the delivery is considered **failed** and **Rewrite** will automatically retry it.
+
+---
+
+## Automatic Retries
+
+Rewrite uses **exponential backoff with capped retries** to ensure reliable delivery without overwhelming your infrastructure.
+
+Each webhook event is retried according to the following schedule:
+
+| Attempt | Delay After Previous Failure |
+|----------|-----------------------------|
+| 1        | Immediately                  |
+| 2        | 5 seconds                    |
+| 3        | 1 minute                     |
+| 4        | 5 minutes                    |
+| 5        | 15 minutes                   |
+
+After the final attempt, the webhook is marked as **permanently failed**.
+
+---
+
+### Example
+
+If your endpoint fails the first three attempts but succeeds on the fourth:
+
+- Attempt 1 → immediate (fails)
+- Attempt 2 → +5s (fails)
+- Attempt 3 → +1m (fails)
+- Attempt 4 → +5m (success)
+
+The total time from the first attempt to successful delivery would be approximately **6 minutes and 5 seconds**.
+
+---
+
+## When Do Retries Stop?
+
+Retries stop when:
+
+- Your endpoint returns a **2xx response**
+- The maximum retry limit is reached
+- The webhook endpoint is deleted or disabled
+- The event expires (TTL reached)
+
+---
+
+## Best Practices
+
+To avoid unnecessary retries:
+
+- Always return `200 OK` as soon as you receive the event
+- Process heavy logic **asynchronously**
+- Use idempotency (store event IDs and ignore duplicates)
+- Implement request timeout under 10 seconds
+
+Example minimal handler:
+
+```ts
+export async function webhookHandler(req, res) {
+  const { body } = req;
+
+  // Immediately acknowledge
+  res.status(200).end()
+
+  // Process asynchronously
+  queue.push(body)
+}
+```
+
+## Manual Replays
+
+If a webhook fails permanently — or if you need to reprocess an event — you can manually replay it.
+
+You can replay both:
+
+- `failed` deliveries
+- `successful` deliveries (useful for debugging)
+
+## How to Replay
+
+1. Go to the **Webhooks** section in the **Rewrite Dashboard**
+2. Select your webhook endpoint
+3. Open the event you want to replay
+4. Click **Replay**
+
+**Rewrite** will resend the exact same payload to your endpoint.
+
+## Idempotency Reminder
+
+Manual replays and automatic retries may deliver the same event multiple times.
+
+You should:
+
+- Store processed event IDs
+- Ignore duplicates
+- Ensure your system behaves safely on repeated deliveries
+
+## Delivery Guarantees
+
+Rewrite provides:
+
+- At-least-once delivery
+- Ordered delivery per message (when applicable)
+- Signed payload verification
+- Delivery visibility in dashboard
+
+<Card title="Verify webhook signatures" icon="shield-check" href="/webhooks/signatures" color="#C9CBD1"> Always validate the signature header before trusting webhook payloads. </Card>
