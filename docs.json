@@ -101,14 +101,17 @@
 							},
 							{
 								"group": "Node.js",
+								"icon": "node-js",
 								"pages": ["en/sdks/node/introduction"]
 							},
 							{
 								"group": "Go",
+								"icon": "golang",
 								"pages": ["en/sdks/golang"]
 							},
 							{
 								"group": "Python",
+								"icon": "python",
 								"pages": ["en/sdks/python"]
 							}
 						]
