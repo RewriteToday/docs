@@ -115,6 +115,10 @@
 								"pages": ["en/sdks/python"]
 							}
 						]
+					},
+					{
+						"tab": "Webhooks",
+						"pages": ["en/webhooks/introduction"]
 					}
 				]
 			},

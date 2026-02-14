@@ -1,0 +1,141 @@
+---
+title: "Introduction"
+description: "Use **Rewrite** webhooks to receive real-time SMS events in your application."
+---
+
+## What are webhooks?
+
+Rewrite webhooks are **real-time HTTPS POST requests** sent to your server whenever something important happens in **Rewrite** — like an SMS being delivered, failing, or being scheduled.
+
+Instead of polling the API, webhooks let your app react instantly with a **JSON** payload.
+
+### When should you use webhooks?
+
+- **Delivery tracking** - Mark messages as delivered/failed without polling
+- **Customer workflows** - Trigger onboarding, alerts, and verification flows
+- **Data retention** - Store events in your own Database for analytics/reporting
+- **Reliability** - Detect provider issues and automate retries
+
+---
+
+## Webhook flow at a glance
+
+<Steps>
+	<Step title="Creating an endpoint" titleSize="h3">
+		You need to create an HTTP endpoint in your app (ex: `/webhooks/rewrite`).
+		
+		```ts server.ts
+		export const app = new Elysia()
+			.post('/webhooks/rewrite', ({ body }) => {
+				console.log({ body });
+				
+				return { success: true };
+			});
+		```
+	</Step>
+	<Step title="Registering the endpoint" titleSize="h3">
+		You register that URL in the **Rewrite dashboard** (And select event types).
+	</Step>
+	<Step title="Receiving events" titleSize="h3">
+		Your server receives events as they happen.
+	</Step>
+	<Step title="Confirming delivery" titleSize="h3">
+		Your server confirms delivery by responding with **HTTP 200**.
+	</Step>
+</Steps>
+
+<Info>
+Your endpoint must be publicly reachable over HTTPS in production.
+During development, use a tunnel like **ngrok** or **Cloudflare Tunnel**.
+</Info>
+
+---
+
+## Receiving webhooks locally
+
+<Steps>
+	<Step title="Create a dev endpoint" titleSize="h3">
+		Here's a minimal examples using **Node.js**.
+		
+		<CodeGroup>
+		
+		```ts Elysia
+		import { Elysia } from 'elysia';
+
+		const app = new Elysia()
+			.post('/webhooks/rewrite', ({ body, query: { signature } }) => {
+				// 1) verify signature (recommended)
+				// 2) persist the event (recommended)
+				// 3) process it (queue/job recommended)
+				
+				return { success: true };
+			});
+			
+		app.listen(3000, () => console.log('Listening on 3000'));
+		```
+		
+		```ts Express
+		import express from 'express';
+
+		const app = express();
+		
+		app.use(express.json());
+
+		app.post('/webhooks/rewrite', (req, res) => {
+		  const { body } = req;
+
+		  // 1) verify signature (recommended)
+		  // 2) persist the event (recommended)
+		  // 3) process it (queue/job recommended)
+				
+		  res.status(200).send({ success: true });
+		});
+
+		app.listen(3000, () => console.log('Listening on 3000'));
+		```
+		</CodeGroup>
+		
+		<Info> For local testing, expose your server to the public internet using: - **ngrok** - **Cloudflare Tunnel** - **VS Code Port Forwarding** </Info>
+	</Step>
+	
+	<Step title="Register the webhook in Rewrite" titleSize="h3">
+		In the **Rewrite dashboard**:
+
+		1. Add your public HTTPS URL
+		2. Select the event types you want
+		3. Save
+		
+		You can also manage webhooks programmatically via the [API](../api) or [SDK](../sdks).
+	</Step>
+	
+	<Step title="Trigger any event" titleSize="h3">
+		Send a message, delete one, and watch them arrive.
+		
+		You'll receive a JSON payload similar to:
+		
+		```json
+		{
+			"type": "sms.delivered",
+			"createdAt": "2026-02-14T19:41:12.126Z",
+			"id": "393821034567832123",
+			"data": {
+				"id": "733501234567890123",
+				"to": "+5511999999999",
+				"status": "DELIVERED",
+				"provider": null,
+				"metadata": {
+					"code": "923721"
+				}
+			}
+		}
+		```
+	</Step>
+</Steps>
+
+## Best practices (do this early)
+
+<CardGroup cols={2}> <Card title="Verify signatures" icon="shield" color="#C9CBD1"> Always validate the webhook signature to ensure the event was sent by Rewrite. </Card> <Card title="Ack fast, process async" icon="bolt" color="#C9CBD1"> Return HTTP 200 quickly and process work in a queue/job to avoid timeouts. </Card> <Card title="Be idempotent" icon="repeat" color="#C9CBD1"> Webhooks may be retried. Use event IDs to ignore duplicates safely. </Card> <Card title="Persist raw payloads" icon="database" color="#C9CBD1"> Store events for audit/debugging and to rebuild state if needed. </Card> </CardGroup> <Warning> If your endpoint returns a non-2xx response or times out, Rewrite may retry delivery. Design your handler to be **idempotent**. </Warning>
+
+## What’s next?
+
+<CardGroup cols={2}> <Card title="Event types" icon="list" href="/webhooks/event-types" color="#C9CBD1"> See all webhook event types and payload shapes. </Card> <Card title="Signature verification" icon="shield-check" href="/webhooks/signatures" color="#C9CBD1"> Verify events securely before processing them. </Card> <Card title="Local development" icon="terminal" href="/webhooks/local-development" color="#C9CBD1"> Test webhooks locally with tunnels and the Rewrite CLI. </Card> <Card title="Quickstart" icon="rocket" href="/quickstart" color="#C9CBD1"> Send your first SMS and start receiving delivery events. </Card> </CardGroup> <Card title="Need help?" icon="headset" color="#C9CBD1"> If you run into delivery issues or signature verification errors, check your request logs and ensure your endpoint returns **HTTP 200** quickly. </Card>
