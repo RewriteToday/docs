@@ -44,27 +44,7 @@ icon: python
     
     print(message)
     ```
-    </Step>
     
-    <Step title="Interact with the API" titleSize="h3">
-      You can also interact with the API with the SDK methods
-      
-      ```py webhooks.py
-      import os
-      import rewrite
-    
-      rewrite.api_key = os.environ["REWRITE_API_KEY"]
-      
-      params: rewrite.Webhooks.CreateOptions = {
-          "name": "My Webhook",
-          "events": ["sms.delivered"],
-          "url": "https://example.com/webhook",
-      }
-      
-      webhook = rewrite.webhooks.create(params)
-      
-      print(webhook)
-      ```
-      You can do everything with our SDK, keep exploring!
+    You can do everything with our SDK, keep exploring!
     </Step>
 </Steps>

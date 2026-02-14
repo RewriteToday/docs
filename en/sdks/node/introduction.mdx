@@ -62,29 +62,7 @@ icon: node-js
       
       console.log(data);
     ```
-    </Step>
     
-    <Step title="Interact with the API" titleSize="h3">
-      You can also interaction with the API with the SDK methods
-      
-      ```ts webhooks.ts
-        import { Rewrite } from 'rewritejs';
-        
-        const rewrite = new Rewrite(process.env.REWRITE_API_KEY);
-        
-        const { data, error } = await rewrite.webhooks.create({
-          name: 'My Webhook',
-          events: ['sms.delivered'],          
-          url: 'https://example.com/webhook',
-        });
-        
-        if (error) {
-          return console.error(error);
-        }
-        
-        console.log(data)
-      ```
-      
-      You can do everything with our SDK, keep exploring!
+    You can do everything with our SDK, keep exploring!
     </Step>
 </Steps>

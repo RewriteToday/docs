@@ -55,36 +55,7 @@ icon: golang
         fmt.Println(data)
     }
     ```
-    </Step>
     
-    <Step title="Interact with the API" titleSize="h3">
-      You can also interaction with the API with the SDK methods
-      
-      ```go webhooks.go
-      package webhooks
-      
-      import (
-        "github.com/rewritestudios/go"
-      )
-      
-      func Create(name, url string) {
-        rewrite := rewrite.New("rw_abcxyz")
-        
-        data, error := rewrite.Webhooks.Create(&rewrite.Webhooks.CreateOptions{
-          Name: name,
-          Events: []string{"sms.delivered"},
-          URL: url,
-        })
-        
-        if error != nil {
-          fmt.Println(error)
-          
-          return
-        }
-        
-        fmt.Println(data)
-      }
-      ```
-      You can do everything with our SDK, keep exploring!
+    You can do everything with our SDK, keep exploring!
     </Step>
 </Steps>
