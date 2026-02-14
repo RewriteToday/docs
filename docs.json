@@ -96,6 +96,10 @@
 						"tab": "SDKs",
 						"groups": [
 							{
+								"group": "Overview",
+								"pages": ["en/sdks/introduction"]
+							},
+							{
 								"group": "Node.js",
 								"pages": ["en/sdks/node/introduction"]
 							},
