@@ -102,7 +102,7 @@
 							{
 								"group": "Node.js",
 								"icon": "node-js",
-								"pages": ["en/sdks/node/introduction"]
+								"pages": ["en/sdks/node/introduction", "en/sdks/node/elysia"]
 							},
 							{
 								"group": "Go",

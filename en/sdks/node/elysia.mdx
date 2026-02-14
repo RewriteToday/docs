@@ -1,0 +1,68 @@
+---
+title: Elysia
+description: Learn how to use the Node.js SDK with Elysia.
+---
+
+## Before you start
+
+- You need to have Node.js installed on your machine.
+- You need to have a Rewrite API key with the permissions.
+
+<Steps>
+    <Step title="Install the SDK and Elysia" titleSize="h3">
+        To install the Node.js SDK, run the following command:
+        
+        <CodeGroup>
+        
+        ```bash npm
+        npm install rewritejs elysia
+        ```
+        
+        ```bash yarn
+        yarn add rewritejs elysia
+        ```
+        
+        ```bash pnpm
+        pnpm add rewritejs elysia
+        ```
+        
+        ```bash bun
+        bun install rewritejs elysia
+        ```
+        
+        </CodeGroup>
+    </Step>
+    
+    <Step title="Set up REWRITE_API_KEY environment variable" titleSize="h3">
+    Set up your Rewrite API key in your environment variables.
+    
+    ```text .env    
+    REWRITE_API_KEY=rw...
+    ```
+    </Step>
+    
+    <Step title="Send your SMS" titleSize="h3">
+    Now, all you need to do is pass the message content and start your Elysia server.
+    
+    ```ts elysia.ts
+    import { Elysia } from 'elysia';
+    import { Rewrite } from 'rewritejs';
+      
+    const app = new Elysia({ name: 'Rewrite' });
+    const rewrite = new Rewrite(process.env.REWRITE_API_KEY);
+    
+    app.get('/', ({ status }) => {
+    	const { data, error } = await rewrite.messages.send({
+      		to: '+1234567890',
+      		message: 'Your OTP code is 478201',
+        });
+        
+        if (error) return status(400, { error });
+     
+    	return { data };
+    });
+    ```
+    
+    You can do everything with our SDK, keep exploring!
+    </Step>
+</Steps>
