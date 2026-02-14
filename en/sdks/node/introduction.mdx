@@ -11,7 +11,7 @@ icon: node-js
 
 
 <Steps>
-    <Step title="Install the SDK" titleSize="h2">
+    <Step title="Install the SDK" titleSize="h3">
         To install the Node.js SDK, run the following command:
         
         <CodeGroup>
@@ -35,7 +35,15 @@ icon: node-js
         </CodeGroup>
     </Step>
     
-    <Step title="Send your SMS" titleSize="h2">
+    <Step title="Set up REWRITE_API_KEY environment variable" titleSize="h3">
+    Set up your Rewrite API key in your environment variables.
+    
+    ```text .env    
+    REWRITE_API_KEY=rw...
+    ```
+    </Step>
+    
+    <Step title="Send your SMS" titleSize="h3">
     Now, all you need to do is pass the message content and that's it!
     
     ```ts sms.ts

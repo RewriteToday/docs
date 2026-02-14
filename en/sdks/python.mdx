@@ -10,7 +10,7 @@ icon: python
 - You need to have a Rewrite API key with the permissions.
 
 <Steps>
-    <Step title="Install the SDK" titleSize="h2">
+    <Step title="Install the SDK" titleSize="h3">
         To install the Python SDK, run the following command:
         
         ```bash
@@ -18,7 +18,15 @@ icon: python
         ```
     </Step>
     
-    <Step title="Send your SMS" titleSize="h2">
+    <Step title="Set up REWRITE_API_KEY environment variable" titleSize="h3">
+    Set up your Rewrite API key in your environment variables.
+    
+    ```text .env    
+    REWRITE_API_KEY=rw...
+    ```
+    </Step>
+    
+    <Step title="Send your SMS" titleSize="h3">
     Now, all you need to do is pass the message content and that's it!
     
     ```py main.py
