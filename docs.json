@@ -47,7 +47,8 @@
 	"footer": {
 		"socials": {
 			"x": "https://x.com/rewritetoday",
-			"github": "https://github.com/rewritestudios"
+			"github": "https://github.com/rewritestudios",
+			"discord": "https://discord.gg/rewrite"
 		}
 	},
 	"api": {
