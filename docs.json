@@ -33,23 +33,26 @@
 	},
 	"navbar": {
 		"links": [
-			{ "label": "Status", "href": "https://status.userewrite.me" },
-			{ "label": "Changelog", "href": "https://userewrite.me/changelog" },
+			{ "label": "Status", "href": "https://status.rewritetoday.com" },
+			{ "label": "Changelog", "href": "https://rewritetoday.com/changelog" },
 			{
-				"label": "Repository",
-				"href": "https://github.com/rewritestudios/docs"
+				"label": "GitHub",
+				"icon": {
+					"name": "github"
+				},
+				"href": "https://github.com/rewritestudios"
 			}
 		]
 	},
 	"footer": {
 		"socials": {
-			"x": "https://x.com/userewrite",
+			"x": "https://x.com/rewritetoday",
 			"github": "https://github.com/rewritestudios"
 		}
 	},
 	"api": {
 		"mdx": {
-			"server": "https://api.userewrite.me/v1",
+			"server": "https://api.rewritetoday.com/v1",
 			"auth": {
 				"method": "bearer",
 				"name": "Bearer"

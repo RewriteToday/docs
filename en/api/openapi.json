@@ -1,0 +1,624 @@
+{
+	"openapi": "3.1.0",
+	"info": {
+		"title": "Rewrite API",
+		"version": "1.0.0",
+		"summary": "SMS endpoints for sending, listing, retrieving, resending, and cancelling messages.",
+		"description": "Rewrite's SMS API uses cursor-based pagination for list endpoints.\n\nSnowflakes are represented as strings to avoid integer precision issues."
+	},
+	"servers": [
+		{
+			"description": "Production",
+			"url": "https://api.userewrite.me/v1"
+		}
+	],
+	"tags": [
+		{ "name": "SMS", "description": "Send and manage SMS messages." },
+		{ "name": "Webhooks", "description": "Manage webhooks for SMS events." }
+	],
+	"security": [{ "bearerAuth": [] }],
+	"paths": {
+		"/webhooks": {},
+		"/messages": {
+			"post": {
+				"tags": ["SMS"],
+				"summary": "Send a SMS",
+				"description": "Sends a SMS or MMS message.\n\n**Notes**:\n- `idempotency_key` prevents accidental duplicate sends.\n- `metadata` is echoed back and can help with reconciliation.",
+				"parameters": [
+					{
+						"name": "Idempotency-Key",
+						"in": "header",
+						"required": false,
+						"description": "Idempotency key to safely retry requests without creating duplicates.",
+						"schema": { "type": "string", "minLength": 1, "maxLength": 128 }
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": { "$ref": "#/components/schemas/SmsSendRequest" },
+							"examples": {
+								"basic": {
+									"value": {
+										"to": "+5511999999999",
+										"message": "Your OTP code is 123456",
+										"metadata": { "code": "123456" }
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Message accepted for delivery.",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/SmsResponse" }
+							}
+						}
+					},
+					"400": { "$ref": "#/components/responses/BadRequest" },
+					"401": { "$ref": "#/components/responses/Unauthorized" },
+					"403": { "$ref": "#/components/responses/Forbidden" },
+					"409": { "$ref": "#/components/responses/Conflict" },
+					"422": { "$ref": "#/components/responses/UnprocessableEntity" },
+					"429": { "$ref": "#/components/responses/RateLimited" },
+					"500": { "$ref": "#/components/responses/InternalError" }
+				}
+			},
+			"get": {
+				"tags": ["SMS"],
+				"operationId": "listSms",
+				"summary": "List SMS messages",
+				"description": "Returns a cursor-paginated list of SMS messages.\n\nPagination parameters:\n- Use `after` (recommended) for forward pagination.\n- Use `before` for reverse pagination.\n- `limit` must be between 2 and 100.\n\nThe response includes `cursor.persist` (equivalent to `has_more`) and `cursor.next` (the next Snowflake cursor).",
+				"parameters": [
+					{
+						"name": "limit",
+						"in": "query",
+						"required": false,
+						"description": "Number of items to return (2..100).",
+						"schema": {
+							"type": "integer",
+							"minimum": 2,
+							"maximum": 100,
+							"default": 20
+						}
+					},
+					{
+						"name": "after",
+						"in": "query",
+						"required": false,
+						"description": "Fetch results after this Snowflake (forward pagination).",
+						"schema": { "$ref": "#/components/schemas/Snowflake" }
+					},
+					{
+						"name": "before",
+						"in": "query",
+						"required": false,
+						"description": "Fetch results before this Snowflake (reverse pagination).",
+						"schema": { "$ref": "#/components/schemas/Snowflake" }
+					},
+					{
+						"name": "to",
+						"in": "query",
+						"required": false,
+						"description": "Filter by destination phone number (E.164).",
+						"schema": { "type": "string", "pattern": "^\\+[1-9]\\d{1,14}$" }
+					},
+					{
+						"name": "status",
+						"in": "query",
+						"required": false,
+						"description": "Filter by message status.",
+						"schema": { "$ref": "#/components/schemas/SmsStatus" }
+					},
+					{
+						"name": "provider",
+						"in": "query",
+						"required": false,
+						"description": "Filter by provider name.",
+						"schema": { "type": "string", "minLength": 1, "maxLength": 64 }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "A cursor-paginated list of SMS messages.",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/SmsListResponse" }
+							}
+						}
+					},
+					"400": { "$ref": "#/components/responses/BadRequest" },
+					"401": { "$ref": "#/components/responses/Unauthorized" },
+					"403": { "$ref": "#/components/responses/Forbidden" },
+					"429": { "$ref": "#/components/responses/RateLimited" },
+					"500": { "$ref": "#/components/responses/InternalError" }
+				}
+			}
+		},
+		"/sms/{id}": {
+			"get": {
+				"tags": ["SMS"],
+				"operationId": "getSms",
+				"summary": "Retrieve an SMS",
+				"description": "Fetch a single SMS message by its Snowflake ID.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "SMS Snowflake ID.",
+						"schema": { "$ref": "#/components/schemas/Snowflake" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "SMS retrieved.",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/SmsResponse" }
+							}
+						}
+					},
+					"400": { "$ref": "#/components/responses/BadRequest" },
+					"401": { "$ref": "#/components/responses/Unauthorized" },
+					"403": { "$ref": "#/components/responses/Forbidden" },
+					"404": { "$ref": "#/components/responses/NotFound" },
+					"429": { "$ref": "#/components/responses/RateLimited" },
+					"500": { "$ref": "#/components/responses/InternalError" }
+				}
+			}
+		},
+		"/sms/{id}/resend": {
+			"post": {
+				"tags": ["SMS"],
+				"operationId": "resendSms",
+				"summary": "Resend an SMS",
+				"description": "Creates a new SMS based on a previous message.\n\nTypical uses:\n- Retry a failed delivery.\n- Re-run delivery through another route/provider (if supported).",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "Original SMS Snowflake ID to resend.",
+						"schema": { "$ref": "#/components/schemas/Snowflake" }
+					},
+					{
+						"name": "Idempotency-Key",
+						"in": "header",
+						"required": false,
+						"description": "Idempotency key to safely retry resends without creating duplicates.",
+						"schema": { "type": "string", "minLength": 1, "maxLength": 128 }
+					}
+				],
+				"requestBody": {
+					"required": false,
+					"content": {
+						"application/json": {
+							"schema": { "$ref": "#/components/schemas/SmsResendRequest" },
+							"examples": {
+								"default": {
+									"value": { "metadata": { "reason": "retry_failed" } }
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Resend accepted and created as a new SMS.",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/SmsResponse" }
+							}
+						}
+					},
+					"400": { "$ref": "#/components/responses/BadRequest" },
+					"401": { "$ref": "#/components/responses/Unauthorized" },
+					"403": { "$ref": "#/components/responses/Forbidden" },
+					"404": { "$ref": "#/components/responses/NotFound" },
+					"409": { "$ref": "#/components/responses/Conflict" },
+					"422": { "$ref": "#/components/responses/UnprocessableEntity" },
+					"429": { "$ref": "#/components/responses/RateLimited" },
+					"500": { "$ref": "#/components/responses/InternalError" }
+				}
+			}
+		},
+		"/sms/{id}/cancel": {
+			"post": {
+				"tags": ["SMS"],
+				"operationId": "cancelSms",
+				"summary": "Cancel an SMS",
+				"description": "Attempts to cancel an SMS before it is delivered.\n\nCancellation may not be possible if the message is already sent to the carrier.",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "SMS Snowflake ID.",
+						"schema": { "$ref": "#/components/schemas/Snowflake" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Cancellation result.",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/SmsCancelResponse" }
+							}
+						}
+					},
+					"400": { "$ref": "#/components/responses/BadRequest" },
+					"401": { "$ref": "#/components/responses/Unauthorized" },
+					"403": { "$ref": "#/components/responses/Forbidden" },
+					"404": { "$ref": "#/components/responses/NotFound" },
+					"409": { "$ref": "#/components/responses/Conflict" },
+					"422": { "$ref": "#/components/responses/UnprocessableEntity" },
+					"429": { "$ref": "#/components/responses/RateLimited" },
+					"500": { "$ref": "#/components/responses/InternalError" }
+				}
+			}
+		}
+	},
+	"components": {
+		"securitySchemes": {
+			"bearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "API Key",
+				"description": "Use your Rewrite API key as a Bearer token: `Authorization: Bearer <key>`."
+			}
+		},
+		"responses": {
+			"BadRequest": {
+				"description": "Bad request.",
+				"content": {
+					"application/json": {
+						"schema": { "$ref": "#/components/schemas/ErrorResponse" }
+					}
+				}
+			},
+			"Unauthorized": {
+				"description": "Missing or invalid authentication.",
+				"content": {
+					"application/json": {
+						"schema": { "$ref": "#/components/schemas/ErrorResponse" }
+					}
+				}
+			},
+			"Forbidden": {
+				"description": "Insufficient permissions for this resource.",
+				"content": {
+					"application/json": {
+						"schema": { "$ref": "#/components/schemas/ErrorResponse" }
+					}
+				}
+			},
+			"NotFound": {
+				"description": "Resource not found.",
+				"content": {
+					"application/json": {
+						"schema": { "$ref": "#/components/schemas/ErrorResponse" }
+					}
+				}
+			},
+			"Conflict": {
+				"description": "Conflict (e.g., idempotency collision, invalid state transition).",
+				"content": {
+					"application/json": {
+						"schema": { "$ref": "#/components/schemas/ErrorResponse" }
+					}
+				}
+			},
+			"UnprocessableEntity": {
+				"description": "Validation failed.",
+				"content": {
+					"application/json": {
+						"schema": { "$ref": "#/components/schemas/ErrorResponse" }
+					}
+				}
+			},
+			"RateLimited": {
+				"description": "Too many requests.",
+				"headers": {
+					"Retry-After": {
+						"description": "Seconds to wait before retrying.",
+						"schema": { "type": "integer", "minimum": 0 }
+					}
+				},
+				"content": {
+					"application/json": {
+						"schema": { "$ref": "#/components/schemas/ErrorResponse" }
+					}
+				}
+			},
+			"InternalError": {
+				"description": "Internal server error.",
+				"content": {
+					"application/json": {
+						"schema": { "$ref": "#/components/schemas/ErrorResponse" }
+					}
+				}
+			}
+		},
+		"schemas": {
+			"Snowflake": {
+				"type": "string",
+				"description": "Snowflake identifier encoded as a string.",
+				"pattern": "^[0-9]{16,32}$",
+				"examples": ["733501234567890123"]
+			},
+			"Cursor": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["persist"],
+				"properties": {
+					"persist": {
+						"type": "boolean",
+						"description": "Whether more results exist (equivalent to has_more)."
+					},
+					"next": {
+						"allOf": [{ "$ref": "#/components/schemas/Snowflake" }],
+						"description": "Next cursor to pass as `after` (or `before`, depending on your paging direction)."
+					}
+				}
+			},
+			"SmsStatus": {
+				"type": "string",
+				"description": "Current delivery state of the SMS.",
+				"enum": [
+					"queued",
+					"sending",
+					"sent",
+					"delivered",
+					"failed",
+					"undelivered",
+					"canceled"
+				]
+			},
+			"SmsDirection": {
+				"type": "string",
+				"description": "Message direction.",
+				"enum": ["outbound", "inbound"]
+			},
+			"SmsPricing": {
+				"type": "object",
+				"additionalProperties": false,
+				"properties": {
+					"currency": {
+						"type": "string",
+						"minLength": 3,
+						"maxLength": 3,
+						"examples": ["USD"]
+					},
+					"amount": {
+						"type": "integer",
+						"minimum": 0,
+						"description": "Minor units (e.g., cents)."
+					}
+				}
+			},
+			"SmsError": {
+				"type": "object",
+				"additionalProperties": false,
+				"properties": {
+					"code": { "type": "string", "examples": ["provider_error"] },
+					"message": { "type": "string" },
+					"provider_code": { "type": "string" }
+				}
+			},
+			"Sms": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["id", "to", "message", "status", "created_at"],
+				"properties": {
+					"id": { "$ref": "#/components/schemas/Snowflake" },
+					"direction": { "$ref": "#/components/schemas/SmsDirection" },
+					"to": {
+						"type": "string",
+						"pattern": "^\\+[1-9]\\d{1,14}$",
+						"description": "Recipient phone number (E.164)."
+					},
+					"from": {
+						"type": "string",
+						"description": "Sender identifier (alphanumeric sender ID or E.164 number).",
+						"minLength": 1,
+						"maxLength": 32
+					},
+					"message": { "type": "string", "minLength": 1, "maxLength": 1600 },
+					"status": { "$ref": "#/components/schemas/SmsStatus" },
+					"provider": {
+						"type": "string",
+						"description": "Provider used to route the message.",
+						"examples": ["twilio"]
+					},
+					"segments": {
+						"type": "integer",
+						"minimum": 1,
+						"description": "Number of SMS segments billed/sent."
+					},
+					"price": { "$ref": "#/components/schemas/SmsPricing" },
+					"metadata": {
+						"type": "object",
+						"description": "User-defined key/value metadata for reconciliation.",
+						"additionalProperties": { "type": "string" }
+					},
+					"idempotency_key": {
+						"type": "string",
+						"description": "Idempotency key used for creation (if provided).",
+						"minLength": 1,
+						"maxLength": 128
+					},
+					"created_at": { "type": "string", "format": "date-time" },
+					"queued_at": { "type": "string", "format": "date-time" },
+					"sent_at": { "type": "string", "format": "date-time" },
+					"delivered_at": { "type": "string", "format": "date-time" },
+					"failed_at": { "type": "string", "format": "date-time" },
+					"canceled_at": { "type": "string", "format": "date-time" },
+					"error": { "$ref": "#/components/schemas/SmsError" }
+				}
+			},
+			"SmsSendRequest": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["to", "message"],
+				"properties": {
+					"to": {
+						"type": "string",
+						"pattern": "^\\+[1-9]\\d{1,14}$",
+						"description": "Recipient phone number (E.164)."
+					},
+					"message": { "type": "string", "minLength": 1, "maxLength": 1600 },
+					"metadata": {
+						"type": "object",
+						"description": "Optional metadata echoed back on the SMS object.",
+						"additionalProperties": { "type": "string" }
+					},
+					"webhookUrl": {
+						"type": "string",
+						"format": "uri",
+						"description": "Optional per-request webhook override for delivery events."
+					},
+					"attachments": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"content": {
+									"oneOf": [
+										{ "type": "string", "format": "uri" },
+										{ "type": "buffer" }
+									]
+								},
+								"name": {
+									"type": "string",
+									"minLength": 1,
+									"maxLength": 256,
+									"description": "Name of the attachment"
+								},
+								"type": {
+									"type": "string",
+									"description": "Content type of the attachment"
+								}
+							},
+							"required": ["url", "type"]
+						},
+						"description": "Array of attachments to send with the message."
+					}
+				}
+			},
+			"SmsResendRequest": {
+				"type": "object",
+				"additionalProperties": false,
+				"properties": {
+					"to": {
+						"type": "string",
+						"pattern": "^\\+[1-9]\\d{1,14}$",
+						"description": "Optional override recipient (E.164)."
+					},
+					"from": {
+						"type": "string",
+						"description": "Optional override sender.",
+						"minLength": 1,
+						"maxLength": 32
+					},
+					"message": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 1600,
+						"description": "Optional override message body."
+					},
+					"metadata": {
+						"type": "object",
+						"description": "Optional metadata override/merge (implementation-defined).",
+						"additionalProperties": { "type": "string" }
+					}
+				}
+			},
+			"SmsResponse": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["ok", "data"],
+				"properties": {
+					"ok": { "type": "boolean", "const": true },
+					"data": { "$ref": "#/components/schemas/Sms" }
+				}
+			},
+			"SmsListResponse": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["ok", "data", "cursor"],
+				"properties": {
+					"ok": { "type": "boolean", "const": true },
+					"data": {
+						"type": "array",
+						"items": { "$ref": "#/components/schemas/Sms" }
+					},
+					"cursor": { "$ref": "#/components/schemas/Cursor" }
+				}
+			},
+			"SmsCancelResponse": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["ok", "data"],
+				"properties": {
+					"ok": { "type": "boolean", "const": true },
+					"data": {
+						"type": "object",
+						"additionalProperties": false,
+						"required": ["id", "canceled", "status"],
+						"properties": {
+							"id": { "$ref": "#/components/schemas/Snowflake" },
+							"canceled": {
+								"type": "boolean",
+								"description": "Whether the cancel request actually succeeded."
+							},
+							"status": { "$ref": "#/components/schemas/SmsStatus" },
+							"message": {
+								"type": "string",
+								"description": "Human-readable result summary."
+							}
+						}
+					}
+				}
+			},
+			"ErrorResponse": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["ok", "error"],
+				"properties": {
+					"ok": { "type": "boolean", "const": false },
+					"error": { "$ref": "#/components/schemas/ErrorObject" }
+				}
+			},
+			"ErrorObject": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["code", "message"],
+				"properties": {
+					"code": { "type": "string", "examples": ["invalid_request"] },
+					"message": {
+						"type": "string",
+						"examples": ["The request is invalid."]
+					},
+					"param": {
+						"type": "string",
+						"description": "Parameter associated with the error, when applicable.",
+						"examples": ["limit"]
+					},
+					"request_id": {
+						"type": "string",
+						"description": "Unique request identifier for support/debug.",
+						"examples": ["req_01J9Z8K7Y2..."]
+					}
+				}
+			}
+		}
+	},
+	"x-notes": {
+		"pagination": "List endpoints return { ok, data, cursor: { persist, next? } }. Use cursor.next as `after` for forward pagination. `before` and `after` must not be used together."
+	}
+}
