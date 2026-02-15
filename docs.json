@@ -40,14 +40,14 @@
 				"icon": {
 					"name": "github"
 				},
-				"href": "https://github.com/rewritestudios"
+				"href": "https://github.com/rewritetoday"
 			}
 		]
 	},
 	"footer": {
 		"socials": {
 			"x": "https://x.com/rewritetoday",
-			"github": "https://github.com/rewritestudios",
+			"github": "https://github.com/rewritetoday",
 			"discord": "https://discord.gg/rewrite"
 		}
 	},
