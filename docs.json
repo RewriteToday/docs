@@ -73,7 +73,7 @@
 				"tabs": [
 					{
 						"tab": "Welcome",
-						"pages": ["en/start/welcome"]
+						"pages": ["en/welcome"]
 					},
 					{
 						"tab": "API",
@@ -131,7 +131,7 @@
 				"tabs": [
 					{
 						"tab": "Bem-vindo",
-						"pages": ["pt-br/start/welcome"]
+						"pages": ["pt-br/welcome"]
 					},
 					{
 						"tab": "SDKs",
