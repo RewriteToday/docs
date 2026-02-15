@@ -118,7 +118,11 @@
 					},
 					{
 						"tab": "Webhooks",
-						"pages": ["en/webhooks/introduction", "en/webhooks/retry", "en/webhooks/types"]
+						"pages": [
+							"en/webhooks/introduction",
+							"en/webhooks/retry",
+							"en/webhooks/types"
+						]
 					}
 				]
 			},
