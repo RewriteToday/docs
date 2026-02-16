@@ -162,6 +162,20 @@ body {
 	border-color: var(--rm-border-soft);
 }
 
+/* Scoped fix: force full-width render for retry schedule table */
+.retry-schedule-table {
+	width: 100%;
+}
+
+.retry-schedule-table > table,
+.retry-schedule-table__table {
+	display: table !important;
+	width: 100% !important;
+	min-width: 100% !important;
+	border-collapse: collapse !important;
+	table-layout: fixed;
+}
+
 /* -------------------------------
    Code blocks
 -------------------------------- */
