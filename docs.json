@@ -14,9 +14,9 @@
 		}
 	},
 	"colors": {
-		"primary": "#9EEA6C",
-		"light": "#9EEA6C",
-		"dark": "#9EEA6C"
+		"primary": "#9A9A9A",
+		"light": "#9A9A9A",
+		"dark": "#9A9A9A"
 	},
 	"fonts": {
 		"heading": {
