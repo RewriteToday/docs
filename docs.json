@@ -71,10 +71,10 @@
 				"language": "en",
 				"default": true,
 				"tabs": [
-					{
-						"tab": "Welcome",
-						"pages": ["en/welcome"]
-					},
+						{
+							"tab": "Welcome",
+							"pages": ["en/welcome", "en/quickstart"]
+						},
 					{
 						"tab": "API",
 						"groups": [

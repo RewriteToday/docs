@@ -63,18 +63,17 @@ rewrite --version
       ```
       Authenticate using your **API key** or **OAuth flow**.
   </Step>
-  <Step title="Send a SMS">
-      ```bash
-      rewrite messages send \
-      "Hello from Rewrite" \
-      --to +5511999999999 \
-      ```
-  </Step>
   <Step title="Listen for webhooks">
     ```bash
     rewrite listen --forward-to http://localhost:3000/webhooks/rewrite
     ```
     Events will stream in real time and optionally forward to your local server.
+  </Step>
+
+  <Step title="Send a SMS">
+      ```bash
+      rewrite trigger sms.created -m "Hello from Rewrite" --to +5511999999999
+      ```
   </Step>
 </Steps>
 
@@ -94,6 +93,8 @@ Rewrite CLI was built to be:
       No heavy runtime dependencies.
   </Card>
 </CardGroup>
+
+<br />
 <CardGroup cols={2}>
   <Card title="REST API" icon="repeat" href="../api" color="#C9CBD1">
       Full HTTP API for advanced integrations.

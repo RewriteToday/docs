@@ -50,10 +50,12 @@ description: Learn how to use the Node.js SDK to send SMS with the API.
 
       const rewrite = new Rewrite(process.env.REWRITE_API_KEY);
 
-      const { data, error } = await rewrite.messages.send({
+      const params = {
         to: '+1234567890',
         message: 'Your OTP code is 478201',
-      });
+        };
+
+      const { data, error } = await rewrite.messages.send(params);
       
       if (error) {
         return console.error(error);

@@ -8,15 +8,69 @@ description: 'Global flags, output formats, environments, and runtime configurat
 
 Available in all commands:
 
-| Flag | Alias | Type | Default | Description |
-|------|-------|------|---------|-------------|
-| `--verbose` | `-v` | boolean | `false` | Enable debug-level logging |
-| `--output` | `-o` | string | `text` | Output format: `text` or `json` |
-| `--no-color` | `-nc` | boolean | `false` | Disable ANSI colors |
+<div
+  className="retry-schedule-table"
+  style={{
+    overflow: 'hidden',
+  }}
+>
+  <table
+    className="retry-schedule-table__table"
+    style={{
+      width: '100%',
+      borderCollapse: 'collapse',
+      borderRadius: '12px',
+      border: '1px solid rgba(255, 255, 255, 0.12)',
+    }}
+  >
+    <thead>
+      <tr>
+        <th style={{ textAlign: 'left', padding: '12px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.12)', borderRight: '1px solid rgba(255, 255, 255, 0.12)', background: 'rgba(255, 255, 255, 0.04)' }}>
+          Flag
+        </th>
+        <th style={{ textAlign: 'left', padding: '12px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.12)', borderRight: '1px solid rgba(255, 255, 255, 0.12)', background: 'rgba(255, 255, 255, 0.04)' }}>
+          Alias
+        </th>
+        <th style={{ textAlign: 'left', padding: '12px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.12)', borderRight: '1px solid rgba(255, 255, 255, 0.12)', background: 'rgba(255, 255, 255, 0.04)' }}>
+          Type
+        </th>
+        <th style={{ textAlign: 'left', padding: '12px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.12)', borderRight: '1px solid rgba(255, 255, 255, 0.12)', background: 'rgba(255, 255, 255, 0.04)' }}>
+          Default
+        </th>
+        <th style={{ textAlign: 'left', padding: '12px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.12)', background: 'rgba(255, 255, 255, 0.04)' }}>
+          Description
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}><code>--verbose</code></td>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}><code>-v</code></td>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}>boolean</td>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}><code>false</code></td>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>Enable debug-level logging</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}><code>--output</code></td>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}><code>-o</code></td>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}>string</td>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}><code>text</code></td>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>Output format: <code>text</code> or <code>json</code></td>
+      </tr>
+      <tr>
+        <td style={{ padding: '11px 14px', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}><code>--no-color</code></td>
+        <td style={{ padding: '11px 14px', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}><code>-nc</code></td>
+        <td style={{ padding: '11px 14px', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}>boolean</td>
+        <td style={{ padding: '11px 14px', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}><code>false</code></td>
+        <td style={{ padding: '11px 14px' }}>Disable ANSI colors</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 ```bash
 # Example combining flags
-rewrite -v -o -nc json messages send "Hello" --to +5511999999999
+rewrite -v trigger sms.created -m "Hello" --to +5511999999999 -o  json --no-color
 ```
 
 ## Output Formats
@@ -40,21 +94,21 @@ You are logged in project almeida's project
 Structured output for scripts, pipelines, and CI/CD.
 
 ```bash
-rewrite -o json whoami
+rewrite whoami -o json
 ```
 
 ```json
 {
-  "project": "almeida",
+  "project": "John's Blog",
   "api_key": "rw_...",
-  "status": "authenticated"
+  "status": "AUTHENTICATED"
 }
 ```
 
 #### Use with jq for filtering
 
 ```bash
-rewrite -o json messages list | jq '.data[] | select(.status=="failed")'
+rewrite -o json logs list | jq '.data[] | select(.status=="failed")'
 ```
 
 ## Authentication & Token Storage
