@@ -35,10 +35,10 @@ After the final attempt, the webhook is marked as **permanently failed**.
 
 If your endpoint fails the first three attempts but succeeds on the fourth:
 
-- Attempt 1 → immediate (fails)
-- Attempt 2 → +5s (fails)
-- Attempt 3 → +1m (fails)
-- Attempt 4 → +5m (success)
+1. **Attempt 1** (`t=0s`) - immediate send, **fails**
+2. **Attempt 2** (`t=+5s`) - retry after 5 seconds, **fails**
+3. **Attempt 3** (`t=+1m 5s`) - retry after 1 minute, **fails**
+4. **Attempt 4** (`t=+6m 5s`) - retry after 5 minutes, **success**
 
 The total time from the first attempt to successful delivery would be approximately **6 minutes and 5 seconds**.
 
