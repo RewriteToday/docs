@@ -132,6 +132,35 @@ During development, use a tunnel like **ngrok** or **Cloudflare Tunnel**.
 	</Step>
 </Steps>
 
+## Validate webhook signatures
+
+Always validate signatures before trusting webhook payloads.
+This protects your endpoint against spoofed requests and tampered data.
+Use the helper below in any framework, then return `401` when validation fails.
+
+```ts
+import { Rewrite } from 'rewritejs';
+
+export async function validateSignature(params: {
+  rawBody: string;
+  signature: string | undefined;
+}) {
+  const { rawBody, signature } = params;
+
+  if (!signature) return false;
+
+  return rewrite.webhooks.validateSignature(
+    rawBody,
+    signature,
+    process.env.REWRITE_WEBHOOK_SECRET
+  );
+}
+```
+
+<Warning>
+Store your webhook secret in `REWRITE_WEBHOOK_SECRET`, pass the raw body before JSON parsing, and never expose secrets in client-side code or logs.
+</Warning>
+
 ## Best practices (do this early)
 
 <CardGroup cols={2}> <Card title="Verify signatures" icon="shield" color="#C9CBD1"> Always validate the webhook signature to ensure the event was sent by Rewrite. </Card> <Card title="Ack fast, process async" icon="bolt" color="#C9CBD1"> Return HTTP 200 quickly and process work in a queue/job to avoid timeouts. </Card> <Card title="Be idempotent" icon="repeat" color="#C9CBD1"> Webhooks may be retried. Use event IDs to ignore duplicates safely. </Card> <Card title="Persist raw payloads" icon="database" color="#C9CBD1"> Store events for audit/debugging and to rebuild state if needed. </Card> </CardGroup> <Warning> If your endpoint returns a non-2xx response or times out, Rewrite may retry delivery. Design your handler to be **idempotent**. </Warning>
