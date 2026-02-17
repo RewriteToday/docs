@@ -70,16 +70,16 @@
 				"language": "en",
 				"default": true,
 				"tabs": [
-						{
-							"tab": "Welcome",
-							"pages": ["en/welcome", "en/quickstart"]
-						},
+					{
+						"tab": "Welcome",
+						"pages": 												["en/welcome"]
+					},
 					{
 						"tab": "API",
 						"groups": [
 							{
 								"group": "Reference",
-								"pages": ["en/api/introduction", "en/api/pagination"]
+								"pages": ["en/api/introduction", "en/api/quickstart", "en/api/pagination"]
 							},
 							{
 								"group": "SMS",
@@ -87,10 +87,10 @@
 							}
 						]
 					},
-						{
-							"tab": "CLI",
-							"pages": ["en/cli/introduction", "en/cli/auth", "en/cli/config"]
-						},
+					{
+						"tab": "CLI",
+						"pages": ["en/cli/introduction", "en/cli/auth", "en/cli/config"]
+					},
 					{
 						"tab": "SDKs",
 						"groups": [
@@ -125,64 +125,68 @@
 					}
 				]
 			},
-				{
-					"language": "pt-BR",
-					"tabs": [
-						{
-							"tab": "Bem-vindo",
-							"pages": ["pt-br/welcome", "pt-br/quickstart"]
-						},
-						{
-							"tab": "API",
-							"groups": [
-								{
-									"group": "Referencia",
-									"pages": ["pt-br/api/introduction", "pt-br/api/pagination"]
-								},
-								{
-									"group": "SMS",
-									"openapi": "en/api/openapi.json"
-								}
-							]
-						},
-						{
-							"tab": "CLI",
-							"pages": ["pt-br/cli/introduction", "pt-br/cli/auth", "pt-br/cli/config"]
-						},
-						{
-							"tab": "SDKs",
-							"groups": [
-								{
-									"group": "Visao geral",
-									"pages": ["pt-br/sdks/introduction"]
-								},
-								{
-									"group": "Node.js",
-									"icon": "node-js",
-									"pages": ["pt-br/sdks/node"]
-								},
-								{
-									"group": "Go",
-									"icon": "golang",
-									"pages": ["pt-br/sdks/golang"]
-								},
-								{
-									"group": "Python",
-									"icon": "python",
-									"pages": ["pt-br/sdks/python"]
-								}
-							]
-						},
-						{
-							"tab": "Webhooks",
-							"pages": [
-								"pt-br/webhooks/introduction",
-								"pt-br/webhooks/retry",
-								"pt-br/webhooks/types"
-							]
-						}
-					]
-				}
+			{
+				"language": "pt-BR",
+				"tabs": [
+					{
+						"tab": "Bem-vindo",
+						"pages": ["pt-br/welcome"]
+					},
+					{
+						"tab": "API",
+						"groups": [
+							{
+								"group": "Referencia",
+								"pages": ["pt-br/api/introduction", "pt-br/api/quickstart", "pt-br/api/pagination"]
+							},
+							{
+								"group": "SMS",
+								"openapi": "en/api/openapi.json"
+							}
+						]
+					},
+					{
+						"tab": "CLI",
+						"pages": [
+							"pt-br/cli/introduction",
+							"pt-br/cli/auth",
+							"pt-br/cli/config"
+						]
+					},
+					{
+						"tab": "SDKs",
+						"groups": [
+							{
+								"group": "Visao geral",
+								"pages": ["pt-br/sdks/introduction"]
+							},
+							{
+								"group": "Node.js",
+								"icon": "node-js",
+								"pages": ["pt-br/sdks/node"]
+							},
+							{
+								"group": "Go",
+								"icon": "golang",
+								"pages": ["pt-br/sdks/golang"]
+							},
+							{
+								"group": "Python",
+								"icon": "python",
+								"pages": ["pt-br/sdks/python"]
+							}
+						]
+					},
+					{
+						"tab": "Webhooks",
+						"pages": [
+							"pt-br/webhooks/introduction",
+							"pt-br/webhooks/retry",
+							"pt-br/webhooks/types"
+						]
+					}
+				]
+			}
 		]
 	}
 }
