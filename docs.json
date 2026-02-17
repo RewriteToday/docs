@@ -14,9 +14,9 @@
 		}
 	},
 	"colors": {
-		"primary": "#9EEA6C",
-		"light": "#9EEA6C",
-		"dark": "#9EEA6C"
+		"primary": "#9A9A9A",
+		"light": "#9A9A9A",
+		"dark": "#9A9A9A"
 	},
 	"fonts": {
 		"heading": {
@@ -33,8 +33,7 @@
 	},
 	"navbar": {
 		"links": [
-			{ "label": "Status", "href": "https://status.rewritetoday.com" },
-			{ "label": "Changelog", "href": "https://rewritetoday.com/changelog" },
+			{ "label": "Dashboard", "href": "https://dashboard.rewritetoday.com" },
 			{
 				"label": "GitHub",
 				"icon": {
@@ -71,10 +70,10 @@
 				"language": "en",
 				"default": true,
 				"tabs": [
-					{
-						"tab": "Welcome",
-						"pages": ["en/welcome"]
-					},
+						{
+							"tab": "Welcome",
+							"pages": ["en/welcome", "en/quickstart"]
+						},
 					{
 						"tab": "API",
 						"groups": [
@@ -88,10 +87,10 @@
 							}
 						]
 					},
-					{
-						"tab": "CLI",
-						"pages": ["en/cli/introduction", "en/cli/config"]
-					},
+						{
+							"tab": "CLI",
+							"pages": ["en/cli/introduction", "en/cli/auth", "en/cli/config"]
+						},
 					{
 						"tab": "SDKs",
 						"groups": [
@@ -102,7 +101,7 @@
 							{
 								"group": "Node.js",
 								"icon": "node-js",
-								"pages": ["en/sdks/node/introduction", "en/sdks/node/elysia"]
+								"pages": ["en/sdks/node"]
 							},
 							{
 								"group": "Go",
@@ -126,19 +125,64 @@
 					}
 				]
 			},
-			{
-				"language": "pt-BR",
-				"tabs": [
-					{
-						"tab": "Bem-vindo",
-						"pages": ["pt-br/welcome"]
-					},
-					{
-						"tab": "SDKs",
-						"pages": ["pt-br/sdks/introduction"]
-					}
-				]
-			}
+				{
+					"language": "pt-BR",
+					"tabs": [
+						{
+							"tab": "Bem-vindo",
+							"pages": ["pt-br/welcome", "pt-br/quickstart"]
+						},
+						{
+							"tab": "API",
+							"groups": [
+								{
+									"group": "Referencia",
+									"pages": ["pt-br/api/introduction", "pt-br/api/pagination"]
+								},
+								{
+									"group": "SMS",
+									"openapi": "en/api/openapi.json"
+								}
+							]
+						},
+						{
+							"tab": "CLI",
+							"pages": ["pt-br/cli/introduction", "pt-br/cli/auth", "pt-br/cli/config"]
+						},
+						{
+							"tab": "SDKs",
+							"groups": [
+								{
+									"group": "Visao geral",
+									"pages": ["pt-br/sdks/introduction"]
+								},
+								{
+									"group": "Node.js",
+									"icon": "node-js",
+									"pages": ["pt-br/sdks/node"]
+								},
+								{
+									"group": "Go",
+									"icon": "golang",
+									"pages": ["pt-br/sdks/golang"]
+								},
+								{
+									"group": "Python",
+									"icon": "python",
+									"pages": ["pt-br/sdks/python"]
+								}
+							]
+						},
+						{
+							"tab": "Webhooks",
+							"pages": [
+								"pt-br/webhooks/introduction",
+								"pt-br/webhooks/retry",
+								"pt-br/webhooks/types"
+							]
+						}
+					]
+				}
 		]
 	}
 }

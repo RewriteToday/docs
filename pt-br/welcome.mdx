@@ -1,5 +1,5 @@
 ---
-title: "Rewrite"
+title: "Visao geral"
 mode: "custom"
 description: "Infraestrutura de SMS para times de produto modernos."
 ---
@@ -26,7 +26,7 @@ description: "Infraestrutura de SMS para times de produto modernos."
     >
       Rewrite.
       <br />
-      Infraestrutura de SMS para aplicações modernas.
+      Infraestrutura de SMS para apps modernos.
     </h1>
 
     <p
@@ -39,13 +39,13 @@ description: "Infraestrutura de SMS para times de produto modernos."
         fontWeight: 350,
       }}
     >
-      Envie SMS transacionais com uma API developer-first, templates, i18n, rastreamento de entrega,
-      webhooks, múltiplos provedores e segurança de nível produção — sem dor de cabeça.
+      Envie SMS transacionais com API developer-first, CLI, i18n, rastreamento de entrega,
+      webhooks, multi-provedores e seguranca de nivel producao sem complicacao.
     </p>
 
     <div style={{ display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
       <a
-        href="/quickstart"
+        href="/pt-br/api"
         style={{
           display: "inline-flex",
           alignItems: "center",
@@ -60,12 +60,12 @@ description: "Infraestrutura de SMS para times de produto modernos."
           boxShadow: "0 14px 50px rgba(255,255,255,0.12)",
         }}
       >
-        Começar
+        Comecar
         <span style={{ opacity: 0.8 }}>→</span>
       </a>
 
       <a
-        href="/api/overview"
+        href="/pt-br/api"
         style={{
           display: "inline-flex",
           alignItems: "center",
@@ -79,12 +79,12 @@ description: "Infraestrutura de SMS para times de produto modernos."
           textDecoration: "none",
         }}
       >
-        Referência da API
+        Referencia da API
         <span style={{ opacity: 0.6 }}>↗</span>
       </a>
 
       <a
-        href="/webhooks/overview"
+        href="/pt-br/webhooks"
         style={{
           display: "inline-flex",
           alignItems: "center",
@@ -116,11 +116,11 @@ description: "Infraestrutura de SMS para times de produto modernos."
     >
       <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
         <span style={{ width: 6, height: 6, borderRadius: 999, background: "rgba(255,255,255,0.25)" }} />
-        Autenticação Bearer
+        Bearer auth
       </span>
       <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
         <span style={{ width: 6, height: 6, borderRadius: 999, background: "rgba(255,255,255,0.25)" }} />
-        Pronto para idempotência
+        Pronto para idempotencia
       </span>
       <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
         <span style={{ width: 6, height: 6, borderRadius: 999, background: "rgba(255,255,255,0.25)" }} />
@@ -130,7 +130,7 @@ description: "Infraestrutura de SMS para times de produto modernos."
   </div>
 </div>
 
-<div style={{ padding: "56px 20px", maxWidth: "1100px", margin: "0 auto" }}>
+  <div style={{ padding: "56px 20px", maxWidth: "1100px", margin: "0 auto" }}>
   <h2
     style={{
       fontSize: 22,
@@ -151,48 +151,47 @@ description: "Infraestrutura de SMS para times de produto modernos."
       marginBottom: 18,
     }}
   >
-    <Card icon="rocket" title="Quickstart" href="/quickstart" color="#C9CBD1">
-      Seu primeiro SMS em minutos: crie uma chave de API, envie uma mensagem e acompanhe a entrega.
+    <Card icon="rocket" title="Quickstart" href="/pt-br/quickstart" color="#C9CBD1">
+      Seu primeiro SMS em minutos: crie API key, envie mensagem e acompanhe entrega.
     </Card>
 
-    <Card icon="message" title="Enviar SMS" href="/sms/send" color="#C9CBD1">
-      Endpoint principal, campos obrigatórios e formato de resposta.
+    <Card icon="message" title="Enviar SMS" href="/pt-br/api" color="#C9CBD1">
+      Endpoint principal, campos obrigatorios e formato de resposta.
     </Card>
 
-    <Card icon="pen-nib" title="Templates" href="/sms/templating" color="#C9CBD1">
-      Templates reutilizáveis com variáveis e renderização segura.
+    <Card icon="terminal" title="CLI" href="/pt-br/cli" color="#C9CBD1">
+      Use nossa CLI para enviar SMS, gerenciar webhooks e muito mais.
     </Card>
 
-    <Card icon="boxes-stacked" title="SDKs" href="/sdks" color="#C9CBD1">
-      SDKs oficiais e exemplos para a integração mais rápida.
+    <Card icon="boxes-stacked" title="SDKs" href="/pt-br/sdks" color="#C9CBD1">
+      SDKs oficiais e exemplos para a integracao mais rapida.
     </Card>
 
-    <Card icon="bell" title="Webhooks" href="/webhooks/overview" color="#C9CBD1">
-      Eventos de entrega, retentativas e verificação de assinatura.
+    <Card icon="bell" title="Webhooks" href="/pt-br/webhooks" color="#C9CBD1">
+      Eventos de entrega, retentativas e verificacao de assinatura.
+    </Card>
+    
+    <Card icon="shuffle" title="Multi-Provedores" href="/pt-br/providers" color="#C9CBD1">
+      Roteie trafego entre provedores com fallback e selecao inteligente.
     </Card>
 
-    <Card icon="shuffle" title="Multi-Provedores" href="/providers" color="#C9CBD1">
-      Roteie o tráfego entre provedores com fallback e seleção inteligente.
+    <Card icon="globe" title="i18n" href="/pt-br/i18n" color="#C9CBD1">
+      Localize templates e fluxos para multiplos idiomas e regioes.
     </Card>
 
-    <Card icon="globe" title="i18n" href="/i18n" color="#C9CBD1">
-      Localize templates e fluxos para múltiplos idiomas e regiões.
+    <Card icon="gauge" title="Limites de uso" href="/pt-br/api/limits" color="#C9CBD1">
+      Rate limits, cotas e como solicitar aumento.
     </Card>
 
-    <Card icon="gauge" title="Limites de uso" href="/limits" color="#C9CBD1">
-      Rate limits, cotas e como solicitar aumentos.
+    <Card icon="arrows-left-right" title="Paginacao" href="/pt-br/api/pagination" color="#C9CBD1">
+      Paginacao por cursor para listar mensagens, eventos e recursos.
+    </Card>
+    <Card icon="list-check" title="Entregabilidade" href="/pt-br/api/deliverability" color="#C9CBD1">
+      Checklist pratico para melhorar entrega e reduzir filtros de operadoras.
     </Card>
 
-    <Card icon="arrows-left-right" title="Paginação" href="/api/pagination" color="#C9CBD1">
-      Paginação por cursor para listar mensagens, eventos e recursos.
-    </Card>
-
-    <Card icon="list-check" title="Entregabilidade" href="/sms/deliverability" color="#C9CBD1">
-      Checklist prático para melhorar a entrega e reduzir filtros das operadoras.
-    </Card>
-
-    <Card icon="triangle-exclamation" title="Erros e retentativas" href="/sms/errors" color="#C9CBD1">
-      Modelo de erros, estratégia de retentativa, idempotência e timeouts.
+    <Card icon="triangle-exclamation" title="Erros e retentativas" href="/pt-br/api/errors" color="#C9CBD1">
+      Modelo de erro, estrategia de retentativa, idempotencia e timeout.
     </Card>
   </div>
 </div>

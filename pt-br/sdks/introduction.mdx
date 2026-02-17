@@ -1,91 +1,88 @@
 ---
-title: "SDKs"
-description: "SDKs oficiais para integração com a **API do Rewrite**"
-icon: "boxes-stacked"
+title: "Introducao"
+description: "SDKs oficiais para integrar com a **API da Rewrite**"
 ---
 
-## O que são os SDKs do Rewrite?
+## O que sao os SDKs da Rewrite?
 
-Os **SDKs do Rewrite** (Software Development Kits) são bibliotecas oficiais que simplificam a comunicação com a API do Rewrite.  
-Eles oferecem interfaces ergonômicas e específicas para cada linguagem, permitindo que você integre SMS transacionais ao seu aplicativo de forma rápida e segura — sem lidar com detalhes de baixo nível de HTTP.
+Os **SDKs da Rewrite** (Software Development Kits) sao bibliotecas oficiais que simplificam a comunicacao com a API da Rewrite.  
+Eles oferecem interfaces ergonomicas por linguagem para voce integrar SMS transacionais no seu aplicativo com rapidez e seguranca, sem lidar com detalhes de HTTP de baixo nivel.
 
-Os SDKs são projetados para parecer naturais em cada ecossistema, mantendo total alinhamento com a API subjacente.
+Os SDKs foram desenhados para parecer naturais em cada ecossistema e permanecer alinhados com a API.
 
-<Card title="Por que usar os SDKs do Rewrite?" horizontal>
-  * **Integração simplificada**: Métodos prontos para todos os endpoints principais da API
-  * **Tipagem forte**: Suporte completo a tipos quando disponível
-  * **Tratamento de erros consistente**: Modelo de erros unificado entre linguagens
-  * **Menor curva de aprendizado**: Não é necessário conhecer todos os detalhes da API desde o início
-  * **Sempre atualizados**: Os SDKs evoluem junto com as novas funcionalidades da API
+<Card title="Por que usar os SDKs da Rewrite?" horizontal>
+  * **Integracao simplificada**: Metodos prontos para os principais endpoints da API
+  * **Tipagem forte**: Suporte de tipos quando disponivel
+  * **Erros consistentes**: Modelo de erro unificado entre linguagens
+  * **Curva de aprendizado menor**: Sem precisar dominar todos os detalhes da API no inicio
+  * **Sempre atualizados**: Evoluem junto com novos recursos da API
 </Card>
 
 ---
 
-## SDKs disponíveis
+## SDKs disponiveis
 
-O Rewrite oferece SDKs oficiais para diversas linguagens de programação.  
-Escolha o que melhor se adapta à sua stack:
+A Rewrite oferece SDKs oficiais para varias linguagens.  
+Escolha o que melhor se adapta a sua stack:
 
-<Tabs>
-  <Tab title="Backend">
-    <CardGroup cols={2}>
-      <Card title="Node.js" icon="node-js" href="./nodejs" color="#C9CBD1">
-        SDK oficial para Node.js com suporte completo a TypeScript e ES modules.
-      </Card>
+<CardGroup cols={2}>
+  <Card title="Node.js" icon="node-js" href="./node" color="#C9CBD1">
+    SDK oficial para Node.js com suporte completo a TypeScript e ES modules.
+  </Card>
 
-      <Card title="Python" icon="python" href="./python" color="#C9CBD1">
-        SDK oficial para Python 3.10+, com suporte a async/await.
-      </Card>
+  <Card title="Go" icon="golang" href="./golang" color="#C9CBD1">
+    SDK oficial para Go com API simples, explicita e tipada.
+  </Card>
+</CardGroup>
 
-      <Card title="Go" icon="golang" href="./go" color="#C9CBD1">
-        SDK oficial para Go com uma API simples, explícita e fortemente tipada.
-      </Card>
+### Em breve
 
-      <Card title="Java" icon="java" href="./java" color="#C9CBD1">
-        SDK oficial para Java, compatível com aplicações modernas na JVM.
-      </Card>
+Esses SDKs estao planejados e ainda nao estao disponiveis publicamente.
 
-      <Card title="PHP" icon="php" href="./php" color="#C9CBD1">
-        SDK oficial para PHP com suporte a Composer e design compatível com PSR.
-      </Card>
+<CardGroup cols={2}>
+  <Card title="Python" icon="python" color="#C9CBD1">
+    SDK oficial para Python 3.10+, com suporte a async/await.
+  </Card>
 
-      <Card title="Ruby" icon="gem" href="./ruby" color="#C9CBD1">
-        SDK oficial para Ruby distribuído como gem, compatível com Rails.
-      </Card>
-    </CardGroup>
-  </Tab>
+  <Card title="Java" icon="java" color="#C9CBD1">
+    SDK oficial para Java em aplicacoes modernas da JVM.
+  </Card>
 
-  <Tab title="Mobile">
-    <CardGroup cols={2}>
-      <Card title="Kotlin" icon="android" href="./kotlin" color="#C9CBD1">
-        SDK oficial para Kotlin, ideal para aplicações Android modernas.
-      </Card>
+  <Card title="PHP" icon="php" color="#C9CBD1">
+    SDK oficial para PHP com suporte a Composer.
+  </Card>
 
-      <Card title="Swift" icon="apple" href="./swift" color="#C9CBD1">
-        SDK oficial para Swift, ideal para aplicações iOS e macOS.
-      </Card>
-    </CardGroup>
-  </Tab>
-</Tabs>
+  <Card title="Ruby" icon="gem" color="#C9CBD1">
+    SDK oficial para Ruby distribuido como gem.
+  </Card>
+
+  <Card title="Kotlin" icon="android" color="#C9CBD1">
+    SDK oficial para Kotlin em aplicacoes Android.
+  </Card>
+
+  <Card title="Swift" icon="apple" color="#C9CBD1">
+    SDK oficial para Swift em iOS e macOS.
+  </Card>
+</CardGroup>
 
 ---
 
 ## Perguntas frequentes
 
 <Accordion title="Como instalar o SDK da minha linguagem?">
-  Cada SDK inclui instruções de instalação em seu respectivo repositório no GitHub. Na maioria dos casos, você pode instalá-lo usando o gerenciador de pacotes da sua linguagem, como npm, pip, go modules, Composer ou Bundler.
+  Cada SDK inclui instrucoes de instalacao em seu repositorio no GitHub. Na maioria dos casos, voce pode instalar com o gerenciador de pacotes da linguagem, como npm, pip, go modules, Composer ou Bundler.
 </Accordion>
 
-<Accordion title="Os SDKs funcionam tanto em desenvolvimento quanto em produção?">
-  Sim. Todos os SDKs funcionam em ambos os ambientes. Sem mágica, sem boilerplate.
+<Accordion title="Os SDKs funcionam em desenvolvimento e producao?">
+  Sim. Todos os SDKs funcionam em ambos os ambientes.
 </Accordion>
 
-<Accordion title="O que devo fazer se encontrar um bug em um SDK?">
-  Abra uma issue no repositório do GitHub do SDK afetado. Monitoramos ativamente os problemas e lançamos correções com frequência.
+<Accordion title="O que fazer se eu encontrar um bug em um SDK?">
+  Abra uma issue no repositorio do SDK afetado no GitHub. Monitoramos e corrigimos regularmente.
 </Accordion>
 
-<Accordion title="Não existe um SDK para a linguagem que eu uso. O que fazer?">
-  Conte para a gente qual linguagem você precisa. Contribuições da comunidade são bem-vindas, e ficaremos felizes em apoiar novos SDKs oficiais sempre que possível.
+<Accordion title="Nao existe SDK para minha linguagem. E agora?">
+  Conte para a gente qual linguagem voce precisa. Contribuicoes da comunidade sao bem-vindas.
 </Accordion>
 
 ---
@@ -93,15 +90,15 @@ Escolha o que melhor se adapta à sua stack:
 ## Recursos adicionais
 
 <CardGroup cols={2}>
-  <Card title="Webhooks" icon="webhook" href="/webhooks/overview" color="#C9CBD1">
+  <Card title="Webhooks" icon="webhook" href="/pt-br/webhooks" color="#C9CBD1">
     Aprenda a configurar webhooks para receber eventos de entrega em tempo real.
   </Card>
 
-  <Card title="Quickstart" icon="rocket" href="/quickstart" color="#C9CBD1">
-    Envie seu primeiro SMS usando o Rewrite em apenas alguns minutos.
+  <Card title="Quickstart" icon="rocket" href="/pt-br/quickstart" color="#C9CBD1">
+    Envie seu primeiro SMS com a Rewrite em poucos minutos.
   </Card>
 </CardGroup>
 
-<Card title="Precisa de ajuda para integrar o Rewrite?" icon="headset" color="#C9CBD1">
-  Se você tiver dúvidas ou encontrar algum problema, nossa equipe está pronta para ajudar.
+<Card title="Precisa de ajuda para integrar a Rewrite?" icon="headset" color="#C9CBD1">
+  Se voce tiver duvidas ou encontrar problemas, nosso time pode ajudar.
 </Card>

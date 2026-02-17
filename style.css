@@ -9,7 +9,7 @@
 	color-scheme: dark;
 
 	/* Brand */
-	--rm-accent: #9eea6c;
+	--rm-accent: #9a9a9a;
 
 	/* Backgrounds */
 	--rm-bg-0: #050505;
@@ -63,7 +63,7 @@ body {
 	background:
 		radial-gradient(
 			1200px 600px at 20% -10%,
-			rgba(158, 234, 108, 0.04),
+			rgba(154, 154, 154, 0.04),
 			transparent 40%
 		),
 		linear-gradient(180deg, #050505 0%, #070707 60%, #050505 100%) !important;
@@ -81,8 +81,8 @@ body {
 
 /* Hover: chip fica levemente mais vivo */
 [data-selector="card"]:hover svg {
-	background: rgba(158, 234, 108, 0.06);
-	border-color: rgba(158, 234, 108, 0.18);
+	background: rgba(154, 154, 154, 0.06);
+	border-color: rgba(154, 154, 154, 0.18);
 }
 
 /* -------------------------------
@@ -130,7 +130,7 @@ body {
 
 .prose a:hover {
 	color: var(--rm-accent);
-	text-decoration-color: rgba(158, 234, 108, 0.6);
+	text-decoration-color: rgba(154, 154, 154, 0.6);
 }
 
 /* -------------------------------
@@ -162,6 +162,20 @@ body {
 	border-color: var(--rm-border-soft);
 }
 
+/* Scoped fix: force full-width render for retry schedule table */
+.retry-schedule-table {
+	width: 100%;
+}
+
+.retry-schedule-table > table,
+.retry-schedule-table__table {
+	display: table !important;
+	width: 100% !important;
+	min-width: 100% !important;
+	border-collapse: collapse !important;
+	table-layout: fixed;
+}
+
 /* -------------------------------
    Code blocks
 -------------------------------- */
@@ -175,8 +189,14 @@ code {
 [data-selector="code-block"],
 pre {
 	background: #0b0b0b !important;
-	border: 1px solid var(--rm-border-soft) !important;
+	border: none !important;
 	border-radius: 12px;
+	box-shadow: none !important;
+}
+
+[data-selector="code-block"] pre {
+	border: none !important;
+	box-shadow: none !important;
 }
 
 code:not(pre code) {

@@ -1,0 +1,158 @@
+---
+title: "Quickstart"
+description: "Envie seu primeiro SMS em minutos usando a API da Rewrite."
+---
+
+import { useState } from "react";
+
+export function SmsRequestPlayground() {
+  const [phone, setPhone] = useState("+5511999999999");
+
+  const handlePhoneChange = (event) => {
+    const raw = event.target.value;
+    const stripped = raw.replace(/[^\d+\-\s()]/g, "").slice(0, 20);
+    const normalized = stripped.replace(/\+/g, (char, index) =>
+      index === 0 ? char : ""
+    );
+    setPhone(normalized);
+  };
+
+  const toValue = phone.trim() || "+5511999999999";
+  const curlCommand = [
+    'curl -X POST "https://api.userewrite.me/v1/messages" \\\\',
+    '  -H "Authorization: Bearer (Sua API key aqui)" \\\\',
+    '  -H "Content-Type: application/json" \\\\',
+    "  -d '{",
+    `    "to": "${toValue}",`,
+    '    "message": "Seu codigo OTP e 123456",',
+    '    "metadata": { "source": "quickstart" }',
+    "  }'",
+  ].join("\n");
+
+  return (
+    <div style={{ display: "grid", gap: "12px" }}>
+      <div
+        style={{
+          border: "1px solid rgba(255, 255, 255, 0.12)",
+          borderRadius: "12px",
+          overflow: "hidden",
+        }}
+      >
+        <div
+          style={{
+            fontSize: "12px",
+            letterSpacing: "0.04em",
+            textTransform: "uppercase",
+            color: "rgba(255, 255, 255, 0.68)",
+            padding: "10px 12px",
+            borderBottom: "1px solid rgba(255, 255, 255, 0.12)",
+            background: "rgba(255, 255, 255, 0.03)",
+          }}
+        >
+          requisicao cURL
+        </div>
+        <pre style={{ margin: 0, padding: "14px", overflowX: "auto" }}>
+          <code>{curlCommand}</code>
+        </pre>
+      </div>
+
+      <label
+        htmlFor="quickstart-phone"
+        style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.85)" }}
+      >
+        Numero de destino (E.164)
+      </label>
+      <input
+        id="quickstart-phone"
+        type="tel"
+        value={phone}
+        onChange={handlePhoneChange}
+        placeholder="+5511999999999"
+        style={{
+          width: "100%",
+          padding: "10px 12px",
+          borderRadius: "10px",
+          border: "1px solid rgba(255, 255, 255, 0.18)",
+          background: "rgba(255, 255, 255, 0.03)",
+          color: "#ffffff",
+        }}
+      />
+    </div>
+  );
+}
+
+## Antes de comecar
+
+- Crie uma API key da Rewrite no seu dashboard.
+- Mantenha sua API key somente no backend.
+- Use numeros de destino no formato **E.164** (exemplo: `+5511999999999`).
+
+---
+
+## Envie seu primeiro SMS
+
+<Steps>
+  <Step title="Monte sua requisicao" titleSize="h3">
+    A requisicao cURL aparece primeiro. Conforme voce digita o numero, o valor `to` no JSON e atualizado automaticamente.
+
+    <SmsRequestPlayground />
+  </Step>
+
+  <Step title="Confira a resposta" titleSize="h3">
+    Execute esta requisicao e compare sua saida com o exemplo abaixo:
+
+    ```bash
+    curl -X POST "https://api.userewrite.me/v1/messages" \
+      -H "Authorization: Bearer rw_..." \
+      -H "Content-Type: application/json" \
+      -d '{
+        "to": "+5511999999999",
+        "message": "Seu codigo OTP e 123456",
+        "metadata": { "source": "quickstart" }
+      }'
+    ```
+
+    Uma requisicao bem-sucedida retorna um objeto de SMS criado semelhante a:
+
+    ```json
+    {
+      "id": "733501234567890123",
+      "to": "+5511999999999",
+      "message": "Seu codigo OTP e 123456",
+      "status": "QUEUED"
+    }
+    ```
+  </Step>
+</Steps>
+
+<Info>
+Use seu proprio numero verificado/de teste em desenvolvimento. Nao exponha API keys e segredos em codigo cliente.
+</Info>
+
+---
+
+## Solucao de problemas
+
+<CardGroup cols={2}>
+  <Card title="401 Unauthorized" icon="shield-alert" color="#C9CBD1">
+    Sua API key esta ausente ou invalida. Verifique o token bearer no header `Authorization` do cURL.
+  </Card>
+
+  <Card title="422 Unprocessable Entity" icon="triangle-alert" color="#C9CBD1">
+    Seu payload esta invalido. Confira o formato do numero em `to` e os campos obrigatorios.
+  </Card>
+</CardGroup>
+
+---
+
+## Proximos passos
+
+<CardGroup cols={2}>
+  <Card title="Referencia da API" icon="book-open" href="/pt-br/api" color="#C9CBD1">
+    Explore todos os endpoints de SMS, parametros e modelos de resposta.
+  </Card>
+
+  <Card title="Webhooks" icon="webhook" href="/pt-br/webhooks" color="#C9CBD1">
+    Receba eventos de entrega em tempo real e trate retentativas com seguranca.
+  </Card>
+</CardGroup>

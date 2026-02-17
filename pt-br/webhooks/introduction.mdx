@@ -1,0 +1,181 @@
+---
+title: "Introducao"
+description: "Use webhooks da **Rewrite** para receber eventos de SMS em tempo real na sua aplicacao."
+---
+
+## O que sao webhooks?
+
+Webhooks da Rewrite sao **requisicoes HTTPS POST em tempo real** enviadas para seu servidor sempre que algo importante acontece na Rewrite, como SMS entregue, falha ou agendamento.
+
+Em vez de fazer polling na API, webhooks permitem que seu app reaja instantaneamente com um payload **JSON**.
+
+### Quando usar webhooks?
+
+- **Rastreamento de entrega** - Marque mensagens como entregues/com falha sem polling
+- **Fluxos de cliente** - Dispare onboarding, alertas e verificacoes
+- **Retencao de dados** - Armazene eventos no seu banco para analytics/relatorios
+- **Confiabilidade** - Detecte problemas de provedor e automatize retentativas
+
+---
+
+## Fluxo de webhook em resumo
+
+<Steps>
+	<Step title="Criar endpoint" titleSize="h3">
+		Voce precisa criar um endpoint HTTP no seu app (ex: `/webhooks/rewrite`).
+		
+		```ts server.ts
+		export const app = new Elysia()
+			.post('/webhooks/rewrite', ({ body }) => {
+				console.log({ body });
+				
+				return { success: true };
+			});
+		```
+	</Step>
+	<Step title="Registrar endpoint" titleSize="h3">
+		Registre essa URL no **dashboard da Rewrite** (e selecione os tipos de evento).
+	</Step>
+	<Step title="Receber eventos" titleSize="h3">
+		Seu servidor recebe eventos conforme eles acontecem.
+	</Step>
+	<Step title="Confirmar entrega" titleSize="h3">
+		Seu servidor confirma recebimento respondendo com **HTTP 200**.
+	</Step>
+</Steps>
+
+<Info>
+Seu endpoint precisa ser acessivel publicamente por HTTPS em producao.
+Durante o desenvolvimento, use um tunel como **ngrok** ou **Cloudflare Tunnel**.
+</Info>
+
+---
+
+## Recebendo webhooks localmente
+
+<Steps>
+	<Step title="Criar endpoint de desenvolvimento" titleSize="h3">
+		Exemplo minimo usando **Node.js**.
+		
+		<CodeGroup>
+		
+		```ts Elysia
+		import { Elysia } from 'elysia';
+
+		const app = new Elysia()
+			.post('/webhooks/rewrite', ({ body, query: { signature } }) => {
+				// 1) validar assinatura (recomendado)
+				// 2) persistir evento (recomendado)
+				// 3) processar (fila/job recomendado)
+				
+				return { success: true };
+			});
+			
+		app.listen(3000, () => console.log('Listening on 3000'));
+		```
+		
+		```ts Express
+		import express from 'express';
+
+		const app = express();
+		
+		app.use(express.json());
+
+		app.post('/webhooks/rewrite', (req, res) => {
+		  const { body } = req;
+
+		  // 1) validar assinatura (recomendado)
+		  // 2) persistir evento (recomendado)
+		  // 3) processar (fila/job recomendado)
+				
+		  res.status(200).send({ success: true });
+		});
+
+		app.listen(3000, () => console.log('Listening on 3000'));
+		```
+		</CodeGroup>
+		
+		<Info> Para testar localmente, exponha seu servidor para internet usando: - **ngrok** - **Cloudflare Tunnel** - **VS Code Port Forwarding** </Info>
+	</Step>
+	
+	<Step title="Registrar webhook na Rewrite" titleSize="h3">
+		No **dashboard da Rewrite**:
+
+		1. Adicione sua URL publica HTTPS
+		2. Selecione os tipos de evento desejados
+		3. Salve
+		
+		Voce tambem pode gerenciar webhooks programaticamente via [API](/pt-br/api) ou [SDK](/pt-br/sdks).
+	</Step>
+	
+	<Step title="Disparar qualquer evento" titleSize="h3">
+		Envie uma mensagem, cancele uma, e acompanhe os eventos chegando.
+		
+		Voce recebera um payload JSON semelhante a:
+		
+		```json
+		{
+			"type": "sms.delivered",
+			"createdAt": "2026-02-14T19:41:12.126Z",
+			"id": "393821034567832123",
+			"data": {
+				"id": "733501234567890123",
+				"to": "+5511999999999",
+				"status": "DELIVERED",
+				"provider": null,
+				"metadata": {
+					"code": "923721"
+				}
+			}
+		}
+		```
+	</Step>
+</Steps>
+
+## Validar assinaturas de webhook
+
+Sempre valide assinaturas antes de confiar no payload do webhook.
+Isso protege seu endpoint contra requisicoes forjadas e dados adulterados.
+Use o helper abaixo em qualquer framework e retorne `401` quando a validacao falhar.
+
+```ts
+import { Rewrite } from 'rewritejs';
+
+const rewrite = new Rewrite(process.env.REWRITE_API_KEY);
+
+export async function validateSignature(params: {
+  rawBody: string;
+  signature: string | undefined;
+}) {
+  const { rawBody, signature } = params;
+
+  if (!signature) return false;
+
+  return rewrite.webhooks.validateSignature(
+    rawBody,
+    signature,
+    process.env.REWRITE_WEBHOOK_SECRET
+  );
+}
+```
+
+<Warning>
+Guarde seu segredo de webhook em `REWRITE_WEBHOOK_SECRET`, passe o raw body antes do JSON parse e nunca exponha segredos em codigo cliente ou logs.
+</Warning>
+
+## Boas praticas (faca cedo)
+
+<CardGroup cols={2}> <Card title="Validar assinaturas" icon="shield" color="#C9CBD1"> Sempre valide a assinatura do webhook para garantir que o evento foi enviado pela Rewrite. </Card> <Card title="Ack rapido, processo async" icon="bolt" color="#C9CBD1"> Retorne HTTP 200 rapidamente e processe em fila/job para evitar timeout. </Card> <Card title="Seja idempotente" icon="repeat" color="#C9CBD1"> Webhooks podem ser reenviados. Use IDs de evento para ignorar duplicidades. </Card> <Card title="Persista payload bruto" icon="database" color="#C9CBD1"> Armazene eventos para auditoria/debug e reconstrucao de estado. </Card> </CardGroup> <Warning> Se seu endpoint retornar nao-2xx ou timeout, a Rewrite pode tentar novamente. Projete seu handler para ser **idempotente**. </Warning>
+
+## Proximos passos
+
+<CardGroup cols={1}>
+<Card title="Quickstart" icon="rocket" href="/pt-br/quickstart" color="#C9CBD1"> Envie seu primeiro SMS e comece a receber eventos de entrega. </Card>
+</CardGroup>
+<CardGroup cols={2}>
+<Card title="Tipos de evento" icon="list" href="/pt-br/webhooks/types" color="#C9CBD1"> Veja todos os tipos de evento e formatos de payload. </Card>
+<Card title="Desenvolvimento local" icon="terminal" href="/pt-br/webhooks/local-development" color="#C9CBD1"> Teste webhooks localmente com tuneis e a Rewrite CLI. </Card>
+</CardGroup>
+<Card title="Precisa de ajuda?" icon="headset" color="#C9CBD1">
+Fale com nosso time em [team@rewritetoday.com](mailto:team@rewritetoday.com)
+</Card>

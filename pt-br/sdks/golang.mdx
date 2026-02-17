@@ -1,33 +1,32 @@
 ---
-title: Introduction
-description: Learn how to use the Golang SDK to send SMS with the API.
+title: Introducao
+description: Aprenda a usar o SDK de Golang para enviar SMS com a API.
 ---
 
-## Before you start
+## Antes de comecar
 
-- You need to have Golang installed on your machine.
-- You need to have a Rewrite API key with the permissions.
-
+- Voce precisa ter Golang instalado na sua maquina.
+- Voce precisa de uma API key da Rewrite com as permissoes necessarias.
 
 <Steps>
-    <Step title="Install the SDK" titleSize="h3">
-        To install the Golang SDK, run the following command:
+    <Step title="Instalar o SDK" titleSize="h3">
+        Para instalar o SDK de Golang, rode o comando abaixo:
         
         ```bash
         go get github.com/rewritetoday/go
         ```
     </Step>
     
-    <Step title="Set up REWRITE_API_KEY environment variable" titleSize="h3">
-    Set up your Rewrite API key in your environment variables.
+    <Step title="Configurar a variavel REWRITE_API_KEY" titleSize="h3">
+    Configure sua API key da Rewrite nas variaveis de ambiente.
     
     ```text .env    
     REWRITE_API_KEY=rw...
     ```
     </Step>
     
-    <Step title="Send your SMS" titleSize="h3">
-    Now, all you need to do is pass the message content and that's it!
+    <Step title="Enviar seu SMS" titleSize="h3">
+    Agora e so passar o conteudo da mensagem.
     
     ```go main.go
     package main
@@ -64,6 +63,6 @@ description: Learn how to use the Golang SDK to send SMS with the API.
     }
     ```
     
-    You can do everything with our SDK, keep exploring!
+    Voce pode fazer tudo com nosso SDK. Continue explorando.
     </Step>
 </Steps>

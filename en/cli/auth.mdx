@@ -1,0 +1,76 @@
+---
+title: 'Authentication'
+icon: 'key'
+description: 'Login flows, profile management, and account switching for the Rewrite CLI.'
+---
+
+## Overview
+
+Use CLI authentication to manage multiple local profiles and switch accounts quickly.
+
+You can:
+
+- log in with an API key
+- start an OAuth login flow
+- list saved profiles
+- delete a profile
+- switch active profile
+
+## Login with API key (hardcoded key example)
+
+```bash
+rewrite login --name xx --key xxx
+```
+
+Replace `xx` and `xxx` with your real profile name and API key in production usage.
+
+## Login with OAuth flow
+
+```bash
+rewrite login
+```
+
+This starts the OAuth browser flow and stores credentials under a profile with
+random name.
+
+## List profiles
+
+```bash
+profile list
+```
+
+Example output:
+
+```text
+default   active
+team-dev
+personal
+```
+
+## Delete a profile
+
+```bash
+profile delete <name>
+```
+
+<Warning>
+Deleting a profile removes local saved credentials for that profile.
+</Warning>
+
+## Switch active profile
+
+```bash
+rewrite switch <name>
+```
+
+Example:
+
+```bash
+rewrite switch dev
+```
+
+## Troubleshooting
+
+- Invalid API key: verify key value and permissions.
+- OAuth flow not opening: check browser defaults and callback handling.
+- Profile not found: run `profile list` and confirm the exact profile name.
