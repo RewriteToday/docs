@@ -33,7 +33,6 @@
 	},
 	"navbar": {
 		"links": [
-			{ "label": "Status", "href": "https://status.rewritetoday.com" },
 			{ "label": "Changelog", "href": "https://rewritetoday.com/changelog" },
 			{
 				"label": "GitHub",

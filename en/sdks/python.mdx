@@ -34,14 +34,18 @@ description: Learn how to use the Python SDK to send SMS with the API.
     
     rewrite.api_key = os.environ["REWRITE_API_KEY"]
     
-    params: rewrite.Messages.SendOptions = {
-        "to": "+1234567890",
-        "message": "Your OTP code is 478201",
-    }
+    def send_sms():
+        params: rewrite.Messages.SendOptions = {
+            "to": "+1234567890",
+            "message": "Your OTP code is 478201",
+        }
     
-    message = rewrite.messages.send(params)
+        return rewrite.messages.send(params)
     
-    print(message)
+    
+    if __name__ == "__main__":
+        message = send_sms()
+        print(message)
     ```
     
     You can do everything with our SDK, keep exploring!

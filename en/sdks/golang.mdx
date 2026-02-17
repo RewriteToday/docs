@@ -37,7 +37,7 @@ description: Learn how to use the Golang SDK to send SMS with the API.
         "github.com/rewritetoday/go"
     )
 
-    func main() {
+    func SendSMS() map[string]any {
         rewrite := rewrite.New("rw_abcxyz")
 
         data, error := rewrite.Messages.Send(&rewrite.Messages.SendOptions{
@@ -46,12 +46,10 @@ description: Learn how to use the Golang SDK to send SMS with the API.
         })
 
         if error != nil {
-            fmt.Println(error)
-            
-            return
+            return err
         }
         
-        fmt.Println(data)
+        return data
     }
     ```
     
