@@ -1,0 +1,68 @@
+---
+title: Introducao
+description: Aprenda a usar o SDK de Golang para enviar SMS com a API.
+---
+
+## Antes de comecar
+
+- Voce precisa ter Golang instalado na sua maquina.
+- Voce precisa de uma API key da Rewrite com as permissoes necessarias.
+
+<Steps>
+    <Step title="Instalar o SDK" titleSize="h3">
+        Para instalar o SDK de Golang, rode o comando abaixo:
+        
+        ```bash
+        go get github.com/rewritetoday/go
+        ```
+    </Step>
+    
+    <Step title="Configurar a variavel REWRITE_API_KEY" titleSize="h3">
+    Configure sua API key da Rewrite nas variaveis de ambiente.
+    
+    ```text .env    
+    REWRITE_API_KEY=rw...
+    ```
+    </Step>
+    
+    <Step title="Enviar seu SMS" titleSize="h3">
+    Agora e so passar o conteudo da mensagem.
+    
+    ```go main.go
+    package main
+
+    import (
+        "fmt"
+        "os"
+        "github.com/rewritetoday/go"
+    )
+
+    func SendSMS(to string) (any, error) {
+        client := rewrite.New(os.Getenv("REWRITE_API_KEY"))
+
+        data, err := client.Messages.Send(&rewrite.Messages.SendOptions{
+            To:      to,
+            Message: "Your OTP code is 478201",
+        })
+
+        if err != nil {
+            return nil, err
+        }
+
+        return data, nil
+    }
+
+    func main() {
+        message, err := SendSMS("+1234567890")
+        if err != nil {
+            fmt.Println(err)
+            return
+        }
+
+        fmt.Println(message)
+    }
+    ```
+    
+    Voce pode fazer tudo com nosso SDK. Continue explorando.
+    </Step>
+</Steps>

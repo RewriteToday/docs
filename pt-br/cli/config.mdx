@@ -1,0 +1,150 @@
+---
+title: 'Configuracao'
+icon: 'sliders'
+description: 'Flags globais, formatos de saida, ambientes e configuracao de runtime da Rewrite CLI.'
+---
+
+## Flags globais
+
+Disponiveis em todos os comandos:
+
+<div
+  className="retry-schedule-table"
+  style={{
+    overflow: 'hidden',
+  }}
+>
+  <table
+    className="retry-schedule-table__table"
+    style={{
+      width: '100%',
+      borderCollapse: 'collapse',
+      borderRadius: '12px',
+      border: '1px solid rgba(255, 255, 255, 0.12)',
+    }}
+  >
+    <thead>
+      <tr>
+        <th style={{ textAlign: 'left', padding: '12px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.12)', borderRight: '1px solid rgba(255, 255, 255, 0.12)', background: 'rgba(255, 255, 255, 0.04)' }}>
+          Flag
+        </th>
+        <th style={{ textAlign: 'left', padding: '12px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.12)', borderRight: '1px solid rgba(255, 255, 255, 0.12)', background: 'rgba(255, 255, 255, 0.04)' }}>
+          Alias
+        </th>
+        <th style={{ textAlign: 'left', padding: '12px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.12)', borderRight: '1px solid rgba(255, 255, 255, 0.12)', background: 'rgba(255, 255, 255, 0.04)' }}>
+          Tipo
+        </th>
+        <th style={{ textAlign: 'left', padding: '12px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.12)', borderRight: '1px solid rgba(255, 255, 255, 0.12)', background: 'rgba(255, 255, 255, 0.04)' }}>
+          Padrao
+        </th>
+        <th style={{ textAlign: 'left', padding: '12px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.12)', background: 'rgba(255, 255, 255, 0.04)' }}>
+          Descricao
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}><code>--verbose</code></td>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}><code>-v</code></td>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}>boolean</td>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}><code>false</code></td>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>Ativa logs em nivel de debug</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}><code>--output</code></td>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}><code>-o</code></td>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}>string</td>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}><code>text</code></td>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>Formato de saida: <code>text</code> ou <code>json</code></td>
+      </tr>
+      <tr>
+        <td style={{ padding: '11px 14px', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}><code>--no-color</code></td>
+        <td style={{ padding: '11px 14px', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}><code>-nc</code></td>
+        <td style={{ padding: '11px 14px', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}>boolean</td>
+        <td style={{ padding: '11px 14px', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}><code>false</code></td>
+        <td style={{ padding: '11px 14px' }}>Desativa cores ANSI</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+```bash
+# Exemplo combinando flags
+rewrite -v trigger sms.created -m "Hello" --to +5511999999999 -o json --no-color
+```
+
+## Formatos de saida
+
+A **CLI** suporta dois formatos de saida configuraveis por `--output` ou `-o`.
+
+### Texto (padrao)
+
+Saida amigavel para uso interativo.
+
+```bash
+rewrite whoami
+```
+
+```
+You are logged in project almeida's project
+```
+
+### JSON
+
+Saida estruturada para scripts, pipelines e CI/CD.
+
+```bash
+rewrite whoami -o json
+```
+
+```json
+{
+  "project": "John's Blog",
+  "api_key": "rw_...",
+  "status": "AUTHENTICATED"
+}
+```
+
+#### Use com jq para filtrar
+
+```bash
+rewrite -o json logs list | jq '.data[] | select(.status=="failed")'
+```
+
+## Autenticacao e armazenamento de token
+
+Seu token de API e armazenado com seguranca no keyring nativo do sistema:
+
+- macOS: Keychain
+- Windows: Credential Manager
+- Linux: gnome-keyring ou kwallet
+
+<Accordion title="Linux: token nao esta salvando?">
+
+Instale um backend de keyring:
+
+```bash
+# Debian / Ubuntu
+sudo apt install gnome-keyring
+```
+
+```bash
+# Fedora
+sudo dnf install gnome-keyring
+```
+
+Depois tente novamente:
+
+```bash
+rewrite login
+```
+
+</Accordion>
+
+## Cor e comportamento em CI
+
+- As cores sao desativadas automaticamente quando:
+  - a flag `--no-color` e usada.
+  - `NO_COLOR=true` nas variaveis de ambiente.
+  - a saida nao e um **TTY**.
+- Quando `CI=true`, prompts interativos sao desativados automaticamente.

@@ -34,7 +34,6 @@
 	"navbar": {
 		"links": [
 			{ "label": "Dashboard", "href": "https://dashboard.rewritetoday.com" },
-			{ "label": "changelog", "href": "https://rewritetoday.com/changelog" },
 			{
 				"label": "GitHub",
 				"icon": {
@@ -126,19 +125,64 @@
 					}
 				]
 			},
-			{
-				"language": "pt-BR",
-				"tabs": [
-					{
-						"tab": "Bem-vindo",
-						"pages": ["pt-br/welcome"]
-					},
-					{
-						"tab": "SDKs",
-						"pages": ["pt-br/sdks/introduction"]
-					}
-				]
-			}
+				{
+					"language": "pt-BR",
+					"tabs": [
+						{
+							"tab": "Bem-vindo",
+							"pages": ["pt-br/welcome", "pt-br/quickstart"]
+						},
+						{
+							"tab": "API",
+							"groups": [
+								{
+									"group": "Referencia",
+									"pages": ["pt-br/api/introduction", "pt-br/api/pagination"]
+								},
+								{
+									"group": "SMS",
+									"openapi": "en/api/openapi.json"
+								}
+							]
+						},
+						{
+							"tab": "CLI",
+							"pages": ["pt-br/cli/introduction", "pt-br/cli/auth", "pt-br/cli/config"]
+						},
+						{
+							"tab": "SDKs",
+							"groups": [
+								{
+									"group": "Visao geral",
+									"pages": ["pt-br/sdks/introduction"]
+								},
+								{
+									"group": "Node.js",
+									"icon": "node-js",
+									"pages": ["pt-br/sdks/node"]
+								},
+								{
+									"group": "Go",
+									"icon": "golang",
+									"pages": ["pt-br/sdks/golang"]
+								},
+								{
+									"group": "Python",
+									"icon": "python",
+									"pages": ["pt-br/sdks/python"]
+								}
+							]
+						},
+						{
+							"tab": "Webhooks",
+							"pages": [
+								"pt-br/webhooks/introduction",
+								"pt-br/webhooks/retry",
+								"pt-br/webhooks/types"
+							]
+						}
+					]
+				}
 		]
 	}
 }
