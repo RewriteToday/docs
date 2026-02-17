@@ -19,7 +19,7 @@ export function SmsRequestPlayground() {
 
   const toValue = phone.trim() || "+15551234567";
   const curlCommand = [
-    'curl -X POST "https://api.userewrite.me/v1/messages" \\',
+    'curl -X POST "https://api.rewritetoday.com/v1/messages" \\',
     '  -H "Authorization: Bearer (Your API Key here)" \\',
     '  -H "Content-Type: application/json" \\',
     "  -d '{",
@@ -102,7 +102,7 @@ export function SmsRequestPlayground() {
     Run this request, then compare your output with the response example below:
 
     ```bash
-    curl -X POST "https://api.userewrite.me/v1/messages" \
+    curl -X POST "https://api.rewritetoday.com/v1/messages" \
       -H "Authorization: Bearer rw_..." \
       -H "Content-Type: application/json" \
       -d '{
