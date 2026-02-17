@@ -33,7 +33,8 @@
 	},
 	"navbar": {
 		"links": [
-			{ "label": "Changelog", "href": "https://rewritetoday.com/changelog" },
+			{ "label": "Dashboard", "href": "https://dashboard.rewritetoday.com" },
+			{ "label": "changelog", "href": "https://rewritetoday.com/changelog" },
 			{
 				"label": "GitHub",
 				"icon": {

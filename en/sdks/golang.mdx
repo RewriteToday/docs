@@ -34,22 +34,33 @@ description: Learn how to use the Golang SDK to send SMS with the API.
 
     import (
         "fmt"
+        "os"
         "github.com/rewritetoday/go"
     )
 
-    func SendSMS() map[string]any {
-        rewrite := rewrite.New("rw_abcxyz")
+    func SendSMS(to string) (any, error) {
+        client := rewrite.New(os.Getenv("REWRITE_API_KEY"))
 
-        data, error := rewrite.Messages.Send(&rewrite.Messages.SendOptions{
-            To:      "+1234567890",
+        data, err := client.Messages.Send(&rewrite.Messages.SendOptions{
+            To:      to,
             Message: "Your OTP code is 478201",
         })
 
-        if error != nil {
-            return err
+        if err != nil {
+            return nil, err
         }
-        
-        return data
+
+        return data, nil
+    }
+
+    func main() {
+        message, err := SendSMS("+1234567890")
+        if err != nil {
+            fmt.Println(err)
+            return
+        }
+
+        fmt.Println(message)
     }
     ```
     
