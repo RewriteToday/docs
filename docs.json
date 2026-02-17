@@ -88,10 +88,10 @@
 							}
 						]
 					},
-					{
-						"tab": "CLI",
-						"pages": ["en/cli/introduction", "en/cli/config"]
-					},
+						{
+							"tab": "CLI",
+							"pages": ["en/cli/introduction", "en/cli/auth", "en/cli/config"]
+						},
 					{
 						"tab": "SDKs",
 						"groups": [
