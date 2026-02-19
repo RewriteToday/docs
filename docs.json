@@ -72,14 +72,18 @@
 				"tabs": [
 					{
 						"tab": "Welcome",
-						"pages": 												["en/welcome"]
+						"pages": ["en/welcome"]
 					},
 					{
 						"tab": "API",
 						"groups": [
 							{
 								"group": "Reference",
-								"pages": ["en/api/introduction", "en/api/quickstart", "en/api/pagination"]
+								"pages": [
+									"en/api/introduction",
+									"en/api/quickstart",
+									"en/api/pagination"
+								]
 							},
 							{
 								"group": "SMS",
@@ -137,7 +141,11 @@
 						"groups": [
 							{
 								"group": "Referencia",
-								"pages": ["pt-br/api/introduction", "pt-br/api/quickstart", "pt-br/api/pagination"]
+								"pages": [
+									"pt-br/api/introduction",
+									"pt-br/api/quickstart",
+									"pt-br/api/pagination"
+								]
 							},
 							{
 								"group": "SMS",
