@@ -1,0 +1,71 @@
+---
+title: "sms.scheduled"
+description: "Webhook fired when an SMS is accepted for future delivery."
+---
+
+## Overview
+
+The `sms.scheduled` event occurs when an SMS is created with a future send time and accepted by Rewrite.
+
+Use this event to:
+
+- Confirm scheduling state to users
+- Power timeline or campaign dashboards
+- Track pending volume before send windows
+
+## Example payload
+
+```json
+{
+  "type": "sms.scheduled",
+  "createdAt": "2026-02-14T19:41:12.126Z",
+  "id": "393821034567832125",
+  "data": {
+    "id": "733501234567890124",
+    "to": "+5511988888888",
+    "status": "SCHEDULED",
+    "provider": null,
+    "metadata": {
+      "campaign": "promo-weekend",
+      "tenantId": "acme-01"
+    }
+  }
+}
+```
+
+## Event object
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `type` | `string` | Event identifier. For this page: `sms.scheduled`. |
+| `id` | `string` | Unique webhook event id. |
+| `createdAt` | `string` (ISO-8601) | Event timestamp. |
+| `data` | `object` | SMS snapshot at the time it was scheduled. |
+
+## `data` object
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | Rewrite SMS id. |
+| `to` | `string` | Recipient number in E.164 format. |
+| `status` | `string` | Current status (`SCHEDULED`). |
+| `provider` | `string \| null` | Delivery provider, often `null` until execution. |
+| `metadata` | `object \| null` | Metadata attached by your application. |
+
+## Recommended handling
+
+1. Validate and store the event.
+2. Mark message as scheduled in your DB.
+3. Display or notify expected send lifecycle in your app.
+4. Keep updates idempotent for webhook retries.
+
+<Info>
+Scheduled messages can later transition to `sms.queued`, `sms.delivered`, `sms.failed`, or `sms.canceled`.
+</Info>
+
+## Related events
+
+- [`sms.queued`](./sms-queued)
+- [`sms.canceled`](./sms-canceled)
+- [`sms.failed`](./sms-failed)
+

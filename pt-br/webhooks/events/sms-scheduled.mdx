@@ -1,0 +1,71 @@
+---
+title: "sms.scheduled"
+description: "Webhook disparado quando um SMS e aceito para envio futuro."
+---
+
+## Visao geral
+
+O evento `sms.scheduled` ocorre quando um SMS e criado com horario de envio futuro e aceito pela Rewrite.
+
+Use esse evento para:
+
+- Confirmar estado de agendamento para usuarios
+- Alimentar dashboards de timeline ou campanha
+- Acompanhar volume pendente antes da janela de envio
+
+## Exemplo de payload
+
+```json
+{
+  "type": "sms.scheduled",
+  "createdAt": "2026-02-14T19:41:12.126Z",
+  "id": "393821034567832125",
+  "data": {
+    "id": "733501234567890124",
+    "to": "+5511988888888",
+    "status": "SCHEDULED",
+    "provider": null,
+    "metadata": {
+      "campaign": "promo-weekend",
+      "tenantId": "acme-01"
+    }
+  }
+}
+```
+
+## Objeto do evento
+
+| Campo | Tipo | Descricao |
+| --- | --- | --- |
+| `type` | `string` | Identificador do evento. Nesta pagina: `sms.scheduled`. |
+| `id` | `string` | Id unico do evento de webhook. |
+| `createdAt` | `string` (ISO-8601) | Timestamp do evento. |
+| `data` | `object` | Snapshot do SMS no momento do agendamento. |
+
+## Objeto `data`
+
+| Campo | Tipo | Descricao |
+| --- | --- | --- |
+| `id` | `string` | Id do SMS na Rewrite. |
+| `to` | `string` | Numero de destino em formato E.164. |
+| `status` | `string` | Status atual (`SCHEDULED`). |
+| `provider` | `string \| null` | Provedor de entrega, normalmente `null` ate a execucao. |
+| `metadata` | `object \| null` | Metadata anexada pela sua aplicacao. |
+
+## Tratamento recomendado
+
+1. Validar e armazenar o evento.
+2. Marcar a mensagem como agendada no banco.
+3. Exibir ou notificar o ciclo de envio esperado no app.
+4. Manter updates idempotentes para retries de webhook.
+
+<Info>
+Mensagens agendadas podem evoluir para `sms.queued`, `sms.delivered`, `sms.failed` ou `sms.canceled`.
+</Info>
+
+## Eventos relacionados
+
+- [`sms.queued`](./sms-queued)
+- [`sms.canceled`](./sms-canceled)
+- [`sms.failed`](./sms-failed)
+
