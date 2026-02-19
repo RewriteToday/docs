@@ -1,0 +1,53 @@
+---
+title: Introduction
+description: Learn how to use the Kotlin SDK to send SMS with the API.
+---
+
+## Before you start
+
+- You need Kotlin/JVM installed on your machine.
+- You need a Rewrite API key with the required permissions.
+
+<Steps>
+    <Step title="Install the SDK" titleSize="h3">
+        Add the Kotlin SDK dependency:
+
+        ```kotlin build.gradle.kts
+        dependencies {
+          implementation("io.github.rewritetoday:rewrite-kotlin:x.y.z")
+        }
+        ```
+    </Step>
+
+    <Step title="Set up REWRITE_API_KEY environment variable" titleSize="h3">
+    Set up your Rewrite API key in your environment variables.
+
+    ```text .env
+    REWRITE_API_KEY=rw...
+    ```
+    </Step>
+
+    <Step title="Send your SMS" titleSize="h3">
+    Now, all you need to do is pass the message content and that's it.
+
+    ```kt main.kt
+    import com.rewritetoday.sdk.Rewrite
+    import com.rewritetoday.sdk.models.messages.SendOptions
+
+    fun main() {
+      val rewrite = Rewrite(System.getenv("REWRITE_API_KEY"))
+
+      val params = SendOptions(
+        to = "+1234567890",
+        message = "Your OTP code is 478201"
+      )
+
+      val message = rewrite.messages.send(params)
+      println(message)
+    }
+    ```
+
+    You can do everything with our SDK, keep exploring.
+    </Step>
+</Steps>
+
