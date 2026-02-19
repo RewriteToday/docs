@@ -1,0 +1,71 @@
+---
+title: "sms.delivered"
+description: "Webhook disparado quando a operadora confirma a entrega no dispositivo."
+---
+
+## Visao geral
+
+O evento `sms.delivered` e enviado depois que a operadora confirma que o SMS chegou ao dispositivo do destinatario.
+
+Use esse evento para:
+
+- Marcar notificacoes como entregues no seu produto
+- Disparar fluxos de negocio pos-entrega
+- Medir performance de entrega ponta a ponta
+
+## Exemplo de payload
+
+```json
+{
+  "type": "sms.delivered",
+  "createdAt": "2026-02-14T19:41:28.909Z",
+  "id": "393821034567832124",
+  "data": {
+    "id": "733501234567890123",
+    "to": "+5511999999999",
+    "status": "DELIVERED",
+    "provider": "twilio",
+    "metadata": {
+      "campaign": "onboarding-2026",
+      "tenantId": "acme-01"
+    }
+  }
+}
+```
+
+## Objeto do evento
+
+| Campo | Tipo | Descricao |
+| --- | --- | --- |
+| `type` | `string` | Identificador do evento. Nesta pagina: `sms.delivered`. |
+| `id` | `string` | Id unico do evento de webhook para deduplicacao. |
+| `createdAt` | `string` (ISO-8601) | Timestamp de criacao do evento. |
+| `data` | `object` | Snapshot final da mensagem no momento da confirmacao. |
+
+## Objeto `data`
+
+| Campo | Tipo | Descricao |
+| --- | --- | --- |
+| `id` | `string` | Id do SMS na Rewrite. |
+| `to` | `string` | Numero de destino em formato E.164. |
+| `status` | `string` | Status atual (`DELIVERED`). |
+| `provider` | `string \| null` | Provedor usado na entrega. |
+| `metadata` | `object \| null` | Metadata original anexada ao SMS. |
+
+## Tratamento recomendado
+
+1. Validar assinatura e persistir evento.
+2. Atualizar status da mensagem para entregue.
+3. Emitir evento interno de analytics/BI se necessario.
+4. Responder `200` assim que o estado estiver salvo.
+
+<Info>
+Nao assuma ordenacao estrita entre retries. Use timestamp e updates idempotentes.
+</Info>
+
+## Eventos relacionados
+
+- [`sms.queued`](./sms-queued)
+- [`sms.failed`](./sms-failed)
+- [`sms.scheduled`](./sms-scheduled)
+

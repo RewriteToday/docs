@@ -1,0 +1,71 @@
+---
+title: "sms.delivered"
+description: "Webhook fired when the carrier confirms delivery to the recipient handset."
+---
+
+## Overview
+
+The `sms.delivered` event is sent after the carrier confirms that the SMS reached the recipient device.
+
+Use this event to:
+
+- Mark notifications as delivered in your product
+- Trigger post-delivery business workflows
+- Measure end-to-end delivery performance
+
+## Example payload
+
+```json
+{
+  "type": "sms.delivered",
+  "createdAt": "2026-02-14T19:41:28.909Z",
+  "id": "393821034567832124",
+  "data": {
+    "id": "733501234567890123",
+    "to": "+5511999999999",
+    "status": "DELIVERED",
+    "provider": "twilio",
+    "metadata": {
+      "campaign": "onboarding-2026",
+      "tenantId": "acme-01"
+    }
+  }
+}
+```
+
+## Event object
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `type` | `string` | Event identifier. For this page: `sms.delivered`. |
+| `id` | `string` | Unique webhook event id for deduplication. |
+| `createdAt` | `string` (ISO-8601) | Event creation timestamp. |
+| `data` | `object` | Final message snapshot at delivery confirmation time. |
+
+## `data` object
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | Rewrite SMS id. |
+| `to` | `string` | Recipient number in E.164 format. |
+| `status` | `string` | Current status (`DELIVERED`). |
+| `provider` | `string \| null` | Provider used for delivery. |
+| `metadata` | `object \| null` | Original metadata attached to the SMS. |
+
+## Recommended handling
+
+1. Validate signature and persist event.
+2. Update message status to delivered.
+3. Emit internal analytics/BI event if needed.
+4. Reply with `200` as soon as state is committed.
+
+<Info>
+Do not assume strict ordering across retries. Use timestamps and idempotent updates.
+</Info>
+
+## Related events
+
+- [`sms.queued`](./sms-queued)
+- [`sms.failed`](./sms-failed)
+- [`sms.scheduled`](./sms-scheduled)
+
