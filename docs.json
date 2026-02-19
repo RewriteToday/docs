@@ -1,329 +1,383 @@
 {
-	"$schema": "https://mintlify.com/docs.json",
-	"name": "Rewrite",
-	"theme": "mint",
-	"appearance": {
-		"default": "dark",
-		"strict": true
-	},
-	"errors": {
-		"404": {
-			"redirect": false,
-			"title": "Rewrite - Not Found",
-			"description": "Hey, where did the page go?"
-		}
-	},
-	"colors": {
-		"primary": "#9A9A9A",
-		"light": "#9A9A9A",
-		"dark": "#9A9A9A"
-	},
-	"fonts": {
-		"heading": {
-			"family": "Inter"
-		},
-		"body": {
-			"family": "Lato"
-		}
-	},
-	"favicon": "/favicon.svg",
-	"logo": {
-		"light": "/images/icon.png",
-		"dark": "/images/icon.png"
-	},
-	"navbar": {
-		"links": [
-			{
-				"label": "Dashboard",
-				"href": "https://dashboard.rewritetoday.com"
-			},
-			{
-				"label": "GitHub",
-				"icon": {
-					"name": "github"
-				},
-				"href": "https://github.com/rewritetoday"
-			}
-		]
-	},
-	"footer": {
-		"socials": {
-			"x": "https://x.com/rewritetoday",
-			"github": "https://github.com/rewritetoday",
-			"discord": "https://discord.gg/rewrite"
-		}
-	},
-	"api": {
-		"mdx": {
-			"server": "https://api.rewritetoday.com/v1",
-			"auth": {
-				"method": "bearer",
-				"name": "Bearer"
-			}
-		}
-	},
-	"styling": {
-		"codeblocks": {
-			"theme": "vesper"
-		}
-	},
-	"navigation": {
-		"languages": [
-			{
-				"language": "en",
-				"default": true,
-				"tabs": [
-					{
-						"tab": "Welcome",
-						"pages": ["en/welcome"]
-					},
-					{
-						"tab": "API",
-						"groups": [
-							{
-								"group": "Reference",
-								"pages": [
-									"en/api/introduction",
-									"en/api/quickstart",
-									"en/api/pagination",
-									"en/api/i18n"
-								]
-							},
-							{
-								"group": "SMS",
-								"openapi": "en/api/openapi.json"
-							}
-						]
-					},
-					{
-						"tab": "CLI",
-						"pages": ["en/cli/introduction", "en/cli/auth", "en/cli/config"]
-					},
-					{
-						"tab": "SDKs",
-						"groups": [
-							{
-								"group": "Overview",
-								"pages": ["en/sdks/introduction"]
-							},
-							{
-								"group": "Node.js",
-								"icon": "node-js",
-								"pages": ["en/sdks/node"]
-							},
-							{
-								"group": "Go",
-								"icon": "golang",
-								"pages": ["en/sdks/golang"]
-							},
-							{
-								"group": "Python",
-								"icon": "python",
-								"pages": ["en/sdks/python"]
-							},
-							{
-								"group": "Java",
-								"icon": "java",
-								"pages": ["en/sdks/java"]
-							},
-							{
-								"group": "PHP",
-								"icon": "php",
-								"pages": ["en/sdks/php"]
-							},
-							{
-								"group": "Ruby",
-								"icon": "gem",
-								"pages": ["en/sdks/ruby"]
-							},
-							{
-								"group": "Kotlin",
-								"icon": "android",
-								"pages": ["en/sdks/kotlin"]
-							},
-							{
-								"group": "Swift",
-								"icon": "apple",
-								"pages": ["en/sdks/swift"]
-							},
-							{
-								"group": "C#",
-								"icon": "code",
-								"pages": ["en/sdks/csharp"]
-							}
-						]
-					},
-					{
-						"tab": "Webhooks",
-						"groups": [
-							{
-								"group": "Reference",
-								"pages": [
-									"en/webhooks/introduction",
-									"en/webhooks/retry",
-									"en/webhooks/types"
-								]
-							},
-							{
-								"group": "Events",
-								"pages": [
-									"en/webhooks/events/sms-queued",
-									"en/webhooks/events/sms-delivered",
-									"en/webhooks/events/sms-scheduled",
-									"en/webhooks/events/sms-failed",
-									"en/webhooks/events/sms-canceled"
-								]
-							}
-						]
-					},
-					{
-						"tab": "Serveless",
-						"groups": [
-							{
-								"group": "Overview",
-								"pages": ["en/serveless/introduction"]
-							},
-							{
-								"group": "Platforms",
-								"pages": [
-									"en/serveless/vercel-functions",
-									"en/serveless/cloudflare-workers",
-									"en/serveless/supabase-edge-functions"
-								]
-							}
-						]
-					}
-				]
-			},
-			{
-				"language": "pt-BR",
-				"tabs": [
-					{
-						"tab": "Bem-vindo",
-						"pages": ["pt-br/welcome"]
-					},
-					{
-						"tab": "API",
-						"groups": [
-							{
-								"group": "Referencia",
-								"pages": [
-									"pt-br/api/introduction",
-									"pt-br/api/quickstart",
-									"pt-br/api/pagination",
-									"pt-br/api/i18n"
-								]
-							},
-							{
-								"group": "SMS",
-								"openapi": "en/api/openapi.json"
-							}
-						]
-					},
-					{
-						"tab": "CLI",
-						"pages": [
-							"pt-br/cli/introduction",
-							"pt-br/cli/auth",
-							"pt-br/cli/config"
-						]
-					},
-					{
-						"tab": "SDKs",
-						"groups": [
-							{
-								"group": "Visao geral",
-								"pages": ["pt-br/sdks/introduction"]
-							},
-							{
-								"group": "Node.js",
-								"icon": "node-js",
-								"pages": ["pt-br/sdks/node"]
-							},
-							{
-								"group": "Go",
-								"icon": "golang",
-								"pages": ["pt-br/sdks/golang"]
-							},
-							{
-								"group": "Python",
-								"icon": "python",
-								"pages": ["pt-br/sdks/python"]
-							},
-							{
-								"group": "Java",
-								"icon": "java",
-								"pages": ["pt-br/sdks/java"]
-							},
-							{
-								"group": "PHP",
-								"icon": "php",
-								"pages": ["pt-br/sdks/php"]
-							},
-							{
-								"group": "Ruby",
-								"icon": "gem",
-								"pages": ["pt-br/sdks/ruby"]
-							},
-							{
-								"group": "Kotlin",
-								"icon": "android",
-								"pages": ["pt-br/sdks/kotlin"]
-							},
-							{
-								"group": "Swift",
-								"icon": "apple",
-								"pages": ["pt-br/sdks/swift"]
-							},
-							{
-								"group": "C#",
-								"icon": "code",
-								"pages": ["pt-br/sdks/csharp"]
-							}
-						]
-					},
-					{
-						"tab": "Webhooks",
-						"groups": [
-							{
-								"group": "Reference",
-								"pages": [
-									"pt-br/webhooks/introduction",
-									"pt-br/webhooks/retry",
-									"pt-br/webhooks/types"
-								]
-							},
-							{
-								"group": "Events",
-								"pages": [
-									"pt-br/webhooks/events/sms-queued",
-									"pt-br/webhooks/events/sms-delivered",
-									"pt-br/webhooks/events/sms-scheduled",
-									"pt-br/webhooks/events/sms-failed",
-									"pt-br/webhooks/events/sms-canceled"
-								]
-							}
-						]
-					},
-					{
-						"tab": "Serveless",
-						"groups": [
-							{
-								"group": "Visao geral",
-								"pages": ["pt-br/serveless/introduction"]
-							},
-							{
-								"group": "Plataformas",
-								"pages": [
-									"pt-br/serveless/vercel-functions",
-									"pt-br/serveless/cloudflare-workers",
-									"pt-br/serveless/supabase-edge-functions"
-								]
-							}
-						]
-					}
-				]
-			}
-		]
-	}
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "Rewrite",
+  "theme": "mint",
+  "appearance": {
+    "default": "dark",
+    "strict": true
+  },
+  "errors": {
+    "404": {
+      "redirect": false,
+      "title": "Rewrite - Not Found",
+      "description": "Hey, where did the page go?"
+    }
+  },
+  "colors": {
+    "primary": "#9A9A9A",
+    "light": "#9A9A9A",
+    "dark": "#9A9A9A"
+  },
+  "fonts": {
+    "heading": {
+      "family": "Inter"
+    },
+    "body": {
+      "family": "Lato"
+    }
+  },
+  "favicon": "/favicon.svg",
+  "logo": {
+    "light": "/images/icon.png",
+    "dark": "/images/icon.png"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Dashboard",
+        "href": "https://dashboard.rewritetoday.com"
+      },
+      {
+        "label": "GitHub",
+        "icon": {
+          "name": "github"
+        },
+        "href": "https://github.com/rewritetoday"
+      }
+    ]
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/rewritetoday",
+      "github": "https://github.com/rewritetoday",
+      "discord": "https://discord.gg/rewrite"
+    }
+  },
+  "api": {
+    "mdx": {
+      "server": "https://api.rewritetoday.com/v1",
+      "auth": {
+        "method": "bearer",
+        "name": "Bearer"
+      }
+    }
+  },
+  "styling": {
+    "codeblocks": {
+      "theme": "vesper"
+    }
+  },
+  "navigation": {
+    "languages": [
+      {
+        "language": "en",
+        "default": true,
+        "tabs": [
+          {
+            "tab": "Welcome",
+            "pages": [
+              "en/welcome"
+            ]
+          },
+          {
+            "tab": "API",
+            "groups": [
+              {
+                "group": "Reference",
+                "pages": [
+                  "en/api/introduction",
+                  "en/api/quickstart",
+                  "en/api/pagination",
+                  "en/api/i18n",
+                  "en/api/errors"
+                ]
+              },
+              {
+                "group": "SMS",
+                "openapi": "en/api/openapi.json"
+              }
+            ]
+          },
+          {
+            "tab": "CLI",
+            "pages": [
+              "en/cli/introduction",
+              "en/cli/auth",
+              "en/cli/config"
+            ]
+          },
+          {
+            "tab": "SDKs",
+            "groups": [
+              {
+                "group": "Overview",
+                "pages": [
+                  "en/sdks/introduction"
+                ]
+              },
+              {
+                "group": "Node.js",
+                "icon": "node-js",
+                "pages": [
+                  "en/sdks/node"
+                ]
+              },
+              {
+                "group": "Go",
+                "icon": "golang",
+                "pages": [
+                  "en/sdks/golang"
+                ]
+              },
+              {
+                "group": "Python",
+                "icon": "python",
+                "pages": [
+                  "en/sdks/python"
+                ]
+              },
+              {
+                "group": "Java",
+                "icon": "java",
+                "pages": [
+                  "en/sdks/java"
+                ]
+              },
+              {
+                "group": "PHP",
+                "icon": "php",
+                "pages": [
+                  "en/sdks/php"
+                ]
+              },
+              {
+                "group": "Ruby",
+                "icon": "gem",
+                "pages": [
+                  "en/sdks/ruby"
+                ]
+              },
+              {
+                "group": "Kotlin",
+                "icon": "android",
+                "pages": [
+                  "en/sdks/kotlin"
+                ]
+              },
+              {
+                "group": "Swift",
+                "icon": "apple",
+                "pages": [
+                  "en/sdks/swift"
+                ]
+              },
+              {
+                "group": "C#",
+                "icon": "code",
+                "pages": [
+                  "en/sdks/csharp"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Webhooks",
+            "groups": [
+              {
+                "group": "Reference",
+                "pages": [
+                  "en/webhooks/introduction",
+                  "en/webhooks/retry",
+                  "en/webhooks/types"
+                ]
+              },
+              {
+                "group": "Events",
+                "pages": [
+                  "en/webhooks/events/sms-queued",
+                  "en/webhooks/events/sms-delivered",
+                  "en/webhooks/events/sms-scheduled",
+                  "en/webhooks/events/sms-failed",
+                  "en/webhooks/events/sms-canceled"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Serveless",
+            "groups": [
+              {
+                "group": "Overview",
+                "pages": [
+                  "en/serveless/introduction"
+                ]
+              },
+              {
+                "group": "Platforms",
+                "pages": [
+                  "en/serveless/vercel-functions",
+                  "en/serveless/cloudflare-workers",
+                  "en/serveless/supabase-edge-functions"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "language": "pt-BR",
+        "tabs": [
+          {
+            "tab": "Bem-vindo",
+            "pages": [
+              "pt-br/welcome"
+            ]
+          },
+          {
+            "tab": "API",
+            "groups": [
+              {
+                "group": "Referencia",
+                "pages": [
+                  "pt-br/api/introduction",
+                  "pt-br/api/quickstart",
+                  "pt-br/api/pagination",
+                  "pt-br/api/i18n",
+                  "pt-br/api/errors"
+                ]
+              },
+              {
+                "group": "SMS",
+                "openapi": "en/api/openapi.json"
+              }
+            ]
+          },
+          {
+            "tab": "CLI",
+            "pages": [
+              "pt-br/cli/introduction",
+              "pt-br/cli/auth",
+              "pt-br/cli/config"
+            ]
+          },
+          {
+            "tab": "SDKs",
+            "groups": [
+              {
+                "group": "Visao geral",
+                "pages": [
+                  "pt-br/sdks/introduction"
+                ]
+              },
+              {
+                "group": "Node.js",
+                "icon": "node-js",
+                "pages": [
+                  "pt-br/sdks/node"
+                ]
+              },
+              {
+                "group": "Go",
+                "icon": "golang",
+                "pages": [
+                  "pt-br/sdks/golang"
+                ]
+              },
+              {
+                "group": "Python",
+                "icon": "python",
+                "pages": [
+                  "pt-br/sdks/python"
+                ]
+              },
+              {
+                "group": "Java",
+                "icon": "java",
+                "pages": [
+                  "pt-br/sdks/java"
+                ]
+              },
+              {
+                "group": "PHP",
+                "icon": "php",
+                "pages": [
+                  "pt-br/sdks/php"
+                ]
+              },
+              {
+                "group": "Ruby",
+                "icon": "gem",
+                "pages": [
+                  "pt-br/sdks/ruby"
+                ]
+              },
+              {
+                "group": "Kotlin",
+                "icon": "android",
+                "pages": [
+                  "pt-br/sdks/kotlin"
+                ]
+              },
+              {
+                "group": "Swift",
+                "icon": "apple",
+                "pages": [
+                  "pt-br/sdks/swift"
+                ]
+              },
+              {
+                "group": "C#",
+                "icon": "code",
+                "pages": [
+                  "pt-br/sdks/csharp"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Webhooks",
+            "groups": [
+              {
+                "group": "Reference",
+                "pages": [
+                  "pt-br/webhooks/introduction",
+                  "pt-br/webhooks/retry",
+                  "pt-br/webhooks/types"
+                ]
+              },
+              {
+                "group": "Events",
+                "pages": [
+                  "pt-br/webhooks/events/sms-queued",
+                  "pt-br/webhooks/events/sms-delivered",
+                  "pt-br/webhooks/events/sms-scheduled",
+                  "pt-br/webhooks/events/sms-failed",
+                  "pt-br/webhooks/events/sms-canceled"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Serveless",
+            "groups": [
+              {
+                "group": "Visao geral",
+                "pages": [
+                  "pt-br/serveless/introduction"
+                ]
+              },
+              {
+                "group": "Plataformas",
+                "pages": [
+                  "pt-br/serveless/vercel-functions",
+                  "pt-br/serveless/cloudflare-workers",
+                  "pt-br/serveless/supabase-edge-functions"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 }
