@@ -1,0 +1,55 @@
+---
+title: Introduction
+description: Learn how to use the Ruby SDK to send SMS with the API.
+---
+
+## Before you start
+
+- You need Ruby 3.1+ installed on your machine.
+- You need a Rewrite API key with the required permissions.
+
+<Steps>
+    <Step title="Install the SDK" titleSize="h3">
+        To install the Ruby SDK, run:
+
+        <CodeGroup>
+
+        ```bash gem
+        gem install rewrite-ruby
+        ```
+
+        ```ruby Bundler
+        gem "rewrite-ruby"
+        ```
+
+        </CodeGroup>
+    </Step>
+
+    <Step title="Set up REWRITE_API_KEY environment variable" titleSize="h3">
+    Set up your Rewrite API key in your environment variables.
+
+    ```text .env
+    REWRITE_API_KEY=rw...
+    ```
+    </Step>
+
+    <Step title="Send your SMS" titleSize="h3">
+    Now, all you need to do is pass the message content and that's it.
+
+    ```rb main.rb
+    require "rewrite"
+
+    rewrite = Rewrite::Client.new(api_key: ENV.fetch("REWRITE_API_KEY"))
+
+    message = rewrite.messages.send(
+      to: "+1234567890",
+      message: "Your OTP code is 478201"
+    )
+
+    puts message
+    ```
+
+    You can do everything with our SDK, keep exploring.
+    </Step>
+</Steps>
+
