@@ -116,6 +116,36 @@
 								"group": "Python",
 								"icon": "python",
 								"pages": ["en/sdks/python"]
+							},
+							{
+								"group": "Java",
+								"icon": "java",
+								"pages": ["en/sdks/java"]
+							},
+							{
+								"group": "PHP",
+								"icon": "php",
+								"pages": ["en/sdks/php"]
+							},
+							{
+								"group": "Ruby",
+								"icon": "gem",
+								"pages": ["en/sdks/ruby"]
+							},
+							{
+								"group": "Kotlin",
+								"icon": "android",
+								"pages": ["en/sdks/kotlin"]
+							},
+							{
+								"group": "Swift",
+								"icon": "apple",
+								"pages": ["en/sdks/swift"]
+							},
+							{
+								"group": "C#",
+								"icon": "code",
+								"pages": ["en/sdks/csharp"]
 							}
 						]
 					},
@@ -197,6 +227,36 @@
 								"group": "Python",
 								"icon": "python",
 								"pages": ["pt-br/sdks/python"]
+							},
+							{
+								"group": "Java",
+								"icon": "java",
+								"pages": ["pt-br/sdks/java"]
+							},
+							{
+								"group": "PHP",
+								"icon": "php",
+								"pages": ["pt-br/sdks/php"]
+							},
+							{
+								"group": "Ruby",
+								"icon": "gem",
+								"pages": ["pt-br/sdks/ruby"]
+							},
+							{
+								"group": "Kotlin",
+								"icon": "android",
+								"pages": ["pt-br/sdks/kotlin"]
+							},
+							{
+								"group": "Swift",
+								"icon": "apple",
+								"pages": ["pt-br/sdks/swift"]
+							},
+							{
+								"group": "C#",
+								"icon": "code",
+								"pages": ["pt-br/sdks/csharp"]
 							}
 						]
 					},
