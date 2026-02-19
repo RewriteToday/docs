@@ -55,7 +55,7 @@ Durante o desenvolvimento, use um tunel como **ngrok** ou **Cloudflare Tunnel**.
 
 <Steps>
 	<Step title="Criar endpoint de desenvolvimento" titleSize="h3">
-		Exemplo minimo usando **Node.js**.
+		Exemplos minimos usando **Node.js**.
 		
 		<CodeGroup>
 		
@@ -72,6 +72,28 @@ Durante o desenvolvimento, use um tunel como **ngrok** ou **Cloudflare Tunnel**.
 			});
 			
 		app.listen(3000, () => console.log('Listening on 3000'));
+		```
+
+		```ts Hono
+		import { Hono } from 'hono';
+		import { serve } from '@hono/node-server';
+
+		const app = new Hono();
+
+		app.post('/webhooks/rewrite', async (c) => {
+			const body = await c.req.json();
+			const signature = c.req.query('signature');
+
+			// 1) validar assinatura (recomendado)
+			// 2) persistir evento (recomendado)
+			// 3) processar (fila/job recomendado)
+
+			return c.json({ success: true }, 200);
+		});
+
+		serve({ fetch: app.fetch, port: 3000 }, () => {
+			console.log('Listening on 3000');
+		});
 		```
 		
 		```ts Express
@@ -93,6 +115,52 @@ Durante o desenvolvimento, use um tunel como **ngrok** ou **Cloudflare Tunnel**.
 
 		app.listen(3000, () => console.log('Listening on 3000'));
 		```
+
+		```ts Fastify
+		import Fastify from 'fastify';
+
+		const app = Fastify();
+
+		app.post('/webhooks/rewrite', async (request, reply) => {
+			const body = request.body;
+			const signature = (request.query as { signature?: string }).signature;
+
+			// 1) validar assinatura (recomendado)
+			// 2) persistir evento (recomendado)
+			// 3) processar (fila/job recomendado)
+
+			return reply.code(200).send({ success: true });
+		});
+
+		app.listen({ port: 3000 });
+		```
+
+		```ts Koa
+		import Koa from 'koa';
+		import Router from '@koa/router';
+		import bodyParser from 'koa-bodyparser';
+
+		const app = new Koa();
+		const router = new Router();
+
+		router.post('/webhooks/rewrite', async (ctx) => {
+			const body = ctx.request.body;
+			const signature = ctx.query.signature;
+
+			// 1) validar assinatura (recomendado)
+			// 2) persistir evento (recomendado)
+			// 3) processar (fila/job recomendado)
+
+			ctx.status = 200;
+			ctx.body = { success: true };
+		});
+
+		app.use(bodyParser());
+		app.use(router.routes());
+		app.use(router.allowedMethods());
+		app.listen(3000, () => console.log('Listening on 3000'));
+		```
+
 		</CodeGroup>
 		
 		<Info> Para testar localmente, exponha seu servidor para internet usando: - **ngrok** - **Cloudflare Tunnel** - **VS Code Port Forwarding** </Info>
