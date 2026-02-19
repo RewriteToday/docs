@@ -1,0 +1,55 @@
+---
+title: Introduction
+description: Learn how to use the Swift SDK to send SMS with the API.
+---
+
+## Before you start
+
+- You need Swift 5.9+ installed on your machine.
+- You need a Rewrite API key with the required permissions.
+
+<Steps>
+    <Step title="Install the SDK" titleSize="h3">
+        Add the Swift package dependency:
+
+        ```swift Package.swift
+        dependencies: [
+          .package(url: "https://github.com/rewritetoday/swift-sdk", from: "1.0.0")
+        ]
+        ```
+    </Step>
+
+    <Step title="Set up REWRITE_API_KEY environment variable" titleSize="h3">
+    Set up your Rewrite API key in your environment variables.
+
+    ```text .env
+    REWRITE_API_KEY=rw...
+    ```
+    </Step>
+
+    <Step title="Send your SMS" titleSize="h3">
+    Now, all you need to do is pass the message content and that's it.
+
+    ```swift main.swift
+    import Foundation
+    import RewriteSDK
+
+    @main
+    struct Main {
+      static func main() async throws {
+        let rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment["REWRITE_API_KEY"] ?? "")
+
+        let message = try await rewrite.messages.send(
+          to: "+1234567890",
+          message: "Your OTP code is 478201"
+        )
+
+        print(message)
+      }
+    }
+    ```
+
+    You can do everything with our SDK, keep exploring.
+    </Step>
+</Steps>
+
