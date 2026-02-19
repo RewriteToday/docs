@@ -1,0 +1,70 @@
+---
+title: "sms.canceled"
+description: "Webhook fired when a scheduled SMS is canceled before send."
+---
+
+## Overview
+
+The `sms.canceled` event is emitted when a previously scheduled message is canceled and will no longer be sent.
+
+This event is useful for:
+
+- Keeping user-facing timelines accurate
+- Updating campaign metrics
+- Auditing operational cancellation workflows
+
+## Example payload
+
+```json
+{
+  "type": "sms.canceled",
+  "createdAt": "2026-02-14T19:42:09.101Z",
+  "id": "393821034567832127",
+  "data": {
+    "id": "733501234567890126",
+    "to": "+5511966666666",
+    "status": "CANCELED",
+    "provider": null,
+    "metadata": {
+      "campaign": "promo-weekend",
+      "tenantId": "acme-01"
+    }
+  }
+}
+```
+
+## Event object
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `type` | `string` | Event identifier. For this page: `sms.canceled`. |
+| `id` | `string` | Unique webhook event id. |
+| `createdAt` | `string` (ISO-8601) | Event timestamp. |
+| `data` | `object` | SMS snapshot at cancellation time. |
+
+## `data` object
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | Rewrite SMS id. |
+| `to` | `string` | Recipient number in E.164 format. |
+| `status` | `string` | Current status (`CANCELED`). |
+| `provider` | `string \| null` | Provider value if available. |
+| `metadata` | `object \| null` | Metadata attached to the message. |
+
+## Recommended handling
+
+1. Verify signature and deduplicate events.
+2. Mark message as canceled in your system.
+3. Stop any dependent automations waiting for delivery.
+4. Return `200` quickly to acknowledge receipt.
+
+<Info>
+Canceled messages are terminal and should not proceed to `sms.delivered`.
+</Info>
+
+## Related events
+
+- [`sms.scheduled`](./sms-scheduled)
+- [`sms.queued`](./sms-queued)
+- [`sms.failed`](./sms-failed)
