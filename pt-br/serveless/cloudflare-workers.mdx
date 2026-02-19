@@ -1,0 +1,83 @@
+---
+title: "Enviar com Cloudflare Workers"
+description: "Envie SMS com Rewrite em um Cloudflare Worker."
+---
+
+Este guia mostra como enviar SMS usando Rewrite dentro de um **Cloudflare Worker**.
+
+## 1. Instale o SDK
+
+```bash
+npm install @rewritejs/sdk
+```
+
+## 2. Configure variaveis de ambiente
+
+Defina sua API key como secret no `wrangler.toml`:
+
+```bash
+wrangler secret put REWRITE_API_KEY
+```
+
+## 3. Crie o worker
+
+```ts src/index.ts
+import { Rewrite } from '@rewritejs/sdk';
+
+export interface Env {
+  REWRITE_API_KEY: string;
+}
+
+export default {
+  async fetch(request: Request, env: Env): Promise<Response> {
+    if (request.method !== 'POST') {
+      return Response.json({ error: 'Method not allowed' }, { status: 405 });
+    }
+
+    const rewrite = new Rewrite(env.REWRITE_API_KEY);
+    const body = await request.json().catch(() => ({}));
+    const { to, message } = body as { to?: string; message?: string };
+
+    if (!to || !message) {
+      return Response.json(
+        { error: '`to` and `message` are required' },
+        { status: 400 }
+      );
+    }
+
+    const { data, error } = await rewrite.messages.send({
+      to,
+      message,
+      metadata: { source: 'cloudflare-worker' },
+    });
+
+    if (error) {
+      return Response.json({ error }, { status: 422 });
+    }
+
+    return Response.json({ data }, { status: 200 });
+  },
+};
+```
+
+## 4. Teste localmente
+
+```bash
+curl -X POST "http://127.0.0.1:8787" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "+5511999999999",
+    "message": "Hello from Cloudflare + Rewrite"
+  }'
+```
+
+## 5. Deploy
+
+```bash
+wrangler deploy
+```
+
+<Info>
+Workers sao otimos para envios com baixa latencia no edge, mas ainda assim voce deve aplicar retries e idempotencia na camada da sua aplicacao.
+</Info>
+
