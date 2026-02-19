@@ -1,0 +1,71 @@
+---
+title: "sms.queued"
+description: "Webhook disparado quando um SMS e aceito e entra na fila de entrega."
+---
+
+## Visao geral
+
+O evento `sms.queued` e enviado quando a Rewrite aceita uma requisicao de SMS e coloca a mensagem na fila de entrega.
+
+Esse geralmente e o primeiro evento do ciclo de vida da mensagem e e util para:
+
+- Confirmar a aceitacao assicrona da requisicao da API
+- Acompanhar throughput e latencia de fila
+- Iniciar SLAs de entrega a partir de um ponto consistente
+
+## Exemplo de payload
+
+```json
+{
+  "type": "sms.queued",
+  "createdAt": "2026-02-14T19:41:12.126Z",
+  "id": "393821034567832123",
+  "data": {
+    "id": "733501234567890123",
+    "to": "+5511999999999",
+    "status": "QUEUED",
+    "provider": null,
+    "metadata": {
+      "campaign": "onboarding-2026",
+      "tenantId": "acme-01"
+    }
+  }
+}
+```
+
+## Objeto do evento
+
+| Campo | Tipo | Descricao |
+| --- | --- | --- |
+| `type` | `string` | Identificador do evento. Nesta pagina: `sms.queued`. |
+| `id` | `string` | Id unico do evento de webhook. Use para idempotencia/deduplicacao. |
+| `createdAt` | `string` (ISO-8601) | Timestamp de criacao do evento na Rewrite. |
+| `data` | `object` | Snapshot do recurso de SMS no momento de fila. |
+
+## Objeto `data`
+
+| Campo | Tipo | Descricao |
+| --- | --- | --- |
+| `id` | `string` | Id unico do SMS na Rewrite. |
+| `to` | `string` | Numero de destino em formato E.164. |
+| `status` | `string` | Status atual do SMS (`QUEUED`). |
+| `provider` | `string \| null` | Provedor escolhido para entrega. Pode ser `null` nesse momento. |
+| `metadata` | `object \| null` | Metadata enviada na criacao da mensagem. |
+
+## Tratamento recomendado
+
+1. Validar a assinatura do webhook.
+2. Persistir payload bruto + id do evento.
+3. Marcar a mensagem como enfileirada no banco.
+4. Retornar `200` rapido e processar de forma assincrona.
+
+<Info>
+Considere entrega de webhooks como at-least-once e implemente processamento idempotente.
+</Info>
+
+## Eventos relacionados
+
+- [`sms.delivered`](./sms-delivered)
+- [`sms.failed`](./sms-failed)
+- [`sms.canceled`](./sms-canceled)
+

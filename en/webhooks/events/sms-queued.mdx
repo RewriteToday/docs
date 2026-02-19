@@ -1,0 +1,71 @@
+---
+title: "sms.queued"
+description: "Webhook fired when an SMS is accepted and queued for delivery."
+---
+
+## Overview
+
+The `sms.queued` event is sent when Rewrite accepts an SMS request and places it into the outbound delivery queue.
+
+This is typically the first lifecycle event for a message and is useful to:
+
+- Confirm API request acceptance asynchronously
+- Track queue throughput and latency
+- Start delivery SLAs from a consistent point
+
+## Example payload
+
+```json
+{
+  "type": "sms.queued",
+  "createdAt": "2026-02-14T19:41:12.126Z",
+  "id": "393821034567832123",
+  "data": {
+    "id": "733501234567890123",
+    "to": "+5511999999999",
+    "status": "QUEUED",
+    "provider": null,
+    "metadata": {
+      "campaign": "onboarding-2026",
+      "tenantId": "acme-01"
+    }
+  }
+}
+```
+
+## Event object
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `type` | `string` | Event identifier. For this page: `sms.queued`. |
+| `id` | `string` | Unique webhook event id. Use for idempotency/deduplication. |
+| `createdAt` | `string` (ISO-8601) | Timestamp when Rewrite created the event. |
+| `data` | `object` | SMS resource snapshot at queue time. |
+
+## `data` object
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | Unique SMS id in Rewrite. |
+| `to` | `string` | E.164 recipient phone number. |
+| `status` | `string` | Current SMS status (`QUEUED`). |
+| `provider` | `string \| null` | Provider chosen for delivery. May be `null` at queue time. |
+| `metadata` | `object \| null` | Metadata sent during message creation. |
+
+## Recommended handling
+
+1. Validate the webhook signature.
+2. Persist raw payload + event id.
+3. Mark message as queued in your DB.
+4. Return `200` quickly and process asynchronously.
+
+<Info>
+You should treat webhook delivery as at-least-once and make processing idempotent.
+</Info>
+
+## Related events
+
+- [`sms.delivered`](./sms-delivered)
+- [`sms.failed`](./sms-failed)
+- [`sms.canceled`](./sms-canceled)
+
