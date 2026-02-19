@@ -87,6 +87,7 @@
                 "pages": [
                   "en/api/introduction",
                   "en/api/quickstart",
+                  "en/api/limits",
                   "en/api/pagination",
                   "en/api/i18n",
                   "en/api/deliverability",
@@ -242,6 +243,7 @@
                 "pages": [
                   "pt-br/api/introduction",
                   "pt-br/api/quickstart",
+                  "pt-br/api/limits",
                   "pt-br/api/pagination",
                   "pt-br/api/i18n",
                   "pt-br/api/deliverability",

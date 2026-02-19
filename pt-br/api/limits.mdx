@@ -1,0 +1,123 @@
+---
+title: Limites de uso
+description: Entenda quotas, modelo PAYG, comportamento de planos e tratamento de limites no uso da API Rewrite.
+---
+
+# Visao geral
+
+Limites de uso definem como trafego e admitido, cobrado e protegido na Rewrite.
+
+Esta pagina explica:
+
+- Como funcionam quotas de request e envio
+- Modelo de cobranca PAYG
+- Quotas por plano e upgrades
+- O que acontece ao atingir limites
+- Boas praticas operacionais
+
+<CardGroup cols={2}>
+  <Card title="Modelo de quota" icon="gauge" color="#C9CBD1">
+    Limites sao aplicados para proteger estabilidade da plataforma e qualidade de entrega.
+  </Card>
+  <Card title="Modelo de cobranca" icon="coins" color="#C9CBD1">
+    A cobranca pode seguir PAYG por SMS ou quota incluida por plano.
+  </Card>
+  <Card title="Controle de rate" icon="activity" color="#C9CBD1">
+    A pressao de requests e controlada com rate limit e headers de retry.
+  </Card>
+  <Card title="Visibilidade" icon="chart-column" color="#C9CBD1">
+    O uso deve ser monitorado por endpoint, regiao e caso de uso.
+  </Card>
+</CardGroup>
+
+## Modos de cobranca
+
+<Tabs sync={false}>
+  <Tab title="PAYG">
+    No PAYG, a cobranca e feita por SMS enviado.
+
+    **Preco:** `0.20` por SMS (conforme politica comercial da Rewrite).
+
+    Esse modelo e ideal para trafego variavel ou workloads em fase inicial.
+  </Tab>
+  <Tab title="Planos">
+    Planos incluem quota predefinida e termos comerciais proprios.
+
+    Tiers atuais, volume incluido e comportamento de excedente estao em:
+    [rewritetoday.com/pricing](https://rewritetoday.com/pricing)
+  </Tab>
+</Tabs>
+
+## Dimensoes de quota
+
+| Dimensao | O que controla | Sinal tipico |
+| --- | --- | --- |
+| Taxa de requests na API | Burst/throughput para endpoints | `429` + headers de retry |
+| Volume de envio SMS | Capacidade total por modo de cobranca | Contadores de uso no dashboard |
+| Janela de quota do plano | Volume incluido no ciclo do plano | Status de consumo do plano |
+
+## O que acontece ao atingir limites
+
+- Pressao de API pode retornar `429` com hints de retry.
+- Novos envios podem ser bloqueados ao esgotar quota comercial.
+- O comportamento depende do modo ativo (PAYG vs plano).
+
+Guia relacionado: [Erros e retentativas](/pt-br/api/errors)
+
+## Headers de rate limit para ler
+
+Quando houver rate limit, inspecione:
+
+- `X-RateLimit-Global`
+- `X-RateLimit-Limit`
+- `X-RateLimit-Retry-After`
+- `Retry-After`
+
+Se houver mais de um hint de retry, use o tempo de espera mais conservador.
+
+## Padroes de arquitetura para trabalhar com quota
+
+<CardGroup cols={2}>
+  <Card title="Fila de envio" icon="list-tree" color="#C9CBD1">
+    Faça buffer de trafego de saida e drene com concorrencia controlada.
+  </Card>
+  <Card title="Idempotencia" icon="repeat" color="#C9CBD1">
+    Evite SMS duplicado durante retries e falhas parciais.
+  </Card>
+  <Card title="Backoff + jitter" icon="timer" color="#C9CBD1">
+    Retente falhas transientes de forma gradual para evitar picos sincronizados.
+  </Card>
+  <Card title="Segmentacao de trafego" icon="split" color="#C9CBD1">
+    Isole OTP e trafego nao-OTP para proteger fluxos criticos.
+  </Card>
+</CardGroup>
+
+## Recomendacoes praticas de politica
+
+1. Defina soft limits internos antes do limite hard.
+2. Gere alerta em 70%, 85% e 95% da janela de uso.
+3. Reserve budget para casos de uso prioritarios (ex.: OTP).
+4. Aplique auto-throttle em campanhas de menor prioridade.
+5. Mantenha dead-letter queue para envios fora da politica.
+
+## Checklist de monitoramento
+
+- Medir taxa de `429` por endpoint e ambiente.
+- Medir taxa de sucesso, failed e undelivered por regiao.
+- Medir custo por caso de uso (`otp_login`, `alerts`, `marketing`).
+- Reconciliar contadores internos com eventos de provider/webhook.
+- Revisar incidentes de quota semanalmente e ajustar throttle.
+
+## FAQ
+
+<Accordion title="Onde vejo os valores e quotas atuais de plano?">
+  Use a pagina oficial de pricing: [rewritetoday.com/pricing](https://rewritetoday.com/pricing).
+</Accordion>
+
+<Accordion title="Da para combinar uso de plano com comportamento PAYG?">
+  O comportamento comercial depende da configuracao da sua workspace. Verifique o setup de billing ativo na conta.
+</Accordion>
+
+<Accordion title="Qual e o retry mais seguro sob pressao de limite?">
+  Retente apenas falhas transientes, respeite headers de retry e use backoff exponencial com jitter. Veja [Erros e retentativas](/pt-br/api/errors).
+</Accordion>

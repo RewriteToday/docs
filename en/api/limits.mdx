@@ -1,0 +1,123 @@
+---
+title: Usage limits
+description: Understand quotas, PAYG pricing, plan behavior, and limit handling for Rewrite API usage.
+---
+
+# Overview
+
+Usage limits define how traffic is admitted, billed, and protected in Rewrite.
+
+This page explains:
+
+- How request and sending quotas work
+- PAYG billing model
+- Plan-based quotas and upgrades
+- What happens at limit boundaries
+- Operational best practices
+
+<CardGroup cols={2}>
+  <Card title="Quota model" icon="gauge" color="#C9CBD1">
+    Limits are applied to protect platform stability and keep delivery quality high.
+  </Card>
+  <Card title="Billing model" icon="coins" color="#C9CBD1">
+    Billing can follow PAYG pricing or plan-included quota depending on workspace setup.
+  </Card>
+  <Card title="Rate control" icon="activity" color="#C9CBD1">
+    Request pressure is controlled with API rate limiting and retry hints.
+  </Card>
+  <Card title="Visibility" icon="chart-column" color="#C9CBD1">
+    Usage should be monitored by endpoint, region, and message use case.
+  </Card>
+</CardGroup>
+
+## Billing modes
+
+<Tabs sync={false}>
+  <Tab title="PAYG">
+    PAYG is billed per SMS sent.
+
+    **Price:** `0.20` per SMS (as configured by Rewrite commercial policy).
+
+    This model is best for variable traffic or early-stage workloads.
+  </Tab>
+  <Tab title="Plans">
+    Plans include predefined quota and commercial terms.
+
+    Current plan tiers, included volume, and overage behavior are published at:
+    [rewritetoday.com/pricing](https://rewritetoday.com/pricing)
+  </Tab>
+</Tabs>
+
+## Quota dimensions
+
+| Dimension | What it controls | Typical signal |
+| --- | --- | --- |
+| API request rate | Request burst/throughput to API endpoints | `429` + retry headers |
+| SMS send volume | Total send capacity by billing mode | Dashboard usage counters |
+| Plan quota window | Included volume in plan cycle | Plan usage status |
+
+## What happens when you hit limits
+
+- API pressure may return `429` with retry hints.
+- New sends can be blocked once commercial quota is exhausted.
+- Behavior depends on billing mode and workspace policy (PAYG vs plan).
+
+Related handling guide: [Errors & retries](/en/api/errors)
+
+## Rate-limit headers to read
+
+When rate limited, inspect:
+
+- `X-RateLimit-Global`
+- `X-RateLimit-Limit`
+- `X-RateLimit-Retry-After`
+- `Retry-After`
+
+If multiple retry hints are present, use the most conservative wait time.
+
+## Quota-friendly architecture patterns
+
+<CardGroup cols={2}>
+  <Card title="Queue sends" icon="list-tree" color="#C9CBD1">
+    Buffer outbound traffic and drain with controlled concurrency.
+  </Card>
+  <Card title="Use idempotency" icon="repeat" color="#C9CBD1">
+    Prevent duplicate SMS during retries and partial failures.
+  </Card>
+  <Card title="Backoff + jitter" icon="timer" color="#C9CBD1">
+    Retry transient failures gradually to avoid synchronized spikes.
+  </Card>
+  <Card title="Segment traffic" icon="split" color="#C9CBD1">
+    Isolate OTP and non-OTP traffic to keep critical flows protected.
+  </Card>
+</CardGroup>
+
+## Practical policy recommendations
+
+1. Set internal soft limits before hard quota boundaries.
+2. Alert when usage reaches 70%, 85%, and 95% of the window.
+3. Reserve budget for high-priority use cases (e.g., OTP).
+4. Auto-throttle lower-priority campaigns during pressure.
+5. Keep dead-letter queues for sends that exceed policy limits.
+
+## Monitoring checklist
+
+- Track `429` rate per endpoint and environment.
+- Track send success, failed, and undelivered ratios by region.
+- Track cost per use case (`otp_login`, `alerts`, `marketing`).
+- Reconcile internal counters with provider/webhook outcomes.
+- Review quota incidents weekly and tune throttling policy.
+
+## FAQ
+
+<Accordion title="Where do I see current plan values and quotas?">
+  Use the official pricing page: [rewritetoday.com/pricing](https://rewritetoday.com/pricing).
+</Accordion>
+
+<Accordion title="Can I combine plan usage and PAYG behavior?">
+  Commercial behavior depends on workspace configuration. Check your active billing setup in account settings.
+</Accordion>
+
+<Accordion title="What is the safest retry behavior under limit pressure?">
+  Retry only transient failures, respect retry headers, and apply exponential backoff with jitter. See [Errors & retries](/en/api/errors).
+</Accordion>
