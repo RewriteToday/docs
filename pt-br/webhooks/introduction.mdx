@@ -211,18 +211,16 @@ import { Rewrite } from 'rewritejs';
 
 const rewrite = new Rewrite(process.env.REWRITE_API_KEY);
 
-export async function validateSignature(params: {
+export function validateSignature(params: {
   rawBody: string;
-  signature: string | undefined;
+  signature?: string;
 }) {
-  const { rawBody, signature } = params;
-
   if (!signature) return false;
 
   return rewrite.webhooks.validateSignature(
     rawBody,
     signature,
-    process.env.REWRITE_WEBHOOK_SECRET
+    process.env.REWRITE_WEBHOOK_SECRET,
   );
 }
 ```

@@ -209,18 +209,18 @@ Use the helper below in any framework, then return `401` when validation fails.
 ```ts
 import { Rewrite } from 'rewritejs';
 
-export async function validateSignature(params: {
-  rawBody: string;
-  signature: string | undefined;
-}) {
-  const { rawBody, signature } = params;
+const rewrite = new Rewrite(process.env.REWRITE_API_KEY);
 
+export function validateSignature(params: {
+  rawBody: string;
+  signature?: string;
+}) {
   if (!signature) return false;
 
   return rewrite.webhooks.validateSignature(
     rawBody,
     signature,
-    process.env.REWRITE_WEBHOOK_SECRET
+    process.env.REWRITE_WEBHOOK_SECRET,
   );
 }
 ```
