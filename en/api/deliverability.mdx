@@ -1,0 +1,178 @@
+---
+title: Deliverability
+description: Improve SMS delivery performance with routing quality, content strategy, list hygiene, and operational controls.
+---
+
+# Overview
+
+Deliverability is the probability that a message is accepted by carriers and reaches the recipient device in a useful time window.
+
+At Rewrite, deliverability is treated as a continuous loop between send quality, route quality, and event feedback.
+
+<CardGroup cols={2}>
+  <Card title="Routing quality" icon="route" color="#C9CBD1">
+    Route decisions are continuously evaluated by destination and health signals.
+  </Card>
+  <Card title="Policy safety" icon="shield-check" color="#C9CBD1">
+    Content and sending behavior are tuned to reduce filtering and complaints.
+  </Card>
+  <Card title="Retry control" icon="rotate-cw" color="#C9CBD1">
+    Retries are bounded and idempotent for transient failures only.
+  </Card>
+  <Card title="Feedback loop" icon="webhook" color="#C9CBD1">
+    Delivery events are used to suppress bad destinations and improve future sends.
+  </Card>
+</CardGroup>
+
+## How Rewrite delivery works
+
+1. Request validation and normalization
+2. Provider and route decision
+3. Dispatch and carrier handoff
+4. Webhook feedback ingestion
+5. Application policy updates (suppression, retry, escalation)
+
+Related features:
+- [Errors & retries](/en/api/errors)
+- [i18n](/en/api/i18n)
+- [Webhooks Introduction](/en/webhooks/introduction)
+- [Webhook Event Types](/en/webhooks/types)
+
+## Deliverability pillars
+
+<Tabs sync={false}>
+  <Tab title="List hygiene">
+    - Send only to valid E.164 numbers.
+    - Remove destinations with repeated hard failures.
+    - Suppress opt-out users immediately.
+    - Avoid stale or recycled-number-heavy lists.
+  </Tab>
+  <Tab title="Content quality">
+    - Keep copy clear and expected.
+    - Identify brand early in message text.
+    - Avoid spam-like patterns (deceptive links, all caps, punctuation abuse).
+    - Keep transactional and OTP copy short and precise.
+  </Tab>
+  <Tab title="Sending behavior">
+    - Avoid abrupt volume spikes on new routes.
+    - Ramp gradually by country/use case.
+    - Retry only transient failures with backoff + jitter.
+    - Respect user timing windows.
+  </Tab>
+  <Tab title="Compliance">
+    - Keep consent evidence where required.
+    - Include opt-out instructions when required by regulation/use case.
+    - Separate transactional and promotional traffic.
+    - Follow regional constraints for sender/template rules.
+  </Tab>
+</Tabs>
+
+## Valid webhook event types for deliverability
+
+Use only supported event types in your monitoring and automation:
+
+- [`sms.queued`](/en/webhooks/events/sms-queued)
+- [`sms.delivered`](/en/webhooks/events/sms-delivered)
+- [`sms.scheduled`](/en/webhooks/events/sms-scheduled)
+- [`sms.failed`](/en/webhooks/events/sms-failed)
+- [`sms.canceled`](/en/webhooks/events/sms-canceled)
+
+Reference: [Webhook Event Types](/en/webhooks/types)
+
+## Reducing bad outcomes
+
+| Outcome | Typical cause | Action |
+| --- | --- | --- |
+| `undelivered` | Carrier filtering, unreachable handset, route stress | Improve content safety, validate destination quality, retry with policy |
+| `failed` | Invalid destination, policy rejection, hard downstream error | Classify as permanent/transient, suppress permanent |
+| Delayed delivery | Congestion, route pressure | Use bounded retry and latency SLO monitoring |
+| Complaint/opt-out spikes | Irrelevant traffic or frequency | Tighten segmentation and frequency controls |
+
+## Content playbook (high impact)
+
+<CardGroup cols={2}>
+  <Card title="Brand first" icon="badge-check" color="#C9CBD1">
+    Put brand or product context in the first 20-30 characters.
+  </Card>
+  <Card title="One CTA" icon="mouse-pointer-click" color="#C9CBD1">
+    Keep a single clear action and avoid competing instructions.
+  </Card>
+  <Card title="Trusted links" icon="link" color="#C9CBD1">
+    Use stable domains and avoid low-reputation shorteners.
+  </Card>
+  <Card title="Localized copy" icon="languages" color="#C9CBD1">
+    Use [i18n](/en/api/i18n) with a robust fallback message.
+  </Card>
+</CardGroup>
+
+## Retry policy for deliverability
+
+Retry only when failure is likely transient:
+
+- `429` and transient `5xx`
+- temporary provider timeout
+- temporary route saturation
+
+Do not blind-retry permanent validation/policy failures.
+
+Implementation baseline:
+- idempotency key per logical send
+- exponential backoff + jitter
+- max attempt cap
+- dead-letter queue for manual inspection
+
+Reference implementation: [Errors & retries](/en/api/errors)
+
+## Throughput warming strategy
+
+1. Start with controlled regional volume.
+2. Increase gradually while monitoring delivery and complaints.
+3. Keep separate streams for OTP and promotional-like traffic.
+4. Pause ramp-up when failure ratios worsen.
+
+## Webhook-driven optimization loop
+
+1. Ingest webhook events in near real time.
+2. Persist normalized payloads.
+3. Update recipient health and suppression state.
+4. Alert on threshold breaches.
+5. Adjust routing and policy for next sends.
+
+See:
+- [Webhooks Introduction](/en/webhooks/introduction)
+- [Webhook Retries](/en/webhooks/retry)
+
+## Practical payload for analytics-ready sending
+
+```json
+{
+  "to": "+15551234567",
+  "message": "Rewrite: your verification code is 123456",
+  "i18n": {
+    "pt-BR": "Rewrite: seu codigo de verificacao e 123456"
+  },
+  "metadata": {
+    "use_case": "otp_login",
+    "tenant": "acme-app",
+    "campaign": "auth-v1",
+    "template_version": "v3"
+  }
+}
+```
+
+Use `metadata` to segment deliverability by region, use case, and template version.
+
+## Deliverability checklist
+
+- Validate E.164 before send.
+- Enforce consent and suppression rules.
+- Keep copy clear, short, and brand-identified.
+- Use [i18n](/en/api/i18n) with safe fallback.
+- Retry only transient failures via [Errors & retries](/en/api/errors).
+- Track outcomes by region/provider/use case.
+- Auto-suppress permanent-failure destinations.
+- Review failure taxonomy weekly and tune policies.
+
+<Accordion title="What is a good first KPI set?">
+  Start with delivery rate, failed rate, undelivered rate, complaint/opt-out rate, p95 delivery latency, and 429 frequency by endpoint.
+</Accordion>

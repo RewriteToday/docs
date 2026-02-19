@@ -89,6 +89,7 @@
                   "en/api/quickstart",
                   "en/api/pagination",
                   "en/api/i18n",
+                  "en/api/deliverability",
                   "en/api/errors"
                 ]
               },
@@ -243,6 +244,7 @@
                   "pt-br/api/quickstart",
                   "pt-br/api/pagination",
                   "pt-br/api/i18n",
+                  "pt-br/api/deliverability",
                   "pt-br/api/errors"
                 ]
               },

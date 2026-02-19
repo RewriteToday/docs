@@ -1,0 +1,178 @@
+---
+title: Entregabilidade
+description: Melhore performance de entrega de SMS com qualidade de rota, estrategia de conteudo, higiene de lista e controles operacionais.
+---
+
+# Visao geral
+
+Entregabilidade e a probabilidade de uma mensagem ser aceita pelas operadoras e chegar ao aparelho do usuario dentro de uma janela util.
+
+Na Rewrite, entregabilidade e tratada como um loop continuo entre qualidade de envio, qualidade de rota e feedback por eventos.
+
+<CardGroup cols={2}>
+  <Card title="Qualidade de rota" icon="route" color="#C9CBD1">
+    Decisoes de rota sao avaliadas continuamente por destino e sinais de saude.
+  </Card>
+  <Card title="Seguranca de politica" icon="shield-check" color="#C9CBD1">
+    Conteudo e comportamento de envio sao ajustados para reduzir filtragem e reclamacoes.
+  </Card>
+  <Card title="Controle de retry" icon="rotate-cw" color="#C9CBD1">
+    Retentativas sao limitadas e idempotentes apenas para falhas transientes.
+  </Card>
+  <Card title="Loop de feedback" icon="webhook" color="#C9CBD1">
+    Eventos de entrega sao usados para suprimir destinos ruins e melhorar proximos envios.
+  </Card>
+</CardGroup>
+
+## Como a entrega funciona na Rewrite
+
+1. Validacao e normalizacao da request
+2. Decisao de provider e rota
+3. Dispatch e handoff para operadora
+4. Ingestao de feedback por webhook
+5. Atualizacao de politica da aplicacao (supressao, retry, escalonamento)
+
+Features relacionadas:
+- [Erros e retentativas](/pt-br/api/errors)
+- [i18n](/pt-br/api/i18n)
+- [Introducao de Webhooks](/pt-br/webhooks/introduction)
+- [Tipos de evento de Webhook](/pt-br/webhooks/types)
+
+## Pilares de entregabilidade
+
+<Tabs sync={false}>
+  <Tab title="Higiene de lista">
+    - Envie apenas para numeros validos em E.164.
+    - Remova destinos com falhas hard recorrentes.
+    - Suprima imediatamente usuarios com opt-out.
+    - Evite listas antigas e com numeros reciclados.
+  </Tab>
+  <Tab title="Qualidade de conteudo">
+    - Mantenha texto claro e esperado.
+    - Identifique marca no inicio da mensagem.
+    - Evite padroes de spam (link enganoso, caixa alta, excesso de pontuacao).
+    - Em OTP/transacional, seja curto e objetivo.
+  </Tab>
+  <Tab title="Comportamento de envio">
+    - Evite picos abruptos de volume em rotas novas.
+    - Faca ramp-up gradual por pais/caso de uso.
+    - Retente apenas falhas transientes com backoff + jitter.
+    - Respeite janelas de expectativa do usuario.
+  </Tab>
+  <Tab title="Compliance">
+    - Mantenha evidencias de consentimento quando exigido.
+    - Inclua opt-out quando regulacao/caso de uso exigir.
+    - Separe trafego transacional de promocional.
+    - Siga regras regionais de remetente/template.
+  </Tab>
+</Tabs>
+
+## Event types validos de webhook para entregabilidade
+
+Use apenas tipos suportados no monitoramento e automacoes:
+
+- [`sms.queued`](/pt-br/webhooks/events/sms-queued)
+- [`sms.delivered`](/pt-br/webhooks/events/sms-delivered)
+- [`sms.scheduled`](/pt-br/webhooks/events/sms-scheduled)
+- [`sms.failed`](/pt-br/webhooks/events/sms-failed)
+- [`sms.canceled`](/pt-br/webhooks/events/sms-canceled)
+
+Referencia: [Tipos de evento de Webhook](/pt-br/webhooks/types)
+
+## Como reduzir resultados ruins
+
+| Resultado | Causa tipica | Acao |
+| --- | --- | --- |
+| `undelivered` | Filtragem da operadora, aparelho indisponivel, pressao de rota | Melhorar seguranca de conteudo, validar qualidade do destino, retentar com politica |
+| `failed` | Destino invalido, rejeicao de politica, erro hard downstream | Classificar permanente/transiente, suprimir permanente |
+| Entrega lenta | Congestionamento, pressao de rota | Usar retry limitado e monitorar latencia com SLO |
+| Pico de reclamacao/opt-out | Trafego irrelevante ou frequencia alta | Ajustar segmentacao e controles de frequencia |
+
+## Playbook de conteudo (alto impacto)
+
+<CardGroup cols={2}>
+  <Card title="Marca primeiro" icon="badge-check" color="#C9CBD1">
+    Coloque marca/contexto nos primeiros 20-30 caracteres.
+  </Card>
+  <Card title="Uma CTA" icon="mouse-pointer-click" color="#C9CBD1">
+    Mantenha uma unica acao clara e evite instrucoes concorrentes.
+  </Card>
+  <Card title="Links confiaveis" icon="link" color="#C9CBD1">
+    Use dominios estaveis e evite encurtadores de baixa reputacao.
+  </Card>
+  <Card title="Copy localizada" icon="languages" color="#C9CBD1">
+    Use [i18n](/pt-br/api/i18n) com fallback robusto.
+  </Card>
+</CardGroup>
+
+## Politica de retry para entregabilidade
+
+Retente apenas quando a falha for provavelmente transiente:
+
+- `429` e `5xx` transientes
+- timeout temporario de provider
+- saturacao temporaria de rota
+
+Nao retente cegamente falhas permanentes de validacao/politica.
+
+Baseline de implementacao:
+- idempotency key por envio logico
+- backoff exponencial + jitter
+- limite maximo de tentativas
+- dead-letter queue para inspecao manual
+
+Implementacao de referencia: [Erros e retentativas](/pt-br/api/errors)
+
+## Estrategia de aquecimento de throughput
+
+1. Comece com volume regional controlado.
+2. Aumente gradualmente monitorando entrega e reclamacoes.
+3. Separe streams de OTP e trafego promocional.
+4. Pause ramp-up quando a taxa de falha piorar.
+
+## Loop de otimizacao via webhook
+
+1. Ingerir eventos em quase tempo real.
+2. Persistir payloads normalizados.
+3. Atualizar saude do destinatario e estado de supressao.
+4. Alertar em violacoes de threshold.
+5. Ajustar rota e politica para os proximos envios.
+
+Veja tambem:
+- [Introducao de Webhooks](/pt-br/webhooks/introduction)
+- [Retentativas de Webhook](/pt-br/webhooks/retry)
+
+## Payload pratico para analise de entregabilidade
+
+```json
+{
+  "to": "+5511999999999",
+  "message": "Rewrite: seu codigo de verificacao e 123456",
+  "i18n": {
+    "en": "Rewrite: your verification code is 123456"
+  },
+  "metadata": {
+    "use_case": "otp_login",
+    "tenant": "acme-app",
+    "campaign": "auth-v1",
+    "template_version": "v3"
+  }
+}
+```
+
+Use `metadata` para segmentar entregabilidade por regiao, caso de uso e versao de template.
+
+## Checklist de entregabilidade
+
+- Validar E.164 antes do envio.
+- Aplicar regras de consentimento e supressao.
+- Manter copy clara, curta e com marca.
+- Usar [i18n](/pt-br/api/i18n) com fallback seguro.
+- Retentar apenas falhas transientes via [Erros e retentativas](/pt-br/api/errors).
+- Medir resultado por regiao/provider/caso de uso.
+- Suprimir automaticamente destinos de falha permanente.
+- Revisar taxonomia de falhas semanalmente e ajustar politicas.
+
+<Accordion title="Qual conjunto inicial de KPI vale acompanhar?">
+  Comece com taxa de entrega, taxa de failed, taxa de undelivered, taxa de opt-out/reclamacao, p95 de latencia de entrega e frequencia de 429 por endpoint.
+</Accordion>
