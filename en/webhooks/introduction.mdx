@@ -207,7 +207,7 @@ This protects your endpoint against spoofed requests and tampered data.
 Use the helper below in any framework, then return `401` when validation fails.
 
 ```ts
-import { Rewrite } from 'rewritejs';
+import { Rewrite } from '@rewritejs/sdk';
 
 const rewrite = new Rewrite(process.env.REWRITE_API_KEY);
 

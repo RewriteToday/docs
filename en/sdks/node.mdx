@@ -16,19 +16,19 @@ description: Learn how to use the Node.js SDK to send SMS with the API.
         <CodeGroup>
         
         ```bash npm
-        npm install rewritejs
+        npm install @rewritejs/sdk
         ```
         
         ```bash yarn
-        yarn add rewritejs
+        yarn add @rewritejs/sdk
         ```
         
         ```bash pnpm
-        pnpm add rewritejs
+        pnpm add @rewritejs/sdk
         ```
         
         ```bash bun
-        bun install rewritejs
+        bun install @rewritejs/sdk
         ```
         
         </CodeGroup>
@@ -46,7 +46,7 @@ description: Learn how to use the Node.js SDK to send SMS with the API.
     Now, all you need to do is pass the message content and that's it!
     
     ```ts sms.ts
-      import { Rewrite } from 'rewritejs';
+      import { Rewrite } from '@rewritejs/sdk';
 
       const rewrite = new Rewrite(process.env.REWRITE_API_KEY);
 

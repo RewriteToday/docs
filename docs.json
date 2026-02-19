@@ -121,10 +121,25 @@
 					},
 					{
 						"tab": "Webhooks",
-						"pages": [
-							"en/webhooks/introduction",
-							"en/webhooks/retry",
-							"en/webhooks/types"
+						"groups": [
+							{
+								"group": "Reference",
+								"pages": [
+									"en/webhooks/introduction",
+									"en/webhooks/retry",
+									"en/webhooks/types"
+								]
+							},
+							{
+								"group": "Events",
+								"pages": [
+									"en/webhooks/events/sms-queued",
+									"en/webhooks/events/sms-delivered",
+									"en/webhooks/events/sms-scheduled",
+									"en/webhooks/events/sms-failed",
+									"en/webhooks/events/sms-canceled"
+								]
+							}
 						]
 					}
 				]
@@ -187,10 +202,25 @@
 					},
 					{
 						"tab": "Webhooks",
-						"pages": [
-							"pt-br/webhooks/introduction",
-							"pt-br/webhooks/retry",
-							"pt-br/webhooks/types"
+						"groups": [
+							{
+								"group": "Reference",
+								"pages": [
+									"pt-br/webhooks/introduction",
+									"pt-br/webhooks/retry",
+									"pt-br/webhooks/types"
+								]
+							},
+							{
+								"group": "Events",
+								"pages": [
+									"pt-br/webhooks/events/sms-queued",
+									"pt-br/webhooks/events/sms-delivered",
+									"pt-br/webhooks/events/sms-scheduled",
+									"pt-br/webhooks/events/sms-failed",
+									"pt-br/webhooks/events/sms-canceled"
+								]
+							}
 						]
 					}
 				]
