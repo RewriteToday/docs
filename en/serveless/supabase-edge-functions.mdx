@@ -1,0 +1,78 @@
+---
+title: "Send with Supabase Edge Functions"
+description: "Send SMS with Rewrite from a Supabase Edge Function."
+---
+
+This guide shows how to send SMS using Rewrite inside a **Supabase Edge Function**.
+
+## 1. Install the SDK
+
+```bash
+npm install @rewritejs/sdk
+```
+
+## 2. Configure environment variables
+
+Set your API key as a secret in Supabase:
+
+```bash
+supabase secrets set REWRITE_API_KEY=rw...
+```
+
+## 3. Create the edge function
+
+```ts supabase/functions/send-sms/index.ts
+import { Rewrite } from '@rewritejs/sdk';
+
+Deno.serve(async (request) => {
+  if (request.method !== 'POST') {
+    return Response.json({ error: 'Method not allowed' }, { status: 405 });
+  }
+
+  const rewrite = new Rewrite(Deno.env.get('REWRITE_API_KEY'));
+  const body = await request.json().catch(() => ({}));
+  const { to, message } = body as { to?: string; message?: string };
+
+  if (!to || !message) {
+    return Response.json(
+      { error: '`to` and `message` are required' },
+      { status: 400 }
+    );
+  }
+
+  const { data, error } = await rewrite.messages.send({
+    to,
+    message,
+    metadata: { source: 'supabase-edge-function' },
+  });
+
+  if (error) {
+    return Response.json({ error }, { status: 422 });
+  }
+
+  return Response.json({ data }, { status: 200 });
+});
+```
+
+## 4. Test locally
+
+```bash
+supabase functions serve send-sms --no-verify-jwt
+
+curl -X POST "http://127.0.0.1:54321/functions/v1/send-sms" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "+15551234567",
+    "message": "Hello from Supabase + Rewrite"
+  }'
+```
+
+## 5. Deploy
+
+```bash
+supabase functions deploy send-sms
+```
+
+<Info>
+If your function is public, add app-level auth/rate limits to avoid abuse.
+</Info>

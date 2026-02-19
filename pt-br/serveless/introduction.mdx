@@ -1,0 +1,59 @@
+---
+title: "Visao geral"
+description: "Envie SMS em runtimes serverless usando o SDK da Rewrite."
+icon: cloud
+---
+
+Serverless e uma das formas mais rapidas de integrar a Rewrite em producao.
+
+Use o SDK oficial para enviar SMS em plataformas como **Vercel Functions**, **Cloudflare Workers** e **Supabase Edge Functions** sem gerenciar servidores.
+
+## Por que serverless?
+
+<CardGroup cols={2}>
+  <Card title="Deploy rapido" icon="rocket" color="#C9CBD1">
+    Publique globalmente em minutos com setup minimo de infraestrutura.
+  </Card>
+
+  <Card title="Pague por execucao" icon="coins" color="#C9CBD1">
+    Pague apenas pelas requisicoes que realmente processar.
+  </Card>
+
+  <Card title="Proximidade de edge" icon="globe" color="#C9CBD1">
+    Reduza latencia executando perto dos seus usuarios.
+  </Card>
+
+  <Card title="Escala simples" icon="trending-up" color="#C9CBD1">
+    Suporte picos de trafego sem autoscaling manual.
+  </Card>
+</CardGroup>
+
+## Guias suportados
+
+<CardGroup cols={2}>
+  <Card title="Vercel Functions" icon="triangle" href="./vercel-functions" color="#C9CBD1">
+    Crie um endpoint POST e envie SMS com `@rewritejs/sdk`.
+  </Card>
+
+  <Card title="Cloudflare Workers" icon="cloud" href="./cloudflare-workers" color="#C9CBD1">
+    Envie SMS a partir de um worker edge usando `@rewritejs/sdk`.
+  </Card>
+
+  <Card title="Supabase Edge Functions" icon="bolt" href="./supabase-edge-functions" color="#C9CBD1">
+    Envie SMS de uma edge function no Supabase com `@rewritejs/sdk`.
+  </Card>
+</CardGroup>
+
+## Padrao comum
+
+Todos os runtimes serverless seguem o mesmo fluxo:
+
+1. Ler segredos de variaveis de ambiente/bindings
+2. Instanciar `Rewrite`
+3. Validar payload da requisicao
+4. Chamar `rewrite.messages.send(...)`
+5. Retornar JSON com status code correto
+
+<Info>
+Mantenha sua API key apenas no backend. Nunca exponha `REWRITE_API_KEY` no bundle do cliente.
+</Info>

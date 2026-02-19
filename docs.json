@@ -171,6 +171,23 @@
 								]
 							}
 						]
+					},
+					{
+						"tab": "Serveless",
+						"groups": [
+							{
+								"group": "Overview",
+								"pages": ["en/serveless/introduction"]
+							},
+							{
+								"group": "Platforms",
+								"pages": [
+									"en/serveless/vercel-functions",
+									"en/serveless/cloudflare-workers",
+									"en/serveless/supabase-edge-functions"
+								]
+							}
+						]
 					}
 				]
 			},
@@ -279,6 +296,23 @@
 									"pt-br/webhooks/events/sms-scheduled",
 									"pt-br/webhooks/events/sms-failed",
 									"pt-br/webhooks/events/sms-canceled"
+								]
+							}
+						]
+					},
+					{
+						"tab": "Serveless",
+						"groups": [
+							{
+								"group": "Visao geral",
+								"pages": ["pt-br/serveless/introduction"]
+							},
+							{
+								"group": "Plataformas",
+								"pages": [
+									"pt-br/serveless/vercel-functions",
+									"pt-br/serveless/cloudflare-workers",
+									"pt-br/serveless/supabase-edge-functions"
 								]
 							}
 						]

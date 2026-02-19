@@ -1,0 +1,59 @@
+---
+title: "Overview"
+description: "Send SMS from serverless runtimes using the Rewrite SDK."
+icon: cloud
+---
+
+Serverless is one of the fastest ways to integrate Rewrite in production.
+
+Use the official SDK to send SMS from platforms like **Vercel Functions**, **Cloudflare Workers**, and **Supabase Edge Functions** without managing servers.
+
+## Why serverless?
+
+<CardGroup cols={2}>
+  <Card title="Fast deployment" icon="rocket" color="#C9CBD1">
+    Deploy globally in minutes with minimal infra setup.
+  </Card>
+
+  <Card title="Pay per execution" icon="coins" color="#C9CBD1">
+    Only pay for requests you actually process.
+  </Card>
+
+  <Card title="Edge proximity" icon="globe" color="#C9CBD1">
+    Reduce latency by running close to your users.
+  </Card>
+
+  <Card title="Simple scaling" icon="gear" color="#C9CBD1">
+    Handle traffic spikes without manual autoscaling work.
+  </Card>
+</CardGroup>
+
+## Supported guides
+
+<CardGroup cols={2}>
+  <Card title="Vercel Functions" icon="triangle" href="./vercel-functions" color="#C9CBD1">
+    Build a POST endpoint and send SMS with `@rewritejs/sdk`.
+  </Card>
+
+  <Card title="Cloudflare Workers" icon="cloud" href="./cloudflare-workers" color="#C9CBD1">
+    Send SMS from an edge worker using `@rewritejs/sdk`.
+  </Card>
+
+  <Card title="Supabase Edge Functions" icon="bolt" href="./supabase-edge-functions" color="#C9CBD1">
+    Send SMS from a Supabase edge function with `@rewritejs/sdk`.
+  </Card>
+</CardGroup>
+
+## Common pattern
+
+All serverless runtimes follow the same flow:
+
+1. Read secrets from env bindings
+2. Instantiate `Rewrite`
+3. Validate request payload
+4. Call `rewrite.messages.send(...)`
+5. Return JSON response with proper status code
+
+<Info>
+Keep your API key server-side only. Never expose `REWRITE_API_KEY` in client bundles.
+</Info>
