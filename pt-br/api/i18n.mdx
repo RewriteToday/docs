@@ -1,0 +1,75 @@
+---
+title: i18n
+description: Direcione o conteudo da mensagem por idioma a partir do numero de destino usando a chave i18n.
+---
+
+# Visao geral
+
+A Rewrite suporta a chave `i18n` no payload de mensagens/templates para escolher automaticamente o conteudo com base no numero de destino.
+
+Use `message` como texto de fallback e passe as variacoes por idioma dentro de `i18n`.
+
+## Formato do payload
+
+```json
+{
+  "to": "+5511999999999",
+  "message": "Hello, your code is 123456",
+  "i18n": {
+    "pt-BR": "Ola, seu codigo e 123456",
+    "es": "Hola, tu codigo es 123456"
+  }
+}
+```
+
+## Como o idioma e escolhido
+
+1. A Rewrite inspeciona o pais/regiao do numero de destino (`to`).
+2. Se existir locale correspondente em `i18n`, essa mensagem localizada e usada.
+3. Se nao houver correspondencia, a Rewrite usa `message` como fallback.
+
+<Info>
+Mantenha sempre `message` completo como padrao para garantir envio quando nao houver mapeamento de locale.
+</Info>
+
+## Exemplo de requisicao
+
+<CodeGroup>
+  ```bash cURL
+  curl -X POST "https://api.rewritetoday.com/v1/messages" \
+    -H "Authorization: Bearer rw_..." \
+    -H "Content-Type: application/json" \
+    -d '{
+      "to": "+5511999999999",
+      "message": "Hello, your code is 123456",
+      "i18n": {
+        "pt-BR": "Ola, seu codigo e 123456",
+        "en": "Hello, your code is 123456"
+      },
+      "metadata": { "source": "api-i18n" }
+    }'
+  ```
+
+  ```ts Node.js
+  import { Rewrite } from '@rewritejs/sdk';
+
+  const rewrite = new Rewrite(process.env.REWRITE_API_KEY);
+
+  const { data, error } = await rewrite.messages.send({
+    to: '+5511999999999',
+    message: 'Hello, your code is 123456',
+    i18n: {
+      'pt-BR': 'Ola, seu codigo e 123456',
+      en: 'Hello, your code is 123456',
+    },
+    metadata: { source: 'api-i18n' },
+  });
+  ```
+</CodeGroup>
+
+## Boas praticas
+
+- Mantenha placeholders consistentes em todos os idiomas.
+- Garanta que cada string localizada respeite limites de SMS das operadoras.
+- Use chaves de locale no padrao BCP-47 (ex.: `en`, `en-US`, `pt-BR`).
+- Teste com formatos reais de numero dos seus principais paises.

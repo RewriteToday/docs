@@ -1,0 +1,75 @@
+---
+title: i18n
+description: Route message content by destination number language using the i18n key.
+---
+
+# Overview
+
+Rewrite supports an `i18n` key in message/template payloads so content can be selected automatically by destination number.
+
+Use `message` as your fallback text and provide language-specific variants inside `i18n`.
+
+## Payload shape
+
+```json
+{
+  "to": "+5511999999999",
+  "message": "Hello, your code is 123456",
+  "i18n": {
+    "pt-BR": "Ola, seu codigo e 123456",
+    "es": "Hola, tu codigo es 123456"
+  }
+}
+```
+
+## How language is chosen
+
+1. Rewrite inspects the destination number (`to`) country/region.
+2. If a matching locale exists in `i18n`, that localized message is used.
+3. If no locale matches, Rewrite falls back to `message`.
+
+<Info>
+Always keep `message` as a complete default to guarantee delivery when no locale mapping is found.
+</Info>
+
+## Example request
+
+<CodeGroup>
+  ```bash cURL
+  curl -X POST "https://api.rewritetoday.com/v1/messages" \
+    -H "Authorization: Bearer rw_..." \
+    -H "Content-Type: application/json" \
+    -d '{
+      "to": "+5511999999999",
+      "message": "Hello, your code is 123456",
+      "i18n": {
+        "pt-BR": "Ola, seu codigo e 123456",
+        "en": "Hello, your code is 123456"
+      },
+      "metadata": { "source": "api-i18n" }
+    }'
+  ```
+
+  ```ts Node.js
+  import { Rewrite } from '@rewritejs/sdk';
+
+  const rewrite = new Rewrite(process.env.REWRITE_API_KEY);
+
+  const { data, error } = await rewrite.messages.send({
+    to: '+5511999999999',
+    message: 'Hello, your code is 123456',
+    i18n: {
+      'pt-BR': 'Ola, seu codigo e 123456',
+      en: 'Hello, your code is 123456',
+    },
+    metadata: { source: 'api-i18n' },
+  });
+  ```
+</CodeGroup>
+
+## Best practices
+
+- Keep placeholders consistent across all locales.
+- Keep each localized string within carrier SMS limits.
+- Use BCP-47 style locale keys (for example: `en`, `en-US`, `pt-BR`).
+- Test with real destination formats from your main countries.
