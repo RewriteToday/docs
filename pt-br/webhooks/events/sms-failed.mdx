@@ -1,0 +1,71 @@
+---
+title: "sms.failed"
+description: "Webhook disparado quando um SMS falha de forma permanente."
+---
+
+## Visao geral
+
+O evento `sms.failed` e emitido quando a entrega nao pode ser concluida e o SMS atinge estado terminal de falha.
+
+Motivos comuns:
+
+- Numeros de destino invalidos ou inalcanaveis
+- Rejeicao da operadora/provedor
+- Restricoes de roteamento
+- Violacoes de politica ou limite de cota
+
+## Exemplo de payload
+
+```json
+{
+  "type": "sms.failed",
+  "createdAt": "2026-02-14T19:41:55.442Z",
+  "id": "393821034567832126",
+  "data": {
+    "id": "733501234567890125",
+    "to": "+5511977777777",
+    "status": "FAILED",
+    "provider": "twilio",
+    "metadata": {
+      "campaign": "otp-login",
+      "tenantId": "acme-01"
+    }
+  }
+}
+```
+
+## Objeto do evento
+
+| Campo | Tipo | Descricao |
+| --- | --- | --- |
+| `type` | `string` | Identificador do evento. Nesta pagina: `sms.failed`. |
+| `id` | `string` | Id unico do evento de webhook. |
+| `createdAt` | `string` (ISO-8601) | Timestamp do evento. |
+| `data` | `object` | Snapshot do SMS no momento da falha. |
+
+## Objeto `data`
+
+| Campo | Tipo | Descricao |
+| --- | --- | --- |
+| `id` | `string` | Id do SMS na Rewrite. |
+| `to` | `string` | Numero de destino em formato E.164. |
+| `status` | `string` | Status atual (`FAILED`). |
+| `provider` | `string \| null` | Provedor envolvido na tentativa de entrega que falhou. |
+| `metadata` | `object \| null` | Metadata original da criacao da mensagem. |
+
+## Tratamento recomendado
+
+1. Validar assinatura e deduplicar por id do evento.
+2. Persistir payload para suporte/auditoria.
+3. Marcar mensagem como falha no seu banco.
+4. Opcionalmente disparar canal de fallback ou politica de retry.
+
+<Warning>
+Nao faca retries cegos no handler de webhook. Use logica controlada com rate limit e backoff.
+</Warning>
+
+## Eventos relacionados
+
+- [`sms.queued`](./sms-queued)
+- [`sms.delivered`](./sms-delivered)
+- [`sms.canceled`](./sms-canceled)

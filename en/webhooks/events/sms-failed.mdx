@@ -1,0 +1,72 @@
+---
+title: "sms.failed"
+description: "Webhook fired when an SMS fails permanently and will not be delivered."
+---
+
+## Overview
+
+The `sms.failed` event is emitted when delivery cannot be completed and the SMS reaches a terminal failure state.
+
+Typical reasons include:
+
+- Invalid or unreachable destination numbers
+- Carrier/provider rejection
+- Routing constraints
+- Policy or quota violations
+
+## Example payload
+
+```json
+{
+  "type": "sms.failed",
+  "createdAt": "2026-02-14T19:41:55.442Z",
+  "id": "393821034567832126",
+  "data": {
+    "id": "733501234567890125",
+    "to": "+5511977777777",
+    "status": "FAILED",
+    "provider": "twilio",
+    "metadata": {
+      "campaign": "otp-login",
+      "tenantId": "acme-01"
+    }
+  }
+}
+```
+
+## Event object
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `type` | `string` | Event identifier. For this page: `sms.failed`. |
+| `id` | `string` | Unique webhook event id. |
+| `createdAt` | `string` (ISO-8601) | Event timestamp. |
+| `data` | `object` | SMS snapshot at failure time. |
+
+## `data` object
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | Rewrite SMS id. |
+| `to` | `string` | Recipient number in E.164 format. |
+| `status` | `string` | Current status (`FAILED`). |
+| `provider` | `string \| null` | Provider involved in the failed delivery path. |
+| `metadata` | `object \| null` | Original metadata from message creation. |
+
+## Recommended handling
+
+1. Validate signature and deduplicate by webhook event id.
+2. Persist payload for support/audit visibility.
+3. Mark message as failed in your DB.
+4. Optionally trigger fallback channels or retry policies.
+
+<Warning>
+Do not retry blindly from webhook handlers. Use controlled retry logic with rate limits and backoff.
+</Warning>
+
+## Related events
+
+- [`sms.queued`](./sms-queued)
+- [`sms.delivered`](./sms-delivered)
+- [`sms.canceled`](./sms-canceled)
+
