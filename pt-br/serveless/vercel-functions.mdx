@@ -1,0 +1,61 @@
+---
+title: "Enviar com Vercel Functions"
+description: "Envie SMS com Rewrite em uma funcao serverless da Vercel."
+---
+
+Este guia mostra como enviar SMS usando Rewrite dentro de uma **Vercel Function**.
+
+## 1. Instale o SDK
+
+```bash
+npm install @rewritejs/sdk
+```
+
+## 2. Configure variaveis de ambiente
+
+Adicione sua API key em Vercel Project Settings:
+
+```text
+REWRITE_API_KEY=rw...
+```
+
+## 3. Crie a funcao
+
+```ts app/api/send-sms/route.ts
+import { Rewrite } from '@rewritejs/sdk';
+
+const rewrite = new Rewrite(process.env.REWRITE_API_KEY);
+
+export async function POST() {
+  const { data, error } = await rewrite.messages.send({
+    to: '+5511999999999',
+    message: 'hello world',
+    metadata: { source: 'vercel-function' },
+  });
+
+  return Response.json(response, {
+    status: error ? 500 : 200,
+  });
+}
+```
+
+## 4. Teste localmente
+
+```bash
+curl -X POST "http://localhost:3000/api/send-sms" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "+5511999999999",
+    "message": "Hello from Vercel + Rewrite"
+  }'
+```
+
+## 5. Deploy
+
+```bash
+vercel --prod
+```
+
+<Info>
+Para fluxos de alto volume, coloque requests em fila e envie de forma assincrona para evitar limites de timeout da funcao.
+</Info>
