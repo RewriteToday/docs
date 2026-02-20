@@ -1,4 +1,132 @@
 ---
 title: Introduction
-description: Découvrez comment utiliser l'API Rewrite.
+description: Vue d'ensemble API, base URL, versioning, authorization et references cles pour integrer Rewrite.
 ---
+
+# Vue d'ensemble
+
+L'API Rewrite vous permet d'envoyer et de gerer des SMS avec un comportement previsible en production.
+
+Cette page couvre :
+
+- Base URL et modele de versioning
+- Authentification via `Authorization: Bearer ...`
+- Conventions request/response
+- Liens vers limites, quotas, retries et pagination
+
+<CardGroup cols={2}>
+  <Card title="Base URL" icon="globe" color="#C9CBD1">
+    Toutes les requetes passent par `https://api.rewritetoday.com`.
+  </Card>
+  <Card title="Versioning" icon="git-branch" color="#C9CBD1">
+    Utilisez le prefixe de version dans le path (`/v1`) pour une integration stable.
+  </Card>
+  <Card title="Auth" icon="key-round" color="#C9CBD1">
+    Envoyez votre API key dans le header `Authorization` au format Bearer.
+  </Card>
+  <Card title="Format de reponse" icon="braces" color="#C9CBD1">
+    Les payloads request et response utilisent JSON.
+  </Card>
+</CardGroup>
+
+## Base URL
+
+Utilisez cet host pour tous les endpoints API :
+
+```text
+https://api.rewritetoday.com
+```
+
+Exemple d'endpoint de creation de message :
+
+```text
+https://api.rewritetoday.com/v1/messages
+```
+
+<Info>
+Utilisez uniquement HTTPS. N'envoyez jamais de cles API sur des canaux non securises.
+</Info>
+
+## Versioning
+
+Rewrite versionne les endpoints dans le path URL.
+
+Version documentee actuelle :
+
+- `v1`
+
+Regles de versioning :
+
+- Les evolutions backward-compatible peuvent sortir dans la meme version.
+- Les changements breaking sortent sous un nouveau path de version.
+- Gardez la version explicite dans tous les endpoints hardcodes.
+
+## Authentification
+
+Authentifiez chaque requete avec une API key secrete depuis votre dashboard Rewrite.
+
+Header attendu :
+
+```http
+Authorization: Bearer rw_...
+```
+
+Exemple de requete :
+
+```bash
+curl -X POST "https://api.rewritetoday.com/v1/messages" \
+  -H "Authorization: Bearer rw_..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "+15551234567",
+    "message": "Your OTP code is 123456"
+  }'
+```
+
+<Warning>
+N'exposez jamais des API keys secretes dans du code client web/mobile. Gardez-les cote serveur.
+</Warning>
+
+## Conventions API
+
+- `Content-Type` : utilisez `application/json` pour les payloads JSON.
+- Format numero : utilisez E.164 (exemple : `+15551234567`).
+- Erreurs : les reponses non-2xx renvoient des payloads d'erreur structures.
+- Limites : une forte pression de requetes peut renvoyer `429` avec des headers de retry.
+
+## References
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/fr/api/quickstart" color="#C9CBD1">
+    Envoyez votre premier SMS et validez votre environnement.
+  </Card>
+  <Card title="Limites et quotas" icon="gauge" href="/fr/api/limits" color="#C9CBD1">
+    Comprenez les rate limits, le comportement des quotas et les frontieres de facturation.
+  </Card>
+  <Card title="Erreurs et tentatives" icon="shield-alert" href="/fr/api/errors" color="#C9CBD1">
+    Gerez les echecs proprement avec retries, backoff et idempotence.
+  </Card>
+  <Card title="Pagination" icon="list" href="/fr/api/pagination" color="#C9CBD1">
+    Parcourez les endpoints de liste avec des curseurs.
+  </Card>
+  <Card title="i18n" icon="languages" href="/fr/api/i18n" color="#C9CBD1">
+    Localisez messages et templates selon la locale de destination.
+  </Card>
+  <Card title="Deliverability" icon="send" href="/fr/api/deliverability" color="#C9CBD1">
+    Ameliorez la delivrabilite avec des bonnes pratiques sender et contenu.
+  </Card>
+</CardGroup>
+
+## FAQ
+
+<Accordion title="Ou creer des API keys ?">
+  Creez et gerez vos API keys dans les parametres de compte de votre dashboard Rewrite.
+</Accordion>
+
+<Accordion title="Faut-il mettre la version dans chaque URL de requete ?">
+  Oui. Gardez `/v1` explicite dans chaque endpoint pour eviter ambiguite et changements inattendus.
+</Accordion>
+
+<Accordion title="Ou lire la gestion des 429/rate-limit et de l'epuisement de quota ?">
+  Consultez [Limites d'utilisation](/fr/api/limits) pour la politique/quota et [Erreurs et tentatives](/fr/api/errors) pour la strategie de retry.
+</Accordion>
