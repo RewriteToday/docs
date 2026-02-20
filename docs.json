@@ -396,11 +396,7 @@
 					},
 					{
 						"tab": "CLI",
-						"pages": [
-							"es/cli/introduction",
-							"es/cli/auth",
-							"es/cli/config"
-						]
+						"pages": ["es/cli/introduction", "es/cli/auth", "es/cli/config"]
 					},
 					{
 						"tab": "SDKs",
