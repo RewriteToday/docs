@@ -1,15 +1,132 @@
 ---
 title: Introducao
-description: Aprenda a usar a API da Rewrite.
+description: Visao geral da API, base URL, versionamento, authorization e referencias principais para integrar com a Rewrite.
 ---
 
-A API da **Rewrite** permite enviar e gerenciar SMS de forma simples e confiavel.
+# Visao geral
 
-Use os endpoints da secao **SMS** para:
+A API da Rewrite permite enviar e gerenciar SMS com comportamento previsivel em producao.
 
-- enviar mensagens
-- listar mensagens
-- consultar uma mensagem por ID
-- reenviar ou cancelar mensagens
+Esta pagina cobre:
 
-Consulte tambem a pagina de [paginacao](/pt-br/api/pagination) para navegar resultados com cursor.
+- Base URL e modelo de versionamento
+- Autenticacao via `Authorization: Bearer ...`
+- Convencoes de request/response
+- Links para limites, quota, retentativas e paginacao
+
+<CardGroup cols={2}>
+  <Card title="Base URL" icon="globe" color="#C9CBD1">
+    Todas as requisicoes usam `https://api.rewritetoday.com`.
+  </Card>
+  <Card title="Versionamento" icon="git-branch" color="#C9CBD1">
+    Use o prefixo de versao na rota (`/v1`) para manter integracoes estaveis.
+  </Card>
+  <Card title="Auth" icon="key-round" color="#C9CBD1">
+    Envie sua API key no header `Authorization` como token Bearer.
+  </Card>
+  <Card title="Formato de resposta" icon="braces" color="#C9CBD1">
+    Payloads de request e response usam JSON.
+  </Card>
+</CardGroup>
+
+## Base URL
+
+Use este host para todos os endpoints da API:
+
+```text
+https://api.rewritetoday.com
+```
+
+Exemplo de endpoint para criar mensagem:
+
+```text
+https://api.rewritetoday.com/v1/messages
+```
+
+<Info>
+Use apenas HTTPS. Nunca envie API keys por canais inseguros.
+</Info>
+
+## Versionamento
+
+A Rewrite versiona endpoints no caminho da URL.
+
+Versao documentada atual:
+
+- `v1`
+
+Regras de versionamento:
+
+- Atualizacoes backward-compatible podem sair dentro da mesma versao.
+- Mudancas breaking saem em uma nova rota de versao.
+- Mantenha a versao explicita em todos os endpoints hardcoded.
+
+## Autenticacao
+
+Autentique todas as requisicoes com uma API key secreta do seu dashboard Rewrite.
+
+Header esperado:
+
+```http
+Authorization: Bearer rw_...
+```
+
+Exemplo de requisicao:
+
+```bash
+curl -X POST "https://api.rewritetoday.com/v1/messages" \
+  -H "Authorization: Bearer rw_..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "+15551234567",
+    "message": "Your OTP code is 123456"
+  }'
+```
+
+<Warning>
+Nao exponha API keys secretas em codigo cliente web/mobile. Mantenha-as no backend.
+</Warning>
+
+## Convencoes da API
+
+- `Content-Type`: use `application/json` para payloads JSON.
+- Formato de telefone: use E.164 (exemplo: `+15551234567`).
+- Erros: respostas nao-2xx retornam payloads estruturados de erro.
+- Limites: alta pressao de requests pode retornar `429` com headers de retry.
+
+## Referencias
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/pt-br/api/quickstart" color="#C9CBD1">
+    Envie seu primeiro SMS e valide o ambiente.
+  </Card>
+  <Card title="Limites e quota" icon="gauge" href="/pt-br/api/limits" color="#C9CBD1">
+    Entenda rate limits, comportamento de quota e fronteiras de cobranca.
+  </Card>
+  <Card title="Erros e retentativas" icon="shield-alert" href="/pt-br/api/errors" color="#C9CBD1">
+    Trate falhas com seguranca usando retry, backoff e idempotencia.
+  </Card>
+  <Card title="Paginacao" icon="list" href="/pt-br/api/pagination" color="#C9CBD1">
+    Navegue endpoints de lista com cursores.
+  </Card>
+  <Card title="i18n" icon="languages" href="/pt-br/api/i18n" color="#C9CBD1">
+    Localize mensagens e templates por locale de destino.
+  </Card>
+  <Card title="Deliverability" icon="send" href="/pt-br/api/deliverability" color="#C9CBD1">
+    Melhore entregabilidade com boas praticas de sender e conteudo.
+  </Card>
+</CardGroup>
+
+## FAQ
+
+<Accordion title="Onde criar API keys?">
+  Crie e gerencie API keys nas configuracoes de conta do dashboard da Rewrite.
+</Accordion>
+
+<Accordion title="Preciso colocar a versao em toda URL de requisicao?">
+  Sim. Mantenha `/v1` explicito em cada endpoint para evitar ambiguidade e mudancas inesperadas.
+</Accordion>
+
+<Accordion title="Onde vejo como tratar 429/rate-limit e esgotamento de quota?">
+  Veja [Limites de uso](/pt-br/api/limits) para politica/quota e [Erros e retentativas](/pt-br/api/errors) para estrategia de retry.
+</Accordion>
