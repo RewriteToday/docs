@@ -196,8 +196,8 @@
 						"tab": "AI",
 						"groups": [
 							{
-								"group": "Tools",
-								"pages": ["en/ai/skills"]
+								"group": "Overview",
+								"pages": ["en/ai/introduction", "en/ai/skills"]
 							}
 						]
 					},
@@ -386,8 +386,8 @@
 						"tab": "AI",
 						"groups": [
 							{
-								"group": "Ferramentas",
-								"pages": ["pt-br/ai/skills"]
+								"group": "Visao geral",
+								"pages": ["pt-br/ai/introduction", "pt-br/ai/skills"]
 							}
 						]
 					},
@@ -572,8 +572,8 @@
 						"tab": "AI",
 						"groups": [
 							{
-								"group": "Herramientas",
-								"pages": ["es/ai/skills"]
+								"group": "Vision general",
+								"pages": ["es/ai/introduction", "es/ai/skills"]
 							}
 						]
 					},
@@ -758,8 +758,8 @@
 						"tab": "AI",
 						"groups": [
 							{
-								"group": "Outils",
-								"pages": ["fr/ai/skills"]
+								"group": "Vue d'ensemble",
+								"pages": ["fr/ai/introduction", "fr/ai/skills"]
 							}
 						]
 					},
