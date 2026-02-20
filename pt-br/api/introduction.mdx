@@ -15,16 +15,16 @@ Esta pagina cobre:
 - Links para limites, quota, retentativas e paginacao
 
 <CardGroup cols={2}>
-  <Card title="Base URL" icon="globe" color="#C9CBD1">
+  <Card title="Base URL" icon="globe" href="#base-url" color="#C9CBD1">
     Todas as requisicoes usam `https://api.rewritetoday.com`.
   </Card>
-  <Card title="Versionamento" icon="git-branch" color="#C9CBD1">
+  <Card title="Versionamento" icon="arrows-left-right" href="#versionamento" color="#C9CBD1">
     Use o prefixo de versao na rota (`/v1`) para manter integracoes estaveis.
   </Card>
-  <Card title="Auth" icon="key-round" color="#C9CBD1">
+  <Card title="Auth" icon="key" href="#autenticacao" color="#C9CBD1">
     Envie sua API key no header `Authorization` como token Bearer.
   </Card>
-  <Card title="Formato de resposta" icon="braces" color="#C9CBD1">
+  <Card title="Formato de resposta" icon="code" href="#convencoes-da-api" color="#C9CBD1">
     Payloads de request e response usam JSON.
   </Card>
 </CardGroup>
@@ -103,16 +103,16 @@ Nao exponha API keys secretas em codigo cliente web/mobile. Mantenha-as no backe
   <Card title="Limites e quota" icon="gauge" href="/pt-br/api/limits" color="#C9CBD1">
     Entenda rate limits, comportamento de quota e fronteiras de cobranca.
   </Card>
-  <Card title="Erros e retentativas" icon="shield-alert" href="/pt-br/api/errors" color="#C9CBD1">
+  <Card title="Erros e retentativas" icon="triangle-exclamation" href="/pt-br/api/errors" color="#C9CBD1">
     Trate falhas com seguranca usando retry, backoff e idempotencia.
   </Card>
-  <Card title="Paginacao" icon="list" href="/pt-br/api/pagination" color="#C9CBD1">
+  <Card title="Paginacao" icon="arrows-left-right" href="/pt-br/api/pagination" color="#C9CBD1">
     Navegue endpoints de lista com cursores.
   </Card>
   <Card title="i18n" icon="globe" href="/pt-br/api/i18n" color="#C9CBD1">
     Localize mensagens e templates por locale de destino.
   </Card>
-  <Card title="Deliverability" icon="send" href="/pt-br/api/deliverability" color="#C9CBD1">
+  <Card title="Deliverability" icon="list-check" href="/pt-br/api/deliverability" color="#C9CBD1">
     Melhore entregabilidade com boas praticas de sender e conteudo.
   </Card>
 </CardGroup>

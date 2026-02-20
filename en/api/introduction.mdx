@@ -15,16 +15,16 @@ This page covers:
 - Links to limits, quota, retries, and pagination guides
 
 <CardGroup cols={2}>
-  <Card title="Base URL" icon="globe" color="#C9CBD1">
+  <Card title="Base URL" icon="globe" href="#base-url" color="#C9CBD1">
     All requests go to `https://api.rewritetoday.com`.
   </Card>
-  <Card title="Versioning" icon="git-branch" color="#C9CBD1">
+  <Card title="Versioning" icon="arrows-left-right" href="#versioning" color="#C9CBD1">
     Use the path version prefix (`/v1`) for stable integrations.
   </Card>
-  <Card title="Auth" icon="key-round" color="#C9CBD1">
+  <Card title="Auth" icon="key" href="#authentication" color="#C9CBD1">
     Send your API key in the `Authorization` header as a Bearer token.
   </Card>
-  <Card title="Response format" icon="braces" color="#C9CBD1">
+  <Card title="Response format" icon="code" href="#api-conventions" color="#C9CBD1">
     Request and response payloads use JSON.
   </Card>
 </CardGroup>
@@ -103,16 +103,16 @@ Never expose secret API keys in browser/mobile client code. Keep them server-sid
   <Card title="Usage limits & quota" icon="gauge" href="/en/api/limits" color="#C9CBD1">
     Understand rate limits, quota behavior, and billing boundaries.
   </Card>
-  <Card title="Errors & retries" icon="shield-alert" href="/en/api/errors" color="#C9CBD1">
+  <Card title="Errors & retries" icon="triangle-exclamation" href="/en/api/errors" color="#C9CBD1">
     Handle failures safely with retries, backoff, and idempotency.
   </Card>
-  <Card title="Pagination" icon="list" href="/en/api/pagination" color="#C9CBD1">
+  <Card title="Pagination" icon="arrows-left-right" href="/en/api/pagination" color="#C9CBD1">
     Navigate list endpoints with cursors.
   </Card>
   <Card title="i18n" icon="globe" href="/en/api/i18n" color="#C9CBD1">
     Localize messages and templates by destination locale.
   </Card>
-  <Card title="Deliverability" icon="send" href="/en/api/deliverability" color="#C9CBD1">
+  <Card title="Deliverability" icon="list-check" href="/en/api/deliverability" color="#C9CBD1">
     Improve delivery outcomes with sender and content best practices.
   </Card>
 </CardGroup>

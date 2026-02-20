@@ -15,16 +15,16 @@ Esta pagina cubre:
 - Enlaces a limites, cuota, reintentos y paginacion
 
 <CardGroup cols={2}>
-  <Card title="Base URL" icon="globe" color="#C9CBD1">
+  <Card title="Base URL" icon="globe" href="#base-url" color="#C9CBD1">
     Todas las solicitudes van a `https://api.rewritetoday.com`.
   </Card>
-  <Card title="Versionado" icon="git-branch" color="#C9CBD1">
+  <Card title="Versionado" icon="arrows-left-right" href="#versionado" color="#C9CBD1">
     Usa el prefijo de version en la ruta (`/v1`) para integraciones estables.
   </Card>
-  <Card title="Auth" icon="key-round" color="#C9CBD1">
+  <Card title="Auth" icon="key" href="#autenticacion" color="#C9CBD1">
     Envia tu API key en el header `Authorization` como token Bearer.
   </Card>
-  <Card title="Formato de respuesta" icon="braces" color="#C9CBD1">
+  <Card title="Formato de respuesta" icon="code" href="#convenciones-de-api" color="#C9CBD1">
     Los payloads de request y response usan JSON.
   </Card>
 </CardGroup>
@@ -103,16 +103,16 @@ Nunca expongas API keys secretas en codigo de cliente web/mobile. Guardalas del 
   <Card title="Limites y cuota" icon="gauge" href="/es/api/limits" color="#C9CBD1">
     Entiende rate limits, comportamiento de cuota y fronteras de facturacion.
   </Card>
-  <Card title="Errores y reintentos" icon="shield-alert" href="/es/api/errors" color="#C9CBD1">
+  <Card title="Errores y reintentos" icon="triangle-exclamation" href="/es/api/errors" color="#C9CBD1">
     Maneja fallos de forma segura con retries, backoff e idempotencia.
   </Card>
-  <Card title="Paginacion" icon="list" href="/es/api/pagination" color="#C9CBD1">
+  <Card title="Paginacion" icon="arrows-left-right" href="/es/api/pagination" color="#C9CBD1">
     Recorre endpoints de lista con cursores.
   </Card>
   <Card title="i18n" icon="globe" href="/es/api/i18n" color="#C9CBD1">
     Localiza mensajes y templates por locale de destino.
   </Card>
-  <Card title="Deliverability" icon="send" href="/es/api/deliverability" color="#C9CBD1">
+  <Card title="Deliverability" icon="list-check" href="/es/api/deliverability" color="#C9CBD1">
     Mejora resultados de entrega con buenas practicas de sender y contenido.
   </Card>
 </CardGroup>

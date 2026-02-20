@@ -15,16 +15,16 @@ Cette page couvre :
 - Liens vers limites, quotas, retries et pagination
 
 <CardGroup cols={2}>
-  <Card title="Base URL" icon="globe" color="#C9CBD1">
+  <Card title="Base URL" icon="globe" href="#base-url" color="#C9CBD1">
     Toutes les requetes passent par `https://api.rewritetoday.com`.
   </Card>
-  <Card title="Versioning" icon="git-branch" color="#C9CBD1">
+  <Card title="Versioning" icon="arrows-left-right" href="#versioning" color="#C9CBD1">
     Utilisez le prefixe de version dans le path (`/v1`) pour une integration stable.
   </Card>
-  <Card title="Auth" icon="key-round" color="#C9CBD1">
+  <Card title="Auth" icon="key" href="#authentification" color="#C9CBD1">
     Envoyez votre API key dans le header `Authorization` au format Bearer.
   </Card>
-  <Card title="Format de reponse" icon="braces" color="#C9CBD1">
+  <Card title="Format de reponse" icon="code" href="#conventions-api" color="#C9CBD1">
     Les payloads request et response utilisent JSON.
   </Card>
 </CardGroup>
@@ -103,16 +103,16 @@ N'exposez jamais des API keys secretes dans du code client web/mobile. Gardez-le
   <Card title="Limites et quotas" icon="gauge" href="/fr/api/limits" color="#C9CBD1">
     Comprenez les rate limits, le comportement des quotas et les frontieres de facturation.
   </Card>
-  <Card title="Erreurs et tentatives" icon="shield-alert" href="/fr/api/errors" color="#C9CBD1">
+  <Card title="Erreurs et tentatives" icon="triangle-exclamation" href="/fr/api/errors" color="#C9CBD1">
     Gerez les echecs proprement avec retries, backoff et idempotence.
   </Card>
-  <Card title="Pagination" icon="list" href="/fr/api/pagination" color="#C9CBD1">
+  <Card title="Pagination" icon="arrows-left-right" href="/fr/api/pagination" color="#C9CBD1">
     Parcourez les endpoints de liste avec des curseurs.
   </Card>
   <Card title="i18n" icon="globe" href="/fr/api/i18n" color="#C9CBD1">
     Localisez messages et templates selon la locale de destination.
   </Card>
-  <Card title="Deliverability" icon="send" href="/fr/api/deliverability" color="#C9CBD1">
+  <Card title="Deliverability" icon="list-check" href="/fr/api/deliverability" color="#C9CBD1">
     Ameliorez la delivrabilite avec des bonnes pratiques sender et contenu.
   </Card>
 </CardGroup>
