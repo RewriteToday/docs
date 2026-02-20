@@ -1,1039 +1,994 @@
 {
-  "openapi": "3.1.0",
-  "info": {
-    "title": "API de Rewrite",
-    "version": "1.0.0",
-    "summary": "Referencia de la API de proyectos (Projects, API Keys, Templates, Webhooks).",
-    "description": "Referencia publica completa de los endpoints de nivel proyecto en Rewrite API v1.\n\nTodos los endpoints devuelven un sobre consistente (`ok`, `data` y `cursor` opcional).\nUsa bearer token (API key) con scopes o sesion autenticada por cookie."
-  },
-  "servers": [
-    {
-      "url": "https://api.rewritetoday.com/v1",
-      "description": "Produccion"
-    }
-  ],
-  "tags": [
-    {
-      "name": "Templates",
-      "description": "Gestiona plantillas SMS reutilizables con variables."
-    }
-  ],
-  "paths": {
-    "/projects/{id}/templates": {
-      "get": {
-        "tags": [
-          "Templates"
-        ],
-        "operationId": "listProjectTemplates",
-        "summary": "Listar plantillas",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Snowflake"
-            },
-            "description": "ID unico del proyecto.",
-            "example": "748395130237498368"
-          },
-          {
-            "$ref": "#/components/parameters/after"
-          },
-          {
-            "$ref": "#/components/parameters/before"
-          },
-          {
-            "$ref": "#/components/parameters/limit"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Respuesta",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TemplatesListResponse"
-                },
-                "examples": {
-                  "response": {
-                    "summary": "Ejemplo de respuesta",
-                    "value": {
-                      "ok": true,
-                      "data": [
-                        {
-                          "id": "748395130237498500",
-                          "name": "order_shipped",
-                          "content": "Hi {{first_name}}, your order {{order_id}} is on the way.",
-                          "variables": [
-                            {
-                              "name": "first_name",
-                              "fallback": "customer"
-                            }
-                          ],
-                          "createdAt": "2026-02-19T18:00:00.000Z"
-                        }
-                      ],
-                      "cursor": {
-                        "persist": true,
-                        "next": "748395130237498588"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "description": "Lista las plantillas del proyecto con paginacion por cursor.\n\nUsa `limit`, `after` y `before` para paginar.",
-        "x-codeSamples": [
-          {
-            "lang": "Node.js",
-            "label": "Node.js",
-            "source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nconst templates = await rewrite.templates.list(projectId, { limit: 20 });"
-          },
-          {
-            "lang": "Go",
-            "label": "Go",
-            "source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n\n  _, err = client.Templates.List(context.Background(), projectID, &rewrite.RESTGetListTemplatesQueryParams{Limit: 20})\n  if err != nil { log.Fatal(err) }\n}"
-          },
-          {
-            "lang": "Python",
-            "label": "Python",
-            "source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'GET',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/templates',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n    },\n)\nprint(response.json())"
-          },
-          {
-            "lang": "Java",
-            "label": "Java",
-            "source": "var client = HttpClient.newHttpClient();\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"GET\", HttpRequest.BodyPublishers.noBody());\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
-          },
-          {
-            "lang": "PHP",
-            "label": "PHP",
-            "source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n]);\n$response = curl_exec($ch);\ncurl_close($ch);"
-          },
-          {
-            "lang": "Ruby",
-            "label": "Ruby",
-            "source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/templates')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Get.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nresponse = http.request(request)\nputs response.body"
-          },
-          {
-            "lang": "Kotlin",
-            "label": "Kotlin",
-            "source": "val client = OkHttpClient()\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"GET\", null)\n  .build()\nval response = client.newCall(request).execute()"
-          },
-          {
-            "lang": "Swift",
-            "label": "Swift",
-            "source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/templates\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"GET\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
-          },
-          {
-            "lang": "C#",
-            "label": "C#",
-            "source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Get;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
-          },
-          {
-            "lang": "cURL",
-            "label": "cURL",
-            "source": "curl -X GET 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'"
-          }
-        ]
-      },
-      "post": {
-        "tags": [
-          "Templates"
-        ],
-        "operationId": "createProjectTemplate",
-        "summary": "Crear plantilla",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Snowflake"
-            },
-            "description": "ID unico del proyecto.",
-            "example": "748395130237498368"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TemplateCreateBody"
-              },
-              "examples": {
-                "request": {
-                  "summary": "Ejemplo de solicitud",
-                  "value": {
-                    "name": "order_shipped",
-                    "content": "Hi {{first_name}}, your order {{order_id}} is on the way.",
-                    "variables": [
-                      {
-                        "name": "first_name",
-                        "fallback": "customer"
-                      },
-                      {
-                        "name": "order_id",
-                        "fallback": "0000"
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Respuesta",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TemplateCreateResponse"
-                },
-                "examples": {
-                  "response": {
-                    "summary": "Ejemplo de respuesta",
-                    "value": {
-                      "ok": true,
-                      "data": {
-                        "id": "748395130237498600",
-                        "createdAt": "2026-02-19T20:01:09.000Z"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "description": "Crea una plantilla reutilizable con variables y valores de fallback.",
-        "x-codeSamples": [
-          {
-            "lang": "Node.js",
-            "label": "Node.js",
-            "source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nconst template = await rewrite.templates.create({\n  project: projectId,\n  name: 'order_shipped',\n  content: 'Hi {{first_name}}, your order {{order_id}} is on the way.',\n  variables: [\n    { name: 'first_name', fallback: 'customer' },\n    { name: 'order_id', fallback: '0000' },\n  ],\n});"
-          },
-          {
-            "lang": "Go",
-            "label": "Go",
-            "source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n  firstNameFallback := \"customer\"\n  orderIDFallback := \"0000\"\n\n  _, err = client.Templates.Create(context.Background(), rewrite.CreateTemplateOptions{\n    Project: projectID,\n    RESTPostCreateTemplateBody: rewrite.RESTPostCreateTemplateBody{\n      Name: \"order_shipped\",\n      Variables: []rewrite.APITemplateVariable{\n        {Name: \"first_name\", Fallback: &firstNameFallback},\n        {Name: \"order_id\", Fallback: &orderIDFallback},\n      },\n    },\n  })\n  if err != nil { log.Fatal(err) }\n}"
-          },
-          {
-            "lang": "Python",
-            "label": "Python",
-            "source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'POST',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/templates',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n        'Content-Type': 'application/json',\n    },\n    json={\n      \"name\": \"order_shipped\",\n      \"content\": \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n      \"variables\": [\n        {\n          \"name\": \"first_name\",\n          \"fallback\": \"customer\"\n        },\n        {\n          \"name\": \"order_id\",\n          \"fallback\": \"0000\"\n        }\n      ]\n    },\n)\nprint(response.json())"
-          },
-          {
-            "lang": "Java",
-            "label": "Java",
-            "source": "var client = HttpClient.newHttpClient();\nvar json = \"{\\\"name\\\":\\\"order_shipped\\\",\\\"content\\\":\\\"Hi {{first_name}}, your order {{order_id}} is on the way.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\";\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .header(\"Content-Type\", \"application/json\")\n  .method(\"POST\", HttpRequest.BodyPublishers.ofString(json));\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
-          },
-          {
-            "lang": "PHP",
-            "label": "PHP",
-            "source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n  'Content-Type: application/json',\n]);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, '{\"name\":\"order_shipped\",\"content\":\"Hi {{first_name}}, your order {{order_id}} is on the way.\",\"variables\":[{\"name\":\"first_name\",\"fallback\":\"customer\"},{\"name\":\"order_id\",\"fallback\":\"0000\"}]}');\n$response = curl_exec($ch);\ncurl_close($ch);"
-          },
-          {
-            "lang": "Ruby",
-            "label": "Ruby",
-            "source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/templates')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Post.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nrequest['Content-Type'] = 'application/json'\nrequest.body = \"{\\\"name\\\":\\\"order_shipped\\\",\\\"content\\\":\\\"Hi {{first_name}}, your order {{order_id}} is on the way.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\"\nresponse = http.request(request)\nputs response.body"
-          },
-          {
-            "lang": "Kotlin",
-            "label": "Kotlin",
-            "source": "val client = OkHttpClient()\nval body = \"{\\\"name\\\":\\\"order_shipped\\\",\\\"content\\\":\\\"Hi {{first_name}}, your order {{order_id}} is on the way.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\".toRequestBody(\"application/json\".toMediaType())\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"POST\", body)\n  .build()\nval response = client.newCall(request).execute()"
-          },
-          {
-            "lang": "Swift",
-            "label": "Swift",
-            "source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/templates\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"POST\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nrequest.setValue(\"application/json\", forHTTPHeaderField: \"Content-Type\")\nrequest.httpBody = \"{\\\"name\\\":\\\"order_shipped\\\",\\\"content\\\":\\\"Hi {{first_name}}, your order {{order_id}} is on the way.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\".data(using: .utf8)\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
-          },
-          {
-            "lang": "C#",
-            "label": "C#",
-            "source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Post;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nrequest.Content = new StringContent(\"{\\\"name\\\":\\\"order_shipped\\\",\\\"content\\\":\\\"Hi {{first_name}}, your order {{order_id}} is on the way.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\", Encoding.UTF8, \"application/json\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
-          },
-          {
-            "lang": "cURL",
-            "label": "cURL",
-            "source": "curl -X POST 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'\n  -H 'Content-Type: application/json' \\\\\n  -d '{\"name\":\"order_shipped\",\"content\":\"Hi {{first_name}}, your order {{order_id}} is on the way.\",\"variables\":[{\"name\":\"first_name\",\"fallback\":\"customer\"},{\"name\":\"order_id\",\"fallback\":\"0000\"}]}'"
-          }
-        ]
-      }
-    },
-    "/projects/{id}/templates/{identifier}": {
-      "get": {
-        "tags": [
-          "Templates"
-        ],
-        "operationId": "getProjectTemplate",
-        "summary": "Obtener plantilla",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Snowflake"
-            },
-            "description": "ID unico del proyecto.",
-            "example": "748395130237498368"
-          },
-          {
-            "name": "identifier",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID unico de plantilla o nombre unico de plantilla.",
-            "example": "order_shipped"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Respuesta",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TemplateResponse"
-                },
-                "examples": {
-                  "response": {
-                    "summary": "Ejemplo de respuesta",
-                    "value": {
-                      "ok": true,
-                      "data": {
-                        "id": "748395130237498500",
-                        "name": "order_shipped",
-                        "content": "Hi {{first_name}}, your order {{order_id}} is on the way.",
-                        "variables": [
-                          {
-                            "name": "first_name",
-                            "fallback": "customer"
-                          }
-                        ],
-                        "createdAt": "2026-02-19T18:00:00.000Z"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "description": "Obtiene una plantilla por identificador (template id o template name).",
-        "x-codeSamples": [
-          {
-            "lang": "Node.js",
-            "label": "Node.js",
-            "source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\nconst templateIdentifier = 'order_shipped';\n\nconst template = await rewrite.templates.get(templateIdentifier, projectId);"
-          },
-          {
-            "lang": "Go",
-            "label": "Go",
-            "source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n  templateIdentifier := \"order_shipped\"\n\n  _, err = client.Templates.Get(context.Background(), templateIdentifier, projectID)\n  if err != nil { log.Fatal(err) }\n}"
-          },
-          {
-            "lang": "Python",
-            "label": "Python",
-            "source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'GET',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/order_shipped',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n    },\n)\nprint(response.json())"
-          },
-          {
-            "lang": "Java",
-            "label": "Java",
-            "source": "var client = HttpClient.newHttpClient();\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/order_shipped\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"GET\", HttpRequest.BodyPublishers.noBody());\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
-          },
-          {
-            "lang": "PHP",
-            "label": "PHP",
-            "source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/order_shipped');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n]);\n$response = curl_exec($ch);\ncurl_close($ch);"
-          },
-          {
-            "lang": "Ruby",
-            "label": "Ruby",
-            "source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/templates/order_shipped')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Get.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nresponse = http.request(request)\nputs response.body"
-          },
-          {
-            "lang": "Kotlin",
-            "label": "Kotlin",
-            "source": "val client = OkHttpClient()\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/order_shipped\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"GET\", null)\n  .build()\nval response = client.newCall(request).execute()"
-          },
-          {
-            "lang": "Swift",
-            "label": "Swift",
-            "source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/order_shipped\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"GET\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
-          },
-          {
-            "lang": "C#",
-            "label": "C#",
-            "source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Get;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/order_shipped\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
-          },
-          {
-            "lang": "cURL",
-            "label": "cURL",
-            "source": "curl -X GET 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/order_shipped' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'"
-          }
-        ]
-      }
-    },
-    "/projects/{id}/templates/{templateId}": {
-      "patch": {
-        "tags": [
-          "Templates"
-        ],
-        "operationId": "updateProjectTemplate",
-        "summary": "Actualizar plantilla",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Snowflake"
-            },
-            "description": "ID unico del proyecto.",
-            "example": "748395130237498368"
-          },
-          {
-            "name": "templateId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Snowflake"
-            },
-            "description": "ID unico de plantilla.",
-            "example": "748395130237498500"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TemplateUpdateBody"
-              },
-              "examples": {
-                "request": {
-                  "summary": "Ejemplo de solicitud",
-                  "value": {
-                    "content": "Hi {{first_name}}, your package {{order_id}} has shipped.",
-                    "variables": [
-                      {
-                        "name": "first_name",
-                        "fallback": "customer"
-                      },
-                      {
-                        "name": "order_id",
-                        "fallback": "0000"
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Respuesta",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/OkEmptyResponse"
-                },
-                "examples": {
-                  "response": {
-                    "summary": "Ejemplo de respuesta",
-                    "value": {
-                      "ok": true,
-                      "data": null
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "description": "Actualiza parcialmente el contenido de la plantilla y/o sus variables.",
-        "x-codeSamples": [
-          {
-            "lang": "Node.js",
-            "label": "Node.js",
-            "source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\nconst templateId = '748395130237498500';\n\nconst template = await rewrite.templates.update(templateId, {\n  project: projectId,\n  name: 'order_shipped',\n  content: 'Hi {{first_name}}, your package {{order_id}} has shipped.',\n  variables: [\n    { name: 'first_name', fallback: 'customer' },\n    { name: 'order_id', fallback: '0000' },\n  ],\n});"
-          },
-          {
-            "lang": "Go",
-            "label": "Go",
-            "source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n  templateID := \"748395130237498500\"\n  firstNameFallback := \"customer\"\n  orderIDFallback := \"0000\"\n\n  _, err = client.Templates.Update(context.Background(), templateID, rewrite.UpdateTemplateOptions{\n    Project: projectID,\n    RESTPostCreateTemplateBody: rewrite.RESTPostCreateTemplateBody{\n      Name: \"order_shipped\",\n      Variables: []rewrite.APITemplateVariable{\n        {Name: \"first_name\", Fallback: &firstNameFallback},\n        {Name: \"order_id\", Fallback: &orderIDFallback},\n      },\n    },\n  })\n  if err != nil { log.Fatal(err) }\n}"
-          },
-          {
-            "lang": "Python",
-            "label": "Python",
-            "source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'PATCH',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n        'Content-Type': 'application/json',\n    },\n    json={\n      \"content\": \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n      \"variables\": [\n        {\n          \"name\": \"first_name\",\n          \"fallback\": \"customer\"\n        },\n        {\n          \"name\": \"order_id\",\n          \"fallback\": \"0000\"\n        }\n      ]\n    },\n)\nprint(response.json())"
-          },
-          {
-            "lang": "Java",
-            "label": "Java",
-            "source": "var client = HttpClient.newHttpClient();\nvar json = \"{\\\"content\\\":\\\"Hi {{first_name}}, your package {{order_id}} has shipped.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\";\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .header(\"Content-Type\", \"application/json\")\n  .method(\"PATCH\", HttpRequest.BodyPublishers.ofString(json));\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
-          },
-          {
-            "lang": "PHP",
-            "label": "PHP",
-            "source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n  'Content-Type: application/json',\n]);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, '{\"content\":\"Hi {{first_name}}, your package {{order_id}} has shipped.\",\"variables\":[{\"name\":\"first_name\",\"fallback\":\"customer\"},{\"name\":\"order_id\",\"fallback\":\"0000\"}]}');\n$response = curl_exec($ch);\ncurl_close($ch);"
-          },
-          {
-            "lang": "Ruby",
-            "label": "Ruby",
-            "source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Patch.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nrequest['Content-Type'] = 'application/json'\nrequest.body = \"{\\\"content\\\":\\\"Hi {{first_name}}, your package {{order_id}} has shipped.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\"\nresponse = http.request(request)\nputs response.body"
-          },
-          {
-            "lang": "Kotlin",
-            "label": "Kotlin",
-            "source": "val client = OkHttpClient()\nval body = \"{\\\"content\\\":\\\"Hi {{first_name}}, your package {{order_id}} has shipped.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\".toRequestBody(\"application/json\".toMediaType())\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"PATCH\", body)\n  .build()\nval response = client.newCall(request).execute()"
-          },
-          {
-            "lang": "Swift",
-            "label": "Swift",
-            "source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"PATCH\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nrequest.setValue(\"application/json\", forHTTPHeaderField: \"Content-Type\")\nrequest.httpBody = \"{\\\"content\\\":\\\"Hi {{first_name}}, your package {{order_id}} has shipped.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\".data(using: .utf8)\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
-          },
-          {
-            "lang": "C#",
-            "label": "C#",
-            "source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Patch;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nrequest.Content = new StringContent(\"{\\\"content\\\":\\\"Hi {{first_name}}, your package {{order_id}} has shipped.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\", Encoding.UTF8, \"application/json\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
-          },
-          {
-            "lang": "cURL",
-            "label": "cURL",
-            "source": "curl -X PATCH 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'\n  -H 'Content-Type: application/json' \\\\\n  -d '{\"content\":\"Hi {{first_name}}, your package {{order_id}} has shipped.\",\"variables\":[{\"name\":\"first_name\",\"fallback\":\"customer\"},{\"name\":\"order_id\",\"fallback\":\"0000\"}]}'"
-          }
-        ]
-      },
-      "delete": {
-        "tags": [
-          "Templates"
-        ],
-        "operationId": "deleteProjectTemplate",
-        "summary": "Eliminar plantilla",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Snowflake"
-            },
-            "description": "ID unico del proyecto.",
-            "example": "748395130237498368"
-          },
-          {
-            "name": "templateId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Snowflake"
-            },
-            "description": "ID unico de plantilla.",
-            "example": "748395130237498500"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Respuesta",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/OkEmptyResponse"
-                },
-                "examples": {
-                  "response": {
-                    "summary": "Ejemplo de respuesta",
-                    "value": {
-                      "ok": true,
-                      "data": null
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "description": "Elimina una plantilla del proyecto.",
-        "x-codeSamples": [
-          {
-            "lang": "Node.js",
-            "label": "Node.js",
-            "source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\nconst templateId = '748395130237498500';\n\nawait rewrite.templates.delete(templateId, projectId);"
-          },
-          {
-            "lang": "Go",
-            "label": "Go",
-            "source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n  templateID := \"748395130237498500\"\n\n  if err := client.Templates.Delete(context.Background(), templateID, projectID); err != nil {\n    log.Fatal(err)\n  }\n}"
-          },
-          {
-            "lang": "Python",
-            "label": "Python",
-            "source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'DELETE',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n    },\n)\nprint(response.json())"
-          },
-          {
-            "lang": "Java",
-            "label": "Java",
-            "source": "var client = HttpClient.newHttpClient();\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"DELETE\", HttpRequest.BodyPublishers.noBody());\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
-          },
-          {
-            "lang": "PHP",
-            "label": "PHP",
-            "source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n]);\n$response = curl_exec($ch);\ncurl_close($ch);"
-          },
-          {
-            "lang": "Ruby",
-            "label": "Ruby",
-            "source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Delete.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nresponse = http.request(request)\nputs response.body"
-          },
-          {
-            "lang": "Kotlin",
-            "label": "Kotlin",
-            "source": "val client = OkHttpClient()\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"DELETE\", null)\n  .build()\nval response = client.newCall(request).execute()"
-          },
-          {
-            "lang": "Swift",
-            "label": "Swift",
-            "source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"DELETE\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
-          },
-          {
-            "lang": "C#",
-            "label": "C#",
-            "source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Delete;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
-          },
-          {
-            "lang": "cURL",
-            "label": "cURL",
-            "source": "curl -X DELETE 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'"
-          }
-        ]
-      }
-    }
-  },
-  "components": {
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "API Key",
-        "description": "Envia tu API key como `Authorization: Bearer <api-key>`."
-      }
-    },
-    "parameters": {
-      "after": {
-        "name": "after",
-        "in": "query",
-        "required": false,
-        "schema": {
-          "$ref": "#/components/schemas/Snowflake"
-        },
-        "description": "ID unico de cursor para obtener elementos despues de este valor.",
-        "example": "748395130237498588"
-      },
-      "before": {
-        "name": "before",
-        "in": "query",
-        "required": false,
-        "schema": {
-          "$ref": "#/components/schemas/Snowflake"
-        },
-        "description": "ID unico de cursor para obtener elementos antes de este valor.",
-        "example": "748395130237498399"
-      },
-      "limit": {
-        "name": "limit",
-        "in": "query",
-        "required": false,
-        "schema": {
-          "type": "integer",
-          "minimum": 2,
-          "maximum": 100
-        },
-        "description": "Numero de elementos a devolver.",
-        "example": 20
-      }
-    },
-    "responses": {},
-    "schemas": {
-      "Snowflake": {
-        "type": "string",
-        "pattern": "^[0-9]{1,32}$",
-        "description": "ID unico del recurso.",
-        "example": "748395130237498368"
-      },
-      "Cursor": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "persist"
-        ],
-        "properties": {
-          "persist": {
-            "type": "boolean",
-            "description": "Indica si se puede solicitar otra pagina usando `next`."
-          },
-          "next": {
-            "$ref": "#/components/schemas/Snowflake",
-            "description": "Cursor para solicitar la siguiente pagina (`after`)."
-          }
-        },
-        "description": "Metadatos de cursor para respuestas paginadas.",
-        "example": {
-          "persist": true,
-          "next": "748395130237498399"
-        }
-      },
-      "OkEmptyResponse": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "ok",
-          "data"
-        ],
-        "properties": {
-          "ok": {
-            "type": "boolean",
-            "const": true,
-            "description": "campo ok."
-          },
-          "data": {
-            "type": "null",
-            "description": "Esta respuesta no devuelve datos."
-          }
-        },
-        "description": "Respuesta exitosa. Este endpoint no devuelve datos.",
-        "example": {
-          "ok": true,
-          "data": null
-        }
-      },
-      "TemplateVariable": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "name",
-          "fallback"
-        ],
-        "properties": {
-          "name": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 32,
-            "description": "Clave de variable usada por tu app."
-          },
-          "fallback": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 64,
-            "description": "Valor por defecto cuando tu payload no proporciona la variable."
-          }
-        },
-        "description": "Variable con nombre usada en el cuerpo de la plantilla.",
-        "example": {
-          "name": "first_name",
-          "fallback": "customer"
-        }
-      },
-      "Template": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "id",
-          "name",
-          "createdAt"
-        ],
-        "properties": {
-          "id": {
-            "$ref": "#/components/schemas/Snowflake",
-            "description": "ID unico de plantilla."
-          },
-          "name": {
-            "type": "string",
-            "description": "campo name."
-          },
-          "content": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "campo content."
-          },
-          "variables": {
-            "type": [
-              "array",
-              "null"
-            ],
-            "items": {
-              "$ref": "#/components/schemas/TemplateVariable"
-            },
-            "description": "campo variables."
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Marca de tiempo de creacion UTC."
-          }
-        },
-        "description": "Metadatos de plantilla y snapshot opcional de contenido.",
-        "example": {
-          "id": "748395130237498500",
-          "name": "order_shipped",
-          "content": "Hi {{first_name}}, your order {{order_id}} is on the way.",
-          "variables": [
-            {
-              "name": "first_name",
-              "fallback": "customer"
-            }
-          ],
-          "createdAt": "2026-02-19T18:00:00.000Z"
-        }
-      },
-      "TemplatesListResponse": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "ok",
-          "data",
-          "cursor"
-        ],
-        "properties": {
-          "ok": {
-            "type": "boolean",
-            "const": true,
-            "description": "campo ok."
-          },
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Template"
-            },
-            "description": "campo data."
-          },
-          "cursor": {
-            "$ref": "#/components/schemas/Cursor",
-            "description": "campo cursor."
-          }
-        },
-        "example": {
-          "ok": true,
-          "data": [
-            {
-              "id": "748395130237498500",
-              "name": "order_shipped",
-              "content": "Hi {{first_name}}, your order {{order_id}} is on the way.",
-              "variables": [
-                {
-                  "name": "first_name",
-                  "fallback": "customer"
-                }
-              ],
-              "createdAt": "2026-02-19T18:00:00.000Z"
-            }
-          ],
-          "cursor": {
-            "persist": true,
-            "next": "748395130237498588"
-          }
-        },
-        "description": "Esquema TemplatesListResponse."
-      },
-      "TemplateResponse": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "ok",
-          "data"
-        ],
-        "properties": {
-          "ok": {
-            "type": "boolean",
-            "const": true,
-            "description": "campo ok."
-          },
-          "data": {
-            "$ref": "#/components/schemas/Template",
-            "description": "campo data."
-          }
-        },
-        "example": {
-          "ok": true,
-          "data": {
-            "id": "748395130237498500",
-            "name": "order_shipped",
-            "content": "Hi {{first_name}}, your order {{order_id}} is on the way.",
-            "variables": [
-              {
-                "name": "first_name",
-                "fallback": "customer"
-              }
-            ],
-            "createdAt": "2026-02-19T18:00:00.000Z"
-          }
-        },
-        "description": "Esquema TemplateResponse."
-      },
-      "TemplateCreateBody": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "name",
-          "content",
-          "variables"
-        ],
-        "properties": {
-          "name": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 32,
-            "description": "campo name."
-          },
-          "content": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 1024,
-            "description": "campo content."
-          },
-          "variables": {
-            "type": "array",
-            "minItems": 1,
-            "maxItems": 15,
-            "uniqueItems": true,
-            "items": {
-              "$ref": "#/components/schemas/TemplateVariable"
-            },
-            "description": "campo variables."
-          }
-        },
-        "description": "Crea una plantilla SMS reutilizable.",
-        "example": {
-          "name": "order_shipped",
-          "content": "Hi {{first_name}}, your order {{order_id}} is on the way.",
-          "variables": [
-            {
-              "name": "first_name",
-              "fallback": "customer"
-            },
-            {
-              "name": "order_id",
-              "fallback": "0000"
-            }
-          ]
-        }
-      },
-      "TemplateUpdateBody": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "content": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 1024,
-            "description": "campo content."
-          },
-          "variables": {
-            "type": "array",
-            "minItems": 1,
-            "maxItems": 15,
-            "uniqueItems": true,
-            "items": {
-              "$ref": "#/components/schemas/TemplateVariable"
-            },
-            "description": "campo variables."
-          }
-        },
-        "description": "Actualiza contenido de plantilla y/o variables.",
-        "example": {
-          "content": "Hi {{first_name}}, your package {{order_id}} has shipped.",
-          "variables": [
-            {
-              "name": "first_name",
-              "fallback": "customer"
-            },
-            {
-              "name": "order_id",
-              "fallback": "0000"
-            }
-          ]
-        }
-      },
-      "TemplateCreateResponse": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "ok",
-          "data"
-        ],
-        "properties": {
-          "ok": {
-            "type": "boolean",
-            "const": true,
-            "description": "campo ok."
-          },
-          "data": {
-            "type": "object",
-            "required": [
-              "id",
-              "createdAt"
-            ],
-            "properties": {
-              "id": {
-                "$ref": "#/components/schemas/Snowflake"
-              },
-              "createdAt": {
-                "type": "string",
-                "format": "date-time"
-              }
-            },
-            "description": "campo data."
-          }
-        },
-        "example": {
-          "ok": true,
-          "data": {
-            "id": "748395130237498600",
-            "createdAt": "2026-02-19T20:01:09.000Z"
-          }
-        },
-        "description": "Esquema TemplateCreateResponse."
-      }
-    }
-  },
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ]
+	"openapi": "3.1.0",
+	"info": {
+		"title": "API de Rewrite",
+		"version": "1.0.0",
+		"summary": "Referencia de la API de proyectos (Projects, API Keys, Templates, Webhooks).",
+		"description": "Referencia publica completa de los endpoints de nivel proyecto en Rewrite API v1.\n\nTodos los endpoints devuelven un sobre consistente (`ok`, `data` y `cursor` opcional).\nUsa bearer token (API key) con scopes o sesion autenticada por cookie."
+	},
+	"servers": [
+		{
+			"url": "https://api.rewritetoday.com/v1",
+			"description": "Produccion"
+		}
+	],
+	"tags": [
+		{
+			"name": "Templates",
+			"description": "Gestiona plantillas SMS reutilizables con variables."
+		}
+	],
+	"paths": {
+		"/projects/{id}/templates": {
+			"get": {
+				"tags": ["Templates"],
+				"operationId": "listProjectTemplates",
+				"summary": "Listar plantillas",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/Snowflake"
+						},
+						"description": "ID unico del proyecto.",
+						"example": "748395130237498368"
+					},
+					{
+						"$ref": "#/components/parameters/after"
+					},
+					{
+						"$ref": "#/components/parameters/before"
+					},
+					{
+						"$ref": "#/components/parameters/limit"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Respuesta",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TemplatesListResponse"
+								},
+								"examples": {
+									"response": {
+										"summary": "Ejemplo de respuesta",
+										"value": {
+											"ok": true,
+											"data": [
+												{
+													"id": "748395130237498500",
+													"name": "order_shipped",
+													"content": "Hi {{first_name}}, your order {{order_id}} is on the way.",
+													"variables": [
+														{
+															"name": "first_name",
+															"fallback": "customer"
+														}
+													],
+													"createdAt": "2026-02-19T18:00:00.000Z"
+												}
+											],
+											"cursor": {
+												"persist": true,
+												"next": "748395130237498588"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"description": "Lista las plantillas del proyecto con paginacion por cursor.\n\nUsa `limit`, `after` y `before` para paginar.",
+				"x-codeSamples": [
+					{
+						"lang": "Node.js",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nconst templates = await rewrite.templates.list(projectId, { limit: 20 });"
+					},
+					{
+						"lang": "Go",
+						"label": "Go",
+						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n\n  _, err = client.Templates.List(context.Background(), projectID, &rewrite.RESTGetListTemplatesQueryParams{Limit: 20})\n  if err != nil { log.Fatal(err) }\n}"
+					},
+					{
+						"lang": "Python",
+						"label": "Python",
+						"source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'GET',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/templates',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n    },\n)\nprint(response.json())"
+					},
+					{
+						"lang": "Java",
+						"label": "Java",
+						"source": "var client = HttpClient.newHttpClient();\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"GET\", HttpRequest.BodyPublishers.noBody());\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
+					},
+					{
+						"lang": "PHP",
+						"label": "PHP",
+						"source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n]);\n$response = curl_exec($ch);\ncurl_close($ch);"
+					},
+					{
+						"lang": "Ruby",
+						"label": "Ruby",
+						"source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/templates')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Get.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nresponse = http.request(request)\nputs response.body"
+					},
+					{
+						"lang": "Kotlin",
+						"label": "Kotlin",
+						"source": "val client = OkHttpClient()\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"GET\", null)\n  .build()\nval response = client.newCall(request).execute()"
+					},
+					{
+						"lang": "Swift",
+						"label": "Swift",
+						"source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/templates\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"GET\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
+					},
+					{
+						"lang": "C#",
+						"label": "C#",
+						"source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Get;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
+					},
+					{
+						"lang": "cURL",
+						"label": "cURL",
+						"source": "curl -X GET 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'"
+					}
+				]
+			},
+			"post": {
+				"tags": ["Templates"],
+				"operationId": "createProjectTemplate",
+				"summary": "Crear plantilla",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/Snowflake"
+						},
+						"description": "ID unico del proyecto.",
+						"example": "748395130237498368"
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/TemplateCreateBody"
+							},
+							"examples": {
+								"request": {
+									"summary": "Ejemplo de solicitud",
+									"value": {
+										"name": "order_shipped",
+										"content": "Hi {{first_name}}, your order {{order_id}} is on the way.",
+										"variables": [
+											{
+												"name": "first_name",
+												"fallback": "customer"
+											},
+											{
+												"name": "order_id",
+												"fallback": "0000"
+											}
+										]
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Respuesta",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TemplateCreateResponse"
+								},
+								"examples": {
+									"response": {
+										"summary": "Ejemplo de respuesta",
+										"value": {
+											"ok": true,
+											"data": {
+												"id": "748395130237498600",
+												"createdAt": "2026-02-19T20:01:09.000Z"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"description": "Crea una plantilla reutilizable con variables y valores de fallback.",
+				"x-codeSamples": [
+					{
+						"lang": "Node.js",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nconst template = await rewrite.templates.create({\n  project: projectId,\n  name: 'order_shipped',\n  content: 'Hi {{first_name}}, your order {{order_id}} is on the way.',\n  variables: [\n    { name: 'first_name', fallback: 'customer' },\n    { name: 'order_id', fallback: '0000' },\n  ],\n});"
+					},
+					{
+						"lang": "Go",
+						"label": "Go",
+						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n  firstNameFallback := \"customer\"\n  orderIDFallback := \"0000\"\n\n  _, err = client.Templates.Create(context.Background(), rewrite.CreateTemplateOptions{\n    Project: projectID,\n    RESTPostCreateTemplateBody: rewrite.RESTPostCreateTemplateBody{\n      Name: \"order_shipped\",\n      Variables: []rewrite.APITemplateVariable{\n        {Name: \"first_name\", Fallback: &firstNameFallback},\n        {Name: \"order_id\", Fallback: &orderIDFallback},\n      },\n    },\n  })\n  if err != nil { log.Fatal(err) }\n}"
+					},
+					{
+						"lang": "Python",
+						"label": "Python",
+						"source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'POST',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/templates',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n        'Content-Type': 'application/json',\n    },\n    json={\n      \"name\": \"order_shipped\",\n      \"content\": \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n      \"variables\": [\n        {\n          \"name\": \"first_name\",\n          \"fallback\": \"customer\"\n        },\n        {\n          \"name\": \"order_id\",\n          \"fallback\": \"0000\"\n        }\n      ]\n    },\n)\nprint(response.json())"
+					},
+					{
+						"lang": "Java",
+						"label": "Java",
+						"source": "var client = HttpClient.newHttpClient();\nvar json = \"{\\\"name\\\":\\\"order_shipped\\\",\\\"content\\\":\\\"Hi {{first_name}}, your order {{order_id}} is on the way.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\";\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .header(\"Content-Type\", \"application/json\")\n  .method(\"POST\", HttpRequest.BodyPublishers.ofString(json));\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
+					},
+					{
+						"lang": "PHP",
+						"label": "PHP",
+						"source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n  'Content-Type: application/json',\n]);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, '{\"name\":\"order_shipped\",\"content\":\"Hi {{first_name}}, your order {{order_id}} is on the way.\",\"variables\":[{\"name\":\"first_name\",\"fallback\":\"customer\"},{\"name\":\"order_id\",\"fallback\":\"0000\"}]}');\n$response = curl_exec($ch);\ncurl_close($ch);"
+					},
+					{
+						"lang": "Ruby",
+						"label": "Ruby",
+						"source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/templates')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Post.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nrequest['Content-Type'] = 'application/json'\nrequest.body = \"{\\\"name\\\":\\\"order_shipped\\\",\\\"content\\\":\\\"Hi {{first_name}}, your order {{order_id}} is on the way.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\"\nresponse = http.request(request)\nputs response.body"
+					},
+					{
+						"lang": "Kotlin",
+						"label": "Kotlin",
+						"source": "val client = OkHttpClient()\nval body = \"{\\\"name\\\":\\\"order_shipped\\\",\\\"content\\\":\\\"Hi {{first_name}}, your order {{order_id}} is on the way.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\".toRequestBody(\"application/json\".toMediaType())\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"POST\", body)\n  .build()\nval response = client.newCall(request).execute()"
+					},
+					{
+						"lang": "Swift",
+						"label": "Swift",
+						"source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/templates\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"POST\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nrequest.setValue(\"application/json\", forHTTPHeaderField: \"Content-Type\")\nrequest.httpBody = \"{\\\"name\\\":\\\"order_shipped\\\",\\\"content\\\":\\\"Hi {{first_name}}, your order {{order_id}} is on the way.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\".data(using: .utf8)\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
+					},
+					{
+						"lang": "C#",
+						"label": "C#",
+						"source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Post;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nrequest.Content = new StringContent(\"{\\\"name\\\":\\\"order_shipped\\\",\\\"content\\\":\\\"Hi {{first_name}}, your order {{order_id}} is on the way.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\", Encoding.UTF8, \"application/json\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
+					},
+					{
+						"lang": "cURL",
+						"label": "cURL",
+						"source": "curl -X POST 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'\n  -H 'Content-Type: application/json' \\\\\n  -d '{\"name\":\"order_shipped\",\"content\":\"Hi {{first_name}}, your order {{order_id}} is on the way.\",\"variables\":[{\"name\":\"first_name\",\"fallback\":\"customer\"},{\"name\":\"order_id\",\"fallback\":\"0000\"}]}'"
+					}
+				]
+			}
+		},
+		"/projects/{id}/templates/{identifier}": {
+			"get": {
+				"tags": ["Templates"],
+				"operationId": "getProjectTemplate",
+				"summary": "Obtener plantilla",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/Snowflake"
+						},
+						"description": "ID unico del proyecto.",
+						"example": "748395130237498368"
+					},
+					{
+						"name": "identifier",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "ID unico de plantilla o nombre unico de plantilla.",
+						"example": "order_shipped"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Respuesta",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TemplateResponse"
+								},
+								"examples": {
+									"response": {
+										"summary": "Ejemplo de respuesta",
+										"value": {
+											"ok": true,
+											"data": {
+												"id": "748395130237498500",
+												"name": "order_shipped",
+												"content": "Hi {{first_name}}, your order {{order_id}} is on the way.",
+												"variables": [
+													{
+														"name": "first_name",
+														"fallback": "customer"
+													}
+												],
+												"createdAt": "2026-02-19T18:00:00.000Z"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"description": "Obtiene una plantilla por identificador (template id o template name).",
+				"x-codeSamples": [
+					{
+						"lang": "Node.js",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\nconst templateIdentifier = 'order_shipped';\n\nconst template = await rewrite.templates.get(templateIdentifier, projectId);"
+					},
+					{
+						"lang": "Go",
+						"label": "Go",
+						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n  templateIdentifier := \"order_shipped\"\n\n  _, err = client.Templates.Get(context.Background(), templateIdentifier, projectID)\n  if err != nil { log.Fatal(err) }\n}"
+					},
+					{
+						"lang": "Python",
+						"label": "Python",
+						"source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'GET',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/order_shipped',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n    },\n)\nprint(response.json())"
+					},
+					{
+						"lang": "Java",
+						"label": "Java",
+						"source": "var client = HttpClient.newHttpClient();\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/order_shipped\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"GET\", HttpRequest.BodyPublishers.noBody());\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
+					},
+					{
+						"lang": "PHP",
+						"label": "PHP",
+						"source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/order_shipped');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n]);\n$response = curl_exec($ch);\ncurl_close($ch);"
+					},
+					{
+						"lang": "Ruby",
+						"label": "Ruby",
+						"source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/templates/order_shipped')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Get.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nresponse = http.request(request)\nputs response.body"
+					},
+					{
+						"lang": "Kotlin",
+						"label": "Kotlin",
+						"source": "val client = OkHttpClient()\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/order_shipped\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"GET\", null)\n  .build()\nval response = client.newCall(request).execute()"
+					},
+					{
+						"lang": "Swift",
+						"label": "Swift",
+						"source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/order_shipped\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"GET\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
+					},
+					{
+						"lang": "C#",
+						"label": "C#",
+						"source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Get;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/order_shipped\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
+					},
+					{
+						"lang": "cURL",
+						"label": "cURL",
+						"source": "curl -X GET 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/order_shipped' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'"
+					}
+				]
+			}
+		},
+		"/projects/{id}/templates/{templateId}": {
+			"patch": {
+				"tags": ["Templates"],
+				"operationId": "updateProjectTemplate",
+				"summary": "Actualizar plantilla",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/Snowflake"
+						},
+						"description": "ID unico del proyecto.",
+						"example": "748395130237498368"
+					},
+					{
+						"name": "templateId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/Snowflake"
+						},
+						"description": "ID unico de plantilla.",
+						"example": "748395130237498500"
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/TemplateUpdateBody"
+							},
+							"examples": {
+								"request": {
+									"summary": "Ejemplo de solicitud",
+									"value": {
+										"content": "Hi {{first_name}}, your package {{order_id}} has shipped.",
+										"variables": [
+											{
+												"name": "first_name",
+												"fallback": "customer"
+											},
+											{
+												"name": "order_id",
+												"fallback": "0000"
+											}
+										]
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Respuesta",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OkEmptyResponse"
+								},
+								"examples": {
+									"response": {
+										"summary": "Ejemplo de respuesta",
+										"value": {
+											"ok": true,
+											"data": null
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"description": "Actualiza parcialmente el contenido de la plantilla y/o sus variables.",
+				"x-codeSamples": [
+					{
+						"lang": "Node.js",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\nconst templateId = '748395130237498500';\n\nconst template = await rewrite.templates.update(templateId, {\n  project: projectId,\n  name: 'order_shipped',\n  content: 'Hi {{first_name}}, your package {{order_id}} has shipped.',\n  variables: [\n    { name: 'first_name', fallback: 'customer' },\n    { name: 'order_id', fallback: '0000' },\n  ],\n});"
+					},
+					{
+						"lang": "Go",
+						"label": "Go",
+						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n  templateID := \"748395130237498500\"\n  firstNameFallback := \"customer\"\n  orderIDFallback := \"0000\"\n\n  _, err = client.Templates.Update(context.Background(), templateID, rewrite.UpdateTemplateOptions{\n    Project: projectID,\n    RESTPostCreateTemplateBody: rewrite.RESTPostCreateTemplateBody{\n      Name: \"order_shipped\",\n      Variables: []rewrite.APITemplateVariable{\n        {Name: \"first_name\", Fallback: &firstNameFallback},\n        {Name: \"order_id\", Fallback: &orderIDFallback},\n      },\n    },\n  })\n  if err != nil { log.Fatal(err) }\n}"
+					},
+					{
+						"lang": "Python",
+						"label": "Python",
+						"source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'PATCH',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n        'Content-Type': 'application/json',\n    },\n    json={\n      \"content\": \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n      \"variables\": [\n        {\n          \"name\": \"first_name\",\n          \"fallback\": \"customer\"\n        },\n        {\n          \"name\": \"order_id\",\n          \"fallback\": \"0000\"\n        }\n      ]\n    },\n)\nprint(response.json())"
+					},
+					{
+						"lang": "Java",
+						"label": "Java",
+						"source": "var client = HttpClient.newHttpClient();\nvar json = \"{\\\"content\\\":\\\"Hi {{first_name}}, your package {{order_id}} has shipped.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\";\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .header(\"Content-Type\", \"application/json\")\n  .method(\"PATCH\", HttpRequest.BodyPublishers.ofString(json));\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
+					},
+					{
+						"lang": "PHP",
+						"label": "PHP",
+						"source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n  'Content-Type: application/json',\n]);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, '{\"content\":\"Hi {{first_name}}, your package {{order_id}} has shipped.\",\"variables\":[{\"name\":\"first_name\",\"fallback\":\"customer\"},{\"name\":\"order_id\",\"fallback\":\"0000\"}]}');\n$response = curl_exec($ch);\ncurl_close($ch);"
+					},
+					{
+						"lang": "Ruby",
+						"label": "Ruby",
+						"source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Patch.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nrequest['Content-Type'] = 'application/json'\nrequest.body = \"{\\\"content\\\":\\\"Hi {{first_name}}, your package {{order_id}} has shipped.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\"\nresponse = http.request(request)\nputs response.body"
+					},
+					{
+						"lang": "Kotlin",
+						"label": "Kotlin",
+						"source": "val client = OkHttpClient()\nval body = \"{\\\"content\\\":\\\"Hi {{first_name}}, your package {{order_id}} has shipped.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\".toRequestBody(\"application/json\".toMediaType())\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"PATCH\", body)\n  .build()\nval response = client.newCall(request).execute()"
+					},
+					{
+						"lang": "Swift",
+						"label": "Swift",
+						"source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"PATCH\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nrequest.setValue(\"application/json\", forHTTPHeaderField: \"Content-Type\")\nrequest.httpBody = \"{\\\"content\\\":\\\"Hi {{first_name}}, your package {{order_id}} has shipped.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\".data(using: .utf8)\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
+					},
+					{
+						"lang": "C#",
+						"label": "C#",
+						"source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Patch;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nrequest.Content = new StringContent(\"{\\\"content\\\":\\\"Hi {{first_name}}, your package {{order_id}} has shipped.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\", Encoding.UTF8, \"application/json\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
+					},
+					{
+						"lang": "cURL",
+						"label": "cURL",
+						"source": "curl -X PATCH 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'\n  -H 'Content-Type: application/json' \\\\\n  -d '{\"content\":\"Hi {{first_name}}, your package {{order_id}} has shipped.\",\"variables\":[{\"name\":\"first_name\",\"fallback\":\"customer\"},{\"name\":\"order_id\",\"fallback\":\"0000\"}]}'"
+					}
+				]
+			},
+			"delete": {
+				"tags": ["Templates"],
+				"operationId": "deleteProjectTemplate",
+				"summary": "Eliminar plantilla",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/Snowflake"
+						},
+						"description": "ID unico del proyecto.",
+						"example": "748395130237498368"
+					},
+					{
+						"name": "templateId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/Snowflake"
+						},
+						"description": "ID unico de plantilla.",
+						"example": "748395130237498500"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Respuesta",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OkEmptyResponse"
+								},
+								"examples": {
+									"response": {
+										"summary": "Ejemplo de respuesta",
+										"value": {
+											"ok": true,
+											"data": null
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"description": "Elimina una plantilla del proyecto.",
+				"x-codeSamples": [
+					{
+						"lang": "Node.js",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\nconst templateId = '748395130237498500';\n\nawait rewrite.templates.delete(templateId, projectId);"
+					},
+					{
+						"lang": "Go",
+						"label": "Go",
+						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n  templateID := \"748395130237498500\"\n\n  if err := client.Templates.Delete(context.Background(), templateID, projectID); err != nil {\n    log.Fatal(err)\n  }\n}"
+					},
+					{
+						"lang": "Python",
+						"label": "Python",
+						"source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'DELETE',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n    },\n)\nprint(response.json())"
+					},
+					{
+						"lang": "Java",
+						"label": "Java",
+						"source": "var client = HttpClient.newHttpClient();\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"DELETE\", HttpRequest.BodyPublishers.noBody());\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
+					},
+					{
+						"lang": "PHP",
+						"label": "PHP",
+						"source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n]);\n$response = curl_exec($ch);\ncurl_close($ch);"
+					},
+					{
+						"lang": "Ruby",
+						"label": "Ruby",
+						"source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Delete.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nresponse = http.request(request)\nputs response.body"
+					},
+					{
+						"lang": "Kotlin",
+						"label": "Kotlin",
+						"source": "val client = OkHttpClient()\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"DELETE\", null)\n  .build()\nval response = client.newCall(request).execute()"
+					},
+					{
+						"lang": "Swift",
+						"label": "Swift",
+						"source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"DELETE\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
+					},
+					{
+						"lang": "C#",
+						"label": "C#",
+						"source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Delete;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
+					},
+					{
+						"lang": "cURL",
+						"label": "cURL",
+						"source": "curl -X DELETE 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'"
+					}
+				]
+			}
+		}
+	},
+	"components": {
+		"securitySchemes": {
+			"bearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "API Key",
+				"description": "Envia tu API key como `Authorization: Bearer <api-key>`."
+			}
+		},
+		"parameters": {
+			"after": {
+				"name": "after",
+				"in": "query",
+				"required": false,
+				"schema": {
+					"$ref": "#/components/schemas/Snowflake"
+				},
+				"description": "ID unico de cursor para obtener elementos despues de este valor.",
+				"example": "748395130237498588"
+			},
+			"before": {
+				"name": "before",
+				"in": "query",
+				"required": false,
+				"schema": {
+					"$ref": "#/components/schemas/Snowflake"
+				},
+				"description": "ID unico de cursor para obtener elementos antes de este valor.",
+				"example": "748395130237498399"
+			},
+			"limit": {
+				"name": "limit",
+				"in": "query",
+				"required": false,
+				"schema": {
+					"type": "integer",
+					"minimum": 2,
+					"maximum": 100
+				},
+				"description": "Numero de elementos a devolver.",
+				"example": 20
+			}
+		},
+		"responses": {},
+		"schemas": {
+			"Snowflake": {
+				"type": "string",
+				"pattern": "^[0-9]{1,32}$",
+				"description": "ID unico del recurso.",
+				"example": "748395130237498368"
+			},
+			"Cursor": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["persist"],
+				"properties": {
+					"persist": {
+						"type": "boolean",
+						"description": "Indica si se puede solicitar otra pagina usando `next`."
+					},
+					"next": {
+						"$ref": "#/components/schemas/Snowflake",
+						"description": "Cursor para solicitar la siguiente pagina (`after`)."
+					}
+				},
+				"description": "Metadatos de cursor para respuestas paginadas.",
+				"example": {
+					"persist": true,
+					"next": "748395130237498399"
+				}
+			},
+			"OkEmptyResponse": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["ok", "data"],
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true,
+						"description": "campo ok."
+					},
+					"data": {
+						"type": "null",
+						"description": "Esta respuesta no devuelve datos."
+					}
+				},
+				"description": "Respuesta exitosa. Este endpoint no devuelve datos.",
+				"example": {
+					"ok": true,
+					"data": null
+				}
+			},
+			"TemplateVariable": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["name", "fallback"],
+				"properties": {
+					"name": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 32,
+						"description": "Clave de variable usada por tu app."
+					},
+					"fallback": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 64,
+						"description": "Valor por defecto cuando tu payload no proporciona la variable."
+					}
+				},
+				"description": "Variable con nombre usada en el cuerpo de la plantilla.",
+				"example": {
+					"name": "first_name",
+					"fallback": "customer"
+				}
+			},
+			"Template": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["id", "name", "createdAt"],
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Snowflake",
+						"description": "ID unico de plantilla."
+					},
+					"name": {
+						"type": "string",
+						"description": "campo name."
+					},
+					"content": {
+						"type": ["string", "null"],
+						"description": "campo content."
+					},
+					"variables": {
+						"type": ["array", "null"],
+						"items": {
+							"$ref": "#/components/schemas/TemplateVariable"
+						},
+						"description": "campo variables."
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Marca de tiempo de creacion UTC."
+					}
+				},
+				"description": "Metadatos de plantilla y snapshot opcional de contenido.",
+				"example": {
+					"id": "748395130237498500",
+					"name": "order_shipped",
+					"content": "Hi {{first_name}}, your order {{order_id}} is on the way.",
+					"variables": [
+						{
+							"name": "first_name",
+							"fallback": "customer"
+						}
+					],
+					"createdAt": "2026-02-19T18:00:00.000Z"
+				}
+			},
+			"TemplatesListResponse": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["ok", "data", "cursor"],
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true,
+						"description": "campo ok."
+					},
+					"data": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/Template"
+						},
+						"description": "campo data."
+					},
+					"cursor": {
+						"$ref": "#/components/schemas/Cursor",
+						"description": "campo cursor."
+					}
+				},
+				"example": {
+					"ok": true,
+					"data": [
+						{
+							"id": "748395130237498500",
+							"name": "order_shipped",
+							"content": "Hi {{first_name}}, your order {{order_id}} is on the way.",
+							"variables": [
+								{
+									"name": "first_name",
+									"fallback": "customer"
+								}
+							],
+							"createdAt": "2026-02-19T18:00:00.000Z"
+						}
+					],
+					"cursor": {
+						"persist": true,
+						"next": "748395130237498588"
+					}
+				},
+				"description": "Esquema TemplatesListResponse."
+			},
+			"TemplateResponse": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["ok", "data"],
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true,
+						"description": "campo ok."
+					},
+					"data": {
+						"$ref": "#/components/schemas/Template",
+						"description": "campo data."
+					}
+				},
+				"example": {
+					"ok": true,
+					"data": {
+						"id": "748395130237498500",
+						"name": "order_shipped",
+						"content": "Hi {{first_name}}, your order {{order_id}} is on the way.",
+						"variables": [
+							{
+								"name": "first_name",
+								"fallback": "customer"
+							}
+						],
+						"createdAt": "2026-02-19T18:00:00.000Z"
+					}
+				},
+				"description": "Esquema TemplateResponse."
+			},
+			"TemplateCreateBody": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["name", "content", "variables"],
+				"properties": {
+					"name": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 32,
+						"description": "campo name."
+					},
+					"content": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 1024,
+						"description": "campo content."
+					},
+					"variables": {
+						"type": "array",
+						"minItems": 1,
+						"maxItems": 15,
+						"uniqueItems": true,
+						"items": {
+							"$ref": "#/components/schemas/TemplateVariable"
+						},
+						"description": "campo variables."
+					}
+				},
+				"description": "Crea una plantilla SMS reutilizable.",
+				"example": {
+					"name": "order_shipped",
+					"content": "Hi {{first_name}}, your order {{order_id}} is on the way.",
+					"variables": [
+						{
+							"name": "first_name",
+							"fallback": "customer"
+						},
+						{
+							"name": "order_id",
+							"fallback": "0000"
+						}
+					]
+				}
+			},
+			"TemplateUpdateBody": {
+				"type": "object",
+				"additionalProperties": false,
+				"properties": {
+					"content": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 1024,
+						"description": "campo content."
+					},
+					"variables": {
+						"type": "array",
+						"minItems": 1,
+						"maxItems": 15,
+						"uniqueItems": true,
+						"items": {
+							"$ref": "#/components/schemas/TemplateVariable"
+						},
+						"description": "campo variables."
+					}
+				},
+				"description": "Actualiza contenido de plantilla y/o variables.",
+				"example": {
+					"content": "Hi {{first_name}}, your package {{order_id}} has shipped.",
+					"variables": [
+						{
+							"name": "first_name",
+							"fallback": "customer"
+						},
+						{
+							"name": "order_id",
+							"fallback": "0000"
+						}
+					]
+				}
+			},
+			"TemplateCreateResponse": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["ok", "data"],
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true,
+						"description": "campo ok."
+					},
+					"data": {
+						"type": "object",
+						"required": ["id", "createdAt"],
+						"properties": {
+							"id": {
+								"$ref": "#/components/schemas/Snowflake"
+							},
+							"createdAt": {
+								"type": "string",
+								"format": "date-time"
+							}
+						},
+						"description": "campo data."
+					}
+				},
+				"example": {
+					"ok": true,
+					"data": {
+						"id": "748395130237498600",
+						"createdAt": "2026-02-19T20:01:09.000Z"
+					}
+				},
+				"description": "Esquema TemplateCreateResponse."
+			}
+		}
+	},
+	"security": [
+		{
+			"bearerAuth": []
+		}
+	]
 }
