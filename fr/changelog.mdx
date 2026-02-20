@@ -1,0 +1,81 @@
+---
+title: "Changelog"
+mode: "custom"
+description: "Historique officiel des releases Rewrite, organise par package et pret pour evoluer."
+---
+
+<div
+  style={{
+    position: "relative",
+    padding: "88px 20px 56px",
+    borderBottom: "1px solid rgba(248, 248, 248, 0.08)",
+    background:
+      "radial-gradient(1200px 600px at 15% -15%, rgba(255, 255, 255, 0.08), transparent 45%), linear-gradient(180deg, #050505 0%, #070707 55%, #050505 100%)",
+  }}
+>
+  <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+    <h1
+      style={{
+        fontSize: "42px",
+        lineHeight: "1.05",
+        fontWeight: 650,
+        letterSpacing: "-0.03em",
+        margin: "0 0 12px",
+        color: "#fff",
+      }}
+    >
+      Changelog Rewrite
+    </h1>
+    <p
+      style={{
+        maxWidth: 760,
+        margin: "0",
+        fontSize: 18,
+        lineHeight: 1.65,
+        color: "rgba(255,255,255,0.78)",
+        fontWeight: 350,
+      }}
+    >
+      Retrouvez chaque release avec un contexte clair: ce qui est sorti, ce qui
+      a evolue et ce qui merite une attention particuliere sur API, CLI, SDKs et Webhooks.
+    </p>
+  </div>
+</div>
+
+<div style={{ padding: "44px 20px 8px", maxWidth: "1100px", margin: "0 auto" }}>
+  <h2 style={{ fontSize: 24, fontWeight: 650, letterSpacing: "-0.02em", margin: "0 0 14px", color: "#fff" }}>
+    Dernieres versions
+  </h2>
+
+  <Tabs sync={false}>
+    <Tab title="Toutes">
+      <div style={{ marginBottom: 14, color: "rgba(255,255,255,0.72)" }}>Vue consolidee par package.</div>
+      <ul>
+        <li><strong>v1.0.0 API:</strong> Publication de la structure initiale du changelog pour des releases coherentes.</li>
+        <li><strong>v1.0.0 CLI:</strong> Axe dedie aux evolutions de commandes, auth et configuration.</li>
+        <li><strong>v1.0.0 SDKs:</strong> Espace reserve aux changements par langage et aux ameliorations DX.</li>
+        <li><strong>v1.0.0 Webhooks:</strong> Axe dedie aux evenements de livraison et au comportement de retry.</li>
+      </ul>
+    </Tab>
+    <Tab title="API">
+      <ul>
+        <li><strong>v1.0.0:</strong> Publication de la structure initiale du changelog pour des releases coherentes.</li>
+      </ul>
+    </Tab>
+    <Tab title="CLI">
+      <ul>
+        <li><strong>v1.0.0:</strong> Axe dedie aux evolutions de commandes, auth et configuration.</li>
+      </ul>
+    </Tab>
+    <Tab title="SDKs">
+      <ul>
+        <li><strong>v1.0.0:</strong> Espace reserve aux changements par langage et aux ameliorations DX.</li>
+      </ul>
+    </Tab>
+    <Tab title="Webhooks">
+      <ul>
+        <li><strong>v1.0.0:</strong> Axe dedie aux evenements de livraison et au comportement de retry.</li>
+      </ul>
+    </Tab>
+  </Tabs>
+</div>

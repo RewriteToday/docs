@@ -1,0 +1,81 @@
+---
+title: "Changelog"
+mode: "custom"
+description: "Historial oficial de releases de Rewrite, organizado por paquete y listo para crecer."
+---
+
+<div
+  style={{
+    position: "relative",
+    padding: "88px 20px 56px",
+    borderBottom: "1px solid rgba(248, 248, 248, 0.08)",
+    background:
+      "radial-gradient(1200px 600px at 15% -15%, rgba(255, 255, 255, 0.08), transparent 45%), linear-gradient(180deg, #050505 0%, #070707 55%, #050505 100%)",
+  }}
+>
+  <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+    <h1
+      style={{
+        fontSize: "42px",
+        lineHeight: "1.05",
+        fontWeight: 650,
+        letterSpacing: "-0.03em",
+        margin: "0 0 12px",
+        color: "#fff",
+      }}
+    >
+      Changelog de Rewrite
+    </h1>
+    <p
+      style={{
+        maxWidth: 760,
+        margin: "0",
+        fontSize: 18,
+        lineHeight: 1.65,
+        color: "rgba(255,255,255,0.78)",
+        fontWeight: 350,
+      }}
+    >
+      Aqui encuentras cada release con contexto claro: que se lanzo, que mejoro
+      y que requiere mas atencion en API, CLI, SDKs y Webhooks.
+    </p>
+  </div>
+</div>
+
+<div style={{ padding: "44px 20px 8px", maxWidth: "1100px", margin: "0 auto" }}>
+  <h2 style={{ fontSize: 24, fontWeight: 650, letterSpacing: "-0.02em", margin: "0 0 14px", color: "#fff" }}>
+    Ultimas versiones
+  </h2>
+
+  <Tabs sync={false}>
+    <Tab title="Todas">
+      <div style={{ marginBottom: 14, color: "rgba(255,255,255,0.72)" }}>Vista consolidada por paquete.</div>
+      <ul>
+        <li><strong>v1.0.0 API:</strong> Publicacion de la estructura inicial de changelog para releases consistentes.</li>
+        <li><strong>v1.0.0 CLI:</strong> Carril dedicado para cambios de comandos, auth y configuracion.</li>
+        <li><strong>v1.0.0 SDKs:</strong> Espacio reservado para cambios por lenguaje y mejoras de DX.</li>
+        <li><strong>v1.0.0 Webhooks:</strong> Carril dedicado para eventos de entrega y comportamiento de reintentos.</li>
+      </ul>
+    </Tab>
+    <Tab title="API">
+      <ul>
+        <li><strong>v1.0.0:</strong> Publicacion de la estructura inicial de changelog para releases consistentes.</li>
+      </ul>
+    </Tab>
+    <Tab title="CLI">
+      <ul>
+        <li><strong>v1.0.0:</strong> Carril dedicado para cambios de comandos, auth y configuracion.</li>
+      </ul>
+    </Tab>
+    <Tab title="SDKs">
+      <ul>
+        <li><strong>v1.0.0:</strong> Espacio reservado para cambios por lenguaje y mejoras de DX.</li>
+      </ul>
+    </Tab>
+    <Tab title="Webhooks">
+      <ul>
+        <li><strong>v1.0.0:</strong> Carril dedicado para eventos de entrega y comportamiento de reintentos.</li>
+      </ul>
+    </Tab>
+  </Tabs>
+</div>

@@ -253,6 +253,10 @@
 								]
 							}
 						]
+					},
+					{
+						"tab": "Changelog",
+						"pages": ["en/changelog"]
 					}
 				]
 			},
@@ -443,6 +447,10 @@
 								]
 							}
 						]
+					},
+					{
+						"tab": "Changelog",
+						"pages": ["pt-br/changelog"]
 					}
 				]
 			},
@@ -629,6 +637,10 @@
 								]
 							}
 						]
+					},
+					{
+						"tab": "Changelog",
+						"pages": ["es/changelog"]
 					}
 				]
 			},
@@ -815,6 +827,10 @@
 								]
 							}
 						]
+					},
+					{
+						"tab": "Changelog",
+						"pages": ["fr/changelog"]
 					}
 				]
 			}

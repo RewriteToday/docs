@@ -1,0 +1,111 @@
+---
+title: "Changelog"
+mode: "custom"
+description: "Historico oficial de releases da Rewrite, organizado por pacote e pronto para evoluir."
+---
+
+<div
+  style={{
+    position: "relative",
+    padding: "88px 20px 56px",
+    borderBottom: "1px solid rgba(248, 248, 248, 0.08)",
+    background:
+      "radial-gradient(1200px 600px at 15% -15%, rgba(255, 255, 255, 0.08), transparent 45%), linear-gradient(180deg, #050505 0%, #070707 55%, #050505 100%)",
+  }}
+>
+  <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+    <div
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 8,
+        padding: "6px 12px",
+        borderRadius: 999,
+        border: "1px solid rgba(255,255,255,0.14)",
+        background: "rgba(255,255,255,0.03)",
+        color: "rgba(255,255,255,0.75)",
+        fontSize: 12,
+        marginBottom: 14,
+      }}
+    >
+      Release notes oficiais
+    </div>
+
+    <h1
+      style={{
+        fontSize: "42px",
+        lineHeight: "1.05",
+        fontWeight: 650,
+        letterSpacing: "-0.03em",
+        margin: "0 0 12px",
+        color: "#fff",
+      }}
+    >
+      Changelog da Rewrite
+    </h1>
+
+    <p
+      style={{
+        maxWidth: 760,
+        margin: "0",
+        fontSize: 18,
+        lineHeight: 1.65,
+        color: "rgba(255,255,255,0.78)",
+        fontWeight: 350,
+      }}
+    >
+      Aqui voce acompanha cada release da Rewrite com contexto claro: o que entrou,
+      o que evoluiu e o que exige atencao em API, CLI, SDKs e Webhooks.
+    </p>
+  </div>
+</div>
+
+<div style={{ padding: "44px 20px 8px", maxWidth: "1100px", margin: "0 auto" }}>
+  <h2
+    style={{
+      fontSize: 24,
+      fontWeight: 650,
+      letterSpacing: "-0.02em",
+      margin: "0 0 14px",
+      color: "#fff",
+    }}
+  >
+    Ultimas versoes
+  </h2>
+
+  <p style={{ margin: "0 0 22px", color: "rgba(255,255,255,0.68)" }}>
+    Mantenha sempre as releases mais recentes no topo para facilitar leitura e auditoria.
+  </p>
+
+  <Tabs sync={false}>
+    <Tab title="Todas">
+      <div style={{ marginBottom: 14, color: "rgba(255,255,255,0.72)" }}>Visao consolidada por pacote.</div>
+      <ul>
+        <li><strong>v1.0.0 API:</strong> Estrutura inicial de changelog publicada para acompanhar releases com consistencia.</li>
+        <li><strong>v1.0.0 CLI:</strong> Trilha dedicada para evolucoes de comandos, auth e configuracao.</li>
+        <li><strong>v1.0.0 SDKs:</strong> Espaco reservado para mudancas por linguagem e melhorias de DX.</li>
+        <li><strong>v1.0.0 Webhooks:</strong> Area dedicada para eventos, entrega e comportamento de retentativas.</li>
+      </ul>
+    </Tab>
+    <Tab title="API">
+      <ul>
+        <li><strong>v1.0.0:</strong> Estrutura inicial de changelog publicada para acompanhar releases com consistencia.</li>
+      </ul>
+    </Tab>
+    <Tab title="CLI">
+      <ul>
+        <li><strong>v1.0.0:</strong> Trilha dedicada para evolucoes de comandos, auth e configuracao.</li>
+      </ul>
+    </Tab>
+    <Tab title="SDKs">
+      <ul>
+        <li><strong>v1.0.0:</strong> Espaco reservado para mudancas por linguagem e melhorias de DX.</li>
+      </ul>
+    </Tab>
+    <Tab title="Webhooks">
+      <ul>
+        <li><strong>v1.0.0:</strong> Area dedicada para eventos, entrega e comportamento de retentativas.</li>
+      </ul>
+    </Tab>
+  </Tabs>
+</div>
