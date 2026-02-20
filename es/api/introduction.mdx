@@ -1,4 +1,132 @@
 ---
 title: Introduccion
-description: Aprende a usar la API de Rewrite.
+description: Resumen de la API, base URL, versionado, autorizacion y referencias clave para integrar Rewrite.
 ---
+
+# Resumen
+
+La API de Rewrite te permite enviar y gestionar SMS con un comportamiento predecible para produccion.
+
+Esta pagina cubre:
+
+- Base URL y modelo de versionado
+- Autenticacion via `Authorization: Bearer ...`
+- Convenciones de request/response
+- Enlaces a limites, cuota, reintentos y paginacion
+
+<CardGroup cols={2}>
+  <Card title="Base URL" icon="globe" color="#C9CBD1">
+    Todas las solicitudes van a `https://api.rewritetoday.com`.
+  </Card>
+  <Card title="Versionado" icon="git-branch" color="#C9CBD1">
+    Usa el prefijo de version en la ruta (`/v1`) para integraciones estables.
+  </Card>
+  <Card title="Auth" icon="key-round" color="#C9CBD1">
+    Envia tu API key en el header `Authorization` como token Bearer.
+  </Card>
+  <Card title="Formato de respuesta" icon="braces" color="#C9CBD1">
+    Los payloads de request y response usan JSON.
+  </Card>
+</CardGroup>
+
+## Base URL
+
+Usa este host para todos los endpoints de API:
+
+```text
+https://api.rewritetoday.com
+```
+
+Ejemplo de endpoint para crear mensaje:
+
+```text
+https://api.rewritetoday.com/v1/messages
+```
+
+<Info>
+Usa solo HTTPS. No envies API keys por canales inseguros.
+</Info>
+
+## Versionado
+
+Rewrite versiona endpoints en la ruta URL.
+
+Version documentada actual:
+
+- `v1`
+
+Reglas de versionado:
+
+- Cambios backward-compatible pueden salir dentro de la misma version.
+- Cambios breaking se publican en una nueva ruta de version.
+- Mantén la version explicita en todos los endpoints hardcodeados.
+
+## Autenticacion
+
+Autentica cada solicitud con una API key secreta de tu dashboard de Rewrite.
+
+Header esperado:
+
+```http
+Authorization: Bearer rw_...
+```
+
+Ejemplo de solicitud:
+
+```bash
+curl -X POST "https://api.rewritetoday.com/v1/messages" \
+  -H "Authorization: Bearer rw_..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "+15551234567",
+    "message": "Your OTP code is 123456"
+  }'
+```
+
+<Warning>
+Nunca expongas API keys secretas en codigo de cliente web/mobile. Guardalas del lado servidor.
+</Warning>
+
+## Convenciones de API
+
+- `Content-Type`: usa `application/json` para payloads JSON.
+- Formato telefonico: usa E.164 (ejemplo: `+15551234567`).
+- Errores: respuestas no-2xx devuelven payloads de error estructurados.
+- Limites: alta presion de requests puede devolver `429` con headers de retry.
+
+## Referencias
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/es/api/quickstart" color="#C9CBD1">
+    Envia tu primer SMS y valida tu entorno.
+  </Card>
+  <Card title="Limites y cuota" icon="gauge" href="/es/api/limits" color="#C9CBD1">
+    Entiende rate limits, comportamiento de cuota y fronteras de facturacion.
+  </Card>
+  <Card title="Errores y reintentos" icon="shield-alert" href="/es/api/errors" color="#C9CBD1">
+    Maneja fallos de forma segura con retries, backoff e idempotencia.
+  </Card>
+  <Card title="Paginacion" icon="list" href="/es/api/pagination" color="#C9CBD1">
+    Recorre endpoints de lista con cursores.
+  </Card>
+  <Card title="i18n" icon="languages" href="/es/api/i18n" color="#C9CBD1">
+    Localiza mensajes y templates por locale de destino.
+  </Card>
+  <Card title="Deliverability" icon="send" href="/es/api/deliverability" color="#C9CBD1">
+    Mejora resultados de entrega con buenas practicas de sender y contenido.
+  </Card>
+</CardGroup>
+
+## FAQ
+
+<Accordion title="Donde creo API keys?">
+  Crea y gestiona API keys en la configuracion de cuenta de tu dashboard de Rewrite.
+</Accordion>
+
+<Accordion title="Debo poner la version en cada URL de request?">
+  Si. Mantén `/v1` explicito en cada endpoint para evitar ambiguedad y cambios inesperados.
+</Accordion>
+
+<Accordion title="Donde aprendo a manejar 429/rate-limit y agotamiento de cuota?">
+  Ve a [Limites de uso](/es/api/limits) para politica/cuota y [Errores y reintentos](/es/api/errors) para estrategia de retry.
+</Accordion>
