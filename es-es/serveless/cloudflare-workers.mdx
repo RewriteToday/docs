@@ -1,0 +1,101 @@
+---
+title: "Enviar con Cloudflare Workers"
+description: "Envía SMS con Rewrite desde un Cloudflare Worker."
+---
+
+Esta guía muestra cómo enviar SMS usando Rewrite dentro de un **Cloudflare Worker**.
+
+## 1. Instala el SDK
+
+```bash
+npm install @rewritejs/sdk
+```
+
+## 2. Configura variables de entorno
+
+Establece tu API key en los secretos de `wrangler.toml`:
+
+```bash
+wrangler secret put REWRITE_API_KEY
+```
+
+## 3. Crea el worker
+
+```ts src/index.ts
+import { Rewrite } from '@rewritejs/sdk';
+
+export interface Env {
+  REWRITE_API_KEY: string;
+}
+
+export default {
+  async fetch(request: Request, env: Env): Promise<Response> {
+    if (request.method !== 'POST') {
+      return Response.json(
+        {
+          ok: false,
+          code: 'METHOD_NOT_ALLOWED',
+          message: 'Método no permitido.',
+        },
+        { status: 405 }
+      );
+    }
+
+    const rewrite = new Rewrite(env.REWRITE_API_KEY);
+    const body = await request.json().catch(() => ({}));
+    const { to, message } = body as { to?: string; message?: string };
+
+    if (!to || !message) {
+      return Response.json(
+        {
+          ok: false,
+          code: 'INVALID_REQUEST',
+          message: '`to` y `message` son obligatorios.',
+        },
+        { status: 400 }
+      );
+    }
+
+    const { data, error } = await rewrite.messages.send({
+      to,
+      message,
+      metadata: { source: 'cloudflare-worker' },
+    });
+
+    if (error) {
+      return Response.json(
+        {
+          ok: false,
+          code: 'SMS_SEND_FAILED',
+          message: 'No se pudo enviar el SMS.',
+          errors: error,
+        },
+        { status: 422 }
+      );
+    }
+
+    return Response.json({ ok: true, data }, { status: 200 });
+  },
+};
+```
+
+## 4. Prueba localmente
+
+```bash
+curl -X POST "http://127.0.0.1:8787" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "+15551234567",
+    "message": "Hola desde Cloudflare + Rewrite"
+  }'
+```
+
+## 5. Despliega
+
+```bash
+wrangler deploy
+```
+
+<Info>
+Workers es ideal para envíos edge de baja latencia, pero aun así debes añadir reintentos e idempotencia en la capa de tu aplicación.
+</Info>

@@ -1,0 +1,207 @@
+---
+title: Errores y reintentos
+description: Entiende las respuestas de error de la API de Rewrite, limites de tasa, estrategia de reintentos, idempotencia y diseño de timeouts.
+---
+
+# Resumen
+
+Los flujos SMS de nivel de produccion necesitan manejo de errores predecible.
+
+Esta guia cubre:
+
+- Formato de respuesta de error de Rewrite
+- Headers de rate limit y tiempos de reintento
+- Estrategia segura de reintento con backoff + jitter
+- Patrones de idempotencia para evitar duplicados
+- Recomendaciones de timeout para clientes y workers
+
+## Formato de respuesta de error
+
+La mayoria de respuestas no-2xx siguen este formato:
+
+```json
+{
+  "ok": false,
+  "code": "INVALID_JSON_BODY",
+  "message": "Cuerpo JSON invalido.",
+  "errors": {
+    "detailed": {
+    	...
+    }
+  }
+}
+```
+
+## Estados HTTP comunes
+
+| Estado | Significado | Reintentar? |
+| --- | --- | --- |
+| `400` | Payload de solicitud invalido | No (corrige el payload primero) |
+| `401` | API key ausente/inválida | No (corrige autenticacion) |
+| `403` | Permiso denegado | No (corrige scopes/permisos) |
+| `404` | Recurso no encontrado | No (valida ID/ruta) |
+| `409` | Conflicto (incluye conflictos de idempotencia) | Normalmente no; revisa el codigo |
+| `422` | Validacion fallida | No (corrige la entrada) |
+| `429` | Rate limited | Si (espera y reintenta) |
+| `5xx` | Fallo transitorio de servidor/proveedor | Si (reintentos acotados) |
+
+## Headers de rate limit
+
+Cuando tu solicitud sea limitada, usa estos headers para decidir el tiempo de reintento:
+
+- `X-RateLimit-Global`: Indicador global de presion de solicitudes.
+- `X-RateLimit-Limit`: Limite de cuota de la ventana actual de solicitudes.
+- `X-RateLimit-Retry-After`: Segundos a esperar antes del siguiente reintento.
+- `Retry-After`: Hint estandar HTTP para reintento (segundos).
+
+<Info>
+Si existen `X-RateLimit-Retry-After` y `Retry-After`, usa el valor mayor.
+</Info>
+
+## Estrategia de reintento (recomendada)
+
+1. Reintenta solo en `429` y `5xx`.
+2. Respeta primero los headers de reintento.
+3. Si faltan headers, usa backoff exponencial con jitter.
+4. Limita reintentos con un maximo de intentos.
+5. Usa claves de idempotencia para todas las operaciones de creacion/envio.
+
+### Base de backoff
+
+- Intento 1: inmediato
+- Intento 2: `~1s` + jitter
+- Intento 3: `~2s` + jitter
+- Intento 4: `~4s` + jitter
+- Intento 5: `~8s` + jitter (max)
+
+Usa jitter aleatorio (por ejemplo, `0-250ms`) para evitar picos sincronizados de reintento.
+
+## Idempotencia
+
+Para endpoints de creacion/envio, define una clave de idempotencia por operacion lógica.
+
+Formato recomendado de clave:
+
+`<event-type>:<entity-id>:<attempt-window>`
+
+Ejemplo:
+
+`otp-send:user_123:2026-02-19T10:30`
+
+### Reglas
+
+- Reutiliza la misma clave al reintentar el *mismo* envio lógico.
+- Genera una clave nueva solo para una operacion realmente nueva.
+- Guarda el mapeo `{idempotency_key -> message_id}` para conciliacion.
+
+<Warning>
+Reintentar sin idempotencia puede producir entregas SMS duplicadas.
+</Warning>
+
+## Guia de timeouts
+
+Los timeouts deben ser menores que el limite duro de tu worker/funcion.
+
+Puntos de partida recomendados:
+
+- Connect timeout: `2-3s`
+- Read timeout: `8-12s`
+- Timeout total de solicitud: `10-15s`
+
+Para runtimes serverless, conserva presupuesto total de ejecucion para reintentos + logs + serializacion de respuesta.
+
+## Ejemplos de implementacion
+
+El ejemplo de Node.js usa `@rewritejs/rest`, que ofrece controles nativos de timeout y reintento por rate-limit.
+
+<CodeGroup>
+  ```ts Node.js
+  import { Routes } from '@rewritejs/types';
+  import { REST } from '@rewritejs/rest';
+
+  const rewrite = new REST({
+    secret: process.env.REWRITE_API_KEY,
+    timeout: 12_000,
+    onRateLimit({ global, limit, retryAfter }) {
+    	/* ... */
+    },
+    retry: {
+    	max: 7,
+      delay(attempt) {
+      	return ...
+      }
+    },
+  });
+
+  async function sendWithRetry(data, idempotencyKey) {
+    const response = await rewrite.post(Routes.messages.create(), {
+    	data,
+     	headers: {
+      	'X-Idempotency-Key': idempotencyKey
+      },
+    });
+
+    return response
+  }
+  ```
+
+  ```py Python
+  import os
+  import random
+  import time
+  import requests
+
+  API_KEY = os.environ["REWRITE_API_KEY"]
+
+  def send_with_retry(payload: dict, idempotency_key: str):
+    max_attempts = 5
+
+    for attempt in range(1, max_attempts + 1):
+      resp = requests.post(
+        "https://api.rewritetoday.com/v1/messages",
+        headers={
+          "Authorization": f"Bearer {API_KEY}",
+          "Content-Type": "application/json",
+          "Idempotency-Key": idempotency_key,
+        },
+        json=payload,
+        timeout=12,
+      )
+
+      if resp.ok:
+        return resp.json()
+
+      retryable = resp.status_code == 429 or resp.status_code >= 500
+      if (not retryable) or attempt == max_attempts:
+        resp.raise_for_status()
+
+      h1 = int(resp.headers.get("X-RateLimit-Retry-After", "0"))
+      h2 = int(resp.headers.get("Retry-After", "0"))
+      header_delay = max(h1, h2)
+
+      backoff = min(8, 2 ** (attempt - 1))
+      jitter = random.uniform(0, 0.25)
+      sleep_s = max(header_delay, backoff + jitter)
+
+      time.sleep(sleep_s)
+  ```
+
+  ```bash cURL (inspeccionar headers)
+  curl -i -X POST "https://api.rewritetoday.com/v1/messages" \
+    -H "Authorization: Bearer rw_..." \
+    -H "Idempotency-Key: otp-send:user_123:2026-02-19T10:30" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "to": "+15551234567",
+      "message": "Tu codigo OTP es 123456"
+    }'
+  ```
+</CodeGroup>
+
+## Checklist operativo
+
+- Registra `code`, `message`, status code y numero de intento.
+- Monitorea la tasa de `429` por endpoint y entorno.
+- Alerta en agotamiento sostenido de reintentos.
+- Mantén colas dead-letter/trabajos fallidos para reprocesamiento manual.
+- Mantén reintentos acotados; nunca un bucle sin limite.

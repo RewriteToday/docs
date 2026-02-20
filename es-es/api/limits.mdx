@@ -1,0 +1,123 @@
+---
+title: Limites de uso
+description: Entiende cuotas, precios PAYG, comportamiento de planes y gestion de limites para el uso de la API de Rewrite.
+---
+
+# Resumen
+
+Los limites de uso definen como se admite, factura y protege el tráfico en Rewrite.
+
+Esta pagina explica:
+
+- Como funcionan las cuotas de solicitudes y envios
+- Modelo de facturacion PAYG
+- Cuotas por plan y upgrades
+- Que ocurre al llegar a los limites
+- Buenas practicas operativas
+
+<CardGroup cols={2}>
+  <Card title="Modelo de cuota" icon="gauge" color="#C9CBD1">
+    Los limites se aplican para proteger la estabilidad de la plataforma y mantener alta calidad de entrega.
+  </Card>
+  <Card title="Modelo de facturacion" icon="coins" color="#C9CBD1">
+    La facturacion puede seguir precios PAYG o cuota incluida en plan segun la configuracion del workspace.
+  </Card>
+  <Card title="Control de tasa" icon="activity" color="#C9CBD1">
+    La presion de solicitudes se controla con rate limiting de API e hints de reintento.
+  </Card>
+  <Card title="Visibilidad" icon="chart-column" color="#C9CBD1">
+    El uso debe monitorizarse por endpoint, region y caso de uso del mensaje.
+  </Card>
+</CardGroup>
+
+## Modos de facturacion
+
+<Tabs sync={false}>
+  <Tab title="PAYG">
+    PAYG se factura por cada SMS enviado.
+
+    **Precio:** `0.20` por SMS (segun la politica comercial de Rewrite).
+
+    Este modelo es ideal para tráfico variable o cargas en fase inicial.
+  </Tab>
+  <Tab title="Planes">
+    Los planes incluyen cuota predefinida y condiciones comerciales.
+
+    Los niveles actuales, volumen incluido y comportamiento de sobreuso se publican en:
+    [rewritetoday.com/pricing](https://rewritetoday.com/pricing)
+  </Tab>
+</Tabs>
+
+## Dimensiones de cuota
+
+| Dimension | Que controla | Señal tipica |
+| --- | --- | --- |
+| Tasa de solicitudes API | Rafagas/throughput hacia endpoints API | `429` + headers de reintento |
+| Volumen de envio SMS | Capacidad total de envio segun facturacion | Contadores de uso en dashboard |
+| Ventana de cuota del plan | Volumen incluido en ciclo del plan | Estado de uso del plan |
+
+## Que pasa cuando alcanzas limites
+
+- La presion de API puede devolver `429` con hints de reintento.
+- Los nuevos envios pueden bloquearse al agotarse la cuota comercial.
+- El comportamiento depende del modo de facturacion y politica del workspace (PAYG vs plan).
+
+Guia relacionada: [Errores y reintentos](/es-es/api/errors)
+
+## Headers de rate limit a revisar
+
+Cuando recibas rate limit, revisa:
+
+- `X-RateLimit-Global`
+- `X-RateLimit-Limit`
+- `X-RateLimit-Retry-After`
+- `Retry-After`
+
+Si existen varios hints de reintento, usa el tiempo de espera mas conservador.
+
+## Patrones de arquitectura para respetar cuota
+
+<CardGroup cols={2}>
+  <Card title="Encola envios" icon="list-tree" color="#C9CBD1">
+    Bufferiza tráfico saliente y drena con concurrencia controlada.
+  </Card>
+  <Card title="Usa idempotencia" icon="repeat" color="#C9CBD1">
+    Evita SMS duplicados durante reintentos y fallos parciales.
+  </Card>
+  <Card title="Backoff + jitter" icon="timer" color="#C9CBD1">
+    Reintenta fallos transitorios de forma gradual para evitar picos sincronizados.
+  </Card>
+  <Card title="Segmenta trafico" icon="split" color="#C9CBD1">
+    Aisla tráfico OTP y no-OTP para proteger los flujos criticos.
+  </Card>
+</CardGroup>
+
+## Recomendaciones practicas de politica
+
+1. Define limites blandos internos antes de limites duros de cuota.
+2. Alerta cuando el uso llegue al 70%, 85% y 95% de la ventana.
+3. Reserva presupuesto para casos de uso de alta prioridad (ej.: OTP).
+4. Auto-limita campañas de menor prioridad durante picos de presion.
+5. Mantén colas dead-letter para envios que superen limites de politica.
+
+## Checklist de monitorizacion
+
+- Monitorea tasa de `429` por endpoint y entorno.
+- Monitorea ratios de envio exitoso, failed y undelivered por region.
+- Monitorea coste por caso de uso (`otp_login`, `alerts`, `marketing`).
+- Concilia contadores internos con resultados de proveedor/webhooks.
+- Revisa incidencias de cuota semanalmente y ajusta politicas de throttling.
+
+## FAQ
+
+<Accordion title="Donde veo valores de plan y cuotas actuales?">
+  Usa la pagina oficial de precios: [rewritetoday.com/pricing](https://rewritetoday.com/pricing).
+</Accordion>
+
+<Accordion title="Puedo combinar uso de plan y comportamiento PAYG?">
+  El comportamiento comercial depende de la configuracion del workspace. Revisa tu facturacion activa en la configuracion de cuenta.
+</Accordion>
+
+<Accordion title="Cual es el reintento mas seguro bajo presion de limites?">
+  Reintenta solo fallos transitorios, respeta headers de reintento y aplica backoff exponencial con jitter. Consulta [Errores y reintentos](/es-es/api/errors).
+</Accordion>

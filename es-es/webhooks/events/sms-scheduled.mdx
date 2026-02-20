@@ -1,0 +1,70 @@
+---
+title: "sms.scheduled"
+description: "Webhook activado cuando un SMS se acepta para entrega futura."
+---
+
+## Resumen
+
+El evento `sms.scheduled` ocurre cuando un SMS se crea con una hora de envío futura y Rewrite lo acepta.
+
+Usa este evento para:
+
+- Confirmar a usuarios el estado de programación
+- Alimentar paneles de cronología o campañas
+- Seguir volumen pendiente antes de ventanas de envío
+
+## Carga de ejemplo
+
+```json
+{
+  "type": "sms.scheduled",
+  "createdAt": "2026-02-14T19:41:12.126Z",
+  "id": "393821034567832125",
+  "data": {
+    "id": "733501234567890124",
+    "to": "+5511988888888",
+    "status": "SCHEDULED",
+    "provider": null,
+    "metadata": {
+      "campaign": "promo-weekend",
+      "tenantId": "acme-01"
+    }
+  }
+}
+```
+
+## Objeto del evento
+
+| Campo | Tipo | Descripción |
+| --- | --- | --- |
+| `type` | `string` | Identificador del evento. En esta página: `sms.scheduled`. |
+| `id` | `string` | ID único del evento de webhook. |
+| `createdAt` | `string` (ISO-8601) | Marca temporal del evento. |
+| `data` | `object` | Snapshot del SMS en el momento en que se programó. |
+
+## Objeto `data`
+
+| Campo | Tipo | Descripción |
+| --- | --- | --- |
+| `id` | `string` | ID del SMS en Rewrite. |
+| `to` | `string` | Número destinatario en formato E.164. |
+| `status` | `string` | Estado actual (`SCHEDULED`). |
+| `provider` | `string \| null` | Proveedor de entrega, normalmente `null` hasta la ejecución. |
+| `metadata` | `object \| null` | Metadatos adjuntos por tu aplicación. |
+
+## Manejo recomendado
+
+1. Valida y guarda el evento.
+2. Marca el mensaje como programado en tu BD.
+3. Muestra o notifica el ciclo de envío esperado en tu app.
+4. Mantén actualizaciones idempotentes para reintentos de webhook.
+
+<Info>
+Los mensajes programados pueden pasar después a `sms.queued`, `sms.delivered`, `sms.failed` o `sms.canceled`.
+</Info>
+
+## Eventos relacionados
+
+- [`sms.queued`](./sms-queued)
+- [`sms.canceled`](./sms-canceled)
+- [`sms.failed`](./sms-failed)

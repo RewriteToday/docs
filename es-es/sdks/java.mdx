@@ -1,0 +1,65 @@
+---
+title: Introducción
+description: Aprende a usar el SDK de Java para enviar SMS con la API.
+---
+
+## Antes de empezar
+
+- Necesitas Java 17+ instalado en tu máquina.
+- Necesitas una API key de Rewrite con los permisos requeridos.
+
+<Steps>
+    <Step title="Instala el SDK" titleSize="h3">
+        Agrega el SDK de Java a tu proyecto:
+
+        <CodeGroup>
+
+        ```xml Maven
+        <dependency>
+          <groupId>io.github.rewritetoday</groupId>
+          <artifactId>rewrite-java</artifactId>
+          <version>x.y.z</version>
+        </dependency>
+        ```
+
+        ```gradle Gradle
+        implementation("io.github.rewritetoday:rewrite-java:x.y.z")
+        ```
+
+        </CodeGroup>
+    </Step>
+
+    <Step title="Configura la variable de entorno REWRITE_API_KEY" titleSize="h3">
+    Configura tu API key de Rewrite en las variables de entorno.
+
+    ```text .env
+    REWRITE_API_KEY=rw...
+    ```
+    </Step>
+
+    <Step title="Envía tu SMS" titleSize="h3">
+    Ahora solo necesitas pasar el contenido del mensaje y listo.
+
+    ```java Main.java
+    import com.rewritetoday.sdk.Rewrite;
+    import com.rewritetoday.sdk.models.messages.SendOptions;
+
+    public class Main {
+      public static void main(String[] args) throws Exception {
+        var rewrite = new Rewrite(System.getenv("REWRITE_API_KEY"));
+
+        var params = SendOptions.builder()
+          .to("+1234567890")
+          .message("Your OTP code is 478201")
+          .build();
+
+        var message = rewrite.messages().send(params);
+        System.out.println(message);
+      }
+    }
+    ```
+
+    Puedes hacer de todo con nuestro SDK, sigue explorando.
+    </Step>
+</Steps>
+

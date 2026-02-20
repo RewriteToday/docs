@@ -1,0 +1,70 @@
+---
+title: "sms.queued"
+description: "Webhook activado cuando un SMS se acepta y se encola para entrega."
+---
+
+## Resumen
+
+El evento `sms.queued` se envía cuando Rewrite acepta una solicitud de SMS y la coloca en la cola de salida para entrega.
+
+Suele ser el primer evento del ciclo de vida de un mensaje y sirve para:
+
+- Confirmar de forma asíncrona que la solicitud API fue aceptada
+- Seguir el rendimiento y la latencia de la cola
+- Iniciar SLAs de entrega desde un punto consistente
+
+## Carga de ejemplo
+
+```json
+{
+  "type": "sms.queued",
+  "createdAt": "2026-02-14T19:41:12.126Z",
+  "id": "393821034567832123",
+  "data": {
+    "id": "733501234567890123",
+    "to": "+5511999999999",
+    "status": "QUEUED",
+    "provider": null,
+    "metadata": {
+      "campaign": "onboarding-2026",
+      "tenantId": "acme-01"
+    }
+  }
+}
+```
+
+## Objeto del evento
+
+| Campo | Tipo | Descripción |
+| --- | --- | --- |
+| `type` | `string` | Identificador del evento. En esta página: `sms.queued`. |
+| `id` | `string` | ID único del evento de webhook. Úsalo para idempotencia/deduplicación. |
+| `createdAt` | `string` (ISO-8601) | Marca temporal de cuando Rewrite creó el evento. |
+| `data` | `object` | Snapshot del recurso SMS en el momento de encolado. |
+
+## Objeto `data`
+
+| Campo | Tipo | Descripción |
+| --- | --- | --- |
+| `id` | `string` | ID único del SMS en Rewrite. |
+| `to` | `string` | Número de teléfono destinatario en E.164. |
+| `status` | `string` | Estado actual del SMS (`QUEUED`). |
+| `provider` | `string \| null` | Proveedor elegido para entrega. Puede ser `null` al encolar. |
+| `metadata` | `object \| null` | Metadatos enviados durante la creación del mensaje. |
+
+## Manejo recomendado
+
+1. Valida la firma del webhook.
+2. Persiste la carga en bruto + id de evento.
+3. Marca el mensaje como encolado en tu BD.
+4. Devuelve `200` rápido y procesa de forma asíncrona.
+
+<Info>
+Debes tratar la entrega de webhooks como al menos una vez y hacer el procesamiento idempotente.
+</Info>
+
+## Eventos relacionados
+
+- [`sms.delivered`](./sms-delivered)
+- [`sms.failed`](./sms-failed)
+- [`sms.canceled`](./sms-canceled)

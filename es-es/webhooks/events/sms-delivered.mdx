@@ -1,0 +1,70 @@
+---
+title: "sms.delivered"
+description: "Webhook activado cuando la operadora confirma la entrega al dispositivo del destinatario."
+---
+
+## Resumen
+
+El evento `sms.delivered` se envía después de que la operadora confirme que el SMS llegó al dispositivo del destinatario.
+
+Usa este evento para:
+
+- Marcar notificaciones como entregadas en tu producto
+- Activar flujos de negocio posteriores a la entrega
+- Medir rendimiento de entrega end-to-end
+
+## Carga de ejemplo
+
+```json
+{
+  "type": "sms.delivered",
+  "createdAt": "2026-02-14T19:41:28.909Z",
+  "id": "393821034567832124",
+  "data": {
+    "id": "733501234567890123",
+    "to": "+5511999999999",
+    "status": "DELIVERED",
+    "provider": "twilio",
+    "metadata": {
+      "campaign": "onboarding-2026",
+      "tenantId": "acme-01"
+    }
+  }
+}
+```
+
+## Objeto del evento
+
+| Campo | Tipo | Descripción |
+| --- | --- | --- |
+| `type` | `string` | Identificador del evento. En esta página: `sms.delivered`. |
+| `id` | `string` | ID único del evento de webhook para deduplicación. |
+| `createdAt` | `string` (ISO-8601) | Marca temporal de creación del evento. |
+| `data` | `object` | Snapshot final del mensaje al confirmar la entrega. |
+
+## Objeto `data`
+
+| Campo | Tipo | Descripción |
+| --- | --- | --- |
+| `id` | `string` | ID del SMS en Rewrite. |
+| `to` | `string` | Número destinatario en formato E.164. |
+| `status` | `string` | Estado actual (`DELIVERED`). |
+| `provider` | `string \| null` | Proveedor usado para la entrega. |
+| `metadata` | `object \| null` | Metadatos originales adjuntos al SMS. |
+
+## Manejo recomendado
+
+1. Valida la firma y guarda el evento.
+2. Actualiza el estado del mensaje a entregado.
+3. Emite evento interno de analítica/BI si hace falta.
+4. Responde con `200` en cuanto el estado quede confirmado.
+
+<Info>
+No asumas orden estricto entre reintentos. Usa marcas temporales y actualizaciones idempotentes.
+</Info>
+
+## Eventos relacionados
+
+- [`sms.queued`](./sms-queued)
+- [`sms.failed`](./sms-failed)
+- [`sms.scheduled`](./sms-scheduled)

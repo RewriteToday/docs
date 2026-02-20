@@ -3,13 +3,13 @@
 
 	function getPathWithoutLang(url) {
 		const path = url.pathname || url;
-		return path.replace(/^\/(en|pt-br)\//, '/');
+		return path.replace(/^\/(en|pt-br|es-es)\//, '/');
 	}
 
 	function storeScrollPosition() {
 		const scrollY = window.scrollY || window.pageYOffset;
 		const path = getPathWithoutLang(window.location);
-		const lang = window.location.pathname.match(/^\/(en|pt-br)\//)?.[1] || 'en';
+		const lang = window.location.pathname.match(/^\/(en|pt-br|es-es)\//)?.[1] || 'en';
 
 		sessionStorage.setItem(
 			STORAGE_KEY,
@@ -55,7 +55,7 @@
 			element.getAttribute?.('data-lang') ||
 			element.getAttribute?.('role') === 'combobox' ||
 			(tagName === 'BUTTON' &&
-				element.textContent?.toLowerCase().match(/^(en|pt-br|portugu|english)/))
+				element.textContent?.toLowerCase().match(/^(en|pt-br|es-es|portugu|english|espanol|español|spanish)/))
 		);
 	}
 

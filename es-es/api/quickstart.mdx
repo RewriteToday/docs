@@ -1,0 +1,122 @@
+---
+title: "Inicio rapido"
+description: "Envia tu primer SMS en minutos usando la API de Rewrite."
+---
+
+export function SmsRequestPlayground() {
+  const curlCommand = [
+    'curl -X POST "https://api.rewritetoday.com/v1/messages" \\',
+    '  -H "Authorization: Bearer (Tu API Key aqui)" \\',
+    '  -H "Content-Type: application/json" \\',
+    "  -d '{",
+    '    "to": "+15551234567",',
+    '    "message": "Tu codigo OTP es 123456",',
+    '    "metadata": { "source": "quickstart" }',
+    "  }'",
+  ].join("\n");
+
+  return (
+    <div style={{ display: "grid", gap: "12px" }}>
+      <div
+        style={{
+          border: "1px solid rgba(255, 255, 255, 0.12)",
+          borderRadius: "12px",
+          overflow: "hidden",
+        }}
+      >
+        <div
+          style={{
+            fontSize: "12px",
+            letterSpacing: "0.04em",
+            textTransform: "uppercase",
+            color: "rgba(255, 255, 255, 0.68)",
+            padding: "10px 12px",
+            borderBottom: "1px solid rgba(255, 255, 255, 0.12)",
+            background: "rgba(255, 255, 255, 0.03)",
+          }}
+        >
+          Solicitud cURL
+        </div>
+        <pre style={{ margin: 0, padding: "14px", overflowX: "auto" }}>
+          <code>{curlCommand}</code>
+        </pre>
+      </div>
+    </div>
+  );
+}
+
+## Antes de empezar
+
+- Crea una API key de Rewrite en tu dashboard.
+- Mantén tu API key solo en el servidor.
+- Usa numeros de destino en formato **E.164** (ejemplo: `+15551234567`).
+
+---
+
+## Envia tu primer SMS
+
+<Steps>
+  <Step title="Construye tu solicitud" titleSize="h3">
+    Usa esta solicitud base en cURL como punto de partida.
+
+    <SmsRequestPlayground />
+  </Step>
+
+  <Step title="Revisa la respuesta" titleSize="h3">
+    Ejecuta esta solicitud y compara el resultado con el ejemplo de respuesta:
+
+    ```bash
+    curl -X POST "https://api.rewritetoday.com/v1/messages" \
+      -H "Authorization: Bearer rw_..." \
+      -H "Content-Type: application/json" \
+      -d '{
+        "to": "+15551234567",
+        "message": "Tu codigo OTP es 123456",
+        "metadata": { "source": "quickstart" }
+      }'
+    ```
+
+    Una solicitud exitosa devuelve un objeto SMS creado similar a:
+
+    ```json
+    {
+      "id": "733501234567890123",
+      "to": "+15551234567",
+      "message": "Tu codigo OTP es 123456",
+      "status": "QUEUED"
+    }
+    ```
+  </Step>
+</Steps>
+
+<Info>
+Usa tu propio numero verificado/de pruebas en desarrollo. Mantén API keys y secretos fuera del codigo del cliente.
+</Info>
+
+---
+
+## Solucion de problemas
+
+<CardGroup cols={2}>
+  <Card title="401 Unauthorized" icon="shield-alert" color="#C9CBD1">
+    Tu API key falta o es invalida. Confirma el bearer token en el header `Authorization` de cURL.
+  </Card>
+
+  <Card title="422 Unprocessable Entity" icon="triangle-alert" color="#C9CBD1">
+    Tu payload es invalido. Revisa el formato del numero `to` y los campos obligatorios.
+  </Card>
+</CardGroup>
+
+---
+
+## Que sigue?
+
+<CardGroup cols={2}>
+  <Card title="Referencia API" icon="book-open" href="./introduction" color="#C9CBD1">
+    Explora todos los endpoints SMS, parametros y modelos de respuesta.
+  </Card>
+
+  <Card title="Webhooks" icon="webhook" href="../webhooks" color="#C9CBD1">
+    Recibe eventos de entrega en tiempo real y gestiona reintentos de forma segura.
+  </Card>
+</CardGroup>

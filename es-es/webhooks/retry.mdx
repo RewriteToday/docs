@@ -1,0 +1,167 @@
+---
+title: "Reintentos"
+description: "Cómo **Rewrite** reintenta webhooks fallidos y cómo reproducir eventos manualmente."
+---
+
+# Reintentos y Reproducciones
+
+\- Entiende cómo **Rewrite** garantiza la entrega de webhooks y qué ocurre cuando tu endpoint falla.
+
+Cuando **Rewrite** envía un evento de webhook, tu servidor **debe responder con `HTTP 200 OK`** para confirmar una entrega correcta.
+
+Si tu endpoint no devuelve un código de estado `2xx` (o agota el tiempo de espera), la entrega se considera **fallida** y **Rewrite** la reintentará automáticamente.
+
+---
+
+## Reintentos automáticos
+
+Rewrite usa **retroceso exponencial con reintentos limitados** para asegurar una entrega fiable sin saturar tu infraestructura.
+
+Cada evento de webhook se reintenta según el siguiente calendario:
+
+<div
+  className="retry-schedule-table"
+  style={{
+    overflow: 'hidden',
+  }}
+>
+  <table className="retry-schedule-table__table" style={{ width: '100%', borderCollapse: 'collapse', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.12)'}}>
+  <thead>
+      <tr>
+        <th
+          style={{
+            textAlign: 'left',
+            padding: '12px 14px',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
+            borderRight: '1px solid rgba(255, 255, 255, 0.12)',
+            background: 'rgba(255, 255, 255, 0.04)',
+          }}
+        >
+          Intento
+        </th>
+        <th
+          style={{
+            textAlign: 'left',
+            padding: '12px 14px',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
+            background: 'rgba(255, 255, 255, 0.04)',
+          }}
+        >
+          Retraso tras el fallo anterior
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}>1</td>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>Inmediatamente</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}>2</td>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>5 segundos</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}>3</td>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>1 minuto</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}>4</td>
+        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>5 minutos</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '11px 14px', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}>5</td>
+        <td style={{ padding: '11px 14px' }}>15 minutos</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Tras el intento final, el webhook se marca como **fallido de forma permanente**.
+
+---
+
+### Ejemplo
+
+Si tu endpoint falla en los tres primeros intentos pero tiene éxito en el cuarto:
+
+1. **Intento 1** (`t=0s`) - envío inmediato, **falla**
+2. **Intento 2** (`t=+5s`) - reintento tras 5 segundos, **falla**
+3. **Intento 3** (`t=+1m 5s`) - reintento tras 1 minuto, **falla**
+4. **Intento 4** (`t=+6m 5s`) - reintento tras 5 minutos, **éxito**
+
+El tiempo total desde el primer intento hasta la entrega correcta sería de aproximadamente **6 minutos y 5 segundos**.
+
+---
+
+## ¿Cuándo se detienen los reintentos?
+
+Los reintentos se detienen cuando:
+
+- Tu endpoint devuelve una **respuesta 2xx**
+- Se alcanza el límite máximo de reintentos
+- El endpoint de webhook se elimina o se desactiva
+- El evento expira (se alcanza el TTL)
+
+---
+
+## Buenas prácticas
+
+Para evitar reintentos innecesarios:
+
+- Devuelve siempre `200 OK` en cuanto recibas el evento
+- Procesa la lógica pesada **de forma asíncrona**
+- Usa idempotencia (guarda IDs de evento e ignora duplicados)
+- Implementa un tiempo de espera de petición inferior a 10 segundos
+
+Manejador mínimo de ejemplo:
+
+```ts
+export async function webhookHandler(req, res) {
+  const { body } = req;
+
+  // Confirma inmediatamente
+  res.status(200).end()
+
+  // Procesa de forma asíncrona
+  queue.push(body)
+}
+```
+
+## Reproducciones manuales
+
+Si un webhook falla de forma permanente, o si necesitas volver a procesar un evento, puedes reproducirlo manualmente.
+
+Puedes reproducir tanto:
+
+- entregas fallidas
+- entregas exitosas (útil para depuración)
+
+## Cómo reproducir
+
+1. Ve a la sección **Webhooks** del **panel de Rewrite**
+2. Selecciona tu endpoint de webhook
+3. Abre el evento que quieras reproducir
+4. Haz clic en **Replay**
+
+**Rewrite** reenviará exactamente la misma carga útil a tu endpoint.
+
+## Recordatorio de idempotencia
+
+Las reproducciones manuales y los reintentos automáticos pueden entregar el mismo evento varias veces.
+
+Debes:
+
+- Guardar los IDs de eventos procesados
+- Ignorar duplicados
+- Asegurarte de que tu sistema se comporta de forma segura ante entregas repetidas
+
+## Garantías de entrega
+
+Rewrite ofrece:
+
+- Entrega al menos una vez
+- Entrega ordenada por mensaje (cuando aplica)
+- Verificación de carga útil firmada
+- Visibilidad de entrega en el dashboard
+
+<Card title="Verifica las firmas de webhook" icon="shield-check" href="/webhooks/signatures" color="#C9CBD1"> Valida siempre la cabecera de firma antes de confiar en las cargas de webhook. </Card>

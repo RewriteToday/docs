@@ -1,0 +1,247 @@
+---
+title: "Introducción"
+description: "Usa webhooks de **Rewrite** para recibir eventos SMS en tiempo real en tu aplicación."
+---
+
+## ¿Qué son los webhooks?
+
+Los webhooks de Rewrite son **solicitudes HTTPS POST en tiempo real** enviadas a tu servidor cada vez que ocurre algo importante en **Rewrite**, como cuando un SMS se entrega, falla o se programa.
+
+En lugar de consultar la API continuamente, los webhooks permiten que tu app reaccione al instante con una carga útil **JSON**.
+
+### ¿Cuándo deberías usar webhooks?
+
+- **Seguimiento de entrega** - Marca mensajes como entregados/fallidos sin sondeo
+- **Flujos de cliente** - Dispara onboarding, alertas y flujos de verificación
+- **Retención de datos** - Guarda eventos en tu propia base de datos para analítica/reportes
+- **Fiabilidad** - Detecta problemas de proveedor y automatiza reintentos
+
+---
+
+## Flujo de webhook de un vistazo
+
+<Steps>
+	<Step title="Crear un endpoint" titleSize="h3">
+		Necesitas crear un endpoint HTTP en tu app (ej.: `/webhooks/rewrite`).
+		
+		```ts server.ts
+		export const app = new Elysia()
+			.post('/webhooks/rewrite', ({ body }) => {
+				console.log({ body });
+				
+				return { success: true };
+			});
+		```
+	</Step>
+	<Step title="Registrar el endpoint" titleSize="h3">
+		Registras esa URL en el **dashboard de Rewrite** (y seleccionas tipos de evento).
+	</Step>
+	<Step title="Recibir eventos" titleSize="h3">
+		Tu servidor recibe eventos a medida que ocurren.
+	</Step>
+	<Step title="Confirmar la entrega" titleSize="h3">
+		Tu servidor confirma la entrega respondiendo con **HTTP 200**.
+	</Step>
+</Steps>
+
+<Info>
+Tu endpoint debe ser accesible públicamente por HTTPS en producción.
+Durante el desarrollo, usa un túnel como **ngrok** o **Cloudflare Tunnel**.
+</Info>
+
+---
+
+## Recibir webhooks en local
+
+<Steps>
+	<Step title="Crea un endpoint de desarrollo" titleSize="h3">
+		Aquí tienes ejemplos mínimos usando **Node.js**.
+		
+		<CodeGroup>
+		
+		```ts Elysia
+		import { Elysia } from 'elysia';
+
+		const app = new Elysia()
+			.post('/webhooks/rewrite', ({ body, query: { signature } }) => {
+				// 1) verificar firma (recomendado)
+				// 2) persistir el evento (recomendado)
+				// 3) procesarlo (cola/job recomendado)
+				
+				return { success: true };
+			});
+			
+		app.listen(3000, () => console.log('Escuchando en 3000'));
+		```
+
+		```ts Hono
+		import { Hono } from 'hono';
+		import { serve } from '@hono/node-server';
+
+		const app = new Hono();
+
+		app.post('/webhooks/rewrite', async (c) => {
+			const body = await c.req.json();
+			const signature = c.req.query('signature');
+
+			// 1) verificar firma (recomendado)
+			// 2) persistir el evento (recomendado)
+			// 3) procesarlo (cola/job recomendado)
+
+			return c.json({ success: true }, 200);
+		});
+
+		serve({ fetch: app.fetch, port: 3000 }, () => {
+			console.log('Escuchando en 3000');
+		});
+		```
+		
+		```ts Express
+		import express from 'express';
+
+		const app = express();
+		
+		app.use(express.json());
+
+		app.post('/webhooks/rewrite', (req, res) => {
+		  const { body } = req;
+
+		  // 1) verificar firma (recomendado)
+		  // 2) persistir el evento (recomendado)
+		  // 3) procesarlo (cola/job recomendado)
+				
+		  res.status(200).send({ success: true });
+		});
+
+		app.listen(3000, () => console.log('Escuchando en 3000'));
+		```
+
+		```ts Fastify
+		import Fastify from 'fastify';
+
+		const app = Fastify();
+
+		app.post('/webhooks/rewrite', async (request, reply) => {
+			const body = request.body;
+			const signature = (request.query as { signature?: string }).signature;
+
+			// 1) verificar firma (recomendado)
+			// 2) persistir el evento (recomendado)
+			// 3) procesarlo (cola/job recomendado)
+
+			return reply.code(200).send({ success: true });
+		});
+
+		app.listen({ port: 3000 });
+		```
+
+		```ts Koa
+		import Koa from 'koa';
+		import Router from '@koa/router';
+		import bodyParser from 'koa-bodyparser';
+
+		const app = new Koa();
+		const router = new Router();
+
+		router.post('/webhooks/rewrite', async (ctx) => {
+			const body = ctx.request.body;
+			const signature = ctx.query.signature;
+
+			// 1) verificar firma (recomendado)
+			// 2) persistir el evento (recomendado)
+			// 3) procesarlo (cola/job recomendado)
+
+			ctx.status = 200;
+			ctx.body = { success: true };
+		});
+
+		app.use(bodyParser());
+		app.use(router.routes());
+		app.use(router.allowedMethods());
+		app.listen(3000, () => console.log('Escuchando en 3000'));
+		```
+
+		</CodeGroup>
+		
+		<Info> Para pruebas locales, expón tu servidor a internet usando: - **ngrok** - **Cloudflare Tunnel** - **VS Code Port Forwarding** </Info>
+	</Step>
+	
+	<Step title="Registra el webhook en Rewrite" titleSize="h3">
+		En el **dashboard de Rewrite**:
+
+		1. Añade tu URL pública HTTPS
+		2. Selecciona los tipos de evento que quieras
+		3. Guarda
+		
+		También puedes gestionar webhooks mediante [API](../api) o [SDK](../sdks).
+	</Step>
+	
+	<Step title="Dispara cualquier evento" titleSize="h3">
+		Envía un mensaje, elimina uno y observa cómo llegan.
+		
+		Recibirás una carga JSON similar a:
+		
+		```json
+		{
+			"type": "sms.delivered",
+			"createdAt": "2026-02-14T19:41:12.126Z",
+			"id": "393821034567832123",
+			"data": {
+				"id": "733501234567890123",
+				"to": "+5511999999999",
+				"status": "DELIVERED",
+				"provider": null,
+				"metadata": {
+					"code": "923721"
+				}
+			}
+		}
+		```
+	</Step>
+</Steps>
+
+## Validar firmas de webhook
+
+Valida siempre las firmas antes de confiar en las cargas de webhook.
+Esto protege tu endpoint frente a solicitudes falsificadas y datos manipulados.
+Usa el siguiente auxiliar en cualquier framework y devuelve `401` cuando la validación falle.
+
+```ts
+import { Rewrite } from '@rewritejs/sdk';
+
+const rewrite = new Rewrite(process.env.REWRITE_API_KEY);
+
+export function validateSignature(params: {
+  rawBody: string;
+  signature?: string;
+}) {
+  if (!signature) return false;
+
+  return rewrite.webhooks.validateSignature(
+    rawBody,
+    signature,
+    process.env.REWRITE_WEBHOOK_SECRET,
+  );
+}
+```
+
+<Warning>
+Guarda el secreto del webhook en `REWRITE_WEBHOOK_SECRET`, pasa el cuerpo en bruto antes de parsear JSON y no expongas secretos en código cliente ni en logs.
+</Warning>
+
+## Buenas prácticas (hazlo pronto)
+
+<CardGroup cols={2}> <Card title="Verifica firmas" icon="shield" color="#C9CBD1"> Valida siempre la firma del webhook para asegurar que el evento fue enviado por Rewrite. </Card> <Card title="Confirma rápido, procesa asíncrono" icon="bolt" color="#C9CBD1"> Devuelve HTTP 200 rápido y procesa el trabajo en una cola/job para evitar tiempos de espera. </Card> <Card title="Sé idempotente" icon="repeat" color="#C9CBD1"> Los webhooks pueden reintentarse. Usa IDs de evento para ignorar duplicados de forma segura. </Card> <Card title="Persiste cargas en bruto" icon="database" color="#C9CBD1"> Guarda eventos para auditoría/depuración y para reconstruir estado cuando haga falta. </Card> </CardGroup> <Warning> Si tu endpoint devuelve una respuesta no 2xx o agota el tiempo de espera, Rewrite puede reintentar la entrega. Diseña tu controlador para que sea **idempotente**. </Warning>
+
+## ¿Qué sigue?
+
+<CardGroup cols={1}>
+<Card title="Inicio rápido" icon="rocket" href="/quickstart" color="#C9CBD1"> Envía tu primer SMS y empieza a recibir eventos de entrega. </Card>
+</CardGroup>
+<CardGroup cols={2}>
+<Card title="Tipos de evento" icon="list" href="/webhooks/types" color="#C9CBD1"> Consulta todos los tipos de eventos webhook y la forma de sus cargas. </Card>
+<Card title="Desarrollo local" icon="terminal" href="/webhooks/local-development" color="#C9CBD1"> Prueba webhooks en local con túneles y Rewrite CLI. </Card>
+</CardGroup>
+<Card title="¿Necesitas ayuda?" icon="headset" color="#C9CBD1">
+Contacta con nuestro equipo en [team@rewritetoday.com](mailto:team@rewritetoday.com)
+</Card>

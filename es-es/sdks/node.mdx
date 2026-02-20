@@ -1,0 +1,78 @@
+---
+title: Introducción
+description: Aprende a usar el SDK de Node.js para enviar SMS con la API.
+---
+
+## Antes de empezar
+
+- Necesitas tener Node.js instalado en tu máquina.
+- Necesitas una API key de Rewrite con los permisos correspondientes.
+
+
+<Steps>
+    <Step title="Instala el SDK" titleSize="h3">
+        Para instalar el SDK de Node.js, ejecuta el siguiente comando:
+        
+        <CodeGroup>
+        
+        ```bash npm
+        npm install @rewritejs/sdk
+        ```
+        
+        ```bash yarn
+        yarn add @rewritejs/sdk
+        ```
+        
+        ```bash pnpm
+        pnpm add @rewritejs/sdk
+        ```
+        
+        ```bash bun
+        bun install @rewritejs/sdk
+        ```
+        
+        </CodeGroup>
+    </Step>
+    
+    <Step title="Configura la variable de entorno REWRITE_API_KEY" titleSize="h3">
+    Configura tu API key de Rewrite en las variables de entorno.
+    
+    ```text .env    
+    REWRITE_API_KEY=rw...
+    ```
+    </Step>
+    
+    <Step title="Envía tu SMS" titleSize="h3">
+    Ahora solo necesitas pasar el contenido del mensaje y listo.
+    
+    ```ts sms.ts
+      import { Rewrite } from '@rewritejs/sdk';
+
+      const rewrite = new Rewrite(process.env.REWRITE_API_KEY);
+
+      async function sendSms(to: string) {
+        const params = {
+          to,
+          message: 'Your OTP code is 478201',
+        };
+
+        const { data, error } = await rewrite.messages.send(params);
+
+        if (error) {
+          throw error;
+        }
+
+        return data;
+      }
+
+      async function main() {
+        const message = await sendSms('+1234567890');
+        console.log(message);
+      }
+
+      main().catch(console.error);
+    ```
+    
+    Puedes hacer de todo con nuestro SDK, sigue explorando.
+    </Step>
+</Steps>

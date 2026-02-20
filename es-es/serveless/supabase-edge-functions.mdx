@@ -1,0 +1,97 @@
+---
+title: "Enviar con Supabase Edge Functions"
+description: "Envía SMS con Rewrite desde una Supabase Edge Function."
+---
+
+Esta guía muestra cómo enviar SMS usando Rewrite dentro de una **Supabase Edge Function**.
+
+## 1. Instala el SDK
+
+```bash
+npm install @rewritejs/sdk
+```
+
+## 2. Configura variables de entorno
+
+Establece tu API key como secreto en Supabase:
+
+```bash
+supabase secrets set REWRITE_API_KEY=rw...
+```
+
+## 3. Crea la función edge
+
+```ts supabase/functions/send-sms/index.ts
+import { Rewrite } from '@rewritejs/sdk';
+
+Deno.serve(async (request) => {
+  if (request.method !== 'POST') {
+    return Response.json(
+      {
+        ok: false,
+        code: 'METHOD_NOT_ALLOWED',
+        message: 'Método no permitido.',
+      },
+      { status: 405 }
+    );
+  }
+
+  const rewrite = new Rewrite(Deno.env.get('REWRITE_API_KEY'));
+  const body = await request.json().catch(() => ({}));
+  const { to, message } = body as { to?: string; message?: string };
+
+  if (!to || !message) {
+    return Response.json(
+      {
+        ok: false,
+        code: 'INVALID_REQUEST',
+        message: '`to` y `message` son obligatorios.',
+      },
+      { status: 400 }
+    );
+  }
+
+  const { data, error } = await rewrite.messages.send({
+    to,
+    message,
+    metadata: { source: 'supabase-edge-function' },
+  });
+
+  if (error) {
+    return Response.json(
+      {
+        ok: false,
+        code: 'SMS_SEND_FAILED',
+        message: 'No se pudo enviar el SMS.',
+        errors: error,
+      },
+      { status: 422 }
+    );
+  }
+
+  return Response.json({ ok: true, data }, { status: 200 });
+});
+```
+
+## 4. Prueba localmente
+
+```bash
+supabase functions serve send-sms --no-verify-jwt
+
+curl -X POST "http://127.0.0.1:54321/functions/v1/send-sms" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "+15551234567",
+    "message": "Hola desde Supabase + Rewrite"
+  }'
+```
+
+## 5. Despliega
+
+```bash
+supabase functions deploy send-sms
+```
+
+<Info>
+Si tu función es pública, añade autenticación y rate limits a nivel de aplicación para evitar abusos.
+</Info>

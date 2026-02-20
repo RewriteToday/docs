@@ -1,0 +1,75 @@
+---
+title: 'Autenticación'
+icon: 'key'
+description: 'Flujos de inicio de sesión, gestión de perfiles y cambio de cuentas para la CLI de Rewrite.'
+---
+
+## Resumen
+
+Usa la autenticación de la CLI para gestionar múltiples perfiles locales y cambiar de cuenta rápidamente.
+
+Puedes:
+
+- iniciar sesión con una API key
+- iniciar un flujo de login con OAuth
+- listar perfiles guardados
+- eliminar un perfil
+- cambiar el perfil activo
+
+## Iniciar sesión con API key (ejemplo con clave hardcodeada)
+
+```bash
+rewrite login --name xx --key xxx
+```
+
+Reemplaza `xx` y `xxx` por tu nombre de perfil real y tu API key en uso de producción.
+
+## Iniciar sesión con flujo OAuth
+
+```bash
+rewrite login
+```
+
+Esto inicia el flujo OAuth en el navegador y guarda las credenciales bajo un perfil con nombre aleatorio.
+
+## Listar perfiles
+
+```bash
+profile list
+```
+
+Salida de ejemplo:
+
+```text
+default   active
+team-dev
+personal
+```
+
+## Eliminar un perfil
+
+```bash
+profile delete <name>
+```
+
+<Warning>
+Eliminar un perfil borra las credenciales locales guardadas para ese perfil.
+</Warning>
+
+## Cambiar el perfil activo
+
+```bash
+rewrite switch <name>
+```
+
+Ejemplo:
+
+```bash
+rewrite switch dev
+```
+
+## Solución de problemas
+
+- API key inválida: verifica el valor de la clave y los permisos.
+- El flujo OAuth no se abre: revisa el navegador predeterminado y el manejo del callback.
+- Perfil no encontrado: ejecuta `profile list` y confirma el nombre exacto del perfil.

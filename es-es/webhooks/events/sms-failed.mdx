@@ -1,0 +1,71 @@
+---
+title: "sms.failed"
+description: "Webhook activado cuando un SMS falla de forma permanente y no se entregará."
+---
+
+## Resumen
+
+El evento `sms.failed` se emite cuando la entrega no puede completarse y el SMS llega a un estado terminal de fallo.
+
+Motivos típicos:
+
+- Números de destino inválidos o inalcanzables
+- Rechazo de operadora/proveedor
+- Restricciones de enrutamiento
+- Violaciones de políticas o cuotas
+
+## Carga de ejemplo
+
+```json
+{
+  "type": "sms.failed",
+  "createdAt": "2026-02-14T19:41:55.442Z",
+  "id": "393821034567832126",
+  "data": {
+    "id": "733501234567890125",
+    "to": "+5511977777777",
+    "status": "FAILED",
+    "provider": "twilio",
+    "metadata": {
+      "campaign": "otp-login",
+      "tenantId": "acme-01"
+    }
+  }
+}
+```
+
+## Objeto del evento
+
+| Campo | Tipo | Descripción |
+| --- | --- | --- |
+| `type` | `string` | Identificador del evento. En esta página: `sms.failed`. |
+| `id` | `string` | ID único del evento de webhook. |
+| `createdAt` | `string` (ISO-8601) | Marca temporal del evento. |
+| `data` | `object` | Snapshot del SMS en el momento del fallo. |
+
+## Objeto `data`
+
+| Campo | Tipo | Descripción |
+| --- | --- | --- |
+| `id` | `string` | ID del SMS en Rewrite. |
+| `to` | `string` | Número destinatario en formato E.164. |
+| `status` | `string` | Estado actual (`FAILED`). |
+| `provider` | `string \| null` | Proveedor implicado en la ruta de entrega fallida. |
+| `metadata` | `object \| null` | Metadatos originales de la creación del mensaje. |
+
+## Manejo recomendado
+
+1. Valida firma y deduplica por id de evento de webhook.
+2. Persiste la carga para soporte/auditoría.
+3. Marca el mensaje como fallido en tu BD.
+4. Opcionalmente activa canales de respaldo o políticas de reintento.
+
+<Warning>
+No reintentes a ciegas desde controladores de webhook. Usa lógica de reintento controlada con límites de tasa y retroceso exponencial.
+</Warning>
+
+## Eventos relacionados
+
+- [`sms.queued`](./sms-queued)
+- [`sms.delivered`](./sms-delivered)
+- [`sms.canceled`](./sms-canceled)
