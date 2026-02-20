@@ -1,0 +1,106 @@
+---
+title: "Skills"
+description: "Use Rewrite Skills to standardize AI workflows, accelerate delivery, and keep your agents consistent."
+icon: sparkles
+---
+
+Rewrite Skills are reusable capability packs for AI agents.
+They define focused workflows, reusable instructions, and implementation patterns so teams can ship faster with predictable quality.
+
+## What you get with Skills
+
+<CardGroup cols={2}>
+  <Card title="Repeatable workflows" icon="rotate" color="#C9CBD1">
+    Turn common engineering tasks into reusable playbooks instead of rewriting prompts every time.
+  </Card>
+
+  <Card title="Team consistency" icon="users" color="#C9CBD1">
+    Keep execution style, coding standards, and decision criteria aligned across contributors.
+  </Card>
+
+  <Card title="Faster execution" icon="bolt" color="#C9CBD1">
+    Reduce context-switch cost with structured steps and built-in task boundaries.
+  </Card>
+
+  <Card title="Easier onboarding" icon="graduation-cap" color="#C9CBD1">
+    New teammates can start with proven flows instead of inventing process from scratch.
+  </Card>
+</CardGroup>
+
+## Rewrite Skills repository
+
+<Card title="RewriteToday/skills" icon="github" href="https://github.com/RewriteToday/skills" color="#C9CBD1">
+  Official skill library with practical templates and workflows you can adapt to your stack.
+</Card>
+
+## Install and use Skills
+
+Use the command below to add a skill source:
+
+```bash
+npx skills add <link>
+```
+
+Example with Rewrite Skills:
+
+```bash
+npx skills add https://github.com/RewriteToday/skills
+```
+
+<Info>
+After adding, follow your agent environment docs to list, activate, and run installed skills.
+</Info>
+
+## Where Skills fit in your stack
+
+<CardGroup cols={3}>
+  <Card title="Planning" icon="list-check" color="#C9CBD1">
+    Break down large goals into clear, actionable steps.
+  </Card>
+
+  <Card title="Implementation" icon="code" color="#C9CBD1">
+    Execute changes with stable patterns for edits, tests, and validation.
+  </Card>
+
+  <Card title="Operations" icon="wrench" color="#C9CBD1">
+    Handle triage, CI fixes, and documentation workflows with less variance.
+  </Card>
+</CardGroup>
+
+## Typical skill structure
+
+<Accordion title="1. Scope and intent">
+  Define exactly what the skill owns and when it should be triggered.
+</Accordion>
+
+<Accordion title="2. Execution workflow">
+  List the sequence of actions: discovery, implementation, validation, and handoff.
+</Accordion>
+
+<Accordion title="3. Guardrails">
+  Add non-negotiables such as safety checks, style constraints, and prohibited operations.
+</Accordion>
+
+<Accordion title="4. Reusable assets">
+  Include scripts, templates, and references to reduce manual repetition.
+</Accordion>
+
+## Best practices
+
+- Keep each skill narrowly scoped to one outcome.
+- Prefer concrete steps over broad generic instructions.
+- Add validation criteria so success is measurable.
+- Version and evolve skills as your codebase and tooling change.
+- Link each skill to real workflows used by your team.
+
+## Related docs
+
+<CardGroup cols={2}>
+  <Card title="API Introduction" icon="book-open" href="/en/api/introduction" color="#C9CBD1">
+    Reference for endpoints, auth, and operational constraints used by AI workflows.
+  </Card>
+
+  <Card title="Ecosystem" icon="boxes-stacked" href="/en/ecosystem/introduction" color="#C9CBD1">
+    See how Rewrite packages can support agent-driven implementations.
+  </Card>
+</CardGroup>

@@ -1,0 +1,106 @@
+---
+title: "Skills"
+description: "Usa Skills de Rewrite para estandarizar flujos de AI, acelerar entregas y mantener agentes consistentes."
+icon: sparkles
+---
+
+Las Skills de Rewrite son paquetes reutilizables de capacidades para agentes de AI.
+Definen flujos enfocados, instrucciones reutilizables y patrones de ejecucion para entregar mas rapido con calidad predecible.
+
+## Lo que obtienes con Skills
+
+<CardGroup cols={2}>
+  <Card title="Flujos repetibles" icon="rotate" color="#C9CBD1">
+    Convierte tareas comunes en playbooks reutilizables sin reescribir prompts cada vez.
+  </Card>
+
+  <Card title="Consistencia de equipo" icon="users" color="#C9CBD1">
+    Mantiene alineados estilo de ejecucion, estandares de codigo y criterios tecnicos.
+  </Card>
+
+  <Card title="Ejecucion mas rapida" icon="bolt" color="#C9CBD1">
+    Reduce costo de contexto con pasos estructurados y limites claros por tarea.
+  </Card>
+
+  <Card title="Onboarding mas facil" icon="graduation-cap" color="#C9CBD1">
+    Nuevos miembros empiezan con flujos probados en lugar de inventar proceso.
+  </Card>
+</CardGroup>
+
+## Repositorio oficial de Skills
+
+<Card title="RewriteToday/skills" icon="github" href="https://github.com/RewriteToday/skills" color="#C9CBD1">
+  Biblioteca oficial de skills con plantillas practicas y flujos adaptables para tu stack.
+</Card>
+
+## Como instalar y usar Skills
+
+Usa el siguiente comando para agregar una fuente de skills:
+
+```bash
+npx skills add <link>
+```
+
+Ejemplo con Skills de Rewrite:
+
+```bash
+npx skills add https://github.com/RewriteToday/skills
+```
+
+<Info>
+Despues de agregar, sigue la documentacion de tu entorno de agente para listar, activar y ejecutar las skills instaladas.
+</Info>
+
+## Donde encajan en tu stack
+
+<CardGroup cols={3}>
+  <Card title="Planificacion" icon="list-check" color="#C9CBD1">
+    Divide objetivos grandes en pasos claros y ejecutables.
+  </Card>
+
+  <Card title="Implementacion" icon="code" color="#C9CBD1">
+    Ejecuta cambios con patrones estables para edicion, testing y validacion.
+  </Card>
+
+  <Card title="Operacion" icon="wrench" color="#C9CBD1">
+    Maneja triage, CI y documentacion con menor variacion operativa.
+  </Card>
+</CardGroup>
+
+## Estructura tipica de una skill
+
+<Accordion title="1. Alcance e intencion">
+  Define exactamente que cubre la skill y cuando debe activarse.
+</Accordion>
+
+<Accordion title="2. Flujo de ejecucion">
+  Enumera la secuencia: discovery, implementacion, validacion y handoff.
+</Accordion>
+
+<Accordion title="3. Guardrails">
+  Agrega reglas obligatorias: seguridad, estilo y operaciones prohibidas.
+</Accordion>
+
+<Accordion title="4. Activos reutilizables">
+  Incluye scripts, plantillas y referencias para reducir trabajo manual.
+</Accordion>
+
+## Buenas practicas
+
+- Mantener cada skill enfocada en un solo resultado.
+- Preferir pasos concretos sobre instrucciones genericas.
+- Definir criterios de validacion medibles.
+- Versionar skills junto con el codigo y la herramienta.
+- Conectar cada skill con flujos reales del equipo.
+
+## Documentacion relacionada
+
+<CardGroup cols={2}>
+  <Card title="Introduccion API" icon="book-open" href="/es/api/introduction" color="#C9CBD1">
+    Referencia de endpoints, auth y limites operativos para flujos de AI.
+  </Card>
+
+  <Card title="Ecosistema" icon="boxes-stacked" href="/es/ecosystem/introduction" color="#C9CBD1">
+    Como los paquetes de Rewrite apoyan implementaciones guiadas por agentes.
+  </Card>
+</CardGroup>

@@ -193,6 +193,15 @@
 						]
 					},
 					{
+						"tab": "AI",
+						"groups": [
+							{
+								"group": "Tools",
+								"pages": ["en/ai/skills"]
+							}
+						]
+					},
+					{
 						"tab": "Webhooks",
 						"groups": [
 							{
@@ -374,6 +383,15 @@
 						]
 					},
 					{
+						"tab": "AI",
+						"groups": [
+							{
+								"group": "Ferramentas",
+								"pages": ["pt-br/ai/skills"]
+							}
+						]
+					},
+					{
 						"tab": "Webhooks",
 						"groups": [
 							{
@@ -551,6 +569,15 @@
 						]
 					},
 					{
+						"tab": "AI",
+						"groups": [
+							{
+								"group": "Herramientas",
+								"pages": ["es/ai/skills"]
+							}
+						]
+					},
+					{
 						"tab": "Webhooks",
 						"groups": [
 							{
@@ -724,6 +751,15 @@
 								"group": "C#",
 								"icon": "code",
 								"pages": ["fr/sdks/csharp"]
+							}
+						]
+					},
+					{
+						"tab": "AI",
+						"groups": [
+							{
+								"group": "Outils",
+								"pages": ["fr/ai/skills"]
 							}
 						]
 					},
