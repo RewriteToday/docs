@@ -1,300 +1,305 @@
 {
-	"openapi": "3.1.0",
-	"info": {
-		"title": "API Rewrite",
-		"version": "1.0.0",
-		"summary": "Référence de l'API Projets (Projets, clés API, modèles, webhooks).",
-		"description": "Référence publique complète des points de terminaison au niveau projet de l'API Rewrite v1.\n\nTous les endpoints renvoient une enveloppe cohérente (`ok`, `data` et `cursor` optionnel).\nUtilisez soit un jeton Bearer (clé API) avec des scopes, soit une session cookie authentifiée."
-	},
-	"servers": [
-		{
-			"url": "https://api.rewritetoday.com/v1",
-			"description": "Production"
-		}
-	],
-	"tags": [
-		{
-			"name": "Projects",
-			"description": "Métadonnées du projet et cycle de vie."
-		}
-	],
-	"paths": {
-		"/projects/{id}": {
-			"patch": {
-				"tags": ["Projects"],
-				"operationId": "updateProject",
-				"summary": "Mettre à jour le projet",
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"description": "ID de projet unique.",
-						"example": "748395130237498368"
-					}
-				],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/ProjectUpdateBody"
-							},
-							"examples": {
-								"request": {
-									"summary": "Exemple de requête",
-									"value": {
-										"name": "Alertes marketing"
-									}
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Réponse",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/OkEmptyResponse"
-								},
-								"examples": {
-									"response": {
-										"summary": "Exemple de réponse",
-										"value": {
-											"ok": true,
-											"data": null
-										}
-									}
-								}
-							}
-						}
-					}
-				},
-				"description": "Met à jour les champs modifiables du projet comme `name`. Nécessite le scope `project:write` pour les clés API.",
-				"x-codeSamples": [
-					{
-						"lang": "Node.js",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nconst response = await rewrite.projects.update(projectId, {\n  name: 'Alertes marketing',\n});"
-					},
-					{
-						"lang": "Go",
-						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n\n  _, err = client.Projects.Update(context.Background(), projectID, rewrite.RESTPatchUpdateProjectBody{\n    Name: \"Alertes marketing\",\n  })\n  if err != nil { log.Fatal(err) }\n}"
-					},
-					{
-						"lang": "Python",
-						"label": "Python",
-						"source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'PATCH',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n        'Content-Type': 'application/json',\n    },\n    json={\n      \"name\": \"Alertes marketing\"\n    },\n)\nprint(response.json())"
-					},
-					{
-						"lang": "Java",
-						"label": "Java",
-						"source": "var client = HttpClient.newHttpClient();\nvar json = \"{\\\"name\\\":\\\"Alertes marketing\\\"}\";\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .header(\"Content-Type\", \"application/json\")\n  .method(\"PATCH\", HttpRequest.BodyPublishers.ofString(json));\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
-					},
-					{
-						"lang": "PHP",
-						"label": "PHP",
-						"source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n  'Content-Type: application/json',\n]);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, '{\"name\":\"Alertes marketing\"}');\n$response = curl_exec($ch);\ncurl_close($ch);"
-					},
-					{
-						"lang": "Ruby",
-						"label": "Ruby",
-						"source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Patch.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nrequest['Content-Type'] = 'application/json'\nrequest.body = \"{\\\"name\\\":\\\"Alertes marketing\\\"}\"\nresponse = http.request(request)\nputs response.body"
-					},
-					{
-						"lang": "Kotlin",
-						"label": "Kotlin",
-						"source": "val client = OkHttpClient()\nval body = \"{\\\"name\\\":\\\"Alertes marketing\\\"}\".toRequestBody(\"application/json\".toMediaType())\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"PATCH\", body)\n  .build()\nval response = client.newCall(request).execute()"
-					},
-					{
-						"lang": "Swift",
-						"label": "Swift",
-						"source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"PATCH\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nrequest.setValue(\"application/json\", forHTTPHeaderField: \"Content-Type\")\nrequest.httpBody = \"{\\\"name\\\":\\\"Alertes marketing\\\"}\".data(using: .utf8)\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
-					},
-					{
-						"lang": "C#",
-						"label": "C#",
-						"source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Patch;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nrequest.Content = new StringContent(\"{\\\"name\\\":\\\"Alertes marketing\\\"}\", Encoding.UTF8, \"application/json\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
-					},
-					{
-						"lang": "cURL",
-						"label": "cURL",
-						"source": "curl -X PATCH 'https://api.rewritetoday.com/v1/projects/748395130237498368' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'\n  -H 'Content-Type: application/json' \\\\\n  -d '{\"name\":\"Alertes marketing\"}'"
-					}
-				]
-			},
-			"delete": {
-				"tags": ["Projects"],
-				"operationId": "deleteProject",
-				"summary": "Supprimer le projet",
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"description": "ID de projet unique.",
-						"example": "748395130237498368"
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Réponse",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/OkEmptyResponse"
-								},
-								"examples": {
-									"response": {
-										"summary": "Exemple de réponse",
-										"value": {
-											"ok": true,
-											"data": null
-										}
-									}
-								}
-							}
-						}
-					}
-				},
-				"description": "Supprime définitivement le projet et les ressources associées. Opération réservée au propriétaire.",
-				"x-codeSamples": [
-					{
-						"lang": "Node.js",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nawait rewrite.projects.delete(projectId);"
-					},
-					{
-						"lang": "Go",
-						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n\n  if err := client.Projects.Delete(context.Background(), projectID); err != nil {\n    log.Fatal(err)\n  }\n}"
-					},
-					{
-						"lang": "Python",
-						"label": "Python",
-						"source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'DELETE',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n    },\n)\nprint(response.json())"
-					},
-					{
-						"lang": "Java",
-						"label": "Java",
-						"source": "var client = HttpClient.newHttpClient();\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"DELETE\", HttpRequest.BodyPublishers.noBody());\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
-					},
-					{
-						"lang": "PHP",
-						"label": "PHP",
-						"source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n]);\n$response = curl_exec($ch);\ncurl_close($ch);"
-					},
-					{
-						"lang": "Ruby",
-						"label": "Ruby",
-						"source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Delete.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nresponse = http.request(request)\nputs response.body"
-					},
-					{
-						"lang": "Kotlin",
-						"label": "Kotlin",
-						"source": "val client = OkHttpClient()\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"DELETE\", null)\n  .build()\nval response = client.newCall(request).execute()"
-					},
-					{
-						"lang": "Swift",
-						"label": "Swift",
-						"source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"DELETE\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
-					},
-					{
-						"lang": "C#",
-						"label": "C#",
-						"source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Delete;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
-					},
-					{
-						"lang": "cURL",
-						"label": "cURL",
-						"source": "curl -X DELETE 'https://api.rewritetoday.com/v1/projects/748395130237498368' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'"
-					}
-				]
-			}
-		}
-	},
-	"components": {
-		"securitySchemes": {
-			"bearerAuth": {
-				"type": "http",
-				"scheme": "bearer",
-				"bearerFormat": "API Key",
-				"description": "Envoyez votre clé API via `Authorization: Bearer <api-key>`. "
-			}
-		},
-		"parameters": {},
-		"responses": {},
-		"schemas": {
-			"Snowflake": {
-				"type": "string",
-				"pattern": "^[0-9]{1,32}$",
-				"description": "ID de ressource unique.",
-				"example": "748395130237498368"
-			},
-			"OkEmptyResponse": {
-				"type": "object",
-				"additionalProperties": false,
-				"required": ["ok", "data"],
-				"properties": {
-					"ok": {
-						"type": "boolean",
-						"const": true,
-						"description": "Champ `ok`."
-					},
-					"data": {
-						"type": "null",
-						"description": "Aucune donnée n'est renvoyée pour cette réponse."
-					}
-				},
-				"description": "Réponse réussie. Cet endpoint ne renvoie aucune donnée.",
-				"example": {
-					"ok": true,
-					"data": null
-				}
-			},
-			"ProjectUpdateBody": {
-				"type": "object",
-				"additionalProperties": false,
-				"properties": {
-					"icon": {
-						"type": "null",
-						"description": "Définissez `null` pour supprimer l'icône (lorsque pris en charge)."
-					},
-					"name": {
-						"type": "string",
-						"pattern": "^[A-Za-z0-9,-_ ]{2,64}$",
-						"description": "Nom d'affichage (2 à 64 caractères)."
-					}
-				},
-				"description": "Champs pouvant être mis à jour dans un projet.",
-				"example": {
-					"name": "Alertes marketing"
-				}
-			}
-		}
-	},
-	"security": [
-		{
-			"bearerAuth": []
-		}
-	]
+  "openapi": "3.1.0",
+  "info": {
+    "title": "API Rewrite",
+    "version": "1.0.0",
+    "summary": "Référence de l'API Projets (Projets, clés API, modèles, webhooks).",
+    "description": "Référence publique complète des points de terminaison au niveau projet de l'API Rewrite v1.\n\nTous les endpoints renvoient une enveloppe cohérente (`ok`, `data` et `cursor` optionnel).\nUtilisez soit un jeton Bearer (clé API) avec des scopes, soit une session cookie authentifiée."
+  },
+  "servers": [
+    {
+      "url": "https://api.rewritetoday.com/v1",
+      "description": "Production"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Projects",
+      "description": "Métadonnées du projet et cycle de vie."
+    }
+  ],
+  "paths": {
+    "/projects/{id}": {
+      "patch": {
+        "tags": [
+          "Projects"
+        ],
+        "operationId": "updateProject",
+        "summary": "Mettre à jour le projet",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Snowflake"
+            },
+            "example": "748395130237498368"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectUpdateBody"
+              },
+              "examples": {
+                "request": {
+                  "summary": "Exemple de requête",
+                  "value": {
+                    "name": "Alertes marketing"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Réponse",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkEmptyResponse"
+                },
+                "examples": {
+                  "response": {
+                    "summary": "Exemple de réponse",
+                    "value": {
+                      "ok": true,
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Met à jour les champs modifiables du projet comme `name`. Nécessite le scope `project:write` pour les clés API.",
+        "x-codeSamples": [
+          {
+            "lang": "Node.js",
+            "label": "Node.js",
+            "source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nconst response = await rewrite.projects.update(projectId, {\n  name: 'Alertes marketing',\n});"
+          },
+          {
+            "lang": "Go",
+            "label": "Go",
+            "source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n\n  _, err = client.Projects.Update(context.Background(), projectID, rewrite.RESTPatchUpdateProjectBody{\n    Name: \"Alertes marketing\",\n  })\n  if err != nil { log.Fatal(err) }\n}"
+          },
+          {
+            "lang": "Python",
+            "label": "Python",
+            "source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'PATCH',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n        'Content-Type': 'application/json',\n    },\n    json={\n      \"name\": \"Alertes marketing\"\n    },\n)\nprint(response.json())"
+          },
+          {
+            "lang": "Java",
+            "label": "Java",
+            "source": "var client = HttpClient.newHttpClient();\nvar json = \"{\\\"name\\\":\\\"Alertes marketing\\\"}\";\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .header(\"Content-Type\", \"application/json\")\n  .method(\"PATCH\", HttpRequest.BodyPublishers.ofString(json));\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
+          },
+          {
+            "lang": "PHP",
+            "label": "PHP",
+            "source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n  'Content-Type: application/json',\n]);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, '{\"name\":\"Alertes marketing\"}');\n$response = curl_exec($ch);\ncurl_close($ch);"
+          },
+          {
+            "lang": "Ruby",
+            "label": "Ruby",
+            "source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Patch.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nrequest['Content-Type'] = 'application/json'\nrequest.body = \"{\\\"name\\\":\\\"Alertes marketing\\\"}\"\nresponse = http.request(request)\nputs response.body"
+          },
+          {
+            "lang": "Kotlin",
+            "label": "Kotlin",
+            "source": "val client = OkHttpClient()\nval body = \"{\\\"name\\\":\\\"Alertes marketing\\\"}\".toRequestBody(\"application/json\".toMediaType())\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"PATCH\", body)\n  .build()\nval response = client.newCall(request).execute()"
+          },
+          {
+            "lang": "Swift",
+            "label": "Swift",
+            "source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"PATCH\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nrequest.setValue(\"application/json\", forHTTPHeaderField: \"Content-Type\")\nrequest.httpBody = \"{\\\"name\\\":\\\"Alertes marketing\\\"}\".data(using: .utf8)\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
+          },
+          {
+            "lang": "C#",
+            "label": "C#",
+            "source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Patch;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nrequest.Content = new StringContent(\"{\\\"name\\\":\\\"Alertes marketing\\\"}\", Encoding.UTF8, \"application/json\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
+          },
+          {
+            "lang": "cURL",
+            "label": "cURL",
+            "source": "curl -X PATCH 'https://api.rewritetoday.com/v1/projects/748395130237498368' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'\n  -H 'Content-Type: application/json' \\\\\n  -d '{\"name\":\"Alertes marketing\"}'"
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Projects"
+        ],
+        "operationId": "deleteProject",
+        "summary": "Supprimer le projet",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Snowflake"
+            },
+            "example": "748395130237498368"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Réponse",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkEmptyResponse"
+                },
+                "examples": {
+                  "response": {
+                    "summary": "Exemple de réponse",
+                    "value": {
+                      "ok": true,
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Supprime définitivement le projet et les ressources associées. Opération réservée au propriétaire.",
+        "x-codeSamples": [
+          {
+            "lang": "Node.js",
+            "label": "Node.js",
+            "source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nawait rewrite.projects.delete(projectId);"
+          },
+          {
+            "lang": "Go",
+            "label": "Go",
+            "source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n\n  if err := client.Projects.Delete(context.Background(), projectID); err != nil {\n    log.Fatal(err)\n  }\n}"
+          },
+          {
+            "lang": "Python",
+            "label": "Python",
+            "source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'DELETE',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n    },\n)\nprint(response.json())"
+          },
+          {
+            "lang": "Java",
+            "label": "Java",
+            "source": "var client = HttpClient.newHttpClient();\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"DELETE\", HttpRequest.BodyPublishers.noBody());\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
+          },
+          {
+            "lang": "PHP",
+            "label": "PHP",
+            "source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n]);\n$response = curl_exec($ch);\ncurl_close($ch);"
+          },
+          {
+            "lang": "Ruby",
+            "label": "Ruby",
+            "source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Delete.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nresponse = http.request(request)\nputs response.body"
+          },
+          {
+            "lang": "Kotlin",
+            "label": "Kotlin",
+            "source": "val client = OkHttpClient()\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"DELETE\", null)\n  .build()\nval response = client.newCall(request).execute()"
+          },
+          {
+            "lang": "Swift",
+            "label": "Swift",
+            "source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"DELETE\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
+          },
+          {
+            "lang": "C#",
+            "label": "C#",
+            "source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Delete;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
+          },
+          {
+            "lang": "cURL",
+            "label": "cURL",
+            "source": "curl -X DELETE 'https://api.rewritetoday.com/v1/projects/748395130237498368' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'"
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "Envoyez votre clé API via `Authorization: Bearer <api-key>`. "
+      }
+    },
+    "parameters": {},
+    "responses": {},
+    "schemas": {
+      "Snowflake": {
+        "type": "string",
+        "pattern": "^[0-9]{1,32}$",
+        "description": "Unique resource identifier in snowflake format.",
+        "example": "748395130237498368"
+      },
+      "OkEmptyResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ok",
+          "data"
+        ],
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "const": true,
+            "description": "Champ `ok`."
+          },
+          "data": {
+            "type": "null",
+            "description": "Aucune donnée n'est renvoyée pour cette réponse."
+          }
+        },
+        "description": "Réponse réussie. Cet endpoint ne renvoie aucune donnée.",
+        "example": {
+          "ok": true,
+          "data": null
+        }
+      },
+      "ProjectUpdateBody": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "icon": {
+            "type": "null",
+            "description": "Définissez `null` pour supprimer l'icône (lorsque pris en charge)."
+          },
+          "name": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9,-_ ]{2,64}$",
+            "description": "Nom d'affichage (2 à 64 caractères)."
+          }
+        },
+        "description": "Champs pouvant être mis à jour dans un projet.",
+        "example": {
+          "name": "Alertes marketing"
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
 }

@@ -1,950 +1,1014 @@
 {
-	"openapi": "3.1.0",
-	"info": {
-		"title": "API de Rewrite",
-		"version": "1.0.0",
-		"summary": "Referencia de la API de proyectos (Projects, API Keys, Templates, Webhooks).",
-		"description": "Referencia publica completa de los endpoints de nivel proyecto en Rewrite API v1.\n\nTodos los endpoints devuelven un sobre consistente (`ok`, `data` y `cursor` opcional).\nUsa bearer token (API key) con scopes o sesion autenticada por cookie."
-	},
-	"servers": [
-		{
-			"url": "https://api.rewritetoday.com/v1",
-			"description": "Produccion"
-		}
-	],
-	"tags": [
-		{
-			"name": "Webhooks",
-			"description": "Registra y gestiona webhooks de eventos de entrega."
-		}
-	],
-	"paths": {
-		"/projects/{id}/webhooks": {
-			"get": {
-				"tags": ["Webhooks"],
-				"operationId": "listProjectWebhooks",
-				"summary": "Listar webhooks",
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"description": "ID unico del proyecto.",
-						"example": "748395130237498368"
-					},
-					{
-						"$ref": "#/components/parameters/after"
-					},
-					{
-						"$ref": "#/components/parameters/before"
-					},
-					{
-						"$ref": "#/components/parameters/limit"
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Respuesta",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/WebhooksListResponse"
-								},
-								"examples": {
-									"response": {
-										"summary": "Ejemplo de respuesta",
-										"value": {
-											"ok": true,
-											"data": [
-												{
-													"id": "748395130237498700",
-													"name": "Delivery events",
-													"endpoint": "https://example.com/webhooks/rewrite",
-													"events": [
-														"sms.queued",
-														"sms.delivered",
-														"sms.failed"
-													],
-													"status": "ACTIVE",
-													"createdAt": "2026-02-19T16:05:00.000Z"
-												}
-											],
-											"cursor": {
-												"persist": false,
-												"next": null
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				},
-				"description": "Lista los endpoints webhook configurados para este proyecto.\n\nUsa `limit`, `after` y `before` para paginar.",
-				"x-codeSamples": [
-					{
-						"lang": "Node.js",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nconst webhooks = await rewrite.webhooks.list(projectId, { limit: 20 });"
-					},
-					{
-						"lang": "Go",
-						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n\n  _, err = client.Webhooks.List(context.Background(), projectID, &rewrite.RESTGetListWebhooksQueryParams{Limit: 20})\n  if err != nil { log.Fatal(err) }\n}"
-					},
-					{
-						"lang": "Python",
-						"label": "Python",
-						"source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'GET',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n    },\n)\nprint(response.json())"
-					},
-					{
-						"lang": "Java",
-						"label": "Java",
-						"source": "var client = HttpClient.newHttpClient();\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"GET\", HttpRequest.BodyPublishers.noBody());\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
-					},
-					{
-						"lang": "PHP",
-						"label": "PHP",
-						"source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n]);\n$response = curl_exec($ch);\ncurl_close($ch);"
-					},
-					{
-						"lang": "Ruby",
-						"label": "Ruby",
-						"source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Get.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nresponse = http.request(request)\nputs response.body"
-					},
-					{
-						"lang": "Kotlin",
-						"label": "Kotlin",
-						"source": "val client = OkHttpClient()\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"GET\", null)\n  .build()\nval response = client.newCall(request).execute()"
-					},
-					{
-						"lang": "Swift",
-						"label": "Swift",
-						"source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"GET\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
-					},
-					{
-						"lang": "C#",
-						"label": "C#",
-						"source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Get;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
-					},
-					{
-						"lang": "cURL",
-						"label": "cURL",
-						"source": "curl -X GET 'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'"
-					}
-				]
-			},
-			"post": {
-				"tags": ["Webhooks"],
-				"operationId": "createProjectWebhook",
-				"summary": "Crear webhook",
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"description": "ID unico del proyecto.",
-						"example": "748395130237498368"
-					}
-				],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/WebhookCreateBody"
-							},
-							"examples": {
-								"request": {
-									"summary": "Ejemplo de solicitud",
-									"value": {
-										"name": "Delivery events",
-										"endpoint": "https://example.com/webhooks/rewrite",
-										"events": ["sms.queued", "sms.delivered", "sms.failed"]
-									}
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Respuesta",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/WebhookCreateResponse"
-								},
-								"examples": {
-									"response": {
-										"summary": "Ejemplo de respuesta",
-										"value": {
-											"ok": true,
-											"data": {
-												"id": "748395130237498711"
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				},
-				"description": "Crea un endpoint webhook y suscripciones de eventos.",
-				"x-codeSamples": [
-					{
-						"lang": "Node.js",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\nimport { WebhookEventType } from '@rewritejs/types';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nconst webhook = await rewrite.webhooks.create({\n  project: projectId,\n  name: 'Delivery events',\n  endpoint: 'https://example.com/webhooks/rewrite',\n  events: [WebhookEventType.SMSQueued, WebhookEventType.SMSDelivered, WebhookEventType.SMSFailed],\n});"
-					},
-					{
-						"lang": "Go",
-						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n\n  _, err = client.Webhooks.Create(context.Background(), rewrite.CreateWebhookOptions{\n    Project:  projectID,\n    Name:     \"Delivery events\",\n    Endpoint: \"https://example.com/webhooks/rewrite\",\n    Events: []rewrite.WebhookEventType{\n      rewrite.WebhookEventTypeSMSQueued,\n      rewrite.WebhookEventTypeSMSDelivered,\n      rewrite.WebhookEventTypeSMSFailed,\n    },\n  })\n  if err != nil { log.Fatal(err) }\n}"
-					},
-					{
-						"lang": "Python",
-						"label": "Python",
-						"source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'POST',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n        'Content-Type': 'application/json',\n    },\n    json={\n      \"name\": \"Delivery events\",\n      \"endpoint\": \"https://example.com/webhooks/rewrite\",\n      \"events\": [\n        \"sms.queued\",\n        \"sms.delivered\",\n        \"sms.failed\"\n      ]\n    },\n)\nprint(response.json())"
-					},
-					{
-						"lang": "Java",
-						"label": "Java",
-						"source": "var client = HttpClient.newHttpClient();\nvar json = \"{\\\"name\\\":\\\"Delivery events\\\",\\\"endpoint\\\":\\\"https://example.com/webhooks/rewrite\\\",\\\"events\\\":[\\\"sms.queued\\\",\\\"sms.delivered\\\",\\\"sms.failed\\\"]}\";\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .header(\"Content-Type\", \"application/json\")\n  .method(\"POST\", HttpRequest.BodyPublishers.ofString(json));\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
-					},
-					{
-						"lang": "PHP",
-						"label": "PHP",
-						"source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n  'Content-Type: application/json',\n]);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, '{\"name\":\"Delivery events\",\"endpoint\":\"https://example.com/webhooks/rewrite\",\"events\":[\"sms.queued\",\"sms.delivered\",\"sms.failed\"]}');\n$response = curl_exec($ch);\ncurl_close($ch);"
-					},
-					{
-						"lang": "Ruby",
-						"label": "Ruby",
-						"source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Post.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nrequest['Content-Type'] = 'application/json'\nrequest.body = \"{\\\"name\\\":\\\"Delivery events\\\",\\\"endpoint\\\":\\\"https://example.com/webhooks/rewrite\\\",\\\"events\\\":[\\\"sms.queued\\\",\\\"sms.delivered\\\",\\\"sms.failed\\\"]}\"\nresponse = http.request(request)\nputs response.body"
-					},
-					{
-						"lang": "Kotlin",
-						"label": "Kotlin",
-						"source": "val client = OkHttpClient()\nval body = \"{\\\"name\\\":\\\"Delivery events\\\",\\\"endpoint\\\":\\\"https://example.com/webhooks/rewrite\\\",\\\"events\\\":[\\\"sms.queued\\\",\\\"sms.delivered\\\",\\\"sms.failed\\\"]}\".toRequestBody(\"application/json\".toMediaType())\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"POST\", body)\n  .build()\nval response = client.newCall(request).execute()"
-					},
-					{
-						"lang": "Swift",
-						"label": "Swift",
-						"source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"POST\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nrequest.setValue(\"application/json\", forHTTPHeaderField: \"Content-Type\")\nrequest.httpBody = \"{\\\"name\\\":\\\"Delivery events\\\",\\\"endpoint\\\":\\\"https://example.com/webhooks/rewrite\\\",\\\"events\\\":[\\\"sms.queued\\\",\\\"sms.delivered\\\",\\\"sms.failed\\\"]}\".data(using: .utf8)\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
-					},
-					{
-						"lang": "C#",
-						"label": "C#",
-						"source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Post;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nrequest.Content = new StringContent(\"{\\\"name\\\":\\\"Delivery events\\\",\\\"endpoint\\\":\\\"https://example.com/webhooks/rewrite\\\",\\\"events\\\":[\\\"sms.queued\\\",\\\"sms.delivered\\\",\\\"sms.failed\\\"]}\", Encoding.UTF8, \"application/json\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
-					},
-					{
-						"lang": "cURL",
-						"label": "cURL",
-						"source": "curl -X POST 'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'\n  -H 'Content-Type: application/json' \\\\\n  -d '{\"name\":\"Delivery events\",\"endpoint\":\"https://example.com/webhooks/rewrite\",\"events\":[\"sms.queued\",\"sms.delivered\",\"sms.failed\"]}'"
-					}
-				]
-			}
-		},
-		"/projects/{id}/webhooks/{webhookId}": {
-			"get": {
-				"tags": ["Webhooks"],
-				"operationId": "getProjectWebhook",
-				"summary": "Obtener webhook",
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"description": "ID unico del proyecto.",
-						"example": "748395130237498368"
-					},
-					{
-						"name": "webhookId",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"description": "ID unico de webhook.",
-						"example": "748395130237498700"
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Respuesta",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/WebhookResponse"
-								},
-								"examples": {
-									"response": {
-										"summary": "Ejemplo de respuesta",
-										"value": {
-											"ok": true,
-											"data": {
-												"id": "748395130237498700",
-												"name": "Delivery events",
-												"endpoint": "https://example.com/webhooks/rewrite",
-												"events": ["sms.queued", "sms.delivered", "sms.failed"],
-												"status": "ACTIVE",
-												"createdAt": "2026-02-19T16:05:00.000Z"
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				},
-				"description": "Devuelve una unica configuracion de webhook.",
-				"x-codeSamples": [
-					{
-						"lang": "Node.js",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\nconst webhookId = '748395130237498700';\n\nconst webhook = await rewrite.webhooks.get(webhookId, projectId);"
-					},
-					{
-						"lang": "Go",
-						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n  webhookID := \"748395130237498700\"\n\n  _, err = client.Webhooks.Get(context.Background(), webhookID, projectID)\n  if err != nil { log.Fatal(err) }\n}"
-					},
-					{
-						"lang": "Python",
-						"label": "Python",
-						"source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'GET',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n    },\n)\nprint(response.json())"
-					},
-					{
-						"lang": "Java",
-						"label": "Java",
-						"source": "var client = HttpClient.newHttpClient();\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"GET\", HttpRequest.BodyPublishers.noBody());\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
-					},
-					{
-						"lang": "PHP",
-						"label": "PHP",
-						"source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n]);\n$response = curl_exec($ch);\ncurl_close($ch);"
-					},
-					{
-						"lang": "Ruby",
-						"label": "Ruby",
-						"source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Get.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nresponse = http.request(request)\nputs response.body"
-					},
-					{
-						"lang": "Kotlin",
-						"label": "Kotlin",
-						"source": "val client = OkHttpClient()\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"GET\", null)\n  .build()\nval response = client.newCall(request).execute()"
-					},
-					{
-						"lang": "Swift",
-						"label": "Swift",
-						"source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"GET\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
-					},
-					{
-						"lang": "C#",
-						"label": "C#",
-						"source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Get;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
-					},
-					{
-						"lang": "cURL",
-						"label": "cURL",
-						"source": "curl -X GET 'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'"
-					}
-				]
-			},
-			"patch": {
-				"tags": ["Webhooks"],
-				"operationId": "updateProjectWebhook",
-				"summary": "Actualizar webhook",
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"description": "ID unico del proyecto.",
-						"example": "748395130237498368"
-					},
-					{
-						"name": "webhookId",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"description": "ID unico de webhook.",
-						"example": "748395130237498700"
-					}
-				],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/WebhookUpdateBody"
-							},
-							"examples": {
-								"request": {
-									"summary": "Ejemplo de solicitud",
-									"value": {
-										"endpoint": "https://example.com/webhooks/rewrite-v2",
-										"events": ["sms.delivered", "sms.failed"],
-										"status": "ACTIVE"
-									}
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Respuesta",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/OkEmptyResponse"
-								},
-								"examples": {
-									"response": {
-										"summary": "Ejemplo de respuesta",
-										"value": {
-											"ok": true,
-											"data": null
-										}
-									}
-								}
-							}
-						}
-					}
-				},
-				"description": "Actualiza endpoint webhook, eventos, nombre o estado.",
-				"x-codeSamples": [
-					{
-						"lang": "Node.js",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\nimport { WebhookEventType, WebhookStatus } from '@rewritejs/types';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\nconst webhookId = '748395130237498700';\n\nconst webhook = await rewrite.webhooks.update(webhookId, {\n  project: projectId,\n  endpoint: 'https://example.com/webhooks/rewrite-v2',\n  events: [WebhookEventType.SMSDelivered, WebhookEventType.SMSFailed],\n  status: WebhookStatus.Active,\n});"
-					},
-					{
-						"lang": "Go",
-						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n  webhookID := \"748395130237498700\"\n\n  _, err = client.Webhooks.Update(context.Background(), webhookID, rewrite.UpdateWebhookOptions{\n    Project: projectID,\n    RESTPatchUpdateWebhookBody: rewrite.RESTPatchUpdateWebhookBody{\n      Endpoint: \"https://example.com/webhooks/rewrite-v2\",\n      Events: []rewrite.WebhookEventType{\n        rewrite.WebhookEventTypeSMSDelivered,\n        rewrite.WebhookEventTypeSMSFailed,\n      },\n      Status: rewrite.WebhookStatusActive,\n    },\n  })\n  if err != nil { log.Fatal(err) }\n}"
-					},
-					{
-						"lang": "Python",
-						"label": "Python",
-						"source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'PATCH',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n        'Content-Type': 'application/json',\n    },\n    json={\n      \"endpoint\": \"https://example.com/webhooks/rewrite-v2\",\n      \"events\": [\n        \"sms.delivered\",\n        \"sms.failed\"\n      ],\n      \"status\": \"ACTIVE\"\n    },\n)\nprint(response.json())"
-					},
-					{
-						"lang": "Java",
-						"label": "Java",
-						"source": "var client = HttpClient.newHttpClient();\nvar json = \"{\\\"endpoint\\\":\\\"https://example.com/webhooks/rewrite-v2\\\",\\\"events\\\":[\\\"sms.delivered\\\",\\\"sms.failed\\\"],\\\"status\\\":\\\"ACTIVE\\\"}\";\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .header(\"Content-Type\", \"application/json\")\n  .method(\"PATCH\", HttpRequest.BodyPublishers.ofString(json));\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
-					},
-					{
-						"lang": "PHP",
-						"label": "PHP",
-						"source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n  'Content-Type: application/json',\n]);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, '{\"endpoint\":\"https://example.com/webhooks/rewrite-v2\",\"events\":[\"sms.delivered\",\"sms.failed\"],\"status\":\"ACTIVE\"}');\n$response = curl_exec($ch);\ncurl_close($ch);"
-					},
-					{
-						"lang": "Ruby",
-						"label": "Ruby",
-						"source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Patch.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nrequest['Content-Type'] = 'application/json'\nrequest.body = \"{\\\"endpoint\\\":\\\"https://example.com/webhooks/rewrite-v2\\\",\\\"events\\\":[\\\"sms.delivered\\\",\\\"sms.failed\\\"],\\\"status\\\":\\\"ACTIVE\\\"}\"\nresponse = http.request(request)\nputs response.body"
-					},
-					{
-						"lang": "Kotlin",
-						"label": "Kotlin",
-						"source": "val client = OkHttpClient()\nval body = \"{\\\"endpoint\\\":\\\"https://example.com/webhooks/rewrite-v2\\\",\\\"events\\\":[\\\"sms.delivered\\\",\\\"sms.failed\\\"],\\\"status\\\":\\\"ACTIVE\\\"}\".toRequestBody(\"application/json\".toMediaType())\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"PATCH\", body)\n  .build()\nval response = client.newCall(request).execute()"
-					},
-					{
-						"lang": "Swift",
-						"label": "Swift",
-						"source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"PATCH\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nrequest.setValue(\"application/json\", forHTTPHeaderField: \"Content-Type\")\nrequest.httpBody = \"{\\\"endpoint\\\":\\\"https://example.com/webhooks/rewrite-v2\\\",\\\"events\\\":[\\\"sms.delivered\\\",\\\"sms.failed\\\"],\\\"status\\\":\\\"ACTIVE\\\"}\".data(using: .utf8)\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
-					},
-					{
-						"lang": "C#",
-						"label": "C#",
-						"source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Patch;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nrequest.Content = new StringContent(\"{\\\"endpoint\\\":\\\"https://example.com/webhooks/rewrite-v2\\\",\\\"events\\\":[\\\"sms.delivered\\\",\\\"sms.failed\\\"],\\\"status\\\":\\\"ACTIVE\\\"}\", Encoding.UTF8, \"application/json\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
-					},
-					{
-						"lang": "cURL",
-						"label": "cURL",
-						"source": "curl -X PATCH 'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'\n  -H 'Content-Type: application/json' \\\\\n  -d '{\"endpoint\":\"https://example.com/webhooks/rewrite-v2\",\"events\":[\"sms.delivered\",\"sms.failed\"],\"status\":\"ACTIVE\"}'"
-					}
-				]
-			},
-			"delete": {
-				"tags": ["Webhooks"],
-				"operationId": "deleteProjectWebhook",
-				"summary": "Eliminar webhook",
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"description": "ID unico del proyecto.",
-						"example": "748395130237498368"
-					},
-					{
-						"name": "webhookId",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"description": "ID unico de webhook.",
-						"example": "748395130237498700"
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Respuesta",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/OkEmptyResponse"
-								},
-								"examples": {
-									"response": {
-										"summary": "Ejemplo de respuesta",
-										"value": {
-											"ok": true,
-											"data": null
-										}
-									}
-								}
-							}
-						}
-					}
-				},
-				"description": "Elimina un webhook y detiene futuras entregas de eventos.",
-				"x-codeSamples": [
-					{
-						"lang": "Node.js",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\nconst webhookId = '748395130237498700';\n\nawait rewrite.webhooks.delete(webhookId, projectId);"
-					},
-					{
-						"lang": "Go",
-						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n  webhookID := \"748395130237498700\"\n\n  if err := client.Webhooks.Delete(context.Background(), webhookID, projectID); err != nil {\n    log.Fatal(err)\n  }\n}"
-					},
-					{
-						"lang": "Python",
-						"label": "Python",
-						"source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'DELETE',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n    },\n)\nprint(response.json())"
-					},
-					{
-						"lang": "Java",
-						"label": "Java",
-						"source": "var client = HttpClient.newHttpClient();\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"DELETE\", HttpRequest.BodyPublishers.noBody());\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
-					},
-					{
-						"lang": "PHP",
-						"label": "PHP",
-						"source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n]);\n$response = curl_exec($ch);\ncurl_close($ch);"
-					},
-					{
-						"lang": "Ruby",
-						"label": "Ruby",
-						"source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Delete.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nresponse = http.request(request)\nputs response.body"
-					},
-					{
-						"lang": "Kotlin",
-						"label": "Kotlin",
-						"source": "val client = OkHttpClient()\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"DELETE\", null)\n  .build()\nval response = client.newCall(request).execute()"
-					},
-					{
-						"lang": "Swift",
-						"label": "Swift",
-						"source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"DELETE\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
-					},
-					{
-						"lang": "C#",
-						"label": "C#",
-						"source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Delete;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
-					},
-					{
-						"lang": "cURL",
-						"label": "cURL",
-						"source": "curl -X DELETE 'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'"
-					}
-				]
-			}
-		}
-	},
-	"components": {
-		"securitySchemes": {
-			"bearerAuth": {
-				"type": "http",
-				"scheme": "bearer",
-				"bearerFormat": "API Key",
-				"description": "Envia tu API key como `Authorization: Bearer <api-key>`."
-			}
-		},
-		"parameters": {
-			"after": {
-				"name": "after",
-				"in": "query",
-				"required": false,
-				"schema": {
-					"$ref": "#/components/schemas/Snowflake"
-				},
-				"description": "ID unico de cursor para obtener elementos despues de este valor.",
-				"example": "748395130237498588"
-			},
-			"before": {
-				"name": "before",
-				"in": "query",
-				"required": false,
-				"schema": {
-					"$ref": "#/components/schemas/Snowflake"
-				},
-				"description": "ID unico de cursor para obtener elementos antes de este valor.",
-				"example": "748395130237498399"
-			},
-			"limit": {
-				"name": "limit",
-				"in": "query",
-				"required": false,
-				"schema": {
-					"type": "integer",
-					"minimum": 2,
-					"maximum": 100
-				},
-				"description": "Numero de elementos a devolver.",
-				"example": 20
-			}
-		},
-		"responses": {},
-		"schemas": {
-			"Snowflake": {
-				"type": "string",
-				"pattern": "^[0-9]{1,32}$",
-				"description": "ID unico del recurso.",
-				"example": "748395130237498368"
-			},
-			"Cursor": {
-				"type": "object",
-				"additionalProperties": false,
-				"required": ["persist"],
-				"properties": {
-					"persist": {
-						"type": "boolean",
-						"description": "Indica si se puede solicitar otra pagina usando `next`."
-					},
-					"next": {
-						"$ref": "#/components/schemas/Snowflake",
-						"description": "Cursor para solicitar la siguiente pagina (`after`)."
-					}
-				},
-				"description": "Metadatos de cursor para respuestas paginadas.",
-				"example": {
-					"persist": true,
-					"next": "748395130237498399"
-				}
-			},
-			"OkEmptyResponse": {
-				"type": "object",
-				"additionalProperties": false,
-				"required": ["ok", "data"],
-				"properties": {
-					"ok": {
-						"type": "boolean",
-						"const": true,
-						"description": "campo ok."
-					},
-					"data": {
-						"type": "null",
-						"description": "Esta respuesta no devuelve datos."
-					}
-				},
-				"description": "Respuesta exitosa. Este endpoint no devuelve datos.",
-				"example": {
-					"ok": true,
-					"data": null
-				}
-			},
-			"WebhookEventType": {
-				"type": "string",
-				"enum": [
-					"sms.queued",
-					"sms.delivered",
-					"sms.scheduled",
-					"sms.failed",
-					"sms.canceled"
-				],
-				"description": "Tipos de eventos webhook soportados.",
-				"example": "sms.delivered"
-			},
-			"WebhookStatus": {
-				"type": "string",
-				"enum": ["ACTIVE", "INACTIVE"],
-				"description": "Estado de entrega del webhook.",
-				"example": "ACTIVE"
-			},
-			"Webhook": {
-				"type": "object",
-				"additionalProperties": false,
-				"required": ["id", "endpoint", "events", "status", "createdAt"],
-				"properties": {
-					"id": {
-						"$ref": "#/components/schemas/Snowflake",
-						"description": "ID unico de webhook."
-					},
-					"name": {
-						"type": ["string", "null"],
-						"description": "campo name."
-					},
-					"endpoint": {
-						"type": "string",
-						"format": "uri",
-						"description": "campo endpoint."
-					},
-					"events": {
-						"type": "array",
-						"items": {
-							"$ref": "#/components/schemas/WebhookEventType"
-						},
-						"description": "campo events."
-					},
-					"status": {
-						"$ref": "#/components/schemas/WebhookStatus",
-						"description": "campo status."
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time",
-						"description": "Marca de tiempo de creacion UTC."
-					}
-				},
-				"description": "Configuracion del endpoint webhook.",
-				"example": {
-					"id": "748395130237498700",
-					"name": "Delivery events",
-					"endpoint": "https://example.com/webhooks/rewrite",
-					"events": ["sms.queued", "sms.delivered", "sms.failed"],
-					"status": "ACTIVE",
-					"createdAt": "2026-02-19T16:05:00.000Z"
-				}
-			},
-			"WebhooksListResponse": {
-				"type": "object",
-				"additionalProperties": false,
-				"required": ["ok", "data", "cursor"],
-				"properties": {
-					"ok": {
-						"type": "boolean",
-						"const": true,
-						"description": "campo ok."
-					},
-					"data": {
-						"type": "array",
-						"items": {
-							"$ref": "#/components/schemas/Webhook"
-						},
-						"description": "campo data."
-					},
-					"cursor": {
-						"$ref": "#/components/schemas/Cursor",
-						"description": "campo cursor."
-					}
-				},
-				"example": {
-					"ok": true,
-					"data": [
-						{
-							"id": "748395130237498700",
-							"name": "Delivery events",
-							"endpoint": "https://example.com/webhooks/rewrite",
-							"events": ["sms.queued", "sms.delivered", "sms.failed"],
-							"status": "ACTIVE",
-							"createdAt": "2026-02-19T16:05:00.000Z"
-						}
-					],
-					"cursor": {
-						"persist": false,
-						"next": null
-					}
-				},
-				"description": "Esquema WebhooksListResponse."
-			},
-			"WebhookResponse": {
-				"type": "object",
-				"additionalProperties": false,
-				"required": ["ok", "data"],
-				"properties": {
-					"ok": {
-						"type": "boolean",
-						"const": true,
-						"description": "campo ok."
-					},
-					"data": {
-						"$ref": "#/components/schemas/Webhook",
-						"description": "campo data."
-					}
-				},
-				"example": {
-					"ok": true,
-					"data": {
-						"id": "748395130237498700",
-						"name": "Delivery events",
-						"endpoint": "https://example.com/webhooks/rewrite",
-						"events": ["sms.queued", "sms.delivered", "sms.failed"],
-						"status": "ACTIVE",
-						"createdAt": "2026-02-19T16:05:00.000Z"
-					}
-				},
-				"description": "Esquema WebhookResponse."
-			},
-			"WebhookCreateBody": {
-				"type": "object",
-				"additionalProperties": false,
-				"required": ["events", "endpoint"],
-				"properties": {
-					"name": {
-						"type": "string",
-						"minLength": 1,
-						"maxLength": 32,
-						"description": "campo name."
-					},
-					"events": {
-						"type": "array",
-						"uniqueItems": true,
-						"items": {
-							"$ref": "#/components/schemas/WebhookEventType"
-						},
-						"description": "campo events."
-					},
-					"endpoint": {
-						"type": "string",
-						"format": "uri",
-						"minLength": 1,
-						"maxLength": 255,
-						"description": "campo endpoint."
-					}
-				},
-				"description": "Crea un webhook para recibir eventos SMS.",
-				"example": {
-					"name": "Delivery events",
-					"endpoint": "https://example.com/webhooks/rewrite",
-					"events": ["sms.queued", "sms.delivered", "sms.failed"]
-				}
-			},
-			"WebhookUpdateBody": {
-				"type": "object",
-				"additionalProperties": false,
-				"properties": {
-					"name": {
-						"oneOf": [
-							{
-								"type": "string",
-								"minLength": 1,
-								"maxLength": 32
-							},
-							{
-								"type": "null"
-							}
-						],
-						"description": "campo name."
-					},
-					"events": {
-						"type": "array",
-						"uniqueItems": true,
-						"items": {
-							"$ref": "#/components/schemas/WebhookEventType"
-						},
-						"description": "campo events."
-					},
-					"endpoint": {
-						"type": "string",
-						"format": "uri",
-						"minLength": 1,
-						"maxLength": 255,
-						"description": "campo endpoint."
-					},
-					"status": {
-						"$ref": "#/components/schemas/WebhookStatus",
-						"description": "campo status."
-					}
-				},
-				"description": "Actualiza endpoint webhook, eventos suscritos, nombre o estado.",
-				"example": {
-					"endpoint": "https://example.com/webhooks/rewrite-v2",
-					"events": ["sms.delivered", "sms.failed"],
-					"status": "ACTIVE"
-				}
-			},
-			"WebhookCreateResponse": {
-				"type": "object",
-				"additionalProperties": false,
-				"required": ["ok", "data"],
-				"properties": {
-					"ok": {
-						"type": "boolean",
-						"const": true,
-						"description": "campo ok."
-					},
-					"data": {
-						"type": "object",
-						"required": ["id"],
-						"properties": {
-							"id": {
-								"$ref": "#/components/schemas/Snowflake"
-							}
-						},
-						"description": "campo data."
-					}
-				},
-				"example": {
-					"ok": true,
-					"data": {
-						"id": "748395130237498711"
-					}
-				},
-				"description": "Esquema WebhookCreateResponse."
-			}
-		}
-	},
-	"security": [
-		{
-			"bearerAuth": []
-		}
-	]
+  "openapi": "3.1.0",
+  "info": {
+    "title": "API de Rewrite",
+    "version": "1.0.0",
+    "summary": "Referencia de la API de proyectos (Projects, API Keys, Templates, Webhooks).",
+    "description": "Referencia publica completa de los endpoints de nivel proyecto en Rewrite API v1.\n\nTodos los endpoints devuelven un sobre consistente (`ok`, `data` y `cursor` opcional).\nUsa bearer token (API key) con scopes o sesion autenticada por cookie."
+  },
+  "servers": [
+    {
+      "url": "https://api.rewritetoday.com/v1",
+      "description": "Produccion"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Webhooks",
+      "description": "Registra y gestiona webhooks de eventos de entrega."
+    }
+  ],
+  "paths": {
+    "/projects/{id}/webhooks": {
+      "get": {
+        "tags": [
+          "Webhooks"
+        ],
+        "operationId": "listProjectWebhooks",
+        "summary": "Listar webhooks",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Snowflake"
+            },
+            "example": "748395130237498368"
+          },
+          {
+            "$ref": "#/components/parameters/after"
+          },
+          {
+            "$ref": "#/components/parameters/before"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhooksListResponse"
+                },
+                "examples": {
+                  "response": {
+                    "summary": "Ejemplo de respuesta",
+                    "value": {
+                      "ok": true,
+                      "data": [
+                        {
+                          "id": "748395130237498700",
+                          "name": "Delivery events",
+                          "endpoint": "https://example.com/webhooks/rewrite",
+                          "events": [
+                            "sms.queued",
+                            "sms.delivered",
+                            "sms.failed"
+                          ],
+                          "status": "ACTIVE",
+                          "createdAt": "2026-02-19T16:05:00.000Z"
+                        }
+                      ],
+                      "cursor": {
+                        "persist": false,
+                        "next": null
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Lista los endpoints webhook configurados para este proyecto.\n\nUsa `limit`, `after` y `before` para paginar.",
+        "x-codeSamples": [
+          {
+            "lang": "Node.js",
+            "label": "Node.js",
+            "source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nconst webhooks = await rewrite.webhooks.list(projectId, { limit: 20 });"
+          },
+          {
+            "lang": "Go",
+            "label": "Go",
+            "source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n\n  _, err = client.Webhooks.List(context.Background(), projectID, &rewrite.RESTGetListWebhooksQueryParams{Limit: 20})\n  if err != nil { log.Fatal(err) }\n}"
+          },
+          {
+            "lang": "Python",
+            "label": "Python",
+            "source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'GET',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n    },\n)\nprint(response.json())"
+          },
+          {
+            "lang": "Java",
+            "label": "Java",
+            "source": "var client = HttpClient.newHttpClient();\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"GET\", HttpRequest.BodyPublishers.noBody());\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
+          },
+          {
+            "lang": "PHP",
+            "label": "PHP",
+            "source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n]);\n$response = curl_exec($ch);\ncurl_close($ch);"
+          },
+          {
+            "lang": "Ruby",
+            "label": "Ruby",
+            "source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Get.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nresponse = http.request(request)\nputs response.body"
+          },
+          {
+            "lang": "Kotlin",
+            "label": "Kotlin",
+            "source": "val client = OkHttpClient()\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"GET\", null)\n  .build()\nval response = client.newCall(request).execute()"
+          },
+          {
+            "lang": "Swift",
+            "label": "Swift",
+            "source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"GET\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
+          },
+          {
+            "lang": "C#",
+            "label": "C#",
+            "source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Get;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
+          },
+          {
+            "lang": "cURL",
+            "label": "cURL",
+            "source": "curl -X GET 'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'"
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Webhooks"
+        ],
+        "operationId": "createProjectWebhook",
+        "summary": "Crear webhook",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Snowflake"
+            },
+            "example": "748395130237498368"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookCreateBody"
+              },
+              "examples": {
+                "request": {
+                  "summary": "Ejemplo de solicitud",
+                  "value": {
+                    "name": "Delivery events",
+                    "endpoint": "https://example.com/webhooks/rewrite",
+                    "events": [
+                      "sms.queued",
+                      "sms.delivered",
+                      "sms.failed"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Respuesta",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookCreateResponse"
+                },
+                "examples": {
+                  "response": {
+                    "summary": "Ejemplo de respuesta",
+                    "value": {
+                      "ok": true,
+                      "data": {
+                        "id": "748395130237498711"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Crea un endpoint webhook y suscripciones de eventos.",
+        "x-codeSamples": [
+          {
+            "lang": "Node.js",
+            "label": "Node.js",
+            "source": "import { Rewrite } from '@rewritejs/sdk';\nimport { WebhookEventType } from '@rewritejs/types';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nconst webhook = await rewrite.webhooks.create({\n  project: projectId,\n  name: 'Delivery events',\n  endpoint: 'https://example.com/webhooks/rewrite',\n  events: [WebhookEventType.SMSQueued, WebhookEventType.SMSDelivered, WebhookEventType.SMSFailed],\n});"
+          },
+          {
+            "lang": "Go",
+            "label": "Go",
+            "source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n\n  _, err = client.Webhooks.Create(context.Background(), rewrite.CreateWebhookOptions{\n    Project:  projectID,\n    Name:     \"Delivery events\",\n    Endpoint: \"https://example.com/webhooks/rewrite\",\n    Events: []rewrite.WebhookEventType{\n      rewrite.WebhookEventTypeSMSQueued,\n      rewrite.WebhookEventTypeSMSDelivered,\n      rewrite.WebhookEventTypeSMSFailed,\n    },\n  })\n  if err != nil { log.Fatal(err) }\n}"
+          },
+          {
+            "lang": "Python",
+            "label": "Python",
+            "source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'POST',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n        'Content-Type': 'application/json',\n    },\n    json={\n      \"name\": \"Delivery events\",\n      \"endpoint\": \"https://example.com/webhooks/rewrite\",\n      \"events\": [\n        \"sms.queued\",\n        \"sms.delivered\",\n        \"sms.failed\"\n      ]\n    },\n)\nprint(response.json())"
+          },
+          {
+            "lang": "Java",
+            "label": "Java",
+            "source": "var client = HttpClient.newHttpClient();\nvar json = \"{\\\"name\\\":\\\"Delivery events\\\",\\\"endpoint\\\":\\\"https://example.com/webhooks/rewrite\\\",\\\"events\\\":[\\\"sms.queued\\\",\\\"sms.delivered\\\",\\\"sms.failed\\\"]}\";\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .header(\"Content-Type\", \"application/json\")\n  .method(\"POST\", HttpRequest.BodyPublishers.ofString(json));\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
+          },
+          {
+            "lang": "PHP",
+            "label": "PHP",
+            "source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n  'Content-Type: application/json',\n]);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, '{\"name\":\"Delivery events\",\"endpoint\":\"https://example.com/webhooks/rewrite\",\"events\":[\"sms.queued\",\"sms.delivered\",\"sms.failed\"]}');\n$response = curl_exec($ch);\ncurl_close($ch);"
+          },
+          {
+            "lang": "Ruby",
+            "label": "Ruby",
+            "source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Post.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nrequest['Content-Type'] = 'application/json'\nrequest.body = \"{\\\"name\\\":\\\"Delivery events\\\",\\\"endpoint\\\":\\\"https://example.com/webhooks/rewrite\\\",\\\"events\\\":[\\\"sms.queued\\\",\\\"sms.delivered\\\",\\\"sms.failed\\\"]}\"\nresponse = http.request(request)\nputs response.body"
+          },
+          {
+            "lang": "Kotlin",
+            "label": "Kotlin",
+            "source": "val client = OkHttpClient()\nval body = \"{\\\"name\\\":\\\"Delivery events\\\",\\\"endpoint\\\":\\\"https://example.com/webhooks/rewrite\\\",\\\"events\\\":[\\\"sms.queued\\\",\\\"sms.delivered\\\",\\\"sms.failed\\\"]}\".toRequestBody(\"application/json\".toMediaType())\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"POST\", body)\n  .build()\nval response = client.newCall(request).execute()"
+          },
+          {
+            "lang": "Swift",
+            "label": "Swift",
+            "source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"POST\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nrequest.setValue(\"application/json\", forHTTPHeaderField: \"Content-Type\")\nrequest.httpBody = \"{\\\"name\\\":\\\"Delivery events\\\",\\\"endpoint\\\":\\\"https://example.com/webhooks/rewrite\\\",\\\"events\\\":[\\\"sms.queued\\\",\\\"sms.delivered\\\",\\\"sms.failed\\\"]}\".data(using: .utf8)\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
+          },
+          {
+            "lang": "C#",
+            "label": "C#",
+            "source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Post;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nrequest.Content = new StringContent(\"{\\\"name\\\":\\\"Delivery events\\\",\\\"endpoint\\\":\\\"https://example.com/webhooks/rewrite\\\",\\\"events\\\":[\\\"sms.queued\\\",\\\"sms.delivered\\\",\\\"sms.failed\\\"]}\", Encoding.UTF8, \"application/json\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
+          },
+          {
+            "lang": "cURL",
+            "label": "cURL",
+            "source": "curl -X POST 'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'\n  -H 'Content-Type: application/json' \\\\\n  -d '{\"name\":\"Delivery events\",\"endpoint\":\"https://example.com/webhooks/rewrite\",\"events\":[\"sms.queued\",\"sms.delivered\",\"sms.failed\"]}'"
+          }
+        ]
+      }
+    },
+    "/projects/{id}/webhooks/{webhookId}": {
+      "get": {
+        "tags": [
+          "Webhooks"
+        ],
+        "operationId": "getProjectWebhook",
+        "summary": "Obtener webhook",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Snowflake"
+            },
+            "example": "748395130237498368"
+          },
+          {
+            "name": "webhookId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Snowflake"
+            },
+            "example": "748395130237498700"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookResponse"
+                },
+                "examples": {
+                  "response": {
+                    "summary": "Ejemplo de respuesta",
+                    "value": {
+                      "ok": true,
+                      "data": {
+                        "id": "748395130237498700",
+                        "name": "Delivery events",
+                        "endpoint": "https://example.com/webhooks/rewrite",
+                        "events": [
+                          "sms.queued",
+                          "sms.delivered",
+                          "sms.failed"
+                        ],
+                        "status": "ACTIVE",
+                        "createdAt": "2026-02-19T16:05:00.000Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Devuelve una unica configuracion de webhook.",
+        "x-codeSamples": [
+          {
+            "lang": "Node.js",
+            "label": "Node.js",
+            "source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\nconst webhookId = '748395130237498700';\n\nconst webhook = await rewrite.webhooks.get(webhookId, projectId);"
+          },
+          {
+            "lang": "Go",
+            "label": "Go",
+            "source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n  webhookID := \"748395130237498700\"\n\n  _, err = client.Webhooks.Get(context.Background(), webhookID, projectID)\n  if err != nil { log.Fatal(err) }\n}"
+          },
+          {
+            "lang": "Python",
+            "label": "Python",
+            "source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'GET',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n    },\n)\nprint(response.json())"
+          },
+          {
+            "lang": "Java",
+            "label": "Java",
+            "source": "var client = HttpClient.newHttpClient();\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"GET\", HttpRequest.BodyPublishers.noBody());\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
+          },
+          {
+            "lang": "PHP",
+            "label": "PHP",
+            "source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n]);\n$response = curl_exec($ch);\ncurl_close($ch);"
+          },
+          {
+            "lang": "Ruby",
+            "label": "Ruby",
+            "source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Get.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nresponse = http.request(request)\nputs response.body"
+          },
+          {
+            "lang": "Kotlin",
+            "label": "Kotlin",
+            "source": "val client = OkHttpClient()\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"GET\", null)\n  .build()\nval response = client.newCall(request).execute()"
+          },
+          {
+            "lang": "Swift",
+            "label": "Swift",
+            "source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"GET\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
+          },
+          {
+            "lang": "C#",
+            "label": "C#",
+            "source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Get;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
+          },
+          {
+            "lang": "cURL",
+            "label": "cURL",
+            "source": "curl -X GET 'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'"
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Webhooks"
+        ],
+        "operationId": "updateProjectWebhook",
+        "summary": "Actualizar webhook",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Snowflake"
+            },
+            "example": "748395130237498368"
+          },
+          {
+            "name": "webhookId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Snowflake"
+            },
+            "example": "748395130237498700"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookUpdateBody"
+              },
+              "examples": {
+                "request": {
+                  "summary": "Ejemplo de solicitud",
+                  "value": {
+                    "endpoint": "https://example.com/webhooks/rewrite-v2",
+                    "events": [
+                      "sms.delivered",
+                      "sms.failed"
+                    ],
+                    "status": "ACTIVE"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Respuesta",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkEmptyResponse"
+                },
+                "examples": {
+                  "response": {
+                    "summary": "Ejemplo de respuesta",
+                    "value": {
+                      "ok": true,
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Actualiza endpoint webhook, eventos, nombre o estado.",
+        "x-codeSamples": [
+          {
+            "lang": "Node.js",
+            "label": "Node.js",
+            "source": "import { Rewrite } from '@rewritejs/sdk';\nimport { WebhookEventType, WebhookStatus } from '@rewritejs/types';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\nconst webhookId = '748395130237498700';\n\nconst webhook = await rewrite.webhooks.update(webhookId, {\n  project: projectId,\n  endpoint: 'https://example.com/webhooks/rewrite-v2',\n  events: [WebhookEventType.SMSDelivered, WebhookEventType.SMSFailed],\n  status: WebhookStatus.Active,\n});"
+          },
+          {
+            "lang": "Go",
+            "label": "Go",
+            "source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n  webhookID := \"748395130237498700\"\n\n  _, err = client.Webhooks.Update(context.Background(), webhookID, rewrite.UpdateWebhookOptions{\n    Project: projectID,\n    RESTPatchUpdateWebhookBody: rewrite.RESTPatchUpdateWebhookBody{\n      Endpoint: \"https://example.com/webhooks/rewrite-v2\",\n      Events: []rewrite.WebhookEventType{\n        rewrite.WebhookEventTypeSMSDelivered,\n        rewrite.WebhookEventTypeSMSFailed,\n      },\n      Status: rewrite.WebhookStatusActive,\n    },\n  })\n  if err != nil { log.Fatal(err) }\n}"
+          },
+          {
+            "lang": "Python",
+            "label": "Python",
+            "source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'PATCH',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n        'Content-Type': 'application/json',\n    },\n    json={\n      \"endpoint\": \"https://example.com/webhooks/rewrite-v2\",\n      \"events\": [\n        \"sms.delivered\",\n        \"sms.failed\"\n      ],\n      \"status\": \"ACTIVE\"\n    },\n)\nprint(response.json())"
+          },
+          {
+            "lang": "Java",
+            "label": "Java",
+            "source": "var client = HttpClient.newHttpClient();\nvar json = \"{\\\"endpoint\\\":\\\"https://example.com/webhooks/rewrite-v2\\\",\\\"events\\\":[\\\"sms.delivered\\\",\\\"sms.failed\\\"],\\\"status\\\":\\\"ACTIVE\\\"}\";\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .header(\"Content-Type\", \"application/json\")\n  .method(\"PATCH\", HttpRequest.BodyPublishers.ofString(json));\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
+          },
+          {
+            "lang": "PHP",
+            "label": "PHP",
+            "source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n  'Content-Type: application/json',\n]);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, '{\"endpoint\":\"https://example.com/webhooks/rewrite-v2\",\"events\":[\"sms.delivered\",\"sms.failed\"],\"status\":\"ACTIVE\"}');\n$response = curl_exec($ch);\ncurl_close($ch);"
+          },
+          {
+            "lang": "Ruby",
+            "label": "Ruby",
+            "source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Patch.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nrequest['Content-Type'] = 'application/json'\nrequest.body = \"{\\\"endpoint\\\":\\\"https://example.com/webhooks/rewrite-v2\\\",\\\"events\\\":[\\\"sms.delivered\\\",\\\"sms.failed\\\"],\\\"status\\\":\\\"ACTIVE\\\"}\"\nresponse = http.request(request)\nputs response.body"
+          },
+          {
+            "lang": "Kotlin",
+            "label": "Kotlin",
+            "source": "val client = OkHttpClient()\nval body = \"{\\\"endpoint\\\":\\\"https://example.com/webhooks/rewrite-v2\\\",\\\"events\\\":[\\\"sms.delivered\\\",\\\"sms.failed\\\"],\\\"status\\\":\\\"ACTIVE\\\"}\".toRequestBody(\"application/json\".toMediaType())\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"PATCH\", body)\n  .build()\nval response = client.newCall(request).execute()"
+          },
+          {
+            "lang": "Swift",
+            "label": "Swift",
+            "source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"PATCH\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nrequest.setValue(\"application/json\", forHTTPHeaderField: \"Content-Type\")\nrequest.httpBody = \"{\\\"endpoint\\\":\\\"https://example.com/webhooks/rewrite-v2\\\",\\\"events\\\":[\\\"sms.delivered\\\",\\\"sms.failed\\\"],\\\"status\\\":\\\"ACTIVE\\\"}\".data(using: .utf8)\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
+          },
+          {
+            "lang": "C#",
+            "label": "C#",
+            "source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Patch;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nrequest.Content = new StringContent(\"{\\\"endpoint\\\":\\\"https://example.com/webhooks/rewrite-v2\\\",\\\"events\\\":[\\\"sms.delivered\\\",\\\"sms.failed\\\"],\\\"status\\\":\\\"ACTIVE\\\"}\", Encoding.UTF8, \"application/json\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
+          },
+          {
+            "lang": "cURL",
+            "label": "cURL",
+            "source": "curl -X PATCH 'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'\n  -H 'Content-Type: application/json' \\\\\n  -d '{\"endpoint\":\"https://example.com/webhooks/rewrite-v2\",\"events\":[\"sms.delivered\",\"sms.failed\"],\"status\":\"ACTIVE\"}'"
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Webhooks"
+        ],
+        "operationId": "deleteProjectWebhook",
+        "summary": "Eliminar webhook",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Snowflake"
+            },
+            "example": "748395130237498368"
+          },
+          {
+            "name": "webhookId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Snowflake"
+            },
+            "example": "748395130237498700"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Respuesta",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkEmptyResponse"
+                },
+                "examples": {
+                  "response": {
+                    "summary": "Ejemplo de respuesta",
+                    "value": {
+                      "ok": true,
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Elimina un webhook y detiene futuras entregas de eventos.",
+        "x-codeSamples": [
+          {
+            "lang": "Node.js",
+            "label": "Node.js",
+            "source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\nconst webhookId = '748395130237498700';\n\nawait rewrite.webhooks.delete(webhookId, projectId);"
+          },
+          {
+            "lang": "Go",
+            "label": "Go",
+            "source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n  webhookID := \"748395130237498700\"\n\n  if err := client.Webhooks.Delete(context.Background(), webhookID, projectID); err != nil {\n    log.Fatal(err)\n  }\n}"
+          },
+          {
+            "lang": "Python",
+            "label": "Python",
+            "source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'DELETE',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n    },\n)\nprint(response.json())"
+          },
+          {
+            "lang": "Java",
+            "label": "Java",
+            "source": "var client = HttpClient.newHttpClient();\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"DELETE\", HttpRequest.BodyPublishers.noBody());\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
+          },
+          {
+            "lang": "PHP",
+            "label": "PHP",
+            "source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n]);\n$response = curl_exec($ch);\ncurl_close($ch);"
+          },
+          {
+            "lang": "Ruby",
+            "label": "Ruby",
+            "source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Delete.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nresponse = http.request(request)\nputs response.body"
+          },
+          {
+            "lang": "Kotlin",
+            "label": "Kotlin",
+            "source": "val client = OkHttpClient()\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"DELETE\", null)\n  .build()\nval response = client.newCall(request).execute()"
+          },
+          {
+            "lang": "Swift",
+            "label": "Swift",
+            "source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"DELETE\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
+          },
+          {
+            "lang": "C#",
+            "label": "C#",
+            "source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Delete;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
+          },
+          {
+            "lang": "cURL",
+            "label": "cURL",
+            "source": "curl -X DELETE 'https://api.rewritetoday.com/v1/projects/748395130237498368/webhooks/748395130237498700' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'"
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "Envia tu API key como `Authorization: Bearer <api-key>`."
+      }
+    },
+    "parameters": {
+      "after": {
+        "name": "after",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/Snowflake"
+        },
+        "description": "ID unico de cursor para obtener elementos despues de este valor.",
+        "example": "748395130237498588"
+      },
+      "before": {
+        "name": "before",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/Snowflake"
+        },
+        "description": "ID unico de cursor para obtener elementos antes de este valor.",
+        "example": "748395130237498399"
+      },
+      "limit": {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 100
+        },
+        "description": "Numero de elementos a devolver.",
+        "example": 20
+      }
+    },
+    "responses": {},
+    "schemas": {
+      "Snowflake": {
+        "type": "string",
+        "pattern": "^[0-9]{1,32}$",
+        "description": "Unique resource identifier in snowflake format.",
+        "example": "748395130237498368"
+      },
+      "Cursor": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "persist"
+        ],
+        "properties": {
+          "persist": {
+            "type": "boolean",
+            "description": "Indica si se puede solicitar otra pagina usando `next`."
+          },
+          "next": {
+            "$ref": "#/components/schemas/Snowflake",
+            "description": "Cursor para solicitar la siguiente pagina (`after`)."
+          }
+        },
+        "description": "Metadatos de cursor para respuestas paginadas.",
+        "example": {
+          "persist": true,
+          "next": "748395130237498399"
+        }
+      },
+      "OkEmptyResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ok",
+          "data"
+        ],
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "const": true,
+            "description": "campo ok."
+          },
+          "data": {
+            "type": "null",
+            "description": "Esta respuesta no devuelve datos."
+          }
+        },
+        "description": "Respuesta exitosa. Este endpoint no devuelve datos.",
+        "example": {
+          "ok": true,
+          "data": null
+        }
+      },
+      "WebhookEventType": {
+        "type": "string",
+        "enum": [
+          "sms.queued",
+          "sms.delivered",
+          "sms.scheduled",
+          "sms.failed",
+          "sms.canceled"
+        ],
+        "description": "Tipos de eventos webhook soportados.",
+        "example": "sms.delivered"
+      },
+      "WebhookStatus": {
+        "type": "string",
+        "enum": [
+          "ACTIVE",
+          "INACTIVE"
+        ],
+        "description": "Estado de entrega del webhook.",
+        "example": "ACTIVE"
+      },
+      "Webhook": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "endpoint",
+          "events",
+          "status",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Snowflake",
+            "description": "ID unico de webhook."
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "campo name."
+          },
+          "endpoint": {
+            "type": "string",
+            "format": "uri",
+            "description": "campo endpoint."
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WebhookEventType"
+            },
+            "description": "campo events."
+          },
+          "status": {
+            "$ref": "#/components/schemas/WebhookStatus",
+            "description": "campo status."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Marca de tiempo de creacion UTC."
+          }
+        },
+        "description": "Configuracion del endpoint webhook.",
+        "example": {
+          "id": "748395130237498700",
+          "name": "Delivery events",
+          "endpoint": "https://example.com/webhooks/rewrite",
+          "events": [
+            "sms.queued",
+            "sms.delivered",
+            "sms.failed"
+          ],
+          "status": "ACTIVE",
+          "createdAt": "2026-02-19T16:05:00.000Z"
+        }
+      },
+      "WebhooksListResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ok",
+          "data",
+          "cursor"
+        ],
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "const": true,
+            "description": "campo ok."
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Webhook"
+            },
+            "description": "campo data."
+          },
+          "cursor": {
+            "$ref": "#/components/schemas/Cursor",
+            "description": "campo cursor."
+          }
+        },
+        "example": {
+          "ok": true,
+          "data": [
+            {
+              "id": "748395130237498700",
+              "name": "Delivery events",
+              "endpoint": "https://example.com/webhooks/rewrite",
+              "events": [
+                "sms.queued",
+                "sms.delivered",
+                "sms.failed"
+              ],
+              "status": "ACTIVE",
+              "createdAt": "2026-02-19T16:05:00.000Z"
+            }
+          ],
+          "cursor": {
+            "persist": false,
+            "next": null
+          }
+        },
+        "description": "Esquema WebhooksListResponse."
+      },
+      "WebhookResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ok",
+          "data"
+        ],
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "const": true,
+            "description": "campo ok."
+          },
+          "data": {
+            "$ref": "#/components/schemas/Webhook",
+            "description": "campo data."
+          }
+        },
+        "example": {
+          "ok": true,
+          "data": {
+            "id": "748395130237498700",
+            "name": "Delivery events",
+            "endpoint": "https://example.com/webhooks/rewrite",
+            "events": [
+              "sms.queued",
+              "sms.delivered",
+              "sms.failed"
+            ],
+            "status": "ACTIVE",
+            "createdAt": "2026-02-19T16:05:00.000Z"
+          }
+        },
+        "description": "Esquema WebhookResponse."
+      },
+      "WebhookCreateBody": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "events",
+          "endpoint"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 32,
+            "description": "campo name."
+          },
+          "events": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/components/schemas/WebhookEventType"
+            },
+            "description": "campo events."
+          },
+          "endpoint": {
+            "type": "string",
+            "format": "uri",
+            "minLength": 1,
+            "maxLength": 255,
+            "description": "campo endpoint."
+          }
+        },
+        "description": "Crea un webhook para recibir eventos SMS.",
+        "example": {
+          "name": "Delivery events",
+          "endpoint": "https://example.com/webhooks/rewrite",
+          "events": [
+            "sms.queued",
+            "sms.delivered",
+            "sms.failed"
+          ]
+        }
+      },
+      "WebhookUpdateBody": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 32
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "campo name."
+          },
+          "events": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/components/schemas/WebhookEventType"
+            },
+            "description": "campo events."
+          },
+          "endpoint": {
+            "type": "string",
+            "format": "uri",
+            "minLength": 1,
+            "maxLength": 255,
+            "description": "campo endpoint."
+          },
+          "status": {
+            "$ref": "#/components/schemas/WebhookStatus",
+            "description": "campo status."
+          }
+        },
+        "description": "Actualiza endpoint webhook, eventos suscritos, nombre o estado.",
+        "example": {
+          "endpoint": "https://example.com/webhooks/rewrite-v2",
+          "events": [
+            "sms.delivered",
+            "sms.failed"
+          ],
+          "status": "ACTIVE"
+        }
+      },
+      "WebhookCreateResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ok",
+          "data"
+        ],
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "const": true,
+            "description": "campo ok."
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/Snowflake"
+              }
+            },
+            "description": "campo data."
+          }
+        },
+        "example": {
+          "ok": true,
+          "data": {
+            "id": "748395130237498711"
+          }
+        },
+        "description": "Esquema WebhookCreateResponse."
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
 }
