@@ -1,0 +1,678 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Rewrite API",
+    "version": "1.0.0",
+    "summary": "Projects API reference (Projects, API Keys, Templates, Webhooks).",
+    "description": "Complete public reference for project-level endpoints in Rewrite API v1.\\n\\nAll endpoints return a consistent envelope (`ok`, `data`, and optional `cursor`).\\nUse either bearer token (API key) with scopes or authenticated cookie session."
+  },
+  "servers": [
+    {
+      "url": "https://api.rewritetoday.com/v1",
+      "description": "Production"
+    }
+  ],
+  "tags": [
+    {
+      "name": "API Keys",
+      "description": "Create, list, and revoke project API keys."
+    }
+  ],
+  "paths": {
+    "/projects/{id}/api-keys": {
+      "get": {
+        "tags": [
+          "API Keys"
+        ],
+        "operationId": "listProjectApiKeys",
+        "summary": "List API keys",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Snowflake"
+            },
+            "description": "Unique project ID.",
+            "example": "748395130237498368"
+          },
+          {
+            "$ref": "#/components/parameters/after"
+          },
+          {
+            "$ref": "#/components/parameters/before"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIKeysListResponse"
+                },
+                "examples": {
+                  "response": {
+                    "summary": "Response example",
+                    "value": {
+                      "ok": true,
+                      "data": [
+                        {
+                          "id": "748395130237498400",
+                          "name": "Production backend",
+                          "prefix": "rw_live_8e4c",
+                          "scopes": [
+                            "project:templates:write"
+                          ],
+                          "createdAt": "2026-02-19T19:10:02.000Z"
+                        }
+                      ],
+                      "cursor": {
+                        "persist": false,
+                        "next": null
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Returns active API keys for the project using cursor pagination.\\n\\nUse `limit`, `after`, and `before` for pagination.",
+        "x-codeSamples": [
+          {
+            "lang": "Node.js",
+            "label": "Node.js",
+            "source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nconst apiKeys = await rewrite.apiKeys.list(projectId, { limit: 20 });"
+          },
+          {
+            "lang": "Go",
+            "label": "Go",
+            "source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n\n  _, err = client.APIKeys.List(context.Background(), projectID, &rewrite.RESTGetListAPIKeysQueryParams{Limit: 20})\n  if err != nil { log.Fatal(err) }\n}"
+          },
+          {
+            "lang": "Python",
+            "label": "Python",
+            "source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'GET',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/api-keys',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n    },\n)\nprint(response.json())"
+          },
+          {
+            "lang": "Java",
+            "label": "Java",
+            "source": "var client = HttpClient.newHttpClient();\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/api-keys\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"GET\", HttpRequest.BodyPublishers.noBody());\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
+          },
+          {
+            "lang": "PHP",
+            "label": "PHP",
+            "source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/api-keys');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n]);\n$response = curl_exec($ch);\ncurl_close($ch);"
+          },
+          {
+            "lang": "Ruby",
+            "label": "Ruby",
+            "source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/api-keys')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Get.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nresponse = http.request(request)\nputs response.body"
+          },
+          {
+            "lang": "Kotlin",
+            "label": "Kotlin",
+            "source": "val client = OkHttpClient()\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/api-keys\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"GET\", null)\n  .build()\nval response = client.newCall(request).execute()"
+          },
+          {
+            "lang": "Swift",
+            "label": "Swift",
+            "source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/api-keys\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"GET\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
+          },
+          {
+            "lang": "C#",
+            "label": "C#",
+            "source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Get;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/api-keys\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
+          },
+          {
+            "lang": "cURL",
+            "label": "cURL",
+            "source": "curl -X GET 'https://api.rewritetoday.com/v1/projects/748395130237498368/api-keys' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'"
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "API Keys"
+        ],
+        "operationId": "createProjectApiKey",
+        "summary": "Create API key",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Snowflake"
+            },
+            "description": "Unique project ID.",
+            "example": "748395130237498368"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/APIKeyCreateBody"
+              },
+              "examples": {
+                "request": {
+                  "summary": "Request example",
+                  "value": {
+                    "name": "Jobs worker",
+                    "scopes": [
+                      "project:templates:read",
+                      "projects:webhooks:read"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIKeyCreateResponse"
+                },
+                "examples": {
+                  "response": {
+                    "summary": "Response example",
+                    "value": {
+                      "ok": true,
+                      "data": {
+                        "id": "748395130237498412",
+                        "key": "rw_live_8e4c3f7f8f9f0ab12cd34ef56",
+                        "count": 3,
+                        "createdAt": "2026-02-19T19:12:48.000Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Creates a project API key and returns the secret once. Store it securely.",
+        "x-codeSamples": [
+          {
+            "lang": "Node.js",
+            "label": "Node.js",
+            "source": "import { Rewrite } from '@rewritejs/sdk';\nimport { APIKeyScope } from '@rewritejs/types';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nconst apiKey = await rewrite.apiKeys.create({\n  project: projectId,\n  name: 'Jobs worker',\n  scopes: [APIKeyScope.ReadTemplates, APIKeyScope.ReadWebhooks],\n});"
+          },
+          {
+            "lang": "Go",
+            "label": "Go",
+            "source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n\n  _, err = client.APIKeys.Create(context.Background(), rewrite.CreateAPIKeyOptions{\n    Project: projectID,\n    RESTPostCreateAPIKeyBody: rewrite.RESTPostCreateAPIKeyBody{\n      Name: \"Jobs worker\",\n      Scopes: []rewrite.APIKeyScope{\n        rewrite.APIKeyScopeReadTemplates,\n        rewrite.APIKeyScopeReadWebhooks,\n      },\n    },\n  })\n  if err != nil { log.Fatal(err) }\n}"
+          },
+          {
+            "lang": "Python",
+            "label": "Python",
+            "source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'POST',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/api-keys',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n        'Content-Type': 'application/json',\n    },\n    json={\n      \"name\": \"Jobs worker\",\n      \"scopes\": [\n        \"project:templates:read\",\n        \"projects:webhooks:read\"\n      ]\n    },\n)\nprint(response.json())"
+          },
+          {
+            "lang": "Java",
+            "label": "Java",
+            "source": "var client = HttpClient.newHttpClient();\nvar json = \"{\\\"name\\\":\\\"Jobs worker\\\",\\\"scopes\\\":[\\\"project:templates:read\\\",\\\"projects:webhooks:read\\\"]}\";\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/api-keys\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .header(\"Content-Type\", \"application/json\")\n  .method(\"POST\", HttpRequest.BodyPublishers.ofString(json));\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
+          },
+          {
+            "lang": "PHP",
+            "label": "PHP",
+            "source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/api-keys');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n  'Content-Type: application/json',\n]);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, '{\"name\":\"Jobs worker\",\"scopes\":[\"project:templates:read\",\"projects:webhooks:read\"]}');\n$response = curl_exec($ch);\ncurl_close($ch);"
+          },
+          {
+            "lang": "Ruby",
+            "label": "Ruby",
+            "source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/api-keys')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Post.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nrequest['Content-Type'] = 'application/json'\nrequest.body = \"{\\\"name\\\":\\\"Jobs worker\\\",\\\"scopes\\\":[\\\"project:templates:read\\\",\\\"projects:webhooks:read\\\"]}\"\nresponse = http.request(request)\nputs response.body"
+          },
+          {
+            "lang": "Kotlin",
+            "label": "Kotlin",
+            "source": "val client = OkHttpClient()\nval body = \"{\\\"name\\\":\\\"Jobs worker\\\",\\\"scopes\\\":[\\\"project:templates:read\\\",\\\"projects:webhooks:read\\\"]}\".toRequestBody(\"application/json\".toMediaType())\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/api-keys\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"POST\", body)\n  .build()\nval response = client.newCall(request).execute()"
+          },
+          {
+            "lang": "Swift",
+            "label": "Swift",
+            "source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/api-keys\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"POST\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nrequest.setValue(\"application/json\", forHTTPHeaderField: \"Content-Type\")\nrequest.httpBody = \"{\\\"name\\\":\\\"Jobs worker\\\",\\\"scopes\\\":[\\\"project:templates:read\\\",\\\"projects:webhooks:read\\\"]}\".data(using: .utf8)\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
+          },
+          {
+            "lang": "C#",
+            "label": "C#",
+            "source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Post;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/api-keys\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nrequest.Content = new StringContent(\"{\\\"name\\\":\\\"Jobs worker\\\",\\\"scopes\\\":[\\\"project:templates:read\\\",\\\"projects:webhooks:read\\\"]}\", Encoding.UTF8, \"application/json\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
+          },
+          {
+            "lang": "cURL",
+            "label": "cURL",
+            "source": "curl -X POST 'https://api.rewritetoday.com/v1/projects/748395130237498368/api-keys' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'\n  -H 'Content-Type: application/json' \\\\\n  -d '{\"name\":\"Jobs worker\",\"scopes\":[\"project:templates:read\",\"projects:webhooks:read\"]}'"
+          }
+        ]
+      }
+    },
+    "/projects/{id}/api-keys/{key}": {
+      "delete": {
+        "tags": [
+          "API Keys"
+        ],
+        "operationId": "deleteProjectApiKey",
+        "summary": "Revoke API key",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Snowflake"
+            },
+            "description": "Unique project ID.",
+            "example": "748395130237498368"
+          },
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Snowflake"
+            },
+            "description": "Unique API key ID.",
+            "example": "748395130237498400"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkEmptyResponse"
+                },
+                "examples": {
+                  "response": {
+                    "summary": "Response example",
+                    "value": {
+                      "ok": true,
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Revokes an API key immediately by key id.",
+        "x-codeSamples": [
+          {
+            "lang": "Node.js",
+            "label": "Node.js",
+            "source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\nconst apiKeyId = '748395130237498400';\n\nawait rewrite.apiKeys.delete(apiKeyId, projectId);"
+          },
+          {
+            "lang": "Go",
+            "label": "Go",
+            "source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_live_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n  apiKeyID := \"748395130237498400\"\n\n  if err := client.APIKeys.Delete(context.Background(), apiKeyID, projectID); err != nil {\n    log.Fatal(err)\n  }\n}"
+          },
+          {
+            "lang": "Python",
+            "label": "Python",
+            "source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_live_your_api_key')\n\nresponse = requests.request(\n    'DELETE',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/api-keys/748395130237498400',\n    headers={\n        'Authorization': \"Bearer rw_live_your_api_key\",\n    },\n)\nprint(response.json())"
+          },
+          {
+            "lang": "Java",
+            "label": "Java",
+            "source": "var client = HttpClient.newHttpClient();\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/api-keys/748395130237498400\"))\n  .header(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"DELETE\", HttpRequest.BodyPublishers.noBody());\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
+          },
+          {
+            "lang": "PHP",
+            "label": "PHP",
+            "source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/api-keys/748395130237498400');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_live_your_api_key',\n]);\n$response = curl_exec($ch);\ncurl_close($ch);"
+          },
+          {
+            "lang": "Ruby",
+            "label": "Ruby",
+            "source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/api-keys/748395130237498400')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Delete.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_live_your_api_key'\nresponse = http.request(request)\nputs response.body"
+          },
+          {
+            "lang": "Kotlin",
+            "label": "Kotlin",
+            "source": "val client = OkHttpClient()\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/api-keys/748395130237498400\")\n  .addHeader(\"Authorization\", \"Bearer rw_live_your_api_key\")\n  .method(\"DELETE\", null)\n  .build()\nval response = client.newCall(request).execute()"
+          },
+          {
+            "lang": "Swift",
+            "label": "Swift",
+            "source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/api-keys/748395130237498400\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"DELETE\"\nrequest.setValue(\"rw_live_your_api_key\", forHTTPHeaderField: \"Authorization\")\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
+          },
+          {
+            "lang": "C#",
+            "label": "C#",
+            "source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Delete;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/api-keys/748395130237498400\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_live_your_api_key\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
+          },
+          {
+            "lang": "cURL",
+            "label": "cURL",
+            "source": "curl -X DELETE 'https://api.rewritetoday.com/v1/projects/748395130237498368/api-keys/748395130237498400' \\\\\n  -H 'Authorization: Bearer rw_live_your_api_key'"
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "Send your API key as `Authorization: Bearer <api-key>`."
+      }
+    },
+    "parameters": {
+      "after": {
+        "name": "after",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/Snowflake"
+        },
+        "description": "Unique cursor ID to fetch items after this value.",
+        "example": "748395130237498588"
+      },
+      "before": {
+        "name": "before",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "$ref": "#/components/schemas/Snowflake"
+        },
+        "description": "Unique cursor ID to fetch items before this value.",
+        "example": "748395130237498399"
+      },
+      "limit": {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 100
+        },
+        "description": "Number of items to return.",
+        "example": 20
+      }
+    },
+    "responses": {},
+    "schemas": {
+      "Snowflake": {
+        "type": "string",
+        "pattern": "^[0-9]{1,32}$",
+        "description": "Unique resource ID.",
+        "example": "748395130237498368"
+      },
+      "Cursor": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "persist"
+        ],
+        "properties": {
+          "persist": {
+            "type": "boolean",
+            "description": "Whether another page can be requested using `next`."
+          },
+          "next": {
+            "$ref": "#/components/schemas/Snowflake",
+            "description": "Cursor to request the next page (`after`)."
+          }
+        },
+        "description": "Cursor metadata for paginated responses.",
+        "example": {
+          "persist": true,
+          "next": "748395130237498399"
+        }
+      },
+      "OkEmptyResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ok",
+          "data"
+        ],
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "const": true,
+            "description": "ok field."
+          },
+          "data": {
+            "type": "null",
+            "description": "No data is returned for this response."
+          }
+        },
+        "description": "Successful response. This endpoint does not return any data.",
+        "example": {
+          "ok": true,
+          "data": null
+        }
+      },
+      "APIKey": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "prefix",
+          "scopes",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Snowflake",
+            "description": "API key id."
+          },
+          "name": {
+            "type": "string",
+            "description": "Friendly key name."
+          },
+          "prefix": {
+            "type": "string",
+            "description": "Public key prefix for identification."
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuthScope"
+            },
+            "description": "Scopes granted to this key."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp (UTC)."
+          }
+        },
+        "description": "Project API key metadata (secret is never returned again).",
+        "example": {
+          "id": "748395130237498400",
+          "name": "Production backend",
+          "prefix": "rw_live_8e4c",
+          "scopes": [
+            "project:templates:write",
+            "projects:webhooks:write"
+          ],
+          "createdAt": "2026-02-19T19:10:02.000Z"
+        }
+      },
+      "APIKeysListResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ok",
+          "data",
+          "cursor"
+        ],
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "const": true,
+            "description": "ok field."
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/APIKey"
+            },
+            "description": "data field."
+          },
+          "cursor": {
+            "$ref": "#/components/schemas/Cursor",
+            "description": "cursor field."
+          }
+        },
+        "example": {
+          "ok": true,
+          "data": [
+            {
+              "id": "748395130237498400",
+              "name": "Production backend",
+              "prefix": "rw_live_8e4c",
+              "scopes": [
+                "project:templates:write",
+                "projects:webhooks:write"
+              ],
+              "createdAt": "2026-02-19T19:10:02.000Z"
+            }
+          ],
+          "cursor": {
+            "persist": false,
+            "next": null
+          }
+        },
+        "description": "APIKeysListResponse schema."
+      },
+      "APIKeyCreateBody": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 32,
+            "description": "name field."
+          },
+          "scopes": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/components/schemas/AuthScope"
+            },
+            "description": "scopes field."
+          }
+        },
+        "description": "Create a project API key with optional scopes.",
+        "example": {
+          "name": "Jobs worker",
+          "scopes": [
+            "project:templates:read",
+            "projects:webhooks:read"
+          ]
+        }
+      },
+      "APIKeyCreateResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ok",
+          "data"
+        ],
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "const": true,
+            "description": "ok field."
+          },
+          "data": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "key",
+              "count",
+              "createdAt"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/components/schemas/Snowflake"
+              },
+              "key": {
+                "type": "string"
+              },
+              "count": {
+                "type": "integer"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "description": "data field."
+          }
+        },
+        "description": "Creation response containing the one-time secret key.",
+        "example": {
+          "ok": true,
+          "data": {
+            "id": "748395130237498412",
+            "key": "rw_live_8e4c3f7f8f9f0ab12cd34ef56",
+            "count": 3,
+            "createdAt": "2026-02-19T19:12:48.000Z"
+          }
+        }
+      },
+      "AuthScope": {
+        "type": "string",
+        "enum": [
+          "*",
+          "project:read",
+          "project:write",
+          "project:api_keys:read",
+          "project:templates:write",
+          "project:templates:read",
+          "projects:payments:read",
+          "projects:webhooks:read",
+          "projects:webhooks:write"
+        ],
+        "description": "Permission scope accepted by API keys.",
+        "example": "project:templates:write"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}
