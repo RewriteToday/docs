@@ -3,27 +3,13 @@ title: "Quickstart"
 description: "Envie seu primeiro SMS em minutos usando a API da Rewrite."
 ---
 
-import { useState } from "react";
-
 export function SmsRequestPlayground() {
-  const [phone, setPhone] = useState("+5511999999999");
-
-  const handlePhoneChange = (event) => {
-    const raw = event.target.value;
-    const stripped = raw.replace(/[^\d+\-\s()]/g, "").slice(0, 20);
-    const normalized = stripped.replace(/\+/g, (char, index) =>
-      index === 0 ? char : ""
-    );
-    setPhone(normalized);
-  };
-
-  const toValue = phone.trim() || "+5511999999999";
   const curlCommand = [
     'curl -X POST "https://api.rewritetoday.com/v1/messages" \\\\',
     '  -H "Authorization: Bearer (Sua API key aqui)" \\\\',
     '  -H "Content-Type: application/json" \\\\',
     "  -d '{",
-    `    "to": "${toValue}",`,
+    '    "to": "+5511999999999",',
     '    "message": "Seu codigo OTP e 123456",',
     '    "metadata": { "source": "quickstart" }',
     "  }'",
@@ -55,28 +41,6 @@ export function SmsRequestPlayground() {
           <code>{curlCommand}</code>
         </pre>
       </div>
-
-      <label
-        htmlFor="quickstart-phone"
-        style={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.85)" }}
-      >
-        Numero de destino (E.164)
-      </label>
-      <input
-        id="quickstart-phone"
-        type="tel"
-        value={phone}
-        onChange={handlePhoneChange}
-        placeholder="+5511999999999"
-        style={{
-          width: "100%",
-          padding: "10px 12px",
-          borderRadius: "10px",
-          border: "1px solid rgba(255, 255, 255, 0.18)",
-          background: "rgba(255, 255, 255, 0.03)",
-          color: "#ffffff",
-        }}
-      />
     </div>
   );
 }
@@ -93,7 +57,7 @@ export function SmsRequestPlayground() {
 
 <Steps>
   <Step title="Monte sua requisicao" titleSize="h3">
-    A requisicao cURL aparece primeiro. Conforme voce digita o numero, o valor `to` no JSON e atualizado automaticamente.
+    Use esta requisicao cURL base como ponto de partida.
 
     <SmsRequestPlayground />
   </Step>
