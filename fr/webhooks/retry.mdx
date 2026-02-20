@@ -19,62 +19,13 @@ Rewrite utilise un **backoff exponentiel avec un nombre de tentatives plafonné*
 
 Chaque événement webhook est relancé selon le planning suivant :
 
-<div
-  className="retry-schedule-table"
-  style={{
-    overflow: 'hidden',
-  }}
->
-  <table className="retry-schedule-table__table" style={{ width: '100%', borderCollapse: 'collapse', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.12)'}}>
-  <thead>
-      <tr>
-        <th
-          style={{
-            textAlign: 'left',
-            padding: '12px 14px',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
-            borderRight: '1px solid rgba(255, 255, 255, 0.12)',
-            background: 'rgba(255, 255, 255, 0.04)',
-          }}
-        >
-          Tentative
-        </th>
-        <th
-          style={{
-            textAlign: 'left',
-            padding: '12px 14px',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
-            background: 'rgba(255, 255, 255, 0.04)',
-          }}
-        >
-          Délai après l'échec précédent
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}>1</td>
-        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>Immédiatement</td>
-      </tr>
-      <tr>
-        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}>2</td>
-        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>5 secondes</td>
-      </tr>
-      <tr>
-        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}>3</td>
-        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>1 minute</td>
-      </tr>
-      <tr>
-        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}>4</td>
-        <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>5 minutes</td>
-      </tr>
-      <tr>
-        <td style={{ padding: '11px 14px', borderRight: '1px solid rgba(255, 255, 255, 0.12)' }}>5</td>
-        <td style={{ padding: '11px 14px' }}>15 minutes</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+| Tentative | Délai après l'échec précédent |
+| --- | --- |
+| 1 | Immédiatement |
+| 2 | 5 secondes |
+| 3 | 1 minute |
+| 4 | 5 minutes |
+| 5 | 15 minutes |
 
 Après la dernière tentative, le webhook est marqué comme **échec permanent**.
 
