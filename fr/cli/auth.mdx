@@ -1,0 +1,76 @@
+---
+title: 'Authentification'
+icon: 'key'
+description: 'Flux de connexion, gestion des profils et changement de compte pour la Rewrite CLI.'
+---
+
+## Aperçu
+
+Utilisez l’authentification CLI pour gérer plusieurs profils locaux et changer de compte rapidement.
+
+Vous pouvez :
+
+- vous connecter avec une API key
+- démarrer un flux de connexion OAuth
+- lister les profils enregistrés
+- supprimer un profil
+- changer de profil actif
+
+## Connexion avec API key (exemple de clé en dur)
+
+```bash
+rewrite login --name xx --key xxx
+```
+
+Remplacez `xx` et `xxx` par votre vrai nom de profil et votre API key en production.
+
+## Connexion avec flux OAuth
+
+```bash
+rewrite login
+```
+
+Cette commande démarre le flux OAuth dans le navigateur et stocke les identifiants sous un profil au
+nom aléatoire.
+
+## Lister les profils
+
+```bash
+profile list
+```
+
+Exemple de sortie :
+
+```text
+default   active
+team-dev
+personal
+```
+
+## Supprimer un profil
+
+```bash
+profile delete <name>
+```
+
+<Warning>
+La suppression d’un profil retire les identifiants enregistrés localement pour ce profil.
+</Warning>
+
+## Changer de profil actif
+
+```bash
+rewrite switch <name>
+```
+
+Exemple :
+
+```bash
+rewrite switch dev
+```
+
+## Dépannage
+
+- API key invalide : vérifiez la valeur de la clé et les permissions.
+- Le flux OAuth ne s’ouvre pas : vérifiez le navigateur par défaut et la gestion du callback.
+- Profil introuvable : exécutez `profile list` et confirmez le nom exact du profil.

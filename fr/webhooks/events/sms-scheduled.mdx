@@ -1,0 +1,70 @@
+---
+title: "sms.scheduled"
+description: "Webhook déclenché lorsqu'un SMS est accepté pour un envoi futur."
+---
+
+## Vue d'ensemble
+
+L'événement `sms.scheduled` se produit lorsqu'un SMS est créé avec une date d'envoi future et accepté par Rewrite.
+
+Utilisez cet événement pour :
+
+- Confirmer l'état de planification aux utilisateurs
+- Alimenter des dashboards de timeline ou de campagne
+- Suivre le volume en attente avant les fenêtres d'envoi
+
+## Exemple de payload
+
+```json
+{
+  "type": "sms.scheduled",
+  "createdAt": "2026-02-14T19:41:12.126Z",
+  "id": "393821034567832125",
+  "data": {
+    "id": "733501234567890124",
+    "to": "+5511988888888",
+    "status": "SCHEDULED",
+    "provider": null,
+    "metadata": {
+      "campaign": "promo-weekend",
+      "tenantId": "acme-01"
+    }
+  }
+}
+```
+
+## Objet événement
+
+| Champ | Type | Description |
+| --- | --- | --- |
+| `type` | `string` | Identifiant de l'événement. Pour cette page : `sms.scheduled`. |
+| `id` | `string` | Identifiant unique de l'événement webhook. |
+| `createdAt` | `string` (ISO-8601) | Horodatage de l'événement. |
+| `data` | `object` | Snapshot du SMS au moment de la planification. |
+
+## Objet `data`
+
+| Champ | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | Identifiant SMS Rewrite. |
+| `to` | `string` | Numéro destinataire au format E.164. |
+| `status` | `string` | Statut actuel (`SCHEDULED`). |
+| `provider` | `string \| null` | Fournisseur de livraison, souvent `null` jusqu'à l'exécution. |
+| `metadata` | `object \| null` | Métadonnées attachées par votre application. |
+
+## Traitement recommandé
+
+1. Validez et stockez l'événement.
+2. Marquez le message comme planifié dans votre base.
+3. Affichez ou notifiez le cycle d'envoi attendu dans votre application.
+4. Gardez les mises à jour idempotentes pour les retries webhook.
+
+<Info>
+Les messages planifiés peuvent ensuite passer à `sms.queued`, `sms.delivered`, `sms.failed` ou `sms.canceled`.
+</Info>
+
+## Événements associés
+
+- [`sms.queued`](./sms-queued)
+- [`sms.canceled`](./sms-canceled)
+- [`sms.failed`](./sms-failed)

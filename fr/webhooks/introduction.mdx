@@ -1,0 +1,248 @@
+---
+title: "Introduction"
+description: "Utilisez les webhooks **Rewrite** pour recevoir des événements SMS en temps réel dans votre application."
+---
+
+## Que sont les webhooks ?
+
+Les webhooks Rewrite sont des **requêtes HTTPS POST en temps réel** envoyées à votre serveur dès qu'un événement important se produit dans **Rewrite** : par exemple un SMS livré, en échec ou planifié.
+
+Au lieu de faire du polling sur l'API, les webhooks permettent à votre application de réagir instantanément avec un payload **JSON**.
+
+### Quand utiliser les webhooks ?
+
+- **Suivi de livraison** - Marquez les messages comme livrés/en échec sans polling
+- **Workflows client** - Déclenchez onboarding, alertes et flux de vérification
+- **Rétention des données** - Stockez les événements dans votre propre base pour l'analytics/reporting
+- **Fiabilité** - Détectez les problèmes fournisseur et automatisez les retries
+
+---
+
+## Flux webhook en un coup d'œil
+
+<Steps>
+	<Step title="Créer un endpoint" titleSize="h3">
+		Vous devez créer un endpoint HTTP dans votre application (ex : `/webhooks/rewrite`).
+		
+		```ts server.ts
+		export const app = new Elysia()
+			.post('/webhooks/rewrite', ({ body }) => {
+				console.log({ body });
+				
+				return { success: true };
+			});
+		```
+	</Step>
+	<Step title="Enregistrer l'endpoint" titleSize="h3">
+		Enregistrez cette URL dans le **dashboard Rewrite** (et sélectionnez les types d'événements).
+	</Step>
+	<Step title="Recevoir les événements" titleSize="h3">
+		Votre serveur reçoit les événements au moment où ils se produisent.
+	</Step>
+	<Step title="Confirmer la livraison" titleSize="h3">
+		Votre serveur confirme la livraison en répondant avec **HTTP 200**.
+	</Step>
+</Steps>
+
+<Info>
+En production, votre endpoint doit être publiquement accessible en HTTPS.
+Pendant le développement, utilisez un tunnel comme **ngrok** ou **Cloudflare Tunnel**.
+</Info>
+
+---
+
+## Recevoir des webhooks en local
+
+<Steps>
+	<Step title="Créer un endpoint de dev" titleSize="h3">
+		Voici des exemples minimaux avec **Node.js**.
+		
+		<CodeGroup>
+		
+		```ts Elysia
+		import { Elysia } from 'elysia';
+
+		const app = new Elysia()
+			.post('/webhooks/rewrite', ({ body, query: { signature } }) => {
+				// 1) vérifier la signature (recommandé)
+				// 2) persister l'événement (recommandé)
+				// 3) le traiter (file/job recommandé)
+				
+				return { success: true };
+			});
+			
+		app.listen(3000, () => console.log('Écoute sur 3000'));
+		```
+
+		```ts Hono
+		import { Hono } from 'hono';
+		import { serve } from '@hono/node-server';
+
+		const app = new Hono();
+
+		app.post('/webhooks/rewrite', async (c) => {
+			const body = await c.req.json();
+			const signature = c.req.query('signature');
+
+			// 1) vérifier la signature (recommandé)
+			// 2) persister l'événement (recommandé)
+			// 3) le traiter (file/job recommandé)
+
+			return c.json({ success: true }, 200);
+		});
+
+		serve({ fetch: app.fetch, port: 3000 }, () => {
+			console.log('Écoute sur 3000');
+		});
+		```
+		
+		```ts Express
+		import express from 'express';
+
+		const app = express();
+		
+		app.use(express.json());
+
+		app.post('/webhooks/rewrite', (req, res) => {
+		  const { body } = req;
+
+		  // 1) vérifier la signature (recommandé)
+		  // 2) persister l'événement (recommandé)
+		  // 3) le traiter (file/job recommandé)
+				
+		  res.status(200).send({ success: true });
+		});
+
+		app.listen(3000, () => console.log('Écoute sur 3000'));
+		```
+
+		```ts Fastify
+		import Fastify from 'fastify';
+
+		const app = Fastify();
+
+		app.post('/webhooks/rewrite', async (request, reply) => {
+			const body = request.body;
+			const signature = (request.query as { signature?: string }).signature;
+
+			// 1) vérifier la signature (recommandé)
+			// 2) persister l'événement (recommandé)
+			// 3) le traiter (file/job recommandé)
+
+			return reply.code(200).send({ success: true });
+		});
+
+		app.listen({ port: 3000 });
+		```
+
+		```ts Koa
+		import Koa from 'koa';
+		import Router from '@koa/router';
+		import bodyParser from 'koa-bodyparser';
+
+		const app = new Koa();
+		const router = new Router();
+
+		router.post('/webhooks/rewrite', async (ctx) => {
+			const body = ctx.request.body;
+			const signature = ctx.query.signature;
+
+			// 1) vérifier la signature (recommandé)
+			// 2) persister l'événement (recommandé)
+			// 3) le traiter (file/job recommandé)
+
+			ctx.status = 200;
+			ctx.body = { success: true };
+		});
+
+		app.use(bodyParser());
+		app.use(router.routes());
+		app.use(router.allowedMethods());
+		app.listen(3000, () => console.log('Écoute sur 3000'));
+		```
+
+		</CodeGroup>
+		
+		<Info> Pour des tests locaux, exposez votre serveur à Internet via : - **ngrok** - **Cloudflare Tunnel** - **VS Code Port Forwarding** </Info>
+	</Step>
+	
+	<Step title="Enregistrer le webhook dans Rewrite" titleSize="h3">
+		Dans le **dashboard Rewrite** :
+
+		1. Ajoutez votre URL HTTPS publique
+		2. Sélectionnez les types d'événements souhaités
+		3. Enregistrez
+		
+		Vous pouvez aussi gérer les webhooks de façon programmatique via l'[API](../api) ou le [SDK](../sdks).
+	</Step>
+	
+	<Step title="Déclencher un événement" titleSize="h3">
+		Envoyez un message, supprimez-en un, et regardez les événements arriver.
+		
+		Vous recevrez un payload JSON similaire à :
+		
+		```json
+		{
+			"type": "sms.delivered",
+			"createdAt": "2026-02-14T19:41:12.126Z",
+			"id": "393821034567832123",
+			"data": {
+				"id": "733501234567890123",
+				"to": "+5511999999999",
+				"status": "DELIVERED",
+				"provider": null,
+				"metadata": {
+					"code": "923721"
+				}
+			}
+		}
+		```
+	</Step>
+</Steps>
+
+## Valider les signatures webhook
+
+Validez toujours les signatures avant de faire confiance aux payloads webhook.
+Cela protège votre endpoint contre les requêtes usurpées et les données altérées.
+Utilisez le helper ci-dessous dans n'importe quel framework, puis retournez `401` en cas d'échec de validation.
+
+```ts
+import { Rewrite } from '@rewritejs/sdk';
+
+const rewrite = new Rewrite(process.env.REWRITE_API_KEY);
+
+export function validateSignature(params: {
+  rawBody: string;
+  signature?: string;
+}) {
+  const { rawBody, signature } = params;
+  if (!signature) return false;
+
+  return rewrite.webhooks.validateSignature(
+    rawBody,
+    signature,
+    process.env.REWRITE_WEBHOOK_SECRET,
+  );
+}
+```
+
+<Warning>
+Stockez votre secret webhook dans `REWRITE_WEBHOOK_SECRET`, passez le body brut avant parsing JSON, et n'exposez jamais de secrets côté client ni dans les logs.
+</Warning>
+
+## Bonnes pratiques (à faire tôt)
+
+<CardGroup cols={2}> <Card title="Vérifier les signatures" icon="shield" color="#C9CBD1"> Validez toujours la signature webhook pour vous assurer que l'événement provient bien de Rewrite. </Card> <Card title="Ack rapide, traitement async" icon="bolt" color="#C9CBD1"> Retournez vite HTTP 200 et traitez le travail dans une file/job pour éviter les timeouts. </Card> <Card title="Être idempotent" icon="repeat" color="#C9CBD1"> Les webhooks peuvent être relancés. Utilisez les IDs d'événement pour ignorer les doublons en sécurité. </Card> <Card title="Persister les payloads bruts" icon="database" color="#C9CBD1"> Stockez les événements pour audit/debugging et pour reconstruire l'état si nécessaire. </Card> </CardGroup> <Warning> Si votre endpoint renvoie une réponse non-2xx ou expire, Rewrite peut relancer la livraison. Concevez votre handler pour être **idempotent**. </Warning>
+
+## Et ensuite ?
+
+<CardGroup cols={1}>
+<Card title="Démarrage rapide" icon="rocket" href="/quickstart" color="#C9CBD1"> Envoyez votre premier SMS et commencez à recevoir les événements de livraison. </Card>
+</CardGroup>
+<CardGroup cols={2}>
+<Card title="Types d'événements" icon="list" href="/webhooks/types" color="#C9CBD1"> Consultez tous les types d'événements webhook et la forme de leurs payloads. </Card>
+<Card title="Développement local" icon="terminal" href="/webhooks/local-development" color="#C9CBD1"> Testez les webhooks en local avec des tunnels et la CLI Rewrite. </Card>
+</CardGroup>
+<Card title="Besoin d'aide ?" icon="headset" color="#C9CBD1">
+Contactez notre équipe : [team@rewritetoday.com](mailto:team@rewritetoday.com)
+</Card>

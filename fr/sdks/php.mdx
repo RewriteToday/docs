@@ -1,0 +1,50 @@
+---
+title: Introduction
+description: Découvrez comment utiliser le SDK PHP pour envoyer des SMS avec l’API.
+---
+
+## Avant de commencer
+
+- Vous devez avoir PHP 8.1+ installé sur votre machine.
+- Vous devez disposer d’une Rewrite API key avec les permissions requises.
+
+<Steps>
+    <Step title="Installer le SDK" titleSize="h3">
+        Pour installer le SDK PHP, exécutez :
+
+        ```bash
+        composer require rewritetoday/rewrite-php
+        ```
+    </Step>
+
+    <Step title="Configurer la variable d’environnement REWRITE_API_KEY" titleSize="h3">
+    Configurez votre Rewrite API key dans vos variables d’environnement.
+
+    ```text .env
+    REWRITE_API_KEY=rw...
+    ```
+    </Step>
+
+    <Step title="Envoyer votre SMS" titleSize="h3">
+    Maintenant, il suffit de passer le contenu du message et c’est tout.
+
+    ```php main.php
+    <?php
+
+    require __DIR__ . '/vendor/autoload.php';
+
+    use RewriteToday\Rewrite;
+
+    $rewrite = new Rewrite(getenv('REWRITE_API_KEY'));
+
+    $message = $rewrite->messages->send([
+      'to' => '+1234567890',
+      'message' => 'Your OTP code is 478201',
+    ]);
+
+    var_dump($message);
+    ```
+
+    Vous pouvez tout faire avec notre SDK, continuez à explorer.
+    </Step>
+</Steps>

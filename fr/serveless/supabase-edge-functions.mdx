@@ -1,0 +1,97 @@
+---
+title: "Envoyer avec Supabase Edge Functions"
+description: "Envoyez des SMS avec Rewrite depuis une Supabase Edge Function."
+---
+
+Ce guide montre comment envoyer des SMS avec Rewrite dans une **Supabase Edge Function**.
+
+## 1. Installer le SDK
+
+```bash
+npm install @rewritejs/sdk
+```
+
+## 2. Configurer les variables d'environnement
+
+Definissez votre cle API comme secret dans Supabase :
+
+```bash
+supabase secrets set REWRITE_API_KEY=rw...
+```
+
+## 3. Creer la fonction edge
+
+```ts supabase/functions/send-sms/index.ts
+import { Rewrite } from '@rewritejs/sdk';
+
+Deno.serve(async (request) => {
+  if (request.method !== 'POST') {
+    return Response.json(
+      {
+        ok: false,
+        code: 'METHOD_NOT_ALLOWED',
+        message: 'Method not allowed.',
+      },
+      { status: 405 }
+    );
+  }
+
+  const rewrite = new Rewrite(Deno.env.get('REWRITE_API_KEY'));
+  const body = await request.json().catch(() => ({}));
+  const { to, message } = body as { to?: string; message?: string };
+
+  if (!to || !message) {
+    return Response.json(
+      {
+        ok: false,
+        code: 'INVALID_REQUEST',
+        message: '`to` and `message` are required.',
+      },
+      { status: 400 }
+    );
+  }
+
+  const { data, error } = await rewrite.messages.send({
+    to,
+    message,
+    metadata: { source: 'supabase-edge-function' },
+  });
+
+  if (error) {
+    return Response.json(
+      {
+        ok: false,
+        code: 'SMS_SEND_FAILED',
+        message: 'Failed to send SMS.',
+        errors: error,
+      },
+      { status: 422 }
+    );
+  }
+
+  return Response.json({ ok: true, data }, { status: 200 });
+});
+```
+
+## 4. Tester en local
+
+```bash
+supabase functions serve send-sms --no-verify-jwt
+
+curl -X POST "http://127.0.0.1:54321/functions/v1/send-sms" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "+15551234567",
+    "message": "Hello from Supabase + Rewrite"
+  }'
+```
+
+## 5. Deployer
+
+```bash
+supabase functions deploy send-sms
+```
+
+<Info>
+Si votre fonction est publique, ajoutez une authentification et des limites de debit au niveau applicatif pour eviter les abus.
+</Info>

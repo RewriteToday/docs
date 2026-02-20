@@ -1,0 +1,207 @@
+---
+title: Erreurs et tentatives
+description: Comprenez les réponses d'erreur de l'API Rewrite, les limites de débit, la stratégie de retry, l'idempotence et la gestion des timeouts.
+---
+
+# Vue d'ensemble
+
+Les flux SMS de niveau production nécessitent une gestion d'erreurs prévisible.
+
+Ce guide couvre :
+
+- Le format de réponse d'erreur Rewrite
+- Les en-têtes de rate limit et le timing de retry
+- Une stratégie de retry sûre avec backoff + jitter
+- Les patterns d'idempotence pour éviter les doublons
+- Les recommandations de timeout pour clients et workers
+
+## Format de réponse d'erreur
+
+La plupart des réponses non 2xx suivent ce format :
+
+```json
+{
+  "ok": false,
+  "code": "INVALID_JSON_BODY",
+  "message": "Corps JSON invalide.",
+  "errors": {
+    "detailed": {
+    	...
+    }
+  }
+}
+```
+
+## Codes HTTP courants
+
+| Status | Signification | Retry ? |
+| --- | --- | --- |
+| `400` | Payload de requête invalide | Non (corrigez d'abord le payload) |
+| `401` | Clé API absente/invalide | Non (corrigez l'authentification) |
+| `403` | Permission refusée | Non (corrigez les scopes/permissions) |
+| `404` | Ressource introuvable | Non (validez l'ID/le chemin) |
+| `409` | Conflit (y compris conflits d'idempotence) | Généralement non ; inspectez le code |
+| `422` | Validation échouée | Non (corrigez les entrées) |
+| `429` | Limite de débit atteinte | Oui (attendez puis réessayez) |
+| `5xx` | Échec serveur/fournisseur transitoire | Oui (retries bornés) |
+
+## En-têtes de rate limit
+
+Quand votre requête est limitée, utilisez ces en-têtes pour décider du délai de retry :
+
+- `X-RateLimit-Global`: Indicateur global de pression de requêtes.
+- `X-RateLimit-Limit`: Limite actuelle de la fenêtre de quota.
+- `X-RateLimit-Retry-After`: Secondes à attendre avant le prochain retry.
+- `Retry-After`: Indication HTTP standard de retry (secondes).
+
+<Info>
+Si `X-RateLimit-Retry-After` et `Retry-After` sont tous deux présents, utilisez la valeur la plus grande.
+</Info>
+
+## Stratégie de retry (recommandée)
+
+1. Retry uniquement sur `429` et `5xx`.
+2. Respectez d'abord les en-têtes de retry.
+3. Si les en-têtes sont absents, utilisez un backoff exponentiel avec jitter.
+4. Limitez les retries avec un nombre maximal de tentatives.
+5. Utilisez des clés d'idempotence pour toutes les opérations de création/envoi.
+
+### Base de backoff
+
+- Tentative 1 : immédiate
+- Tentative 2 : `~1s` + jitter
+- Tentative 3 : `~2s` + jitter
+- Tentative 4 : `~4s` + jitter
+- Tentative 5 : `~8s` + jitter (max)
+
+Utilisez un jitter aléatoire (par exemple `0-250ms`) pour éviter les pics de retries synchronisés.
+
+## Idempotence
+
+Pour les endpoints de création/envoi, définissez une clé d'idempotence par opération logique.
+
+Format de clé recommandé :
+
+`<type-evenement>:<id-entite>:<fenetre-tentative>`
+
+Exemple :
+
+`otp-send:user_123:2026-02-19T10:30`
+
+### Règles
+
+- Réutilisez la même clé lors d'un retry du *même* envoi logique.
+- Générez une nouvelle clé uniquement pour une opération réellement nouvelle.
+- Stockez le mapping `{idempotency_key -> message_id}` pour la réconciliation.
+
+<Warning>
+Réessayer sans idempotence peut produire des livraisons SMS en double.
+</Warning>
+
+## Recommandations de timeout
+
+Les timeouts doivent être plus courts que la limite dure de votre worker/fonction.
+
+Points de départ recommandés :
+
+- Timeout de connexion : `2-3s`
+- Timeout de lecture : `8-12s`
+- Timeout total de requête : `10-15s`
+
+Pour les runtimes serverless, gardez un budget d'exécution total pour retries + logs + sérialisation de réponse.
+
+## Exemples d'implémentation
+
+L'exemple Node.js ci-dessous utilise `@rewritejs/rest`, qui fournit des contrôles natifs de timeout et de retry en cas de rate limit.
+
+<CodeGroup>
+  ```ts Node.js
+  import { Routes } from '@rewritejs/types';
+  import { REST } from '@rewritejs/rest';
+
+  const rewrite = new REST({
+    secret: process.env.REWRITE_API_KEY,
+    timeout: 12_000,
+    onRateLimit({ global, limit, retryAfter }) {
+    	/* ... */
+    },
+    retry: {
+    	max: 7,
+      delay(attempt) {
+      	return ...
+      }
+    },
+  });
+
+  async function sendWithRetry(data, idempotencyKey) {
+    const response = await rewrite.post(Routes.messages.create(), {
+    	data,
+     	headers: {
+      	'X-Idempotency-Key': idempotencyKey
+      },
+    });
+
+    return response
+  }
+  ```
+
+  ```py Python
+  import os
+  import random
+  import time
+  import requests
+
+  API_KEY = os.environ["REWRITE_API_KEY"]
+
+  def send_with_retry(payload: dict, idempotency_key: str):
+    max_attempts = 5
+
+    for attempt in range(1, max_attempts + 1):
+      resp = requests.post(
+        "https://api.rewritetoday.com/v1/messages",
+        headers={
+          "Authorization": f"Bearer {API_KEY}",
+          "Content-Type": "application/json",
+          "Idempotency-Key": idempotency_key,
+        },
+        json=payload,
+        timeout=12,
+      )
+
+      if resp.ok:
+        return resp.json()
+
+      retryable = resp.status_code == 429 or resp.status_code >= 500
+      if (not retryable) or attempt == max_attempts:
+        resp.raise_for_status()
+
+      h1 = int(resp.headers.get("X-RateLimit-Retry-After", "0"))
+      h2 = int(resp.headers.get("Retry-After", "0"))
+      header_delay = max(h1, h2)
+
+      backoff = min(8, 2 ** (attempt - 1))
+      jitter = random.uniform(0, 0.25)
+      sleep_s = max(header_delay, backoff + jitter)
+
+      time.sleep(sleep_s)
+  ```
+
+  ```bash cURL (inspecter les en-têtes)
+  curl -i -X POST "https://api.rewritetoday.com/v1/messages" \
+    -H "Authorization: Bearer rw_..." \
+    -H "Idempotency-Key: otp-send:user_123:2026-02-19T10:30" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "to": "+15551234567",
+      "message": "Votre code OTP est 123456"
+    }'
+  ```
+</CodeGroup>
+
+## Checklist opérationnelle
+
+- Loggez `code`, `message`, code de statut et numéro de tentative de retry.
+- Suivez le taux de `429` par endpoint et environnement.
+- Alertez en cas d'épuisement soutenu des retries.
+- Conservez des jobs dead-letter/échoués pour un replay manuel.
+- Gardez des retries bornés ; jamais de boucle infinie.

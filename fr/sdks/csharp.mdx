@@ -1,0 +1,47 @@
+---
+title: Introduction
+description: Découvrez comment utiliser le SDK C# pour envoyer des SMS avec l’API.
+---
+
+## Avant de commencer
+
+- Vous devez avoir .NET 8+ installé sur votre machine.
+- Vous devez disposer d’une Rewrite API key avec les permissions requises.
+
+<Steps>
+    <Step title="Installer le SDK" titleSize="h3">
+        Pour installer le SDK C#, exécutez :
+
+        ```bash
+        dotnet add package RewriteToday.SDK
+        ```
+    </Step>
+
+    <Step title="Configurer la variable d’environnement REWRITE_API_KEY" titleSize="h3">
+    Configurez votre Rewrite API key dans vos variables d’environnement.
+
+    ```text .env
+    REWRITE_API_KEY=rw...
+    ```
+    </Step>
+
+    <Step title="Envoyer votre SMS" titleSize="h3">
+    Maintenant, il suffit de passer le contenu du message et c’est tout.
+
+    ```csharp Program.cs
+    using RewriteToday;
+
+    var rewrite = new RewriteClient(Environment.GetEnvironmentVariable("REWRITE_API_KEY"));
+
+    var message = await rewrite.Messages.SendAsync(new SendMessageOptions
+    {
+      To = "+1234567890",
+      Message = "Your OTP code is 478201"
+    });
+
+    Console.WriteLine(message);
+    ```
+
+    Vous pouvez tout faire avec notre SDK, continuez à explorer.
+    </Step>
+</Steps>

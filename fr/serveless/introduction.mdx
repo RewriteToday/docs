@@ -1,0 +1,59 @@
+---
+title: "Vue d'ensemble"
+description: "Envoyez des SMS depuis des runtimes serverless avec le SDK Rewrite."
+icon: cloud
+---
+
+Le serverless est l'une des manieres les plus rapides d'integrer Rewrite en production.
+
+Utilisez le SDK officiel pour envoyer des SMS depuis des plateformes comme **Vercel Functions**, **Cloudflare Workers** et **Supabase Edge Functions**, sans gerer de serveurs.
+
+## Pourquoi serverless ?
+
+<CardGroup cols={2}>
+  <Card title="Deploiement rapide" icon="rocket" color="#C9CBD1">
+    Deployez globalement en quelques minutes avec un minimum de configuration infra.
+  </Card>
+
+  <Card title="Paiement a l'execution" icon="coins" color="#C9CBD1">
+    Payez uniquement les requetes que vous traitez reellement.
+  </Card>
+
+  <Card title="Proximite edge" icon="globe" color="#C9CBD1">
+    Reduisez la latence en executant au plus pres de vos utilisateurs.
+  </Card>
+
+  <Card title="Mise a l'echelle simple" icon="gear" color="#C9CBD1">
+    Absorbez les pics de trafic sans autoscaling manuel.
+  </Card>
+</CardGroup>
+
+## Guides disponibles
+
+<CardGroup cols={2}>
+  <Card title="Vercel Functions" icon="triangle" href="./vercel-functions" color="#C9CBD1">
+    Creez un endpoint POST et envoyez des SMS avec `@rewritejs/sdk`.
+  </Card>
+
+  <Card title="Cloudflare Workers" icon="cloud" href="./cloudflare-workers" color="#C9CBD1">
+    Envoyez des SMS depuis un worker edge avec `@rewritejs/sdk`.
+  </Card>
+
+  <Card title="Supabase Edge Functions" icon="bolt" href="./supabase-edge-functions" color="#C9CBD1">
+    Envoyez des SMS depuis une fonction edge Supabase avec `@rewritejs/sdk`.
+  </Card>
+</CardGroup>
+
+## Schema commun
+
+Tous les runtimes serverless suivent le meme flux :
+
+1. Lire les secrets depuis les variables d'environnement
+2. Instancier `Rewrite`
+3. Valider la charge utile de la requete
+4. Appeler `rewrite.messages.send(...)`
+5. Retourner une reponse JSON avec le code de statut adapte
+
+<Info>
+Conservez votre cle API uniquement cote serveur. N'exposez jamais `REWRITE_API_KEY` dans des bundles client.
+</Info>

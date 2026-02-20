@@ -1,0 +1,123 @@
+---
+title: Limites d'utilisation
+description: Comprenez les quotas, la tarification PAYG, le comportement des plans et la gestion des limites pour l'utilisation de l'API Rewrite.
+---
+
+# Vue d'ensemble
+
+Les limites d'utilisation définissent comment le trafic est admis, facturé et protégé dans Rewrite.
+
+Cette page explique :
+
+- Le fonctionnement des quotas de requêtes et d'envoi
+- Le modèle de facturation PAYG
+- Les quotas par plan et les upgrades
+- Ce qu'il se passe aux frontières de limite
+- Les bonnes pratiques opérationnelles
+
+<CardGroup cols={2}>
+  <Card title="Modèle de quota" icon="gauge" color="#C9CBD1">
+    Les limites sont appliquées pour protéger la stabilité de la plateforme et maintenir une haute qualité de livraison.
+  </Card>
+  <Card title="Modèle de facturation" icon="coins" color="#C9CBD1">
+    La facturation peut suivre une tarification PAYG ou un quota inclus dans le plan selon la configuration de l'espace de travail.
+  </Card>
+  <Card title="Contrôle du débit" icon="activity" color="#C9CBD1">
+    La pression de requêtes est contrôlée via le rate limiting API et des indications de retry.
+  </Card>
+  <Card title="Visibilité" icon="chart-column" color="#C9CBD1">
+    L'usage doit être surveillé par endpoint, région et cas d'usage du message.
+  </Card>
+</CardGroup>
+
+## Modes de facturation
+
+<Tabs sync={false}>
+  <Tab title="PAYG">
+    PAYG est facturé par SMS envoyé.
+
+    **Prix :** `0.20` par SMS (selon la politique commerciale Rewrite).
+
+    Ce modèle est optimal pour un trafic variable ou des charges de travail en phase initiale.
+  </Tab>
+  <Tab title="Plans">
+    Les plans incluent un quota prédéfini et des conditions commerciales.
+
+    Les niveaux de plan actuels, le volume inclus et le comportement en dépassement sont publiés sur :
+    [rewritetoday.com/pricing](https://rewritetoday.com/pricing)
+  </Tab>
+</Tabs>
+
+## Dimensions des quotas
+
+| Dimension | Ce que cela contrôle | Signal typique |
+| --- | --- | --- |
+| Débit de requêtes API | Rafale/débit vers les endpoints API | `429` + en-têtes de retry |
+| Volume d'envoi SMS | Capacité totale d'envoi selon le mode de facturation | Compteurs d'usage du tableau de bord |
+| Fenêtre de quota de plan | Volume inclus sur le cycle du plan | Statut d'usage du plan |
+
+## Que se passe-t-il quand vous atteignez les limites
+
+- La pression API peut renvoyer `429` avec des indications de retry.
+- Les nouveaux envois peuvent être bloqués une fois le quota commercial épuisé.
+- Le comportement dépend du mode de facturation et de la politique de l'espace de travail (PAYG vs plan).
+
+Guide associé : [Erreurs et tentatives](/fr/api/errors)
+
+## En-têtes de rate limit à lire
+
+En cas de rate limit, inspectez :
+
+- `X-RateLimit-Global`
+- `X-RateLimit-Limit`
+- `X-RateLimit-Retry-After`
+- `Retry-After`
+
+Si plusieurs indications de retry sont présentes, utilisez le délai d'attente le plus conservateur.
+
+## Patterns d'architecture favorables aux quotas
+
+<CardGroup cols={2}>
+  <Card title="Mettre les envois en file" icon="list-tree" color="#C9CBD1">
+    Tamponnez le trafic sortant et videz la file avec une concurrence contrôlée.
+  </Card>
+  <Card title="Utiliser l'idempotence" icon="repeat" color="#C9CBD1">
+    Empêchez les SMS en double pendant les retries et les échecs partiels.
+  </Card>
+  <Card title="Backoff + jitter" icon="timer" color="#C9CBD1">
+    Réessayez progressivement les échecs transitoires pour éviter les pics synchronisés.
+  </Card>
+  <Card title="Segmenter le trafic" icon="split" color="#C9CBD1">
+    Isolez le trafic OTP et non-OTP pour protéger les flux critiques.
+  </Card>
+</CardGroup>
+
+## Recommandations pratiques de politique
+
+1. Définissez des limites internes souples avant les limites dures de quota.
+2. Alertez quand l'usage atteint 70 %, 85 % et 95 % de la fenêtre.
+3. Réservez du budget pour les cas d'usage prioritaires (ex. OTP).
+4. Auto-limitez les campagnes de moindre priorité en cas de pression.
+5. Gardez des files dead-letter pour les envois qui dépassent les limites de politique.
+
+## Checklist de monitoring
+
+- Suivez le taux de `429` par endpoint et environnement.
+- Suivez les ratios d'envoi réussi, failed et undelivered par région.
+- Suivez le coût par cas d'usage (`otp_login`, `alerts`, `marketing`).
+- Réconciliez les compteurs internes avec les résultats fournisseur/webhook.
+- Révisez les incidents de quota chaque semaine et ajustez la politique de throttling.
+
+## FAQ
+
+<Accordion title="Où voir les valeurs de plan et quotas actuels ?">
+  Utilisez la page officielle de tarification : [rewritetoday.com/pricing](https://rewritetoday.com/pricing).
+</Accordion>
+
+<Accordion title="Puis-je combiner l'usage du plan et le comportement PAYG ?">
+  Le comportement commercial dépend de la configuration de l'espace de travail. Vérifiez votre configuration de facturation active dans les paramètres du compte.
+</Accordion>
+
+<Accordion title="Quel est le comportement de retry le plus sûr sous pression de limite ?">
+  Retry uniquement les échecs transitoires, respectez les en-têtes de retry et appliquez un backoff exponentiel avec jitter. Voir [Erreurs et tentatives](/fr/api/errors).
+</Accordion>

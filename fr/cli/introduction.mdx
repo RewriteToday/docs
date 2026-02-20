@@ -1,0 +1,108 @@
+---
+title: 'Aperçu'
+description: "Outil officiel en ligne de commande de Rewrite pour le développement, les tests et les automatisations."
+icon: terminal
+---
+
+La **Rewrite CLI** est l’outil officiel en ligne de commande pour interagir avec Rewrite directement depuis votre terminal.
+
+Conçue pour les développeurs, elle vous permet d’envoyer des SMS, de gérer des flux de renvoi, d’écouter des webhooks, de simuler des livraisons et d’automatiser des pipelines de messagerie, le tout sans quitter votre shell.
+
+## Capacités
+
+<CardGroup cols={3}>
+  <Card title="Authentification" icon="key" color="#C9CBD1">
+    Connexion sécurisée, gestion des API keys et profils multiples.
+  </Card>
+
+  <Card title="SMS" icon="message" color="#C9CBD1">
+    Envoyez, inspectez et renvoyez des messages directement depuis votre terminal.
+  </Card>
+
+  <Card title="Webhooks" icon="webhook" color="#C9CBD1">
+    Écoutez, transférez et déboguez les événements webhook en temps réel.
+  </Card>
+
+  <Card title="Simulation" icon="flask" color="#C9CBD1">
+    Simulez en toute sécurité des statuts de livraison et des cas limites.
+  </Card>
+
+  <Card title="Automatisation" icon="gear" color="#C9CBD1">
+    Sortie JSON, mode non interactif et workflows scriptables.
+  </Card>
+
+  <Card title="Configuration" icon="sliders" color="#C9CBD1">
+    Flags globaux, environnements et formatage de sortie.
+  </Card>
+</CardGroup>
+
+## Installation
+
+<CodeGroup>
+```bash Go (recommandé)
+go install github.com/rewritetoday/cli@latest
+```
+```bash Brew
+brew install rewrite-cli
+```
+```bash Docker
+docker pull rewrite/cli
+```
+</CodeGroup>
+
+## Vérifier l’installation
+
+```bash
+rewrite --version
+```
+
+<Steps>
+  <Step title="S’authentifier">
+      ```bash
+      rewrite login
+      ```
+      Authentifiez-vous à l’aide de votre **API key** ou du **flux OAuth**.
+  </Step>
+  <Step title="Écouter les webhooks">
+    ```bash
+    rewrite listen --forward-to http://localhost:3000/webhooks/rewrite
+    ```
+    Les événements seront diffusés en temps réel et peuvent être transférés vers votre serveur local.
+  </Step>
+
+  <Step title="Envoyer un SMS">
+      ```bash
+      rewrite trigger sms.created -m "Hello from Rewrite" --to +5511999999999
+      ```
+  </Step>
+</Steps>
+
+## Principes de conception
+La Rewrite CLI a été conçue pour être :
+
+- Explicite — Aucun comportement caché
+- Scriptable — Sortie structurée prévisible
+- Compatible CI — Entièrement non interactive via des flags
+- Rapide — Temps de démarrage minimal et faible empreinte
+
+<CardGroup cols={2}>
+  <Card title="Compatible Unix" icon="terminal" color="#C9CBD1">
+      Sortie propre, facile à chaîner et à intégrer.
+  </Card>
+  <Card title="Binaire unique" icon="box" color="#C9CBD1">
+      Aucune dépendance runtime lourde.
+  </Card>
+</CardGroup>
+
+<br />
+<CardGroup cols={2}>
+  <Card title="REST API" icon="repeat" href="../api" color="#C9CBD1">
+      API HTTP complète pour des intégrations avancées.
+  </Card>
+  <Card title="SDKs" icon="boxes-stacked" href="../sdks" color="#C9CBD1">
+      Bibliothèques officielles pour plusieurs langages.
+  </Card>
+</CardGroup>
+<Card title="Open Source" icon="github" href="https://github.com/rewritetoday/cli" color="#C9CBD1">
+    Code source, issues et contributions.
+</Card>

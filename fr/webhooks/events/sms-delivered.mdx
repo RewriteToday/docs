@@ -1,0 +1,70 @@
+---
+title: "sms.delivered"
+description: "Webhook déclenché lorsque l'opérateur confirme la livraison sur le téléphone du destinataire."
+---
+
+## Vue d'ensemble
+
+L'événement `sms.delivered` est envoyé après confirmation par l'opérateur que le SMS a atteint l'appareil du destinataire.
+
+Utilisez cet événement pour :
+
+- Marquer les notifications comme livrées dans votre produit
+- Déclencher des workflows métier post-livraison
+- Mesurer la performance de livraison de bout en bout
+
+## Exemple de payload
+
+```json
+{
+  "type": "sms.delivered",
+  "createdAt": "2026-02-14T19:41:28.909Z",
+  "id": "393821034567832124",
+  "data": {
+    "id": "733501234567890123",
+    "to": "+5511999999999",
+    "status": "DELIVERED",
+    "provider": "twilio",
+    "metadata": {
+      "campaign": "onboarding-2026",
+      "tenantId": "acme-01"
+    }
+  }
+}
+```
+
+## Objet événement
+
+| Champ | Type | Description |
+| --- | --- | --- |
+| `type` | `string` | Identifiant de l'événement. Pour cette page : `sms.delivered`. |
+| `id` | `string` | Identifiant unique de l'événement webhook pour la déduplication. |
+| `createdAt` | `string` (ISO-8601) | Horodatage de création de l'événement. |
+| `data` | `object` | Snapshot final du message au moment de la confirmation de livraison. |
+
+## Objet `data`
+
+| Champ | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | Identifiant SMS Rewrite. |
+| `to` | `string` | Numéro destinataire au format E.164. |
+| `status` | `string` | Statut actuel (`DELIVERED`). |
+| `provider` | `string \| null` | Fournisseur utilisé pour la livraison. |
+| `metadata` | `object \| null` | Métadonnées d'origine attachées au SMS. |
+
+## Traitement recommandé
+
+1. Validez la signature et persistez l'événement.
+2. Mettez à jour le statut du message en livré.
+3. Émettez un événement analytics/BI interne si nécessaire.
+4. Répondez avec `200` dès que l'état est enregistré.
+
+<Info>
+N'assumez pas un ordre strict entre les retries. Utilisez les horodatages et des mises à jour idempotentes.
+</Info>
+
+## Événements associés
+
+- [`sms.queued`](./sms-queued)
+- [`sms.failed`](./sms-failed)
+- [`sms.scheduled`](./sms-scheduled)

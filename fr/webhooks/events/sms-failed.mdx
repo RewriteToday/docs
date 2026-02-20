@@ -1,0 +1,71 @@
+---
+title: "sms.failed"
+description: "Webhook déclenché lorsqu'un SMS échoue définitivement et ne sera pas livré."
+---
+
+## Vue d'ensemble
+
+L'événement `sms.failed` est émis lorsque la livraison ne peut pas aboutir et que le SMS atteint un état d'échec terminal.
+
+Les raisons fréquentes incluent :
+
+- Numéros de destination invalides ou injoignables
+- Rejet par l'opérateur/fournisseur
+- Contraintes de routage
+- Violations de politique ou de quota
+
+## Exemple de payload
+
+```json
+{
+  "type": "sms.failed",
+  "createdAt": "2026-02-14T19:41:55.442Z",
+  "id": "393821034567832126",
+  "data": {
+    "id": "733501234567890125",
+    "to": "+5511977777777",
+    "status": "FAILED",
+    "provider": "twilio",
+    "metadata": {
+      "campaign": "otp-login",
+      "tenantId": "acme-01"
+    }
+  }
+}
+```
+
+## Objet événement
+
+| Champ | Type | Description |
+| --- | --- | --- |
+| `type` | `string` | Identifiant de l'événement. Pour cette page : `sms.failed`. |
+| `id` | `string` | Identifiant unique de l'événement webhook. |
+| `createdAt` | `string` (ISO-8601) | Horodatage de l'événement. |
+| `data` | `object` | Snapshot du SMS au moment de l'échec. |
+
+## Objet `data`
+
+| Champ | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | Identifiant SMS Rewrite. |
+| `to` | `string` | Numéro destinataire au format E.164. |
+| `status` | `string` | Statut actuel (`FAILED`). |
+| `provider` | `string \| null` | Fournisseur impliqué dans le chemin de livraison en échec. |
+| `metadata` | `object \| null` | Métadonnées d'origine de la création du message. |
+
+## Traitement recommandé
+
+1. Validez la signature et dédupliquez via l'identifiant d'événement webhook.
+2. Persistez le payload pour la visibilité support/audit.
+3. Marquez le message comme échoué dans votre base.
+4. Déclenchez éventuellement des canaux de secours ou des politiques de retry.
+
+<Warning>
+Ne relancez pas aveuglément depuis les handlers webhook. Utilisez une logique de retry contrôlée avec limites de débit et backoff.
+</Warning>
+
+## Événements associés
+
+- [`sms.queued`](./sms-queued)
+- [`sms.delivered`](./sms-delivered)
+- [`sms.canceled`](./sms-canceled)

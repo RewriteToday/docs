@@ -1,0 +1,70 @@
+---
+title: "sms.queued"
+description: "Webhook déclenché lorsqu'un SMS est accepté et placé en file d'envoi."
+---
+
+## Vue d'ensemble
+
+L'événement `sms.queued` est envoyé lorsque Rewrite accepte une requête SMS et la place dans la file de livraison sortante.
+
+C'est généralement le premier événement du cycle de vie d'un message et il est utile pour :
+
+- Confirmer l'acceptation de la requête API de façon asynchrone
+- Suivre le débit et la latence de la file
+- Démarrer les SLA de livraison depuis un point cohérent
+
+## Exemple de payload
+
+```json
+{
+  "type": "sms.queued",
+  "createdAt": "2026-02-14T19:41:12.126Z",
+  "id": "393821034567832123",
+  "data": {
+    "id": "733501234567890123",
+    "to": "+5511999999999",
+    "status": "QUEUED",
+    "provider": null,
+    "metadata": {
+      "campaign": "onboarding-2026",
+      "tenantId": "acme-01"
+    }
+  }
+}
+```
+
+## Objet événement
+
+| Champ | Type | Description |
+| --- | --- | --- |
+| `type` | `string` | Identifiant de l'événement. Pour cette page : `sms.queued`. |
+| `id` | `string` | Identifiant unique de l'événement webhook. À utiliser pour l'idempotence/déduplication. |
+| `createdAt` | `string` (ISO-8601) | Horodatage de création de l'événement par Rewrite. |
+| `data` | `object` | Snapshot de la ressource SMS au moment de la mise en file. |
+
+## Objet `data`
+
+| Champ | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | Identifiant unique du SMS dans Rewrite. |
+| `to` | `string` | Numéro du destinataire au format E.164. |
+| `status` | `string` | Statut actuel du SMS (`QUEUED`). |
+| `provider` | `string \| null` | Fournisseur choisi pour la livraison. Peut être `null` lors de la mise en file. |
+| `metadata` | `object \| null` | Métadonnées envoyées lors de la création du message. |
+
+## Traitement recommandé
+
+1. Validez la signature du webhook.
+2. Persistez le payload brut et l'identifiant d'événement.
+3. Marquez le message comme en file dans votre base.
+4. Retournez rapidement `200` et traitez le reste en asynchrone.
+
+<Info>
+Vous devez considérer la livraison webhook comme at-least-once et rendre le traitement idempotent.
+</Info>
+
+## Événements associés
+
+- [`sms.delivered`](./sms-delivered)
+- [`sms.failed`](./sms-failed)
+- [`sms.canceled`](./sms-canceled)

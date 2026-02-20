@@ -1,0 +1,254 @@
+---
+title: i18n
+description: Localisez le contenu des messages et des modèles avec la clé i18n, avec sélection de la langue selon le numéro de destination.
+---
+
+# Vue d'ensemble
+
+Rewrite prend en charge une clé `i18n` pour les messages directs et les modèles.
+
+Utilisez `message` comme fallback par défaut, puis fournissez les variantes localisées dans `i18n`.
+Rewrite choisit la meilleure variante selon le pays/la région du numéro de destination (`to`) inféré via E.164.
+
+## Quand utiliser i18n
+
+- Vous envoyez le même flux vers plusieurs pays.
+- Vous voulez une seule intégration API avec un texte spécifique à chaque locale.
+- Vous avez besoin d'un comportement de fallback sûr lorsqu'aucune locale ne correspond.
+
+## Format du payload
+
+```json
+{
+  "to": "+5511999999999",
+  "message": "Votre code OTP est 123456",
+  "i18n": {
+    "pt-BR": "Votre code OTP est 123456",
+    "es": "Votre code OTP est 123456",
+    "en": "Votre code OTP est 123456"
+  }
+}
+```
+
+## Ordre de résolution
+
+1. Rewrite inspecte le préfixe du numéro de destination (`to`) et infère la locale/le pays.
+2. Si une correspondance exacte de locale existe dans `i18n` (par exemple `pt-BR`), Rewrite l'utilise.
+3. Si aucune locale exacte n'existe, Rewrite peut utiliser une clé au niveau langue si disponible (par exemple `pt`).
+4. Si aucun mapping n'est trouvé, Rewrite utilise `message`.
+
+<Info>
+Envoyez toujours un fallback `message` complet. Ne vous fiez pas uniquement aux clés `i18n`.
+</Info>
+
+## Formats de clé i18n pris en charge
+
+- Langue : `en`, `pt`, `es`
+- Langue + région : `en-US`, `pt-BR`, `es-MX`
+
+Les clés de type BCP-47 sont recommandées pour une correspondance prévisible.
+
+## Exemple de requête (tous les SDK)
+
+<CodeGroup>
+  ```bash cURL
+  curl -X POST "https://api.rewritetoday.com/v1/messages" \
+    -H "Authorization: Bearer rw_..." \
+    -H "Content-Type: application/json" \
+    -d '{
+      "to": "+5511999999999",
+      "message": "Votre code OTP est 123456",
+      "i18n": {
+        "pt-BR": "Votre code OTP est 123456",
+        "en": "Votre code OTP est 123456"
+      },
+      "metadata": { "source": "api-i18n" }
+    }'
+  ```
+
+  ```ts Node.js
+  import { Rewrite } from '@rewritejs/sdk';
+
+  const rewrite = new Rewrite(process.env.REWRITE_API_KEY);
+
+  const { data, error } = await rewrite.messages.send({
+    to: '+5511999999999',
+    message: 'Votre code OTP est 123456',
+    i18n: {
+      'pt-BR': 'Votre code OTP est 123456',
+      en: 'Votre code OTP est 123456',
+    },
+    metadata: { source: 'api-i18n' },
+  });
+  ```
+
+  ```go Go
+  package main
+
+  import (
+    "os"
+    rewrite "github.com/rewritetoday/golang"
+  )
+
+  func main() {
+    client := rewrite.New(os.Getenv("REWRITE_API_KEY"))
+
+    _, _ = client.Messages.Send(&rewrite.Messages.SendOptions{
+      To:      "+5511999999999",
+      Message: "Votre code OTP est 123456",
+      I18n: map[string]string{
+        "pt-BR": "Votre code OTP est 123456",
+        "en":    "Votre code OTP est 123456",
+      },
+    })
+  }
+  ```
+
+  ```py Python
+  import os
+  import rewrite
+
+  rewrite.api_key = os.environ["REWRITE_API_KEY"]
+
+  rewrite.messages.send({
+    "to": "+5511999999999",
+    "message": "Votre code OTP est 123456",
+    "i18n": {
+      "pt-BR": "Votre code OTP est 123456",
+      "en": "Votre code OTP est 123456"
+    }
+  })
+  ```
+
+  ```java Java
+  import com.rewritetoday.sdk.Rewrite;
+  import com.rewritetoday.sdk.models.messages.SendOptions;
+  import java.util.Map;
+
+  var rewrite = new Rewrite(System.getenv("REWRITE_API_KEY"));
+
+  var params = SendOptions.builder()
+    .to("+5511999999999")
+    .message("Votre code OTP est 123456")
+    .i18n(Map.of(
+      "pt-BR", "Votre code OTP est 123456",
+      "en", "Votre code OTP est 123456"
+    ))
+    .build();
+
+  var message = rewrite.messages().send(params);
+  ```
+
+  ```php PHP
+  <?php
+
+  use RewriteToday\Rewrite;
+
+  $rewrite = new Rewrite(getenv('REWRITE_API_KEY'));
+
+  $message = $rewrite->messages->send([
+    'to' => '+5511999999999',
+    'message' => 'Votre code OTP est 123456',
+    'i18n' => [
+      'pt-BR' => 'Votre code OTP est 123456',
+      'en' => 'Votre code OTP est 123456',
+    ],
+  ]);
+  ```
+
+  ```rb Ruby
+  require "rewrite"
+
+  rewrite = Rewrite::Client.new(api_key: ENV.fetch("REWRITE_API_KEY"))
+
+  message = rewrite.messages.send(
+    to: "+5511999999999",
+    message: "Votre code OTP est 123456",
+    i18n: {
+      "pt-BR" => "Votre code OTP est 123456",
+      "en" => "Votre code OTP est 123456"
+    }
+  )
+  ```
+
+  ```kt Kotlin
+  import com.rewritetoday.sdk.Rewrite
+  import com.rewritetoday.sdk.models.messages.SendOptions
+
+  val rewrite = Rewrite(System.getenv("REWRITE_API_KEY"))
+
+  val params = SendOptions(
+    to = "+5511999999999",
+    message = "Votre code OTP est 123456",
+    i18n = mapOf(
+      "pt-BR" to "Votre code OTP est 123456",
+      "en" to "Votre code OTP est 123456"
+    )
+  )
+
+  val message = rewrite.messages.send(params)
+  ```
+
+  ```swift Swift
+  import Foundation
+  import RewriteSDK
+
+  let rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment["REWRITE_API_KEY"] ?? "")
+
+  let message = try await rewrite.messages.send(
+    to: "+5511999999999",
+    message: "Votre code OTP est 123456",
+    i18n: [
+      "pt-BR": "Votre code OTP est 123456",
+      "en": "Votre code OTP est 123456"
+    ]
+  )
+  ```
+
+  ```csharp C#
+  using RewriteToday;
+
+  var rewrite = new RewriteClient(Environment.GetEnvironmentVariable("REWRITE_API_KEY"));
+
+  var message = await rewrite.Messages.SendAsync(new SendMessageOptions
+  {
+    To = "+5511999999999",
+    Message = "Votre code OTP est 123456",
+    I18n = new Dictionary<string, string>
+    {
+      ["pt-BR"] = "Votre code OTP est 123456",
+      ["en"] = "Votre code OTP est 123456"
+    }
+  });
+  ```
+</CodeGroup>
+
+## Modèles + i18n
+
+Lors de l'utilisation de modèles, `i18n` suit le même comportement :
+
+- Conservez un modèle/message par défaut.
+- Ajoutez des variantes spécifiques à la locale dans `i18n`.
+- Gardez les variables/placeholders cohérents dans toutes les locales.
+
+## Bonnes pratiques
+
+- Gardez les placeholders identiques entre locales (exemple : `{{code}}`).
+- Gardez la longueur des messages sous les contraintes régionales des opérateurs.
+- Préférez les locales explicites (`pt-BR`) quand le ton/la formulation changent selon le pays.
+- Ajoutez un monitoring par locale pour repérer les mappings manquants.
+- Testez avec de vrais formats de téléphone de vos principaux pays.
+
+## Erreurs courantes
+
+<Tabs sync={false}>
+  <Tab title="Pas de message de fallback">
+    Envoyer uniquement des clés `i18n` sans `message` par défaut peut casser la livraison pour les destinations non couvertes.
+  </Tab>
+  <Tab title="Placeholders incohérents">
+    Si une locale utilise des noms de placeholders différents, l'interpolation à l'exécution peut échouer.
+  </Tab>
+  <Tab title="Mauvais format de clé locale">
+    Évitez les clés personnalisées comme `brazilian-portuguese`. Utilisez plutôt des clés de type BCP-47.
+  </Tab>
+</Tabs>

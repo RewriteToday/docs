@@ -1,0 +1,70 @@
+---
+title: "sms.canceled"
+description: "Webhook déclenché lorsqu'un SMS planifié est annulé avant l'envoi."
+---
+
+## Vue d'ensemble
+
+L'événement `sms.canceled` est émis lorsqu'un message précédemment planifié est annulé et ne sera plus envoyé.
+
+Cet événement est utile pour :
+
+- Garder des timelines côté utilisateur précises
+- Mettre à jour les métriques de campagne
+- Auditer les workflows opérationnels d'annulation
+
+## Exemple de payload
+
+```json
+{
+  "type": "sms.canceled",
+  "createdAt": "2026-02-14T19:42:09.101Z",
+  "id": "393821034567832127",
+  "data": {
+    "id": "733501234567890126",
+    "to": "+5511966666666",
+    "status": "CANCELED",
+    "provider": null,
+    "metadata": {
+      "campaign": "promo-weekend",
+      "tenantId": "acme-01"
+    }
+  }
+}
+```
+
+## Objet événement
+
+| Champ | Type | Description |
+| --- | --- | --- |
+| `type` | `string` | Identifiant de l'événement. Pour cette page : `sms.canceled`. |
+| `id` | `string` | Identifiant unique de l'événement webhook. |
+| `createdAt` | `string` (ISO-8601) | Horodatage de l'événement. |
+| `data` | `object` | Snapshot du SMS au moment de l'annulation. |
+
+## Objet `data`
+
+| Champ | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | Identifiant SMS Rewrite. |
+| `to` | `string` | Numéro destinataire au format E.164. |
+| `status` | `string` | Statut actuel (`CANCELED`). |
+| `provider` | `string \| null` | Valeur du fournisseur si disponible. |
+| `metadata` | `object \| null` | Métadonnées attachées au message. |
+
+## Traitement recommandé
+
+1. Vérifiez la signature et dédupliquez les événements.
+2. Marquez le message comme annulé dans votre système.
+3. Arrêtez les automatisations dépendantes en attente de livraison.
+4. Retournez rapidement `200` pour accuser réception.
+
+<Info>
+Les messages annulés sont terminaux et ne doivent pas passer à `sms.delivered`.
+</Info>
+
+## Événements associés
+
+- [`sms.scheduled`](./sms-scheduled)
+- [`sms.queued`](./sms-queued)
+- [`sms.failed`](./sms-failed)

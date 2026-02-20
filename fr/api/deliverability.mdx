@@ -1,0 +1,178 @@
+---
+title: Délivrabilité
+description: Améliorez les performances de livraison SMS avec la qualité de routage, la stratégie de contenu, l'hygiène des listes et les contrôles opérationnels.
+---
+
+# Vue d'ensemble
+
+La délivrabilité est la probabilité qu'un message soit accepté par les opérateurs et atteigne l'appareil du destinataire dans une fenêtre de temps utile.
+
+Chez Rewrite, la délivrabilité est traitée comme une boucle continue entre qualité d'envoi, qualité de route et feedback d'événements.
+
+<CardGroup cols={2}>
+  <Card title="Qualité de routage" icon="route" color="#C9CBD1">
+    Les décisions de routage sont évaluées en continu selon la destination et les signaux de santé.
+  </Card>
+  <Card title="Sécurité de conformité" icon="shield-check" color="#C9CBD1">
+    Le contenu et le comportement d'envoi sont ajustés pour réduire le filtrage et les plaintes.
+  </Card>
+  <Card title="Contrôle des retries" icon="rotate-cw" color="#C9CBD1">
+    Les retries sont bornés et idempotents, uniquement pour les échecs transitoires.
+  </Card>
+  <Card title="Boucle de feedback" icon="webhook" color="#C9CBD1">
+    Les événements de livraison servent à supprimer les mauvaises destinations et améliorer les envois suivants.
+  </Card>
+</CardGroup>
+
+## Fonctionnement de la livraison Rewrite
+
+1. Validation et normalisation de la requête
+2. Décision du fournisseur et de la route
+3. Dispatch et remise à l'opérateur
+4. Ingestion du feedback webhook
+5. Mises à jour de politique applicative (suppression, retry, escalade)
+
+Fonctionnalités liées :
+- [Erreurs et tentatives](/fr/api/errors)
+- [i18n](/fr/api/i18n)
+- [Introduction aux webhooks](/fr/webhooks/introduction)
+- [Types d'événements webhook](/fr/webhooks/types)
+
+## Piliers de la délivrabilité
+
+<Tabs sync={false}>
+  <Tab title="Hygiène des listes">
+    - Envoyez uniquement vers des numéros E.164 valides.
+    - Retirez les destinations avec échecs durs répétés.
+    - Supprimez immédiatement les utilisateurs désabonnés.
+    - Évitez les listes obsolètes ou riches en numéros recyclés.
+  </Tab>
+  <Tab title="Qualité du contenu">
+    - Gardez un texte clair et attendu.
+    - Identifiez la marque tôt dans le message.
+    - Évitez les schémas de spam (liens trompeurs, MAJUSCULES, abus de ponctuation).
+    - Gardez les messages transactionnels et OTP courts et précis.
+  </Tab>
+  <Tab title="Comportement d'envoi">
+    - Évitez les pics de volume brusques sur de nouvelles routes.
+    - Montez progressivement par pays/cas d'usage.
+    - Retry uniquement les échecs transitoires avec backoff + jitter.
+    - Respectez les fenêtres horaires des utilisateurs.
+  </Tab>
+  <Tab title="Conformité">
+    - Conservez la preuve du consentement lorsque requis.
+    - Incluez des instructions de désabonnement lorsque la réglementation/le cas d'usage l'exige.
+    - Séparez le trafic transactionnel et promotionnel.
+    - Respectez les contraintes régionales sur les règles d'expéditeur/modèle.
+  </Tab>
+</Tabs>
+
+## Types d'événements webhook valides pour la délivrabilité
+
+Utilisez uniquement les types d'événements pris en charge dans votre monitoring et votre automatisation :
+
+- [`sms.queued`](/fr/webhooks/events/sms-queued)
+- [`sms.delivered`](/fr/webhooks/events/sms-delivered)
+- [`sms.scheduled`](/fr/webhooks/events/sms-scheduled)
+- [`sms.failed`](/fr/webhooks/events/sms-failed)
+- [`sms.canceled`](/fr/webhooks/events/sms-canceled)
+
+Référence : [Types d'événements webhook](/fr/webhooks/types)
+
+## Réduire les mauvais résultats
+
+| Résultat | Cause typique | Action |
+| --- | --- | --- |
+| `undelivered` | Filtrage opérateur, appareil injoignable, pression de route | Améliorer la sécurité du contenu, valider la qualité de destination, retry avec politique |
+| `failed` | Destination invalide, rejet de politique, erreur aval dure | Classer en permanent/transitoire, supprimer les permanents |
+| Livraison retardée | Congestion, pression de route | Utiliser des retries bornés et surveiller la latence SLO |
+| Pics de plaintes/désabonnements | Trafic non pertinent ou fréquence excessive | Renforcer la segmentation et le contrôle de fréquence |
+
+## Playbook contenu (fort impact)
+
+<CardGroup cols={2}>
+  <Card title="Marque d'abord" icon="badge-check" color="#C9CBD1">
+    Placez la marque ou le contexte produit dans les 20-30 premiers caractères.
+  </Card>
+  <Card title="Un seul CTA" icon="mouse-pointer-click" color="#C9CBD1">
+    Gardez une action claire unique et évitez les instructions concurrentes.
+  </Card>
+  <Card title="Liens fiables" icon="link" color="#C9CBD1">
+    Utilisez des domaines stables et évitez les raccourcisseurs à faible réputation.
+  </Card>
+  <Card title="Texte localisé" icon="languages" color="#C9CBD1">
+    Utilisez [i18n](/fr/api/i18n) avec un message de fallback robuste.
+  </Card>
+</CardGroup>
+
+## Politique de retry pour la délivrabilité
+
+Retry uniquement quand l'échec est probablement transitoire :
+
+- `429` et `5xx` transitoires
+- timeout temporaire du fournisseur
+- saturation temporaire de route
+
+Ne réessayez pas à l'aveugle les échecs permanents de validation/politique.
+
+Base d'implémentation :
+- clé d'idempotence par envoi logique
+- backoff exponentiel + jitter
+- plafond de tentatives
+- file dead-letter pour inspection manuelle
+
+Implémentation de référence : [Erreurs et tentatives](/fr/api/errors)
+
+## Stratégie de montée en charge du débit
+
+1. Commencez avec un volume régional contrôlé.
+2. Augmentez progressivement en surveillant livraison et plaintes.
+3. Gardez des flux séparés pour OTP et trafic de type promotionnel.
+4. Mettez en pause la montée en charge quand les ratios d'échec se dégradent.
+
+## Boucle d'optimisation pilotée par webhooks
+
+1. Ingestion des événements webhook en quasi temps réel.
+2. Persistance des payloads normalisés.
+3. Mise à jour de la santé destinataire et de l'état de suppression.
+4. Alertes en cas de dépassement de seuils.
+5. Ajustement du routage et de la politique pour les prochains envois.
+
+Voir :
+- [Introduction aux webhooks](/fr/webhooks/introduction)
+- [Retries webhook](/fr/webhooks/retry)
+
+## Payload pratique pour des envois prêts pour l'analytics
+
+```json
+{
+  "to": "+15551234567",
+  "message": "Rewrite : votre code de vérification est 123456",
+  "i18n": {
+    "pt-BR": "Rewrite: seu codigo de verificacao e 123456"
+  },
+  "metadata": {
+    "use_case": "otp_login",
+    "tenant": "acme-app",
+    "campaign": "auth-v1",
+    "template_version": "v3"
+  }
+}
+```
+
+Utilisez `metadata` pour segmenter la délivrabilité par région, cas d'usage et version de modèle.
+
+## Checklist de délivrabilité
+
+- Validez E.164 avant envoi.
+- Appliquez les règles de consentement et de suppression.
+- Gardez un texte clair, court et identifié par marque.
+- Utilisez [i18n](/fr/api/i18n) avec fallback sûr.
+- Retry uniquement les échecs transitoires via [Erreurs et tentatives](/fr/api/errors).
+- Suivez les résultats par région/fournisseur/cas d'usage.
+- Supprimez automatiquement les destinations en échec permanent.
+- Révisez la taxonomie des échecs chaque semaine et ajustez les politiques.
+
+<Accordion title="Quel est un bon premier ensemble de KPI ?">
+  Commencez par le taux de livraison, le taux d'échec, le taux d'undelivered, le taux de plaintes/désabonnements, la latence p95 de livraison et la fréquence des 429 par endpoint.
+</Accordion>

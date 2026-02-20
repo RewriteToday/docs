@@ -493,6 +493,146 @@
 						]
 					}
 				]
+			},
+			{
+				"language": "fr",
+				"tabs": [
+					{
+						"tab": "Bienvenue",
+						"pages": ["fr/welcome"]
+					},
+					{
+						"tab": "API",
+						"groups": [
+							{
+								"group": "Référence",
+								"pages": [
+									"fr/api/introduction",
+									"fr/api/quickstart",
+									"fr/api/limits",
+									"fr/api/pagination",
+									"fr/api/i18n",
+									"fr/api/deliverability",
+									"fr/api/errors"
+								]
+							},
+							{
+								"group": "Projets",
+								"openapi": "fr/api/openapi-projects.json"
+							},
+							{
+								"group": "Clés API",
+								"openapi": "fr/api/openapi-api-keys.json"
+							},
+							{
+								"group": "Modèles",
+								"openapi": "fr/api/openapi-templates.json"
+							},
+							{
+								"group": "Webhooks",
+								"openapi": "fr/api/openapi-webhooks.json"
+							}
+						]
+					},
+					{
+						"tab": "CLI",
+						"pages": ["fr/cli/introduction", "fr/cli/auth", "fr/cli/config"]
+					},
+					{
+						"tab": "SDKs",
+						"groups": [
+							{
+								"group": "Vue d'ensemble",
+								"pages": ["fr/sdks/introduction"]
+							},
+							{
+								"group": "Node.js",
+								"icon": "node-js",
+								"pages": ["fr/sdks/node"]
+							},
+							{
+								"group": "Go",
+								"icon": "golang",
+								"pages": ["fr/sdks/golang"]
+							},
+							{
+								"group": "Python",
+								"icon": "python",
+								"pages": ["fr/sdks/python"]
+							},
+							{
+								"group": "Java",
+								"icon": "java",
+								"pages": ["fr/sdks/java"]
+							},
+							{
+								"group": "PHP",
+								"icon": "php",
+								"pages": ["fr/sdks/php"]
+							},
+							{
+								"group": "Ruby",
+								"icon": "gem",
+								"pages": ["fr/sdks/ruby"]
+							},
+							{
+								"group": "Kotlin",
+								"icon": "android",
+								"pages": ["fr/sdks/kotlin"]
+							},
+							{
+								"group": "Swift",
+								"icon": "apple",
+								"pages": ["fr/sdks/swift"]
+							},
+							{
+								"group": "C#",
+								"icon": "code",
+								"pages": ["fr/sdks/csharp"]
+							}
+						]
+					},
+					{
+						"tab": "Webhooks",
+						"groups": [
+							{
+								"group": "Référence",
+								"pages": [
+									"fr/webhooks/introduction",
+									"fr/webhooks/retry",
+									"fr/webhooks/types"
+								]
+							},
+							{
+								"group": "Événements",
+								"pages": [
+									"fr/webhooks/events/sms-queued",
+									"fr/webhooks/events/sms-delivered",
+									"fr/webhooks/events/sms-scheduled",
+									"fr/webhooks/events/sms-failed",
+									"fr/webhooks/events/sms-canceled"
+								]
+							}
+						]
+					},
+					{
+						"tab": "Serverless",
+						"groups": [
+							{
+								"group": "Vue d'ensemble",
+								"pages": ["fr/serveless/introduction"]
+							},
+							{
+								"group": "Plateformes",
+								"pages": [
+									"fr/serveless/vercel-functions",
+									"fr/serveless/cloudflare-workers",
+									"fr/serveless/supabase-edge-functions"
+								]
+							}
+						]
+					}
+				]
 			}
 		]
 	}

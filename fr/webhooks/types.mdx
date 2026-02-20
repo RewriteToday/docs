@@ -1,0 +1,45 @@
+---
+title: "Types d'événements"
+description: "Liste des types d'événements webhook **Rewrite** pris en charge et de leurs payloads."
+---
+
+## Événements SMS
+
+<div style={{ display: 'grid', gap: '26px' }}>
+
+  <div>
+    <div>— <a href="/webhooks/events/sms-queued"><code style={{ color: '#B5B3AD' }}>sms.queued</code></a></div>
+    <div style={{ marginLeft: '18px', marginTop: '6px', opacity: 0.85 }}>
+      Se produit lorsqu'un **SMS** est accepté et placé dans la file d'envoi.
+    </div>
+  </div>
+
+  <div>
+    <div>— <a href="/webhooks/events/sms-delivered"><code style={{ color: '#3DD68C' }}>sms.delivered</code></a></div>
+    <div style={{ marginLeft: '18px', marginTop: '6px', opacity: 0.85 }}>
+      Se produit lorsque l'opérateur confirme la livraison au téléphone du destinataire.
+    </div>
+  </div>
+
+  <div>
+    <div>— <a href="/webhooks/events/sms-scheduled"><code style={{ color: '#FFCA16' }}>sms.scheduled</code></a></div>
+    <div style={{ marginLeft: '18px', marginTop: '6px', opacity: 0.85 }}>
+      Se produit lorsqu'un **SMS** est planifié pour une livraison ultérieure.
+    </div>
+  </div>
+
+  <div>
+    <div>— <a href="/webhooks/events/sms-failed"><code style={{ color: '#FF9592' }}>sms.failed</code></a></div>
+    <div style={{ marginLeft: '18px', marginTop: '6px', opacity: 0.85 }}>
+      Se produit lorsqu'un **SMS** échoue définitivement en raison de numéros invalides, de routes bloquées, de limites de quota ou d'un rejet du fournisseur.
+    </div>
+  </div>
+
+  <div>
+    <div>— <a href="/webhooks/events/sms-canceled"><code style={{ color: '#BAA7FF' }}>sms.canceled</code></a></div>
+    <div style={{ marginLeft: '18px', marginTop: '6px', opacity: 0.85 }}>
+      Se produit lorsqu'un **SMS** planifié a été annulé avant son envoi.
+    </div>
+  </div>
+
+</div>
