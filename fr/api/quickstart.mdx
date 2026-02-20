@@ -5,9 +5,9 @@ description: "Envoyez votre premier SMS en quelques minutes avec l'API Rewrite."
 
 export function SmsRequestPlayground() {
   const curlCommand = [
-    'curl -X POST "https://api.rewritetoday.com/v1/messages" \\\',
-    '  -H "Authorization: Bearer (Votre clé API ici)" \\\',
-    '  -H "Content-Type: application/json" \\\',
+    'curl -X POST "https://api.rewritetoday.com/v1/messages" \\',
+    '  -H "Authorization: Bearer (Votre clé API ici)" \\',
+    '  -H "Content-Type: application/json" \\',
     "  -d '{",
     '    "to": "+15551234567",',
     '    "message": "Votre code OTP est 123456",',
