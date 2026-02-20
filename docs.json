@@ -216,6 +216,19 @@
 						]
 					},
 					{
+						"tab": "Ecosystem",
+						"groups": [
+							{
+								"group": "Overview",
+								"pages": ["en/ecosystem/introduction"]
+							},
+							{
+								"group": "Packages",
+								"pages": ["en/ecosystem/rest", "en/ecosystem/types"]
+							}
+						]
+					},
+					{
 						"tab": "Serveless",
 						"groups": [
 							{
@@ -384,6 +397,19 @@
 						]
 					},
 					{
+						"tab": "Ecosistema",
+						"groups": [
+							{
+								"group": "Visao geral",
+								"pages": ["pt-br/ecosystem/introduction"]
+							},
+							{
+								"group": "Pacotes",
+								"pages": ["pt-br/ecosystem/rest", "pt-br/ecosystem/types"]
+							}
+						]
+					},
+					{
 						"tab": "Serveless",
 						"groups": [
 							{
@@ -548,6 +574,19 @@
 						]
 					},
 					{
+						"tab": "Ecosistema",
+						"groups": [
+							{
+								"group": "Vision general",
+								"pages": ["es/ecosystem/introduction"]
+							},
+							{
+								"group": "Paquetes",
+								"pages": ["es/ecosystem/rest", "es/ecosystem/types"]
+							}
+						]
+					},
+					{
 						"tab": "Serverless",
 						"groups": [
 							{
@@ -708,6 +747,19 @@
 									"fr/webhooks/events/sms-failed",
 									"fr/webhooks/events/sms-canceled"
 								]
+							}
+						]
+					},
+					{
+						"tab": "Ecosysteme",
+						"groups": [
+							{
+								"group": "Vue d'ensemble",
+								"pages": ["fr/ecosystem/introduction"]
+							},
+							{
+								"group": "Packages",
+								"pages": ["fr/ecosystem/rest", "fr/ecosystem/types"]
 							}
 						]
 					},
