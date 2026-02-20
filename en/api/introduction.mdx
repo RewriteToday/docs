@@ -1,4 +1,132 @@
 ---
 title: Introduction
-description: Learn how to use the Rewrite API.
+description: API overview, base URL, versioning, authorization, and key references for integrating with Rewrite.
 ---
+
+# Overview
+
+The Rewrite API lets you send and manage SMS with predictable, production-friendly behavior.
+
+This page covers:
+
+- Base URL and versioning model
+- Authentication via `Authorization: Bearer ...`
+- Request/response conventions
+- Links to limits, quota, retries, and pagination guides
+
+<CardGroup cols={2}>
+  <Card title="Base URL" icon="globe" color="#C9CBD1">
+    All requests go to `https://api.rewritetoday.com`.
+  </Card>
+  <Card title="Versioning" icon="git-branch" color="#C9CBD1">
+    Use the path version prefix (`/v1`) for stable integrations.
+  </Card>
+  <Card title="Auth" icon="key-round" color="#C9CBD1">
+    Send your API key in the `Authorization` header as a Bearer token.
+  </Card>
+  <Card title="Response format" icon="braces" color="#C9CBD1">
+    Request and response payloads use JSON.
+  </Card>
+</CardGroup>
+
+## Base URL
+
+Use this host for all API endpoints:
+
+```text
+https://api.rewritetoday.com
+```
+
+Example create-message endpoint:
+
+```text
+https://api.rewritetoday.com/v1/messages
+```
+
+<Info>
+Use HTTPS only. Do not send API keys over insecure channels.
+</Info>
+
+## Versioning
+
+Rewrite versions endpoints in the URL path.
+
+Current documented version:
+
+- `v1`
+
+Versioning rules:
+
+- Backward-compatible updates can happen within the same version.
+- Breaking changes ship under a new version path.
+- Keep the version explicit in all hardcoded endpoints.
+
+## Authentication
+
+Authenticate every request with a secret API key from your Rewrite dashboard.
+
+Expected header:
+
+```http
+Authorization: Bearer rw_...
+```
+
+Example request:
+
+```bash
+curl -X POST "https://api.rewritetoday.com/v1/messages" \
+  -H "Authorization: Bearer rw_..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "+15551234567",
+    "message": "Your OTP code is 123456"
+  }'
+```
+
+<Warning>
+Never expose secret API keys in browser/mobile client code. Keep them server-side.
+</Warning>
+
+## API conventions
+
+- `Content-Type`: use `application/json` for JSON payloads.
+- Phone format: use E.164 (example: `+15551234567`).
+- Errors: non-2xx responses return structured error payloads.
+- Limits: high request pressure can return `429` with retry headers.
+
+## References
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/en/api/quickstart" color="#C9CBD1">
+    Send your first SMS and validate your environment.
+  </Card>
+  <Card title="Usage limits & quota" icon="gauge" href="/en/api/limits" color="#C9CBD1">
+    Understand rate limits, quota behavior, and billing boundaries.
+  </Card>
+  <Card title="Errors & retries" icon="shield-alert" href="/en/api/errors" color="#C9CBD1">
+    Handle failures safely with retries, backoff, and idempotency.
+  </Card>
+  <Card title="Pagination" icon="list" href="/en/api/pagination" color="#C9CBD1">
+    Navigate list endpoints with cursors.
+  </Card>
+  <Card title="i18n" icon="languages" href="/en/api/i18n" color="#C9CBD1">
+    Localize messages and templates by destination locale.
+  </Card>
+  <Card title="Deliverability" icon="send" href="/en/api/deliverability" color="#C9CBD1">
+    Improve delivery outcomes with sender and content best practices.
+  </Card>
+</CardGroup>
+
+## FAQ
+
+<Accordion title="Where do I create API keys?">
+  Create and manage API keys in your Rewrite dashboard account settings.
+</Accordion>
+
+<Accordion title="Should I put the version in every request URL?">
+  Yes. Keep `/v1` explicit in every endpoint to avoid ambiguity and breaking behavior.
+</Accordion>
+
+<Accordion title="Where can I learn about 429/rate-limit handling and quota exhaustion?">
+  See [Usage limits](/en/api/limits) for policy/quota behavior and [Errors & retries](/en/api/errors) for retry strategy.
+</Accordion>
