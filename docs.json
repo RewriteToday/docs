@@ -95,11 +95,13 @@
 							{
 								"group": "Projects",
 								"openapi": "en/api/openapi-projects.json",
+								"playground": "simple",
 								"pages": ["PATCH /projects/{id}", "DELETE /projects/{id}"]
 							},
 							{
 								"group": "API Keys",
 								"openapi": "en/api/openapi-api-keys.json",
+								"playground": "simple",
 								"pages": [
 									"GET /projects/{id}/api-keys",
 									"POST /projects/{id}/api-keys",
@@ -109,6 +111,7 @@
 							{
 								"group": "Templates",
 								"openapi": "en/api/openapi-templates.json",
+								"playground": "simple",
 								"pages": [
 									"GET /projects/{id}/templates",
 									"POST /projects/{id}/templates",
@@ -120,6 +123,7 @@
 							{
 								"group": "Webhooks",
 								"openapi": "en/api/openapi-webhooks.json",
+								"playground": "simple",
 								"pages": [
 									"GET /projects/{id}/webhooks",
 									"POST /projects/{id}/webhooks",
@@ -255,11 +259,13 @@
 							{
 								"group": "Projetos",
 								"openapi": "en/api/openapi-projects.json",
+								"playground": "simple",
 								"pages": ["PATCH /projects/{id}", "DELETE /projects/{id}"]
 							},
 							{
 								"group": "API Keys",
 								"openapi": "en/api/openapi-api-keys.json",
+								"playground": "simple",
 								"pages": [
 									"GET /projects/{id}/api-keys",
 									"POST /projects/{id}/api-keys",
@@ -269,6 +275,7 @@
 							{
 								"group": "Templates",
 								"openapi": "en/api/openapi-templates.json",
+								"playground": "simple",
 								"pages": [
 									"GET /projects/{id}/templates",
 									"POST /projects/{id}/templates",
@@ -280,6 +287,7 @@
 							{
 								"group": "Webhooks",
 								"openapi": "en/api/openapi-webhooks.json",
+								"playground": "simple",
 								"pages": [
 									"GET /projects/{id}/webhooks",
 									"POST /projects/{id}/webhooks",
@@ -419,11 +427,13 @@
 							{
 								"group": "Proyectos",
 								"openapi": "es/api/openapi-projects.json",
+								"playground": "simple",
 								"pages": ["PATCH /projects/{id}", "DELETE /projects/{id}"]
 							},
 							{
 								"group": "Claves API",
 								"openapi": "es/api/openapi-api-keys.json",
+								"playground": "simple",
 								"pages": [
 									"GET /projects/{id}/api-keys",
 									"POST /projects/{id}/api-keys",
@@ -433,6 +443,7 @@
 							{
 								"group": "Plantillas",
 								"openapi": "es/api/openapi-templates.json",
+								"playground": "simple",
 								"pages": [
 									"GET /projects/{id}/templates",
 									"POST /projects/{id}/templates",
@@ -444,6 +455,7 @@
 							{
 								"group": "Webhooks",
 								"openapi": "es/api/openapi-webhooks.json",
+								"playground": "simple",
 								"pages": [
 									"GET /projects/{id}/webhooks",
 									"POST /projects/{id}/webhooks",
@@ -579,11 +591,13 @@
 							{
 								"group": "Projets",
 								"openapi": "fr/api/openapi-projects.json",
+								"playground": "simple",
 								"pages": ["PATCH /projects/{id}", "DELETE /projects/{id}"]
 							},
 							{
 								"group": "Clés API",
 								"openapi": "fr/api/openapi-api-keys.json",
+								"playground": "simple",
 								"pages": [
 									"GET /projects/{id}/api-keys",
 									"POST /projects/{id}/api-keys",
@@ -593,6 +607,7 @@
 							{
 								"group": "Modèles",
 								"openapi": "fr/api/openapi-templates.json",
+								"playground": "simple",
 								"pages": [
 									"GET /projects/{id}/templates",
 									"POST /projects/{id}/templates",
@@ -604,6 +619,7 @@
 							{
 								"group": "Webhooks",
 								"openapi": "fr/api/openapi-webhooks.json",
+								"playground": "simple",
 								"pages": [
 									"GET /projects/{id}/webhooks",
 									"POST /projects/{id}/webhooks",
