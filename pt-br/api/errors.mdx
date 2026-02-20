@@ -22,16 +22,15 @@ A maioria das respostas nao-2xx segue este formato:
 ```json
 {
   "ok": false,
-  "error": {
-    "code": "invalid_request",
-    "message": "The request is invalid.",
-    "param": "to",
-    "request_id": "req_01J9Z8K7Y2..."
+  "code": "INVALID_JSON_BODY",
+  "message": "Invalid JSON body.",
+  "errors": {
+    "detailed": {
+    	...
+    }
   }
 }
 ```
-
-`request_id` deve ser registrado em logs e enviado em chamados de suporte.
 
 ## Status HTTP mais comuns
 
@@ -201,7 +200,7 @@ O exemplo de Node.js abaixo usa `@rewritejs/rest`, que ja oferece controle nativ
 
 ## Checklist operacional
 
-- Logar `request_id`, status HTTP e numero da tentativa.
+- Logar `code`, `message`, status HTTP e numero da tentativa.
 - Medir taxa de `429` por endpoint e ambiente.
 - Alertar quando houver exaustao de retries.
 - Manter dead-letter/failed jobs para replay manual.

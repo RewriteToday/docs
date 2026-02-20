@@ -22,16 +22,15 @@ Most non-2xx responses follow this shape:
 ```json
 {
   "ok": false,
-  "error": {
-    "code": "invalid_request",
-    "message": "The request is invalid.",
-    "param": "to",
-    "request_id": "req_01J9Z8K7Y2..."
+  "code": "INVALID_JSON_BODY",
+  "message": "Invalid JSON body.",
+  "errors": {
+    "detailed": {
+    	...
+    }
   }
 }
 ```
-
-`request_id` should be logged and attached to support tickets.
 
 ## Common HTTP statuses
 
@@ -201,7 +200,7 @@ Node.js example below uses `@rewritejs/rest`, which provides native timeout and 
 
 ## Operational checklist
 
-- Log `request_id`, status code, and retry attempt number.
+- Log `code`, `message`, status code, and retry attempt number.
 - Track `429` rate by endpoint and environment.
 - Alert on sustained retry exhaustion.
 - Keep dead-letter/failed jobs for manual replay.

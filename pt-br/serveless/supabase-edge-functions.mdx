@@ -26,7 +26,14 @@ import { Rewrite } from '@rewritejs/sdk';
 
 Deno.serve(async (request) => {
   if (request.method !== 'POST') {
-    return Response.json({ error: 'Method not allowed' }, { status: 405 });
+    return Response.json(
+      {
+        ok: false,
+        code: 'METHOD_NOT_ALLOWED',
+        message: 'Metodo nao permitido.',
+      },
+      { status: 405 }
+    );
   }
 
   const rewrite = new Rewrite(Deno.env.get('REWRITE_API_KEY'));
@@ -35,7 +42,11 @@ Deno.serve(async (request) => {
 
   if (!to || !message) {
     return Response.json(
-      { error: '`to` and `message` are required' },
+      {
+        ok: false,
+        code: 'INVALID_REQUEST',
+        message: '`to` e `message` sao obrigatorios.',
+      },
       { status: 400 }
     );
   }
@@ -47,10 +58,18 @@ Deno.serve(async (request) => {
   });
 
   if (error) {
-    return Response.json({ error }, { status: 422 });
+    return Response.json(
+      {
+        ok: false,
+        code: 'SMS_SEND_FAILED',
+        message: 'Falha ao enviar SMS.',
+        errors: error,
+      },
+      { status: 422 }
+    );
   }
 
-  return Response.json({ data }, { status: 200 });
+  return Response.json({ ok: true, data }, { status: 200 });
 });
 ```
 

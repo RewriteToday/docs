@@ -33,9 +33,19 @@ export async function POST() {
     metadata: { source: 'vercel-function' },
   });
 
-  return Response.json(response, {
-    status: error ? 500 : 200,
-  });
+  if (error) {
+    return Response.json(
+      {
+        ok: false,
+        code: 'SMS_SEND_FAILED',
+        message: 'Failed to send SMS.',
+        errors: error,
+      },
+      { status: 422 }
+    );
+  }
+
+  return Response.json({ ok: true, data }, { status: 200 });
 }
 ```
 
