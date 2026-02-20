@@ -1,0 +1,128 @@
+---
+title: "REST Library"
+description: "Use @rewritejs/rest for low-level HTTP control with Rewrite route helpers and production safety features."
+icon: route
+---
+
+`@rewritejs/rest` is the low-level Rewrite API client for teams that need direct control over HTTP behavior.
+
+Repository: [github.com/RewriteToday/rest](https://github.com/RewriteToday/rest)
+
+## When to use it
+
+- You want explicit request/response control.
+- You need custom retry or timeout behavior.
+- You run in serverless/edge workers and need strict execution budgets.
+- You already have your own abstraction layer and only need transport primitives.
+
+## Key capabilities
+
+<CardGroup cols={2}>
+  <Card title="Route helpers" icon="signs-post" color="#C9CBD1">
+    Use route builders from `@rewritejs/types` to avoid path construction mistakes.
+  </Card>
+  <Card title="Retry controls" icon="rotate" color="#C9CBD1">
+    Handle transient failures and rate-limit responses with custom backoff logic.
+  </Card>
+  <Card title="Timeout strategy" icon="clock" color="#C9CBD1">
+    Configure request timeout budgets that fit your runtime constraints.
+  </Card>
+  <Card title="Hooks" icon="plug" color="#C9CBD1">
+    Add observability, custom logging, or request/response instrumentation.
+  </Card>
+</CardGroup>
+
+## Install
+
+<CodeGroup>
+```bash npm
+npm install @rewritejs/rest @rewritejs/types
+```
+
+```bash pnpm
+pnpm add @rewritejs/rest @rewritejs/types
+```
+
+```bash yarn
+yarn add @rewritejs/rest @rewritejs/types
+```
+
+```bash bun
+bun add @rewritejs/rest @rewritejs/types
+```
+</CodeGroup>
+
+## Basic example
+
+```ts
+import { REST } from '@rewritejs/rest';
+import { Routes } from '@rewritejs/types';
+
+const rewrite = new REST({
+  secret: process.env.REWRITE_API_KEY,
+  timeout: 12_000,
+});
+
+const response = await rewrite.get(Routes.apiKeys.list('748395130237498368'));
+console.log(response.data);
+```
+
+## Resilience example
+
+```ts
+import { REST } from '@rewritejs/rest';
+import { Routes } from '@rewritejs/types';
+
+const rewrite = new REST({
+  secret: process.env.REWRITE_API_KEY,
+  timeout: 12_000,
+  retry: {
+    max: 5,
+    delay(attempt) {
+      return Math.min(8_000, 2 ** attempt * 250);
+    },
+  },
+  onRateLimit({ limit, retryAfter, global }) {
+    console.log({ limit, retryAfter, global });
+  },
+});
+
+await rewrite.post(Routes.messages.create(), {
+  data: {
+    to: '+15555550123',
+    text: 'Your verification code is 382991',
+  },
+  headers: {
+    'X-Idempotency-Key': 'msg_382991',
+  },
+});
+```
+
+## Best practices
+
+<Accordion title="Keep API keys server-side only">
+  Never expose Rewrite API keys in frontend bundles, mobile binaries, or public repositories.
+</Accordion>
+
+<Accordion title="Use idempotency for write operations">
+  Include idempotency keys for create/send actions to avoid accidental duplicates during retries.
+</Accordion>
+
+<Accordion title="Align routes with @rewritejs/types">
+  Pair `@rewritejs/rest` with `@rewritejs/types` to keep paths and payload contracts synchronized.
+</Accordion>
+
+<Accordion title="Add observability early">
+  Log latency, status classes, and retry counts to detect saturation and provider instability.
+</Accordion>
+
+## Related docs
+
+<CardGroup cols={2}>
+  <Card title="Types library" icon="code" href="./types" color="#C9CBD1">
+    Route builders, shared contracts, and enums used together with REST.
+  </Card>
+  <Card title="Errors and retries" icon="circle-exclamation" href="/en/api/errors" color="#C9CBD1">
+    Retry guidance, timeout strategy, and failure-handling patterns.
+  </Card>
+</CardGroup>

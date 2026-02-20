@@ -1,0 +1,90 @@
+---
+title: "Biblioteca Types"
+description: "Use @rewritejs/types para contratos compartilhados, enums e helpers de rota em integracoes Rewrite."
+icon: code
+---
+
+`@rewritejs/types` centraliza os contratos da API da Rewrite para manter consistencia entre servicos e pacotes.
+
+Repositorio: [github.com/RewriteToday/types](https://github.com/RewriteToday/types)
+
+## O que inclui
+
+<CardGroup cols={2}>
+  <Card title="Rotas" icon="signs-post" color="#C9CBD1">
+    Builders como `Routes.apiKeys.create(projectId)`.
+  </Card>
+  <Card title="Enums" icon="list" color="#C9CBD1">
+    Enums compartilhados para escopos, eventos, status e constantes de dominio.
+  </Card>
+  <Card title="Contratos de modelo" icon="brackets-curly" color="#C9CBD1">
+    Interfaces de request/response usadas em SDKs e tooling da Rewrite.
+  </Card>
+  <Card title="Tipos utilitarios" icon="wrench" color="#C9CBD1">
+    Tipos auxiliares reutilizaveis para garantias mais fortes em compilacao.
+  </Card>
+</CardGroup>
+
+## Instalacao
+
+<CodeGroup>
+```bash npm
+npm install @rewritejs/types
+```
+
+```bash pnpm
+pnpm add @rewritejs/types
+```
+
+```bash yarn
+yarn add @rewritejs/types
+```
+
+```bash bun
+bun add @rewritejs/types
+```
+</CodeGroup>
+
+## Exemplo com builders de rota
+
+```ts
+import { Routes } from '@rewritejs/types';
+
+const listRoute = Routes.apiKeys.list('748395130237498368');
+const createRoute = Routes.apiKeys.create('748395130237498368');
+
+console.log({ listRoute, createRoute });
+```
+
+## Exemplo com enums
+
+```ts
+import { APIKeyScope, WebhookEventType } from '@rewritejs/types';
+
+const scopes = [APIKeyScope.ReadTemplates, APIKeyScope.ReadWebhooks];
+const events = [WebhookEventType.SMSDelivered, WebhookEventType.SMSFailed];
+
+console.log({ scopes, events });
+```
+
+## Por que usar mesmo sem REST?
+
+- Remove strings soltas do codigo de negocio.
+- Aumenta seguranca de refatoracao em codebases grandes.
+- Deixa divergencia de rota/contrato evidente no code review.
+- Padroniza uso da API entre times e servicos.
+
+<Info>
+Usar `@rewritejs/types` junto com `@rewritejs/rest` mantem paths, enums e payloads alinhados de ponta a ponta.
+</Info>
+
+## Documentacao relacionada
+
+<CardGroup cols={2}>
+  <Card title="Biblioteca REST" icon="route" href="./rest" color="#C9CBD1">
+    Cliente de transporte de baixo nivel que combina naturalmente com contratos compartilhados.
+  </Card>
+  <Card title="Referencia da API" icon="book-open" href="/pt-br/api/introduction" color="#C9CBD1">
+    Comportamento dos endpoints e esquemas da API.
+  </Card>
+</CardGroup>

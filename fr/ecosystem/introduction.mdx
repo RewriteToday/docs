@@ -1,0 +1,89 @@
+---
+title: "Introduction"
+description: "Comprendre l'ecosysteme Rewrite et le role de chaque package dans votre architecture d'integration."
+icon: boxes-stacked
+---
+
+L'ecosysteme Rewrite est un ensemble de packages specialises qui fonctionnent ensemble.
+Vous pouvez les utiliser separement ou les combiner pour une integration typee et resiliente.
+
+## Architecture de l'ecosysteme
+
+<CardGroup cols={3}>
+  <Card title="Contrats" icon="code" color="#C9CBD1">
+    `@rewritejs/types` fournit enums, route builders et contrats de payload partages.
+  </Card>
+
+  <Card title="Transport" icon="route" color="#C9CBD1">
+    `@rewritejs/rest` apporte un controle HTTP bas niveau avec les helpers de routes Rewrite.
+  </Card>
+
+  <Card title="Couche produit" icon="package" href="/fr/sdks/introduction" color="#C9CBD1">
+    Les SDKs se construisent au-dessus pour des workflows plus haut niveau par langage.
+  </Card>
+</CardGroup>
+
+## Catalogue des packages
+
+<CardGroup cols={2}>
+  <Card title="@rewritejs/rest" icon="route" href="./rest" color="#C9CBD1">
+    Pour un controle explicite des requests, retries, timeouts, hooks et comportements personnalises.
+  </Card>
+
+  <Card title="@rewritejs/types" icon="code" href="./types" color="#C9CBD1">
+    Pour les contrats API partages, definitions de routes, enums et validations plus sures.
+  </Card>
+</CardGroup>
+
+## Quel package choisir ?
+
+<Accordion title="Je veux integrer vite avec peu de boilerplate">
+  Commencez par les SDKs officiels. Ils offrent des APIs plus haut niveau et representent souvent le chemin le plus rapide.
+</Accordion>
+
+<Accordion title="Je veux un controle total HTTP/runtime">
+  Utilisez `@rewritejs/rest`, optionnellement avec `@rewritejs/types` pour typer routes et payloads.
+</Accordion>
+
+<Accordion title="J'ai seulement besoin des contrats et des route builders">
+  Utilisez `@rewritejs/types` seul si vous avez deja votre client HTTP ou votre propre abstraction.
+</Accordion>
+
+## Principes de design
+
+<CardGroup cols={2}>
+  <Card title="Composable" icon="boxes-stacked" color="#C9CBD1">
+    Chaque package a un role clair. Adoptez uniquement ce dont votre architecture a besoin.
+  </Card>
+  <Card title="Cohérent" icon="badge-check" color="#C9CBD1">
+    Routes et modeles partages reduisent la derive entre services.
+  </Card>
+  <Card title="Pret pour production" icon="shield-check" color="#C9CBD1">
+    Pense pour retries, rate limits et securite operationnelle en charge reelle.
+  </Card>
+  <Card title="Open source" icon="github" color="#C9CBD1">
+    Depots publics avec evolution et historique de releases transparents.
+  </Card>
+</CardGroup>
+
+## Depots et references
+
+<CardGroup cols={2}>
+  <Card title="Depot REST" icon="github" href="https://github.com/RewriteToday/rest" color="#C9CBD1">
+    Code source, releases, changelog et issues de `@rewritejs/rest`.
+  </Card>
+
+  <Card title="Depot Types" icon="github" href="https://github.com/RewriteToday/types" color="#C9CBD1">
+    Code source, contrats et utilitaires de type de `@rewritejs/types`.
+  </Card>
+</CardGroup>
+
+<CardGroup cols={2}>
+  <Card title="Reference API" icon="book-open" href="/fr/api/introduction" color="#C9CBD1">
+    Endpoints, auth, limites et semantique des requetes.
+  </Card>
+
+  <Card title="Documentation SDKs" icon="code" href="/fr/sdks/introduction" color="#C9CBD1">
+    Bibliotheques haut niveau pour plusieurs langages.
+  </Card>
+</CardGroup>
