@@ -33,10 +33,10 @@ En Rewrite, la entregabilidad se trata como un ciclo continuo entre calidad de e
 5. Actualizaciones de politica de la aplicacion (supresion, reintento, escalado)
 
 Funciones relacionadas:
-- [Errores y reintentos](/es-es/api/errors)
-- [i18n](/es-es/api/i18n)
-- [Introduccion a Webhooks](/es-es/webhooks/introduction)
-- [Tipos de Eventos de Webhook](/es-es/webhooks/types)
+- [Errores y reintentos](/es/api/errors)
+- [i18n](/es/api/i18n)
+- [Introduccion a Webhooks](/es/webhooks/introduction)
+- [Tipos de Eventos de Webhook](/es/webhooks/types)
 
 ## Pilares de entregabilidad
 
@@ -71,13 +71,13 @@ Funciones relacionadas:
 
 Usa solo tipos de eventos soportados en tu monitorizacion y automatizacion:
 
-- [`sms.queued`](/es-es/webhooks/events/sms-queued)
-- [`sms.delivered`](/es-es/webhooks/events/sms-delivered)
-- [`sms.scheduled`](/es-es/webhooks/events/sms-scheduled)
-- [`sms.failed`](/es-es/webhooks/events/sms-failed)
-- [`sms.canceled`](/es-es/webhooks/events/sms-canceled)
+- [`sms.queued`](/es/webhooks/events/sms-queued)
+- [`sms.delivered`](/es/webhooks/events/sms-delivered)
+- [`sms.scheduled`](/es/webhooks/events/sms-scheduled)
+- [`sms.failed`](/es/webhooks/events/sms-failed)
+- [`sms.canceled`](/es/webhooks/events/sms-canceled)
 
-Referencia: [Tipos de Eventos de Webhook](/es-es/webhooks/types)
+Referencia: [Tipos de Eventos de Webhook](/es/webhooks/types)
 
 ## Reducir resultados negativos
 
@@ -101,7 +101,7 @@ Referencia: [Tipos de Eventos de Webhook](/es-es/webhooks/types)
     Usa dominios estables y evita acortadores de baja reputacion.
   </Card>
   <Card title="Texto localizado" icon="languages" color="#C9CBD1">
-    Usa [i18n](/es-es/api/i18n) con un mensaje de fallback robusto.
+    Usa [i18n](/es/api/i18n) con un mensaje de fallback robusto.
   </Card>
 </CardGroup>
 
@@ -121,7 +121,7 @@ Base de implementacion:
 - limite maximo de intentos
 - cola de dead-letter para inspeccion manual
 
-Implementacion de referencia: [Errores y reintentos](/es-es/api/errors)
+Implementacion de referencia: [Errores y reintentos](/es/api/errors)
 
 ## Estrategia de calentamiento de throughput
 
@@ -139,8 +139,8 @@ Implementacion de referencia: [Errores y reintentos](/es-es/api/errors)
 5. Ajusta ruta y politica para envios siguientes.
 
 Ver:
-- [Introduccion a Webhooks](/es-es/webhooks/introduction)
-- [Reintentos de Webhooks](/es-es/webhooks/retry)
+- [Introduccion a Webhooks](/es/webhooks/introduction)
+- [Reintentos de Webhooks](/es/webhooks/retry)
 
 ## Payload practico para envios listos para analitica
 
@@ -167,8 +167,8 @@ Usa `metadata` para segmentar la entregabilidad por region, caso de uso y versio
 - Valida E.164 antes de enviar.
 - Aplica reglas de consentimiento y supresion.
 - Mantén textos claros, cortos e identificados por marca.
-- Usa [i18n](/es-es/api/i18n) con fallback seguro.
-- Reintenta solo fallos transitorios mediante [Errores y reintentos](/es-es/api/errors).
+- Usa [i18n](/es/api/i18n) con fallback seguro.
+- Reintenta solo fallos transitorios mediante [Errores y reintentos](/es/api/errors).
 - Monitorea resultados por region/proveedor/caso de uso.
 - Auto-suprime destinos con fallos permanentes.
 - Revisa semanalmente la taxonomia de fallos y ajusta politicas.

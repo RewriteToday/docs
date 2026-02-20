@@ -21,9 +21,7 @@
 	"paths": {
 		"/projects/{id}": {
 			"patch": {
-				"tags": [
-					"Projects"
-				],
+				"tags": ["Projects"],
 				"operationId": "updateProject",
 				"summary": "Actualizar proyecto",
 				"security": [
@@ -137,9 +135,7 @@
 				]
 			},
 			"delete": {
-				"tags": [
-					"Projects"
-				],
+				"tags": ["Projects"],
 				"operationId": "deleteProject",
 				"summary": "Eliminar proyecto",
 				"security": [
@@ -257,10 +253,7 @@
 			"OkEmptyResponse": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"ok",
-					"data"
-				],
+				"required": ["ok", "data"],
 				"properties": {
 					"ok": {
 						"type": "boolean",

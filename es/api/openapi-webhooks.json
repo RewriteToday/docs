@@ -21,9 +21,7 @@
 	"paths": {
 		"/projects/{id}/webhooks": {
 			"get": {
-				"tags": [
-					"Webhooks"
-				],
+				"tags": ["Webhooks"],
 				"operationId": "listProjectWebhooks",
 				"summary": "Listar webhooks",
 				"security": [
@@ -145,9 +143,7 @@
 				]
 			},
 			"post": {
-				"tags": [
-					"Webhooks"
-				],
+				"tags": ["Webhooks"],
 				"operationId": "createProjectWebhook",
 				"summary": "Crear webhook",
 				"security": [
@@ -180,11 +176,7 @@
 									"value": {
 										"name": "Delivery events",
 										"endpoint": "https://example.com/webhooks/rewrite",
-										"events": [
-											"sms.queued",
-											"sms.delivered",
-											"sms.failed"
-										]
+										"events": ["sms.queued", "sms.delivered", "sms.failed"]
 									}
 								}
 							}
@@ -271,9 +263,7 @@
 		},
 		"/projects/{id}/webhooks/{webhookId}": {
 			"get": {
-				"tags": [
-					"Webhooks"
-				],
+				"tags": ["Webhooks"],
 				"operationId": "getProjectWebhook",
 				"summary": "Obtener webhook",
 				"security": [
@@ -320,11 +310,7 @@
 												"id": "748395130237498700",
 												"name": "Delivery events",
 												"endpoint": "https://example.com/webhooks/rewrite",
-												"events": [
-													"sms.queued",
-													"sms.delivered",
-													"sms.failed"
-												],
+												"events": ["sms.queued", "sms.delivered", "sms.failed"],
 												"status": "ACTIVE",
 												"createdAt": "2026-02-19T16:05:00.000Z"
 											}
@@ -390,9 +376,7 @@
 				]
 			},
 			"patch": {
-				"tags": [
-					"Webhooks"
-				],
+				"tags": ["Webhooks"],
 				"operationId": "updateProjectWebhook",
 				"summary": "Actualizar webhook",
 				"security": [
@@ -434,10 +418,7 @@
 									"summary": "Ejemplo de solicitud",
 									"value": {
 										"endpoint": "https://example.com/webhooks/rewrite-v2",
-										"events": [
-											"sms.delivered",
-											"sms.failed"
-										],
+										"events": ["sms.delivered", "sms.failed"],
 										"status": "ACTIVE"
 									}
 								}
@@ -521,9 +502,7 @@
 				]
 			},
 			"delete": {
-				"tags": [
-					"Webhooks"
-				],
+				"tags": ["Webhooks"],
 				"operationId": "deleteProjectWebhook",
 				"summary": "Eliminar webhook",
 				"security": [
@@ -684,9 +663,7 @@
 			"Cursor": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"persist"
-				],
+				"required": ["persist"],
 				"properties": {
 					"persist": {
 						"type": "boolean",
@@ -706,10 +683,7 @@
 			"OkEmptyResponse": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"ok",
-					"data"
-				],
+				"required": ["ok", "data"],
 				"properties": {
 					"ok": {
 						"type": "boolean",
@@ -741,33 +715,21 @@
 			},
 			"WebhookStatus": {
 				"type": "string",
-				"enum": [
-					"ACTIVE",
-					"INACTIVE"
-				],
+				"enum": ["ACTIVE", "INACTIVE"],
 				"description": "Estado de entrega del webhook.",
 				"example": "ACTIVE"
 			},
 			"Webhook": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"id",
-					"endpoint",
-					"events",
-					"status",
-					"createdAt"
-				],
+				"required": ["id", "endpoint", "events", "status", "createdAt"],
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/Snowflake",
 						"description": "ID unico de webhook."
 					},
 					"name": {
-						"type": [
-							"string",
-							"null"
-						],
+						"type": ["string", "null"],
 						"description": "campo name."
 					},
 					"endpoint": {
@@ -797,11 +759,7 @@
 					"id": "748395130237498700",
 					"name": "Delivery events",
 					"endpoint": "https://example.com/webhooks/rewrite",
-					"events": [
-						"sms.queued",
-						"sms.delivered",
-						"sms.failed"
-					],
+					"events": ["sms.queued", "sms.delivered", "sms.failed"],
 					"status": "ACTIVE",
 					"createdAt": "2026-02-19T16:05:00.000Z"
 				}
@@ -809,11 +767,7 @@
 			"WebhooksListResponse": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"ok",
-					"data",
-					"cursor"
-				],
+				"required": ["ok", "data", "cursor"],
 				"properties": {
 					"ok": {
 						"type": "boolean",
@@ -839,11 +793,7 @@
 							"id": "748395130237498700",
 							"name": "Delivery events",
 							"endpoint": "https://example.com/webhooks/rewrite",
-							"events": [
-								"sms.queued",
-								"sms.delivered",
-								"sms.failed"
-							],
+							"events": ["sms.queued", "sms.delivered", "sms.failed"],
 							"status": "ACTIVE",
 							"createdAt": "2026-02-19T16:05:00.000Z"
 						}
@@ -858,10 +808,7 @@
 			"WebhookResponse": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"ok",
-					"data"
-				],
+				"required": ["ok", "data"],
 				"properties": {
 					"ok": {
 						"type": "boolean",
@@ -879,11 +826,7 @@
 						"id": "748395130237498700",
 						"name": "Delivery events",
 						"endpoint": "https://example.com/webhooks/rewrite",
-						"events": [
-							"sms.queued",
-							"sms.delivered",
-							"sms.failed"
-						],
+						"events": ["sms.queued", "sms.delivered", "sms.failed"],
 						"status": "ACTIVE",
 						"createdAt": "2026-02-19T16:05:00.000Z"
 					}
@@ -893,10 +836,7 @@
 			"WebhookCreateBody": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"events",
-					"endpoint"
-				],
+				"required": ["events", "endpoint"],
 				"properties": {
 					"name": {
 						"type": "string",
@@ -924,11 +864,7 @@
 				"example": {
 					"name": "Delivery events",
 					"endpoint": "https://example.com/webhooks/rewrite",
-					"events": [
-						"sms.queued",
-						"sms.delivered",
-						"sms.failed"
-					]
+					"events": ["sms.queued", "sms.delivered", "sms.failed"]
 				}
 			},
 			"WebhookUpdateBody": {
@@ -971,20 +907,14 @@
 				"description": "Actualiza endpoint webhook, eventos suscritos, nombre o estado.",
 				"example": {
 					"endpoint": "https://example.com/webhooks/rewrite-v2",
-					"events": [
-						"sms.delivered",
-						"sms.failed"
-					],
+					"events": ["sms.delivered", "sms.failed"],
 					"status": "ACTIVE"
 				}
 			},
 			"WebhookCreateResponse": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"ok",
-					"data"
-				],
+				"required": ["ok", "data"],
 				"properties": {
 					"ok": {
 						"type": "boolean",
@@ -993,9 +923,7 @@
 					},
 					"data": {
 						"type": "object",
-						"required": [
-							"id"
-						],
+						"required": ["id"],
 						"properties": {
 							"id": {
 								"$ref": "#/components/schemas/Snowflake"

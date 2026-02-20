@@ -75,9 +75,7 @@
 				"tabs": [
 					{
 						"tab": "Welcome",
-						"pages": [
-							"en/welcome"
-						]
+						"pages": ["en/welcome"]
 					},
 					{
 						"tab": "API",
@@ -114,83 +112,59 @@
 					},
 					{
 						"tab": "CLI",
-						"pages": [
-							"en/cli/introduction",
-							"en/cli/auth",
-							"en/cli/config"
-						]
+						"pages": ["en/cli/introduction", "en/cli/auth", "en/cli/config"]
 					},
 					{
 						"tab": "SDKs",
 						"groups": [
 							{
 								"group": "Overview",
-								"pages": [
-									"en/sdks/introduction"
-								]
+								"pages": ["en/sdks/introduction"]
 							},
 							{
 								"group": "Node.js",
 								"icon": "node-js",
-								"pages": [
-									"en/sdks/node"
-								]
+								"pages": ["en/sdks/node"]
 							},
 							{
 								"group": "Go",
 								"icon": "golang",
-								"pages": [
-									"en/sdks/golang"
-								]
+								"pages": ["en/sdks/golang"]
 							},
 							{
 								"group": "Python",
 								"icon": "python",
-								"pages": [
-									"en/sdks/python"
-								]
+								"pages": ["en/sdks/python"]
 							},
 							{
 								"group": "Java",
 								"icon": "java",
-								"pages": [
-									"en/sdks/java"
-								]
+								"pages": ["en/sdks/java"]
 							},
 							{
 								"group": "PHP",
 								"icon": "php",
-								"pages": [
-									"en/sdks/php"
-								]
+								"pages": ["en/sdks/php"]
 							},
 							{
 								"group": "Ruby",
 								"icon": "gem",
-								"pages": [
-									"en/sdks/ruby"
-								]
+								"pages": ["en/sdks/ruby"]
 							},
 							{
 								"group": "Kotlin",
 								"icon": "android",
-								"pages": [
-									"en/sdks/kotlin"
-								]
+								"pages": ["en/sdks/kotlin"]
 							},
 							{
 								"group": "Swift",
 								"icon": "apple",
-								"pages": [
-									"en/sdks/swift"
-								]
+								"pages": ["en/sdks/swift"]
 							},
 							{
 								"group": "C#",
 								"icon": "code",
-								"pages": [
-									"en/sdks/csharp"
-								]
+								"pages": ["en/sdks/csharp"]
 							}
 						]
 					},
@@ -222,9 +196,7 @@
 						"groups": [
 							{
 								"group": "Overview",
-								"pages": [
-									"en/serveless/introduction"
-								]
+								"pages": ["en/serveless/introduction"]
 							},
 							{
 								"group": "Platforms",
@@ -243,9 +215,7 @@
 				"tabs": [
 					{
 						"tab": "Bem-vindo",
-						"pages": [
-							"pt-br/welcome"
-						]
+						"pages": ["pt-br/welcome"]
 					},
 					{
 						"tab": "API",
@@ -293,72 +263,52 @@
 						"groups": [
 							{
 								"group": "Visao geral",
-								"pages": [
-									"pt-br/sdks/introduction"
-								]
+								"pages": ["pt-br/sdks/introduction"]
 							},
 							{
 								"group": "Node.js",
 								"icon": "node-js",
-								"pages": [
-									"pt-br/sdks/node"
-								]
+								"pages": ["pt-br/sdks/node"]
 							},
 							{
 								"group": "Go",
 								"icon": "golang",
-								"pages": [
-									"pt-br/sdks/golang"
-								]
+								"pages": ["pt-br/sdks/golang"]
 							},
 							{
 								"group": "Python",
 								"icon": "python",
-								"pages": [
-									"pt-br/sdks/python"
-								]
+								"pages": ["pt-br/sdks/python"]
 							},
 							{
 								"group": "Java",
 								"icon": "java",
-								"pages": [
-									"pt-br/sdks/java"
-								]
+								"pages": ["pt-br/sdks/java"]
 							},
 							{
 								"group": "PHP",
 								"icon": "php",
-								"pages": [
-									"pt-br/sdks/php"
-								]
+								"pages": ["pt-br/sdks/php"]
 							},
 							{
 								"group": "Ruby",
 								"icon": "gem",
-								"pages": [
-									"pt-br/sdks/ruby"
-								]
+								"pages": ["pt-br/sdks/ruby"]
 							},
 							{
 								"group": "Kotlin",
 								"icon": "android",
-								"pages": [
-									"pt-br/sdks/kotlin"
-								]
+								"pages": ["pt-br/sdks/kotlin"]
 							},
 							{
 								"group": "Swift",
 								"icon": "apple",
-								"pages": [
-									"pt-br/sdks/swift"
-								]
+								"pages": ["pt-br/sdks/swift"]
 							},
 							{
 								"group": "C#",
 								"icon": "code",
-								"pages": [
-									"pt-br/sdks/csharp"
-								]
+								"pages": ["pt-br/sdks/csharp"]
 							}
 						]
 					},
@@ -390,9 +340,7 @@
 						"groups": [
 							{
 								"group": "Visao geral",
-								"pages": [
-									"pt-br/serveless/introduction"
-								]
+								"pages": ["pt-br/serveless/introduction"]
 							},
 							{
 								"group": "Plataformas",
@@ -407,13 +355,11 @@
 				]
 			},
 			{
-				"language": "es-ES",
+				"language": "es",
 				"tabs": [
 					{
 						"tab": "Bienvenida",
-						"pages": [
-							"es-es/welcome"
-						]
+						"pages": ["es/welcome"]
 					},
 					{
 						"tab": "API",
@@ -421,39 +367,39 @@
 							{
 								"group": "Referencia",
 								"pages": [
-									"es-es/api/introduction",
-									"es-es/api/quickstart",
-									"es-es/api/limits",
-									"es-es/api/pagination",
-									"es-es/api/i18n",
-									"es-es/api/deliverability",
-									"es-es/api/errors"
+									"es/api/introduction",
+									"es/api/quickstart",
+									"es/api/limits",
+									"es/api/pagination",
+									"es/api/i18n",
+									"es/api/deliverability",
+									"es/api/errors"
 								]
 							},
 							{
 								"group": "Proyectos",
-								"openapi": "es-es/api/openapi-projects.json"
+								"openapi": "es/api/openapi-projects.json"
 							},
 							{
 								"group": "Claves API",
-								"openapi": "es-es/api/openapi-api-keys.json"
+								"openapi": "es/api/openapi-api-keys.json"
 							},
 							{
 								"group": "Plantillas",
-								"openapi": "es-es/api/openapi-templates.json"
+								"openapi": "es/api/openapi-templates.json"
 							},
 							{
 								"group": "Webhooks",
-								"openapi": "es-es/api/openapi-webhooks.json"
+								"openapi": "es/api/openapi-webhooks.json"
 							}
 						]
 					},
 					{
 						"tab": "CLI",
 						"pages": [
-							"es-es/cli/introduction",
-							"es-es/cli/auth",
-							"es-es/cli/config"
+							"es/cli/introduction",
+							"es/cli/auth",
+							"es/cli/config"
 						]
 					},
 					{
@@ -461,72 +407,52 @@
 						"groups": [
 							{
 								"group": "Visión general",
-								"pages": [
-									"es-es/sdks/introduction"
-								]
+								"pages": ["es/sdks/introduction"]
 							},
 							{
 								"group": "Node.js",
 								"icon": "node-js",
-								"pages": [
-									"es-es/sdks/node"
-								]
+								"pages": ["es/sdks/node"]
 							},
 							{
 								"group": "Go",
 								"icon": "golang",
-								"pages": [
-									"es-es/sdks/golang"
-								]
+								"pages": ["es/sdks/golang"]
 							},
 							{
 								"group": "Python",
 								"icon": "python",
-								"pages": [
-									"es-es/sdks/python"
-								]
+								"pages": ["es/sdks/python"]
 							},
 							{
 								"group": "Java",
 								"icon": "java",
-								"pages": [
-									"es-es/sdks/java"
-								]
+								"pages": ["es/sdks/java"]
 							},
 							{
 								"group": "PHP",
 								"icon": "php",
-								"pages": [
-									"es-es/sdks/php"
-								]
+								"pages": ["es/sdks/php"]
 							},
 							{
 								"group": "Ruby",
 								"icon": "gem",
-								"pages": [
-									"es-es/sdks/ruby"
-								]
+								"pages": ["es/sdks/ruby"]
 							},
 							{
 								"group": "Kotlin",
 								"icon": "android",
-								"pages": [
-									"es-es/sdks/kotlin"
-								]
+								"pages": ["es/sdks/kotlin"]
 							},
 							{
 								"group": "Swift",
 								"icon": "apple",
-								"pages": [
-									"es-es/sdks/swift"
-								]
+								"pages": ["es/sdks/swift"]
 							},
 							{
 								"group": "C#",
 								"icon": "code",
-								"pages": [
-									"es-es/sdks/csharp"
-								]
+								"pages": ["es/sdks/csharp"]
 							}
 						]
 					},
@@ -536,19 +462,19 @@
 							{
 								"group": "Referencia",
 								"pages": [
-									"es-es/webhooks/introduction",
-									"es-es/webhooks/retry",
-									"es-es/webhooks/types"
+									"es/webhooks/introduction",
+									"es/webhooks/retry",
+									"es/webhooks/types"
 								]
 							},
 							{
 								"group": "Eventos",
 								"pages": [
-									"es-es/webhooks/events/sms-queued",
-									"es-es/webhooks/events/sms-delivered",
-									"es-es/webhooks/events/sms-scheduled",
-									"es-es/webhooks/events/sms-failed",
-									"es-es/webhooks/events/sms-canceled"
+									"es/webhooks/events/sms-queued",
+									"es/webhooks/events/sms-delivered",
+									"es/webhooks/events/sms-scheduled",
+									"es/webhooks/events/sms-failed",
+									"es/webhooks/events/sms-canceled"
 								]
 							}
 						]
@@ -558,16 +484,14 @@
 						"groups": [
 							{
 								"group": "Visión general",
-								"pages": [
-									"es-es/serveless/introduction"
-								]
+								"pages": ["es/serveless/introduction"]
 							},
 							{
 								"group": "Plataformas",
 								"pages": [
-									"es-es/serveless/vercel-functions",
-									"es-es/serveless/cloudflare-workers",
-									"es-es/serveless/supabase-edge-functions"
+									"es/serveless/vercel-functions",
+									"es/serveless/cloudflare-workers",
+									"es/serveless/supabase-edge-functions"
 								]
 							}
 						]
