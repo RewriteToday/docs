@@ -56,14 +56,14 @@ bun add @rewritejs/rest @rewritejs/types
 
 ```ts
 import { REST } from '@rewritejs/rest';
-import { Routes } from '@rewritejs/types';
+import { Routes, type RESTGetListAPIKeysData } from '@rewritejs/types';
 
 const rewrite = new REST({
   secret: process.env.REWRITE_API_KEY,
   timeout: 12_000,
 });
 
-const response = await rewrite.get(Routes.apiKeys.list('748395130237498368'));
+const response = await rewrite.get<RESTGetListAPIKeysData>(Routes.apiKeys.list('748395130237498368'));
 console.log(response.data);
 ```
 
