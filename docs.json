@@ -93,12 +93,6 @@
 								]
 							},
 							{
-								"group": "Projects",
-								"openapi": "en/api/openapi-projects.json",
-								"playground": "simple",
-								"pages": ["PATCH /projects/{id}", "DELETE /projects/{id}"]
-							},
-							{
 								"group": "API Keys",
 								"openapi": "en/api/openapi-api-keys.json",
 								"playground": "simple",
@@ -281,12 +275,6 @@
 									"pt-br/api/deliverability",
 									"pt-br/api/errors"
 								]
-							},
-							{
-								"group": "Projetos",
-								"openapi": "en/api/openapi-projects.json",
-								"playground": "simple",
-								"pages": ["PATCH /projects/{id}", "DELETE /projects/{id}"]
 							},
 							{
 								"group": "API Keys",
@@ -477,12 +465,6 @@
 								]
 							},
 							{
-								"group": "Proyectos",
-								"openapi": "es/api/openapi-projects.json",
-								"playground": "simple",
-								"pages": ["PATCH /projects/{id}", "DELETE /projects/{id}"]
-							},
-							{
 								"group": "Claves API",
 								"openapi": "es/api/openapi-api-keys.json",
 								"playground": "simple",
@@ -665,12 +647,6 @@
 									"fr/api/deliverability",
 									"fr/api/errors"
 								]
-							},
-							{
-								"group": "Projets",
-								"openapi": "fr/api/openapi-projects.json",
-								"playground": "simple",
-								"pages": ["PATCH /projects/{id}", "DELETE /projects/{id}"]
 							},
 							{
 								"group": "Clés API",
