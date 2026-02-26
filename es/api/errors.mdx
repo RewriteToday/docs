@@ -22,11 +22,11 @@ La mayoria de respuestas no-2xx siguen este formato:
 ```json
 {
   "ok": false,
-  "code": "INVALID_JSON_BODY",
-  "message": "Cuerpo JSON invalido.",
-  "errors": {
+  "error": {
+    "code": "INVALID_JSON_BODY",
+    "message": "Cuerpo JSON invalido.",
     "detailed": {
-    	...
+      ...
     }
   }
 }

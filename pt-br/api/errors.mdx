@@ -22,11 +22,11 @@ A maioria das respostas nao-2xx segue este formato:
 ```json
 {
   "ok": false,
-  "code": "INVALID_JSON_BODY",
-  "message": "Invalid JSON body.",
-  "errors": {
+  "error": {
+    "code": "INVALID_JSON_BODY",
+    "message": "Invalid JSON body.",
     "detailed": {
-    	...
+      ...
     }
   }
 }

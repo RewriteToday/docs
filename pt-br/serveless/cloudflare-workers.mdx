@@ -34,8 +34,10 @@ export default {
       return Response.json(
         {
           ok: false,
-          code: 'METHOD_NOT_ALLOWED',
-          message: 'Metodo nao permitido.',
+          error: {
+            code: 'METHOD_NOT_ALLOWED',
+            message: 'Metodo nao permitido.'
+          }
         },
         { status: 405 }
       );
@@ -49,8 +51,10 @@ export default {
       return Response.json(
         {
           ok: false,
-          code: 'INVALID_REQUEST',
-          message: '`to` e `message` sao obrigatorios.',
+          error: {
+            code: 'INVALID_REQUEST',
+            message: '`to` e `message` sao obrigatorios.'
+          }
         },
         { status: 400 }
       );
@@ -66,9 +70,11 @@ export default {
       return Response.json(
         {
           ok: false,
-          code: 'SMS_SEND_FAILED',
-          message: 'Falha ao enviar SMS.',
-          errors: error,
+          error: {
+            code: 'SMS_SEND_FAILED',
+            message: 'Falha ao enviar SMS.',
+            detailed: error,
+          }
         },
         { status: 422 }
       );

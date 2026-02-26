@@ -29,8 +29,10 @@ Deno.serve(async (request) => {
     return Response.json(
       {
         ok: false,
-        code: 'METHOD_NOT_ALLOWED',
-        message: 'Método no permitido.',
+        error: {
+          code: 'METHOD_NOT_ALLOWED',
+          message: 'Método no permitido.'
+        }
       },
       { status: 405 }
     );
@@ -44,8 +46,10 @@ Deno.serve(async (request) => {
     return Response.json(
       {
         ok: false,
-        code: 'INVALID_REQUEST',
-        message: '`to` y `message` son obligatorios.',
+        error: {
+          code: 'INVALID_REQUEST',
+          message: '`to` y `message` son obligatorios.'
+        }
       },
       { status: 400 }
     );
@@ -61,9 +65,11 @@ Deno.serve(async (request) => {
     return Response.json(
       {
         ok: false,
-        code: 'SMS_SEND_FAILED',
-        message: 'No se pudo enviar el SMS.',
-        errors: error,
+        error: {
+          code: 'SMS_SEND_FAILED',
+          message: 'No se pudo enviar el SMS.',
+          detailed: error,
+        }
       },
       { status: 422 }
     );

@@ -37,9 +37,11 @@ export async function POST() {
     return Response.json(
       {
         ok: false,
-        code: 'SMS_SEND_FAILED',
-        message: 'No se pudo enviar el SMS.',
-        errors: error,
+        error: {
+          code: 'SMS_SEND_FAILED',
+          message: 'No se pudo enviar el SMS.',
+          detailed: error,
+        }
       },
       { status: 422 }
     );

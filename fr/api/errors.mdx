@@ -22,11 +22,11 @@ La plupart des réponses non 2xx suivent ce format :
 ```json
 {
   "ok": false,
-  "code": "INVALID_JSON_BODY",
-  "message": "Corps JSON invalide.",
-  "errors": {
+  "error": {
+    "code": "INVALID_JSON_BODY",
+    "message": "Corps JSON invalide.",
     "detailed": {
-    	...
+      ...
     }
   }
 }
