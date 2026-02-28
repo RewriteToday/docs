@@ -17,8 +17,9 @@ Toutes les réponses de liste paginées suivent ce format :
   "ok": true,
   "data": [],
   "cursor": {
-    "persist": false,
-    "next": null
+    "persist": true,
+    "next": "748395130237498399",
+    "prev": "748395130237498420"
   }
 }
 ```
@@ -27,6 +28,7 @@ Toutes les réponses de liste paginées suivent ce format :
 
 `persist`: Indique si d'autres résultats existent. Équivalent à un indicateur `has_more`.<br/>
 `next`: Curseur suivant à utiliser pour la requête suivante. Lorsqu'il est présent, c'est un ID encodé sous forme de chaîne.
+`prev`: Curseur de la page précédente. Lorsqu'il est présent, il est aussi encodé sous forme de chaîne.
 
 \- Traitez `cursor.next` comme une valeur opaque. Ne l'analysez pas et ne le générez pas côté client.
 ## Paramètres de requête
@@ -96,12 +98,12 @@ Pour paginer vers l'avant dans les résultats (éléments plus récents vers plu
     ```
     
     ```bash cURL
-    curl -X GET 'https://api.userewrite.me/v1/webhooks?limit=25&after=9213923891293040' \
+    curl -X GET 'https://api.rewritetoday.com/v1/webhooks?limit=25&after=9213923891293040' \
          -H 'Authorization: Bearer rw_abcxyz'
     ```
     
     ```bash HTTPie
-    http GET 'https://api.userewrite.me/v1/webhooks?limit=25&after=9213923891293040' \
+    http GET 'https://api.rewritetoday.com/v1/webhooks?limit=25&after=9213923891293040' \
          'Authorization: Bearer rw_abcxyz'
     ```
 </CodeGroup>
@@ -167,12 +169,12 @@ Pour paginer vers l'arrière dans les résultats (éléments plus anciens vers p
     ```
     
     ```bash cURL
-    curl -X GET 'https://api.userewrite.me/v1/webhooks?limit=25&before=9213923891293040' \
+    curl -X GET 'https://api.rewritetoday.com/v1/webhooks?limit=25&before=9213923891293040' \
          -H 'Authorization: Bearer rw_abcxyz'
     ```
     
     ```bash HTTPie
-    http GET 'https://api.userewrite.me/v1/webhooks?limit=25&before=9213923891293040' \
+    http GET 'https://api.rewritetoday.com/v1/webhooks?limit=25&before=9213923891293040' \
          'Authorization: Bearer rw_abcxyz'
     ```
 </CodeGroup>

@@ -17,8 +17,9 @@ Todas as respostas paginadas seguem este formato:
   "ok": true,
   "data": [],
   "cursor": {
-    "persist": false,
-    "next": null
+    "persist": true,
+    "next": "748395130237498399",
+    "prev": "748395130237498420"
   }
 }
 ```
@@ -27,6 +28,7 @@ Todas as respostas paginadas seguem este formato:
 
 `persist`: Indica se existem mais resultados. Equivale ao `has_more`.<br/>
 `next`: Cursor da proxima requisicao. Quando presente, e um ID codificado como string.
+`prev`: Cursor da pagina anterior. Quando presente, tambem e codificado como string.
 
 \- Trate `cursor.next` como valor opaco. Nao tente parsear ou gerar no client.
 
@@ -97,12 +99,12 @@ Para paginar para frente (itens mais novos para mais antigos), use `after`.
     ```
     
     ```bash cURL
-    curl -X GET 'https://api.userewrite.me/v1/webhooks?limit=25&after=9213923891293040' \
+    curl -X GET 'https://api.rewritetoday.com/v1/webhooks?limit=25&after=9213923891293040' \
          -H 'Authorization: Bearer rw_abcxyz'
     ```
     
     ```bash HTTPie
-    http GET 'https://api.userewrite.me/v1/webhooks?limit=25&after=9213923891293040' \
+    http GET 'https://api.rewritetoday.com/v1/webhooks?limit=25&after=9213923891293040' \
          'Authorization: Bearer rw_abcxyz'
     ```
 </CodeGroup>
@@ -168,12 +170,12 @@ Para paginar para tras (itens mais antigos para mais novos), use `before`.
     ```
     
     ```bash cURL
-    curl -X GET 'https://api.userewrite.me/v1/webhooks?limit=25&before=9213923891293040' \
+    curl -X GET 'https://api.rewritetoday.com/v1/webhooks?limit=25&before=9213923891293040' \
          -H 'Authorization: Bearer rw_abcxyz'
     ```
     
     ```bash HTTPie
-    http GET 'https://api.userewrite.me/v1/webhooks?limit=25&before=9213923891293040' \
+    http GET 'https://api.rewritetoday.com/v1/webhooks?limit=25&before=9213923891293040' \
          'Authorization: Bearer rw_abcxyz'
     ```
 </CodeGroup>

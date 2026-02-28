@@ -76,14 +76,17 @@ export function SmsRequestPlayground() {
       }'
     ```
 
-    Uma requisicao bem-sucedida retorna um objeto de SMS criado semelhante a:
+    Uma requisicao bem-sucedida retorna um envelope de resposta semelhante a:
 
     ```json
     {
-      "id": "733501234567890123",
-      "to": "+5511999999999",
-      "message": "Seu codigo OTP e 123456",
-      "status": "QUEUED"
+      "ok": true,
+      "data": {
+        "id": "733501234567890123",
+        "to": "+5511999999999",
+        "message": "Seu codigo OTP e 123456",
+        "status": "QUEUED"
+      }
     }
     ```
   </Step>

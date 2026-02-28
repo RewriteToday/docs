@@ -84,8 +84,7 @@
 												}
 											],
 											"cursor": {
-												"persist": false,
-												"next": null
+												"persist": false
 											}
 										}
 									}
@@ -1041,8 +1040,7 @@
 												}
 											],
 											"cursor": {
-												"persist": false,
-												"next": null
+												"persist": false
 											}
 										}
 									}
@@ -1749,8 +1747,7 @@
 						}
 					],
 					"cursor": {
-						"persist": false,
-						"next": null
+						"persist": false
 					}
 				},
 				"description": "Esquema APIKeysListResponse."
@@ -2180,8 +2177,7 @@
 						}
 					],
 					"cursor": {
-						"persist": false,
-						"next": null
+						"persist": false
 					}
 				},
 				"description": "Esquema WebhooksListResponse."

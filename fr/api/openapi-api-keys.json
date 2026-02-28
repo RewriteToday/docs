@@ -72,8 +72,7 @@
 												}
 											],
 											"cursor": {
-												"persist": false,
-												"next": null
+												"persist": false
 											}
 										}
 									}
@@ -531,8 +530,7 @@
 						}
 					],
 					"cursor": {
-						"persist": false,
-						"next": null
+						"persist": false
 					}
 				},
 				"description": "Schéma `APIKeysListResponse`."

@@ -76,14 +76,17 @@ export function SmsRequestPlayground() {
       }'
     ```
 
-    Une requête réussie renvoie un objet SMS créé, similaire à :
+    Une requête réussie renvoie une enveloppe de réponse, similaire à :
 
     ```json
     {
-      "id": "733501234567890123",
-      "to": "+15551234567",
-      "message": "Votre code OTP est 123456",
-      "status": "QUEUED"
+      "ok": true,
+      "data": {
+        "id": "733501234567890123",
+        "to": "+15551234567",
+        "message": "Votre code OTP est 123456",
+        "status": "QUEUED"
+      }
     }
     ```
   </Step>
