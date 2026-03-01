@@ -71,6 +71,16 @@ body {
 	color: var(--rm-text);
 }
 
+::selection {
+	background: rgba(154, 154, 154, 0.35);
+	color: var(--rm-text-strong);
+}
+
+::-moz-selection {
+	background: rgba(154, 154, 154, 0.35);
+	color: var(--rm-text-strong);
+}
+
 /* Icon container (tenta pegar qualquer wrapper próximo do svg) */
 [data-selector="card"] svg {
 	padding: 8px;
