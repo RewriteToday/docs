@@ -231,7 +231,7 @@ Store your webhook secret in `REWRITE_WEBHOOK_SECRET`, pass the raw body before 
 
 ## Best practices (do this early)
 
-<CardGroup cols={2}> <Card title="Verify signatures" icon="shield" color="#C9CBD1"> Always validate the webhook signature to ensure the event was sent by Rewrite. </Card> <Card title="Ack fast, process async" icon="bolt" color="#C9CBD1"> Return HTTP 200 quickly and process work in a queue/job to avoid timeouts. </Card> <Card title="Be idempotent" icon="repeat" color="#C9CBD1"> Webhooks may be retried. Use event IDs to ignore duplicates safely. </Card> <Card title="Persist raw payloads" icon="database" color="#C9CBD1"> Store events for audit/debugging and to rebuild state if needed. </Card> </CardGroup> <Warning> If your endpoint returns a non-2xx response or times out, Rewrite may retry delivery. Design your handler to be **idempotent**. </Warning>
+<CardGroup cols={2}> <Card title="Verify signatures" icon="shield-check" color="#C9CBD1"> Always validate the webhook signature to ensure the event was sent by Rewrite. </Card> <Card title="Ack fast, process async" icon="bolt" color="#C9CBD1"> Return HTTP 200 quickly and process work in a queue/job to avoid timeouts. </Card> <Card title="Be idempotent" icon="repeat" color="#C9CBD1"> Webhooks may be retried. Use event IDs to ignore duplicates safely. </Card> <Card title="Persist raw payloads" icon="database" color="#C9CBD1"> Store events for audit/debugging and to rebuild state if needed. </Card> </CardGroup> <Warning> If your endpoint returns a non-2xx response or times out, Rewrite may retry delivery. Design your handler to be **idempotent**. </Warning>
 
 ## What’s next?
 

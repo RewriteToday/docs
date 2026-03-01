@@ -231,7 +231,7 @@ Guarde seu segredo de webhook em `REWRITE_WEBHOOK_SECRET`, passe o raw body ante
 
 ## Boas praticas (faca cedo)
 
-<CardGroup cols={2}> <Card title="Validar assinaturas" icon="shield" color="#C9CBD1"> Sempre valide a assinatura do webhook para garantir que o evento foi enviado pela Rewrite. </Card> <Card title="Ack rapido, processo async" icon="bolt" color="#C9CBD1"> Retorne HTTP 200 rapidamente e processe em fila/job para evitar timeout. </Card> <Card title="Seja idempotente" icon="repeat" color="#C9CBD1"> Webhooks podem ser reenviados. Use IDs de evento para ignorar duplicidades. </Card> <Card title="Persista payload bruto" icon="database" color="#C9CBD1"> Armazene eventos para auditoria/debug e reconstrucao de estado. </Card> </CardGroup> <Warning> Se seu endpoint retornar nao-2xx ou timeout, a Rewrite pode tentar novamente. Projete seu handler para ser **idempotente**. </Warning>
+<CardGroup cols={2}> <Card title="Validar assinaturas" icon="shield-check" color="#C9CBD1"> Sempre valide a assinatura do webhook para garantir que o evento foi enviado pela Rewrite. </Card> <Card title="Ack rapido, processo async" icon="bolt" color="#C9CBD1"> Retorne HTTP 200 rapidamente e processe em fila/job para evitar timeout. </Card> <Card title="Seja idempotente" icon="repeat" color="#C9CBD1"> Webhooks podem ser reenviados. Use IDs de evento para ignorar duplicidades. </Card> <Card title="Persista payload bruto" icon="database" color="#C9CBD1"> Armazene eventos para auditoria/debug e reconstrucao de estado. </Card> </CardGroup> <Warning> Se seu endpoint retornar nao-2xx ou timeout, a Rewrite pode tentar novamente. Projete seu handler para ser **idempotente**. </Warning>
 
 ## Proximos passos
 

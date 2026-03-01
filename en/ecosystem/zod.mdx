@@ -1,0 +1,110 @@
+---
+title: "Zod Library"
+description: "Use @rewritejs/zod for official, versioned Zod schemas for runtime validation across Rewrite integrations."
+icon: shield-check
+---
+
+`@rewritejs/zod` provides official Zod schemas for the Rewrite API so you can validate requests, responses, reusable resources, and webhook payloads at runtime.
+
+Repository: [github.com/RewriteToday/zod](https://github.com/RewriteToday/zod)
+
+## When to use it
+
+- You want runtime validation in addition to TypeScript types.
+- You receive external input before calling Rewrite endpoints.
+- You need to validate webhook payloads before handling them.
+- You want versioned schemas that stay aligned with Rewrite API models.
+
+## Key capabilities
+
+<CardGroup cols={2}>
+  <Card title="Versioned schemas" icon="tag" color="#C9CBD1">
+    Import schemas from namespaces such as `@rewritejs/zod/v1`.
+  </Card>
+  <Card title="REST contracts" icon="route" color="#C9CBD1">
+    Validate endpoint-specific bodies and responses with `REST<Method>*` schemas.
+  </Card>
+  <Card title="Reusable API models" icon="boxes-stacked" color="#C9CBD1">
+    Parse shared `API*` resources independently from a single endpoint.
+  </Card>
+  <Card title="Webhook safety" icon="shield-check" color="#C9CBD1">
+    Use `WebhookEvent.safeParse(...)` to guard webhook handling at the boundary.
+  </Card>
+</CardGroup>
+
+## Install
+
+<CodeGroup>
+```bash npm
+npm install @rewritejs/zod zod
+```
+
+```bash pnpm
+pnpm add @rewritejs/zod zod
+```
+
+```bash yarn
+yarn add @rewritejs/zod zod
+```
+
+```bash bun
+bun add @rewritejs/zod zod
+```
+</CodeGroup>
+
+## Request validation example
+
+```ts
+import { RESTPostCreateTemplateBody } from '@rewritejs/zod/v1';
+
+const data = RESTPostCreateTemplateBody.parse({
+  name: 'order_shipped',
+  content: 'Hi {{first_name}}, your order {{order_id}} is on the way.',
+  variables: [
+    { name: 'first_name', fallback: 'customer' },
+    { name: 'order_id', fallback: '0000' },
+  ],
+});
+
+console.log(data);
+```
+
+## Webhook validation example
+
+```ts
+import { WebhookEvent } from '@rewritejs/zod/v1';
+
+const result = WebhookEvent.safeParse(payload);
+
+if (!result.success) {
+  console.error({ error: result.error.flatten() });
+  throw new Error('Invalid Rewrite webhook payload');
+}
+
+console.log({ data: result.data });
+```
+
+## Best practices
+
+<Accordion title="Validate at the edges">
+  Parse external input before it reaches your business logic so invalid payloads fail fast and predictably.
+</Accordion>
+
+<Accordion title="Keep versions explicit">
+  Import from a specific API namespace such as `@rewritejs/zod/v1` so upgrades stay deliberate.
+</Accordion>
+
+<Accordion title="Pair runtime and transport layers">
+  Combine `@rewritejs/zod` with `@rewritejs/rest` and `@rewritejs/types` for validation, routing, and transport in one stack.
+</Accordion>
+
+## Related docs
+
+<CardGroup cols={2}>
+  <Card title="Types library" icon="code" href="./types" color="#C9CBD1">
+    Shared contracts and route builders that complement runtime validation.
+  </Card>
+  <Card title="REST library" icon="route" href="./rest" color="#C9CBD1">
+    Low-level transport client for sending the payloads you validate with Zod.
+  </Card>
+</CardGroup>

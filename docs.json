@@ -227,7 +227,7 @@
 							},
 							{
 								"group": "Packages",
-								"pages": ["en/ecosystem/rest", "en/ecosystem/types"]
+								"pages": ["en/ecosystem/rest", "en/ecosystem/types", "en/ecosystem/zod"]
 							}
 						]
 					},
@@ -415,7 +415,7 @@
 							},
 							{
 								"group": "Pacotes",
-								"pages": ["pt-br/ecosystem/rest", "pt-br/ecosystem/types"]
+								"pages": ["pt-br/ecosystem/rest", "pt-br/ecosystem/types", "pt-br/ecosystem/zod"]
 							}
 						]
 					},
@@ -599,7 +599,7 @@
 							},
 							{
 								"group": "Paquetes",
-								"pages": ["es/ecosystem/rest", "es/ecosystem/types"]
+								"pages": ["es/ecosystem/rest", "es/ecosystem/types", "es/ecosystem/zod"]
 							}
 						]
 					},
@@ -783,7 +783,7 @@
 							},
 							{
 								"group": "Packages",
-								"pages": ["fr/ecosystem/rest", "fr/ecosystem/types"]
+								"pages": ["fr/ecosystem/rest", "fr/ecosystem/types", "fr/ecosystem/zod"]
 							}
 						]
 					},

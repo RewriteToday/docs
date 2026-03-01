@@ -9,29 +9,37 @@ Voce pode usar cada pacote isoladamente ou combinar tudo para ter integracoes ti
 
 ## Arquitetura do ecossistema
 
-<CardGroup cols={3}>
+<CardGroup cols={2}>
   <Card title="Contratos" icon="code" color="#C9CBD1">
-    `@rewritejs/types` oferece enums, builders de rota e contratos de payload compartilhados.
+    Enums, builders de rota e contratos de payload compartilhados para integracoes consistentes.
+  </Card>
+
+  <Card title="Validacao" icon="shield-check" color="#C9CBD1">
+    Validacao oficial em runtime para payloads REST, recursos reutilizaveis e webhooks.
   </Card>
 
   <Card title="Transporte" icon="route" color="#C9CBD1">
-    `@rewritejs/rest` entrega controle HTTP de baixo nivel com helpers de rota da Rewrite.
+    Controle HTTP de baixo nivel com retries, hooks e helpers de rota da Rewrite.
   </Card>
 
-  <Card title="Camada de produto" icon="package" href="/pt-br/sdks/introduction" color="#C9CBD1">
-    Os SDKs constroem acima disso para fluxos de alto nivel em cada linguagem.
+  <Card title="Camada de produto" icon="box" href="/pt-br/sdks/introduction" color="#C9CBD1">
+    Os SDKs constroem acima disso para fluxos de alto nivel e nativos de cada linguagem.
   </Card>
 </CardGroup>
 
 ## Catalogo de pacotes
 
-<CardGroup cols={2}>
+<CardGroup cols={3}>
   <Card title="@rewritejs/rest" icon="route" href="./rest" color="#C9CBD1">
     Para controle explicito de requests, retries, timeouts, hooks e comportamento customizado.
   </Card>
 
   <Card title="@rewritejs/types" icon="code" href="./types" color="#C9CBD1">
     Para contratos de API, definicoes de rota, enums e validacoes mais seguras em compilacao.
+  </Card>
+
+  <Card title="@rewritejs/zod" icon="shield-check" href="./zod" color="#C9CBD1">
+    Para schemas oficiais em Zod, validacao versionada em runtime e webhooks mais seguros.
   </Card>
 </CardGroup>
 
@@ -47,6 +55,10 @@ Voce pode usar cada pacote isoladamente ou combinar tudo para ter integracoes ti
 
 <Accordion title="So preciso de contratos e builders de rota">
   Use apenas `@rewritejs/types` quando voce ja tem seu proprio cliente HTTP ou sua propria abstracao.
+</Accordion>
+
+<Accordion title="Preciso validar input externo ou webhooks em runtime">
+  Use `@rewritejs/zod` para fazer parse dos payloads na borda antes da sua logica de negocio rodar.
 </Accordion>
 
 ## Principios de design
@@ -68,13 +80,17 @@ Voce pode usar cada pacote isoladamente ou combinar tudo para ter integracoes ti
 
 ## Repositorios e referencias
 
-<CardGroup cols={2}>
+<CardGroup cols={3}>
   <Card title="Repositorio REST" icon="github" href="https://github.com/RewriteToday/rest" color="#C9CBD1">
     Codigo-fonte, releases, changelog e issues do `@rewritejs/rest`.
   </Card>
 
   <Card title="Repositorio Types" icon="github" href="https://github.com/RewriteToday/types" color="#C9CBD1">
     Codigo-fonte, contratos e utilitarios de tipo do `@rewritejs/types`.
+  </Card>
+
+  <Card title="Repositorio Zod" icon="github" href="https://github.com/RewriteToday/zod" color="#C9CBD1">
+    Codigo-fonte e schemas oficiais de runtime do `@rewritejs/zod`.
   </Card>
 </CardGroup>
 
