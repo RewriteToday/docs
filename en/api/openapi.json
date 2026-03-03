@@ -33,9 +33,7 @@
 	"paths": {
 		"/projects/{id}/api-keys": {
 			"get": {
-				"tags": [
-					"API Keys"
-				],
+				"tags": ["API Keys"],
 				"operationId": "listProjectApiKeys",
 				"summary": "List API keys",
 				"security": [
@@ -81,9 +79,7 @@
 													"id": "748395130237498400",
 													"name": "Production backend",
 													"prefix": "rw_live_8e4c",
-													"scopes": [
-														"project:templates:write"
-													],
+													"scopes": ["project:templates:write"],
 													"createdAt": "2026-02-19T19:10:02.000Z"
 												}
 											],
@@ -152,9 +148,7 @@
 				]
 			},
 			"post": {
-				"tags": [
-					"API Keys"
-				],
+				"tags": ["API Keys"],
 				"operationId": "createProjectApiKey",
 				"summary": "Create API key",
 				"security": [
@@ -278,9 +272,7 @@
 		},
 		"/projects/{id}/api-keys/{key}": {
 			"delete": {
-				"tags": [
-					"API Keys"
-				],
+				"tags": ["API Keys"],
 				"operationId": "deleteProjectApiKey",
 				"summary": "Revoke API key",
 				"security": [
@@ -386,9 +378,7 @@
 		},
 		"/projects/{id}/templates": {
 			"get": {
-				"tags": [
-					"Templates"
-				],
+				"tags": ["Templates"],
 				"operationId": "listProjectTemplates",
 				"summary": "List templates",
 				"security": [
@@ -509,9 +499,7 @@
 				]
 			},
 			"post": {
-				"tags": [
-					"Templates"
-				],
+				"tags": ["Templates"],
 				"operationId": "createProjectTemplate",
 				"summary": "Create template",
 				"security": [
@@ -640,9 +628,7 @@
 		},
 		"/projects/{id}/templates/{identifier}": {
 			"get": {
-				"tags": [
-					"Templates"
-				],
+				"tags": ["Templates"],
 				"operationId": "getProjectTemplate",
 				"summary": "Get template",
 				"security": [
@@ -760,9 +746,7 @@
 		},
 		"/projects/{id}/templates/{templateId}": {
 			"patch": {
-				"tags": [
-					"Templates"
-				],
+				"tags": ["Templates"],
 				"operationId": "updateProjectTemplate",
 				"summary": "Update template",
 				"security": [
@@ -894,9 +878,7 @@
 				]
 			},
 			"delete": {
-				"tags": [
-					"Templates"
-				],
+				"tags": ["Templates"],
 				"operationId": "deleteProjectTemplate",
 				"summary": "Delete template",
 				"security": [
@@ -1002,9 +984,7 @@
 		},
 		"/projects/{id}/webhooks": {
 			"get": {
-				"tags": [
-					"Webhooks"
-				],
+				"tags": ["Webhooks"],
 				"operationId": "listProjectWebhooks",
 				"summary": "List webhooks",
 				"security": [
@@ -1124,9 +1104,7 @@
 				]
 			},
 			"post": {
-				"tags": [
-					"Webhooks"
-				],
+				"tags": ["Webhooks"],
 				"operationId": "createProjectWebhook",
 				"summary": "Create webhook",
 				"security": [
@@ -1158,11 +1136,7 @@
 									"value": {
 										"name": "Delivery events",
 										"endpoint": "https://example.com/webhooks/rewrite",
-										"events": [
-											"sms.queued",
-											"sms.delivered",
-											"sms.failed"
-										]
+										"events": ["sms.queued", "sms.delivered", "sms.failed"]
 									}
 								}
 							}
@@ -1249,9 +1223,7 @@
 		},
 		"/projects/{id}/webhooks/{webhookId}": {
 			"get": {
-				"tags": [
-					"Webhooks"
-				],
+				"tags": ["Webhooks"],
 				"operationId": "getProjectWebhook",
 				"summary": "Get webhook",
 				"security": [
@@ -1296,11 +1268,7 @@
 												"id": "748395130237498700",
 												"name": "Delivery events",
 												"endpoint": "https://example.com/webhooks/rewrite",
-												"events": [
-													"sms.queued",
-													"sms.delivered",
-													"sms.failed"
-												],
+												"events": ["sms.queued", "sms.delivered", "sms.failed"],
 												"status": "ACTIVE",
 												"createdAt": "2026-02-19T16:05:00.000Z"
 											}
@@ -1366,9 +1334,7 @@
 				]
 			},
 			"patch": {
-				"tags": [
-					"Webhooks"
-				],
+				"tags": ["Webhooks"],
 				"operationId": "updateProjectWebhook",
 				"summary": "Update webhook",
 				"security": [
@@ -1408,10 +1374,7 @@
 									"summary": "Request example",
 									"value": {
 										"endpoint": "https://example.com/webhooks/rewrite-v2",
-										"events": [
-											"sms.delivered",
-											"sms.failed"
-										],
+										"events": ["sms.delivered", "sms.failed"],
 										"status": "ACTIVE"
 									}
 								}
@@ -1495,9 +1458,7 @@
 				]
 			},
 			"delete": {
-				"tags": [
-					"Webhooks"
-				],
+				"tags": ["Webhooks"],
 				"operationId": "deleteProjectWebhook",
 				"summary": "Delete webhook",
 				"security": [
@@ -1654,9 +1615,7 @@
 			"Cursor": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"persist"
-				],
+				"required": ["persist"],
 				"properties": {
 					"persist": {
 						"type": "boolean",
@@ -1675,10 +1634,7 @@
 			"OkEmptyResponse": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"ok",
-					"data"
-				],
+				"required": ["ok", "data"],
 				"properties": {
 					"ok": {
 						"type": "boolean",
@@ -1718,13 +1674,7 @@
 			"APIKey": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"id",
-					"name",
-					"prefix",
-					"scopes",
-					"createdAt"
-				],
+				"required": ["id", "name", "prefix", "scopes", "createdAt"],
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/Snowflake",
@@ -1756,21 +1706,14 @@
 					"id": "748395130237498400",
 					"name": "Production backend",
 					"prefix": "rw_live_8e4c",
-					"scopes": [
-						"project:templates:write",
-						"projects:webhooks:write"
-					],
+					"scopes": ["project:templates:write", "projects:webhooks:write"],
 					"createdAt": "2026-02-19T19:10:02.000Z"
 				}
 			},
 			"APIKeysListResponse": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"ok",
-					"data",
-					"cursor"
-				],
+				"required": ["ok", "data", "cursor"],
 				"properties": {
 					"ok": {
 						"type": "boolean",
@@ -1796,10 +1739,7 @@
 							"id": "748395130237498400",
 							"name": "Production backend",
 							"prefix": "rw_live_8e4c",
-							"scopes": [
-								"project:templates:write",
-								"projects:webhooks:write"
-							],
+							"scopes": ["project:templates:write", "projects:webhooks:write"],
 							"createdAt": "2026-02-19T19:10:02.000Z"
 						}
 					],
@@ -1812,9 +1752,7 @@
 			"APIKeyCreateBody": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"name"
-				],
+				"required": ["name"],
 				"properties": {
 					"name": {
 						"type": "string",
@@ -1834,19 +1772,13 @@
 				"description": "Create a project API key with optional scopes.",
 				"example": {
 					"name": "Jobs worker",
-					"scopes": [
-						"project:templates:read",
-						"projects:webhooks:read"
-					]
+					"scopes": ["project:templates:read", "projects:webhooks:read"]
 				}
 			},
 			"APIKeyCreateResponse": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"ok",
-					"data"
-				],
+				"required": ["ok", "data"],
 				"properties": {
 					"ok": {
 						"type": "boolean",
@@ -1856,11 +1788,7 @@
 					"data": {
 						"type": "object",
 						"additionalProperties": false,
-						"required": [
-							"id",
-							"key",
-							"createdAt"
-						],
+						"required": ["id", "key", "createdAt"],
 						"properties": {
 							"id": {
 								"$ref": "#/components/schemas/Snowflake",
@@ -1892,10 +1820,7 @@
 			"TemplateVariable": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"name",
-					"fallback"
-				],
+				"required": ["name", "fallback"],
 				"properties": {
 					"name": {
 						"type": "string",
@@ -1919,11 +1844,7 @@
 			"Template": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"id",
-					"name",
-					"createdAt"
-				],
+				"required": ["id", "name", "createdAt"],
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/Snowflake",
@@ -1934,17 +1855,11 @@
 						"description": "Human-readable name used to identify this API key."
 					},
 					"content": {
-						"type": [
-							"string",
-							"null"
-						],
+						"type": ["string", "null"],
 						"description": "content field."
 					},
 					"variables": {
-						"type": [
-							"array",
-							"null"
-						],
+						"type": ["array", "null"],
 						"items": {
 							"$ref": "#/components/schemas/TemplateVariable"
 						},
@@ -1972,11 +1887,7 @@
 			"TemplatesListResponse": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"ok",
-					"data",
-					"cursor"
-				],
+				"required": ["ok", "data", "cursor"],
 				"properties": {
 					"ok": {
 						"type": "boolean",
@@ -2021,10 +1932,7 @@
 			"TemplateResponse": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"ok",
-					"data"
-				],
+				"required": ["ok", "data"],
 				"properties": {
 					"ok": {
 						"type": "boolean",
@@ -2056,11 +1964,7 @@
 			"TemplateCreateBody": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"name",
-					"content",
-					"variables"
-				],
+				"required": ["name", "content", "variables"],
 				"properties": {
 					"name": {
 						"type": "string",
@@ -2140,10 +2044,7 @@
 			"TemplateCreateResponse": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"ok",
-					"data"
-				],
+				"required": ["ok", "data"],
 				"properties": {
 					"ok": {
 						"type": "boolean",
@@ -2152,10 +2053,7 @@
 					},
 					"data": {
 						"type": "object",
-						"required": [
-							"id",
-							"createdAt"
-						],
+						"required": ["id", "createdAt"],
 						"properties": {
 							"id": {
 								"$ref": "#/components/schemas/Snowflake"
@@ -2191,32 +2089,20 @@
 			},
 			"WebhookStatus": {
 				"type": "string",
-				"enum": [
-					"ACTIVE",
-					"INACTIVE"
-				],
+				"enum": ["ACTIVE", "INACTIVE"],
 				"example": "ACTIVE"
 			},
 			"Webhook": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"id",
-					"endpoint",
-					"events",
-					"status",
-					"createdAt"
-				],
+				"required": ["id", "endpoint", "events", "status", "createdAt"],
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/Snowflake",
 						"description": "Unique webhook ID."
 					},
 					"name": {
-						"type": [
-							"string",
-							"null"
-						],
+						"type": ["string", "null"],
 						"description": "Human-readable name used to identify this API key."
 					},
 					"endpoint": {
@@ -2245,11 +2131,7 @@
 					"id": "748395130237498700",
 					"name": "Delivery events",
 					"endpoint": "https://example.com/webhooks/rewrite",
-					"events": [
-						"sms.queued",
-						"sms.delivered",
-						"sms.failed"
-					],
+					"events": ["sms.queued", "sms.delivered", "sms.failed"],
 					"status": "ACTIVE",
 					"createdAt": "2026-02-19T16:05:00.000Z"
 				}
@@ -2257,11 +2139,7 @@
 			"WebhooksListResponse": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"ok",
-					"data",
-					"cursor"
-				],
+				"required": ["ok", "data", "cursor"],
 				"properties": {
 					"ok": {
 						"type": "boolean",
@@ -2287,11 +2165,7 @@
 							"id": "748395130237498700",
 							"name": "Delivery events",
 							"endpoint": "https://example.com/webhooks/rewrite",
-							"events": [
-								"sms.queued",
-								"sms.delivered",
-								"sms.failed"
-							],
+							"events": ["sms.queued", "sms.delivered", "sms.failed"],
 							"status": "ACTIVE",
 							"createdAt": "2026-02-19T16:05:00.000Z"
 						}
@@ -2305,10 +2179,7 @@
 			"WebhookResponse": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"ok",
-					"data"
-				],
+				"required": ["ok", "data"],
 				"properties": {
 					"ok": {
 						"type": "boolean",
@@ -2326,11 +2197,7 @@
 						"id": "748395130237498700",
 						"name": "Delivery events",
 						"endpoint": "https://example.com/webhooks/rewrite",
-						"events": [
-							"sms.queued",
-							"sms.delivered",
-							"sms.failed"
-						],
+						"events": ["sms.queued", "sms.delivered", "sms.failed"],
 						"status": "ACTIVE",
 						"createdAt": "2026-02-19T16:05:00.000Z"
 					}
@@ -2340,10 +2207,7 @@
 			"WebhookCreateBody": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"events",
-					"endpoint"
-				],
+				"required": ["events", "endpoint"],
 				"properties": {
 					"name": {
 						"type": "string",
@@ -2371,11 +2235,7 @@
 				"example": {
 					"name": "Delivery events",
 					"endpoint": "https://example.com/webhooks/rewrite",
-					"events": [
-						"sms.queued",
-						"sms.delivered",
-						"sms.failed"
-					]
+					"events": ["sms.queued", "sms.delivered", "sms.failed"]
 				}
 			},
 			"WebhookUpdateBody": {
@@ -2418,20 +2278,14 @@
 				"description": "Update webhook endpoint, subscribed events, name or status.",
 				"example": {
 					"endpoint": "https://example.com/webhooks/rewrite-v2",
-					"events": [
-						"sms.delivered",
-						"sms.failed"
-					],
+					"events": ["sms.delivered", "sms.failed"],
 					"status": "ACTIVE"
 				}
 			},
 			"WebhookCreateResponse": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"ok",
-					"data"
-				],
+				"required": ["ok", "data"],
 				"properties": {
 					"ok": {
 						"type": "boolean",
@@ -2440,9 +2294,7 @@
 					},
 					"data": {
 						"type": "object",
-						"required": [
-							"id"
-						],
+						"required": ["id"],
 						"properties": {
 							"id": {
 								"$ref": "#/components/schemas/Snowflake"

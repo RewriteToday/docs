@@ -21,9 +21,7 @@
 	"paths": {
 		"/projects/{id}/api-keys": {
 			"get": {
-				"tags": [
-					"API Keys"
-				],
+				"tags": ["API Keys"],
 				"operationId": "listProjectApiKeys",
 				"summary": "Listar API keys",
 				"security": [
@@ -69,9 +67,7 @@
 													"id": "748395130237498400",
 													"name": "Production backend",
 													"prefix": "rw_live_8e4c",
-													"scopes": [
-														"project:templates:write"
-													],
+													"scopes": ["project:templates:write"],
 													"createdAt": "2026-02-19T19:10:02.000Z"
 												}
 											],
@@ -140,9 +136,7 @@
 				]
 			},
 			"post": {
-				"tags": [
-					"API Keys"
-				],
+				"tags": ["API Keys"],
 				"operationId": "createProjectApiKey",
 				"summary": "Crear API key",
 				"security": [
@@ -266,9 +260,7 @@
 		},
 		"/projects/{id}/api-keys/{key}": {
 			"delete": {
-				"tags": [
-					"API Keys"
-				],
+				"tags": ["API Keys"],
 				"operationId": "deleteProjectApiKey",
 				"summary": "Revocar API key",
 				"security": [
@@ -425,9 +417,7 @@
 			"Cursor": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"persist"
-				],
+				"required": ["persist"],
 				"properties": {
 					"persist": {
 						"type": "boolean",
@@ -446,10 +436,7 @@
 			"OkEmptyResponse": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"ok",
-					"data"
-				],
+				"required": ["ok", "data"],
 				"properties": {
 					"ok": {
 						"type": "boolean",
@@ -470,13 +457,7 @@
 			"APIKey": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"id",
-					"name",
-					"prefix",
-					"scopes",
-					"createdAt"
-				],
+				"required": ["id", "name", "prefix", "scopes", "createdAt"],
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/Snowflake",
@@ -508,21 +489,14 @@
 					"id": "748395130237498400",
 					"name": "Production backend",
 					"prefix": "rw_live_8e4c",
-					"scopes": [
-						"project:templates:write",
-						"projects:webhooks:write"
-					],
+					"scopes": ["project:templates:write", "projects:webhooks:write"],
 					"createdAt": "2026-02-19T19:10:02.000Z"
 				}
 			},
 			"APIKeysListResponse": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"ok",
-					"data",
-					"cursor"
-				],
+				"required": ["ok", "data", "cursor"],
 				"properties": {
 					"ok": {
 						"type": "boolean",
@@ -548,10 +522,7 @@
 							"id": "748395130237498400",
 							"name": "Production backend",
 							"prefix": "rw_live_8e4c",
-							"scopes": [
-								"project:templates:write",
-								"projects:webhooks:write"
-							],
+							"scopes": ["project:templates:write", "projects:webhooks:write"],
 							"createdAt": "2026-02-19T19:10:02.000Z"
 						}
 					],
@@ -564,9 +535,7 @@
 			"APIKeyCreateBody": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"name"
-				],
+				"required": ["name"],
 				"properties": {
 					"name": {
 						"type": "string",
@@ -586,19 +555,13 @@
 				"description": "Crea una API key de proyecto con scopes opcionales.",
 				"example": {
 					"name": "Jobs worker",
-					"scopes": [
-						"project:templates:read",
-						"projects:webhooks:read"
-					]
+					"scopes": ["project:templates:read", "projects:webhooks:read"]
 				}
 			},
 			"APIKeyCreateResponse": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": [
-					"ok",
-					"data"
-				],
+				"required": ["ok", "data"],
 				"properties": {
 					"ok": {
 						"type": "boolean",
@@ -608,11 +571,7 @@
 					"data": {
 						"type": "object",
 						"additionalProperties": false,
-						"required": [
-							"id",
-							"key",
-							"createdAt"
-						],
+						"required": ["id", "key", "createdAt"],
 						"properties": {
 							"id": {
 								"$ref": "#/components/schemas/Snowflake",
