@@ -21,7 +21,9 @@
 	"paths": {
 		"/projects/{id}": {
 			"patch": {
-				"tags": ["Projects"],
+				"tags": [
+					"Projects"
+				],
 				"operationId": "updateProject",
 				"summary": "Actualizar proyecto",
 				"security": [
@@ -134,7 +136,9 @@
 				]
 			},
 			"delete": {
-				"tags": ["Projects"],
+				"tags": [
+					"Projects"
+				],
 				"operationId": "deleteProject",
 				"summary": "Eliminar proyecto",
 				"security": [
@@ -244,14 +248,15 @@
 		"schemas": {
 			"Snowflake": {
 				"type": "string",
-				"pattern": "^[0-9]{1,32}$",
-				"description": "Unique resource identifier in snowflake format.",
-				"example": "748395130237498368"
+				"pattern": "^[0-9]{1,32}$"
 			},
 			"OkEmptyResponse": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": ["ok", "data"],
+				"required": [
+					"ok",
+					"data"
+				],
 				"properties": {
 					"ok": {
 						"type": "boolean",

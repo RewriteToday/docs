@@ -21,7 +21,9 @@
 	"paths": {
 		"/projects/{id}/templates": {
 			"get": {
-				"tags": ["Templates"],
+				"tags": [
+					"Templates"
+				],
 				"operationId": "listProjectTemplates",
 				"summary": "Listar plantillas",
 				"security": [
@@ -142,7 +144,9 @@
 				]
 			},
 			"post": {
-				"tags": ["Templates"],
+				"tags": [
+					"Templates"
+				],
 				"operationId": "createProjectTemplate",
 				"summary": "Crear plantilla",
 				"security": [
@@ -271,7 +275,9 @@
 		},
 		"/projects/{id}/templates/{identifier}": {
 			"get": {
-				"tags": ["Templates"],
+				"tags": [
+					"Templates"
+				],
 				"operationId": "getProjectTemplate",
 				"summary": "Obtener plantilla",
 				"security": [
@@ -389,7 +395,9 @@
 		},
 		"/projects/{id}/templates/{templateId}": {
 			"patch": {
-				"tags": ["Templates"],
+				"tags": [
+					"Templates"
+				],
 				"operationId": "updateProjectTemplate",
 				"summary": "Actualizar plantilla",
 				"security": [
@@ -521,7 +529,9 @@
 				]
 			},
 			"delete": {
-				"tags": ["Templates"],
+				"tags": [
+					"Templates"
+				],
 				"operationId": "deleteProjectTemplate",
 				"summary": "Eliminar plantilla",
 				"security": [
@@ -673,14 +683,14 @@
 		"schemas": {
 			"Snowflake": {
 				"type": "string",
-				"pattern": "^[0-9]{1,32}$",
-				"description": "Unique resource identifier in snowflake format.",
-				"example": "748395130237498368"
+				"pattern": "^[0-9]{1,32}$"
 			},
 			"Cursor": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": ["persist"],
+				"required": [
+					"persist"
+				],
 				"properties": {
 					"persist": {
 						"type": "boolean",
@@ -691,7 +701,6 @@
 						"description": "Cursor para solicitar la siguiente pagina (`after`)."
 					}
 				},
-				"description": "Metadatos de cursor para respuestas paginadas.",
 				"example": {
 					"persist": true,
 					"next": "748395130237498399"
@@ -700,7 +709,10 @@
 			"OkEmptyResponse": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": ["ok", "data"],
+				"required": [
+					"ok",
+					"data"
+				],
 				"properties": {
 					"ok": {
 						"type": "boolean",
@@ -721,7 +733,10 @@
 			"TemplateVariable": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": ["name", "fallback"],
+				"required": [
+					"name",
+					"fallback"
+				],
 				"properties": {
 					"name": {
 						"type": "string",
@@ -745,7 +760,11 @@
 			"Template": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": ["id", "name", "createdAt"],
+				"required": [
+					"id",
+					"name",
+					"createdAt"
+				],
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/Snowflake",
@@ -756,11 +775,17 @@
 						"description": "campo name."
 					},
 					"content": {
-						"type": ["string", "null"],
+						"type": [
+							"string",
+							"null"
+						],
 						"description": "campo content."
 					},
 					"variables": {
-						"type": ["array", "null"],
+						"type": [
+							"array",
+							"null"
+						],
 						"items": {
 							"$ref": "#/components/schemas/TemplateVariable"
 						},
@@ -772,7 +797,6 @@
 						"description": "Marca de tiempo de creacion UTC."
 					}
 				},
-				"description": "Metadatos de plantilla y snapshot opcional de contenido.",
 				"example": {
 					"id": "748395130237498500",
 					"name": "order_shipped",
@@ -789,7 +813,11 @@
 			"TemplatesListResponse": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": ["ok", "data", "cursor"],
+				"required": [
+					"ok",
+					"data",
+					"cursor"
+				],
 				"properties": {
 					"ok": {
 						"type": "boolean",
@@ -834,7 +862,10 @@
 			"TemplateResponse": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": ["ok", "data"],
+				"required": [
+					"ok",
+					"data"
+				],
 				"properties": {
 					"ok": {
 						"type": "boolean",
@@ -866,7 +897,11 @@
 			"TemplateCreateBody": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": ["name", "content", "variables"],
+				"required": [
+					"name",
+					"content",
+					"variables"
+				],
 				"properties": {
 					"name": {
 						"type": "string",
@@ -946,7 +981,10 @@
 			"TemplateCreateResponse": {
 				"type": "object",
 				"additionalProperties": false,
-				"required": ["ok", "data"],
+				"required": [
+					"ok",
+					"data"
+				],
 				"properties": {
 					"ok": {
 						"type": "boolean",
@@ -955,7 +993,10 @@
 					},
 					"data": {
 						"type": "object",
-						"required": ["id", "createdAt"],
+						"required": [
+							"id",
+							"createdAt"
+						],
 						"properties": {
 							"id": {
 								"$ref": "#/components/schemas/Snowflake"
