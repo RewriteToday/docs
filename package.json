@@ -14,6 +14,6 @@
 		"lefthook": "^2.1.1"
 	},
 	"scripts": {
-		"biome:check": "bunx biome check --write ."
+		"biome:check": "bunx biome check"
 	}
 }
