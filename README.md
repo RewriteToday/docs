@@ -8,6 +8,8 @@ From first request to production-grade messaging: fast onboarding, clear referen
 
 [Live Docs](https://docs.rewritetoday.com) • [API](https://docs.rewritetoday.com/en/api/introduction) • [Pricing](https://rewritetoday.com/pricing) • [Dashboard](https://dashboard.rewritetoday.com)
 
+<img src="https://cdn.rewritetoday.com/assets/banners/docs.png" width="100%" alt="Rewrite Banner"/>
+
 
 ## Project structure
 
