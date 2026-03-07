@@ -19,7 +19,7 @@
 		}
 	],
 	"paths": {
-		"/projects/{id}/templates": {
+		"/templates": {
 			"get": {
 				"tags": ["Templates"],
 				"operationId": "listProjectTemplates",
@@ -30,15 +30,6 @@
 					}
 				],
 				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"example": "748395130237498368"
-					},
 					{
 						"$ref": "#/components/parameters/after"
 					},
@@ -92,47 +83,47 @@
 					{
 						"lang": "node",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nconst templates = await rewrite.templates.list(projectId, { limit: 20 });"
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst templates = await rewrite.templates.list({ limit: 20 });"
 					},
 					{
 						"lang": "go",
 						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\nprojectID := \"748395130237498368\"\n\n_, err = client.Templates.List(context.Background(), projectID, &rewrite.RESTGetListTemplatesQueryParams{Limit: 20})\nif err != nil { log.Fatal(err) }\n}"
+						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  _, err = client.Templates.List(context.Background(), &rewrite.RESTGetListTemplatesQueryParams{Limit: 20})\n  if err != nil { log.Fatal(err) }\n}"
 					},
 					{
 						"lang": "python",
 						"label": "Python",
-						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\nproject_id = \"748395130237498368\"\n\ntemplates = client.templates.list(project_id, {\"limit\": 20})"
+						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\ntemplates = client.templates.list({\"limit\": 20})"
 					},
 					{
 						"lang": "java",
 						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.templates.ListTemplatesOptions;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var projectId = \"748395130237498368\";\n\n    var templates = rewrite.templates().list(\n      projectId,\n      ListTemplatesOptions.builder()\n        .limit(20)\n        .build()\n    );\n\n    System.out.println(templates);\n  }\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.templates.ListTemplatesOptions;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var templates = rewrite.templates().list(\n      ListTemplatesOptions.builder()\n        .limit(20)\n        .build()\n    );\n\n    System.out.println(templates);\n  }\n}"
 					},
 					{
 						"lang": "php",
 						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$projectId = '748395130237498368';\n\n$templates = $rewrite->templates->list($projectId, [\n  'limit' => 20,\n]);"
+						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$templates = $rewrite->templates->list([\n  'limit' => 20,\n]);"
 					},
 					{
 						"lang": "ruby",
 						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nproject_id = \"748395130237498368\"\n\ntemplates = rewrite.templates.list(project_id, limit: 20)"
+						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\ntemplates = rewrite.templates.list(limit: 20)"
 					},
 					{
 						"lang": "kotlin",
 						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.templates.ListTemplatesOptions\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val projectId = \"748395130237498368\"\n\n  val templates = rewrite.templates.list(\n    projectId,\n    ListTemplatesOptions(limit = 20)\n  )\n\n  println(templates)\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.templates.ListTemplatesOptions\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val templates = rewrite.templates.list(\n    ListTemplatesOptions(limit = 20)\n  )\n\n  println(templates)\n}"
 					},
 					{
 						"lang": "swift",
 						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet projectId = \"748395130237498368\"\n\nlet templates = try await rewrite.templates.list(project: projectId, limit: 20)\n\nprint(templates)"
+						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet templates = try await rewrite.templates.list(limit: 20)\n\nprint(templates)"
 					},
 					{
 						"lang": "csharp",
 						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar projectId = \"748395130237498368\";\n\nvar templates = await rewrite.Templates.ListAsync(projectId, new ListTemplatesOptions\n{\n  Limit = 20\n});\n\nConsole.WriteLine(templates);"
+						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar templates = await rewrite.Templates.ListAsync(new ListTemplatesOptions\n{\n  Limit = 20\n});\n\nConsole.WriteLine(templates);"
 					}
 				]
 			},
@@ -143,17 +134,6 @@
 				"security": [
 					{
 						"bearerAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"example": "748395130237498368"
 					}
 				],
 				"requestBody": {
@@ -214,52 +194,52 @@
 					{
 						"lang": "node",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nconst template = await rewrite.templates.create({\n  project: projectId,\n  name: 'order_shipped',\n  content: 'Hi {{first_name}}, your order {{order_id}} is on the way.',\n  variables: [\n    { name: 'first_name', fallback: 'customer' },\n    { name: 'order_id', fallback: '0000' },\n  ],\n});"
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst template = await rewrite.templates.create({\n  name: 'order_shipped',\n  content: 'Hi {{first_name}}, your order {{order_id}} is on the way.',\n  variables: [\n    { name: 'first_name', fallback: 'customer' },\n    { name: 'order_id', fallback: '0000' },\n  ],\n});"
 					},
 					{
 						"lang": "go",
 						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\nprojectID := \"748395130237498368\"\nfirstNameFallback := \"customer\"\norderIDFallback := \"0000\"\n\n_, err = client.Templates.Create(context.Background(), rewrite.CreateTemplateOptions{\n  Project: projectID,\n  RESTPostCreateTemplateBody: rewrite.RESTPostCreateTemplateBody{\n    Name:    \"order_shipped\",\n    Content: \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n    Variables: []rewrite.APITemplateVariable{\n      {Name: \"first_name\", Fallback: &firstNameFallback},\n      {Name: \"order_id\", Fallback: &orderIDFallback},\n    },\n  },\n})\nif err != nil { log.Fatal(err) }\n}"
+						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  firstNameFallback := \"customer\"\n  orderIDFallback := \"0000\"\n\n  _, err = client.Templates.Create(context.Background(), rewrite.CreateTemplateOptions{\n    RESTPostCreateTemplateBody: rewrite.RESTPostCreateTemplateBody{\n      Name:    \"order_shipped\",\n      Content: \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n      Variables: []rewrite.APITemplateVariable{\n        {Name: \"first_name\", Fallback: &firstNameFallback},\n        {Name: \"order_id\", Fallback: &orderIDFallback},\n      },\n    },\n  })\n  if err != nil { log.Fatal(err) }\n}"
 					},
 					{
 						"lang": "python",
 						"label": "Python",
-						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\nproject_id = \"748395130237498368\"\n\ntemplate = client.templates.create(\n    {\n        \"project\": project_id,\n        \"name\": \"order_shipped\",\n        \"content\": \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n        \"variables\": [\n            {\"name\": \"first_name\", \"fallback\": \"customer\"},\n            {\"name\": \"order_id\", \"fallback\": \"0000\"},\n        ],\n    }\n)"
+						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\ntemplate = client.templates.create(\n    {\n        \"name\": \"order_shipped\",\n        \"content\": \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n        \"variables\": [\n            {\"name\": \"first_name\", \"fallback\": \"customer\"},\n            {\"name\": \"order_id\", \"fallback\": \"0000\"},\n        ],\n    }\n)"
 					},
 					{
 						"lang": "java",
 						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.templates.CreateTemplateOptions;\nimport com.rewritetoday.sdk.models.templates.TemplateVariable;\nimport java.util.List;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var projectId = \"748395130237498368\";\n\n    var template = rewrite.templates().create(\n      CreateTemplateOptions.builder()\n        .project(projectId)\n        .name(\"order_shipped\")\n        .content(\"Hi {{first_name}}, your order {{order_id}} is on the way.\")\n        .variables(List.of(\n          TemplateVariable.builder().name(\"first_name\").fallback(\"customer\").build(),\n          TemplateVariable.builder().name(\"order_id\").fallback(\"0000\").build()\n        ))\n        .build()\n    );\n\n    System.out.println(template);\n  }\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.templates.CreateTemplateOptions;\nimport com.rewritetoday.sdk.models.templates.TemplateVariable;\nimport java.util.List;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var template = rewrite.templates().create(\n      CreateTemplateOptions.builder()\n        .name(\"order_shipped\")\n        .content(\"Hi {{first_name}}, your order {{order_id}} is on the way.\")\n        .variables(List.of(\n          TemplateVariable.builder().name(\"first_name\").fallback(\"customer\").build(),\n          TemplateVariable.builder().name(\"order_id\").fallback(\"0000\").build()\n        ))\n        .build()\n    );\n\n    System.out.println(template);\n  }\n}"
 					},
 					{
 						"lang": "php",
 						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$projectId = '748395130237498368';\n\n$template = $rewrite->templates->create([\n  'project' => $projectId,\n  'name' => 'order_shipped',\n  'content' => 'Hi {{first_name}}, your order {{order_id}} is on the way.',\n  'variables' => [\n    ['name' => 'first_name', 'fallback' => 'customer'],\n    ['name' => 'order_id', 'fallback' => '0000'],\n  ],\n]);"
+						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$template = $rewrite->templates->create([\n  'name' => 'order_shipped',\n  'content' => 'Hi {{first_name}}, your order {{order_id}} is on the way.',\n  'variables' => [\n    ['name' => 'first_name', 'fallback' => 'customer'],\n    ['name' => 'order_id', 'fallback' => '0000'],\n  ],\n]);"
 					},
 					{
 						"lang": "ruby",
 						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nproject_id = \"748395130237498368\"\n\ntemplate = rewrite.templates.create(\n  project: project_id,\n  name: \"order_shipped\",\n  content: \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n  variables: [\n    { name: \"first_name\", fallback: \"customer\" },\n    { name: \"order_id\", fallback: \"0000\" }\n  ]\n)"
+						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\ntemplate = rewrite.templates.create(\n  name: \"order_shipped\",\n  content: \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n  variables: [\n    { name: \"first_name\", fallback: \"customer\" },\n    { name: \"order_id\", fallback: \"0000\" }\n  ]\n)"
 					},
 					{
 						"lang": "kotlin",
 						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.templates.CreateTemplateOptions\nimport com.rewritetoday.sdk.models.templates.TemplateVariable\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val projectId = \"748395130237498368\"\n\n  val template = rewrite.templates.create(\n    CreateTemplateOptions(\n      project = projectId,\n      name = \"order_shipped\",\n      content = \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n      variables = listOf(\n        TemplateVariable(name = \"first_name\", fallback = \"customer\"),\n        TemplateVariable(name = \"order_id\", fallback = \"0000\")\n      )\n    )\n  )\n\n  println(template)\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.templates.CreateTemplateOptions\nimport com.rewritetoday.sdk.models.templates.TemplateVariable\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val template = rewrite.templates.create(\n    CreateTemplateOptions(\n      name = \"order_shipped\",\n      content = \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n      variables = listOf(\n        TemplateVariable(name = \"first_name\", fallback = \"customer\"),\n        TemplateVariable(name = \"order_id\", fallback = \"0000\")\n      )\n    )\n  )\n\n  println(template)\n}"
 					},
 					{
 						"lang": "swift",
 						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet projectId = \"748395130237498368\"\n\nlet template = try await rewrite.templates.create(\n  project: projectId,\n  name: \"order_shipped\",\n  content: \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n  variables: [\n    TemplateVariable(name: \"first_name\", fallback: \"customer\"),\n    TemplateVariable(name: \"order_id\", fallback: \"0000\")\n  ]\n)\n\nprint(template)"
+						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet template = try await rewrite.templates.create(\n  name: \"order_shipped\",\n  content: \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n  variables: [\n    TemplateVariable(name: \"first_name\", fallback: \"customer\"),\n    TemplateVariable(name: \"order_id\", fallback: \"0000\")\n  ]\n)\n\nprint(template)"
 					},
 					{
 						"lang": "csharp",
 						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar projectId = \"748395130237498368\";\n\nvar template = await rewrite.Templates.CreateAsync(new CreateTemplateOptions\n{\n  Project = projectId,\n  Name = \"order_shipped\",\n  Content = \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n  Variables = new[]\n  {\n    new TemplateVariable { Name = \"first_name\", Fallback = \"customer\" },\n    new TemplateVariable { Name = \"order_id\", Fallback = \"0000\" }\n  }\n});\n\nConsole.WriteLine(template);"
+						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar template = await rewrite.Templates.CreateAsync(new CreateTemplateOptions\n{\n  Name = \"order_shipped\",\n  Content = \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n  Variables = new[]\n  {\n    new TemplateVariable { Name = \"first_name\", Fallback = \"customer\" },\n    new TemplateVariable { Name = \"order_id\", Fallback = \"0000\" }\n  }\n});\n\nConsole.WriteLine(template);"
 					}
 				]
 			}
 		},
-		"/projects/{id}/templates/{identifier}": {
+		"/templates/{identifier}": {
 			"get": {
 				"tags": ["Templates"],
 				"operationId": "getProjectTemplate",
@@ -270,15 +250,6 @@
 					}
 				],
 				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"example": "748395130237498368"
-					},
 					{
 						"name": "identifier",
 						"in": "path",
@@ -327,52 +298,52 @@
 					{
 						"lang": "node",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\nconst templateIdentifier = 'order_shipped';\n\nconst template = await rewrite.templates.get(templateIdentifier, projectId);"
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst templateIdentifier = 'order_shipped';\n\nconst template = await rewrite.templates.get(templateIdentifier);"
 					},
 					{
 						"lang": "go",
 						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\nprojectID := \"748395130237498368\"\ntemplateIdentifier := \"order_shipped\"\n\n_, err = client.Templates.Get(context.Background(), templateIdentifier, projectID)\nif err != nil { log.Fatal(err) }\n}"
+						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  templateIdentifier := \"order_shipped\"\n\n  _, err = client.Templates.Get(context.Background(), templateIdentifier)\n  if err != nil { log.Fatal(err) }\n}"
 					},
 					{
 						"lang": "python",
 						"label": "Python",
-						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\nproject_id = \"748395130237498368\"\ntemplate_identifier = \"order_shipped\"\n\ntemplate = client.templates.get(template_identifier, project_id)"
+						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\ntemplate_identifier = \"order_shipped\"\n\ntemplate = client.templates.get(template_identifier)"
 					},
 					{
 						"lang": "java",
 						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var projectId = \"748395130237498368\";\n    var templateIdentifier = \"order_shipped\";\n\n    var template = rewrite.templates().get(templateIdentifier, projectId);\n\n    System.out.println(template);\n  }\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var templateIdentifier = \"order_shipped\";\n\n    var template = rewrite.templates().get(templateIdentifier);\n\n    System.out.println(template);\n  }\n}"
 					},
 					{
 						"lang": "php",
 						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$projectId = '748395130237498368';\n$templateIdentifier = 'order_shipped';\n\n$template = $rewrite->templates->get($templateIdentifier, $projectId);"
+						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$templateIdentifier = 'order_shipped';\n\n$template = $rewrite->templates->get($templateIdentifier);"
 					},
 					{
 						"lang": "ruby",
 						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nproject_id = \"748395130237498368\"\ntemplate_identifier = \"order_shipped\"\n\ntemplate = rewrite.templates.get(template_identifier, project_id)"
+						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\ntemplate_identifier = \"order_shipped\"\n\ntemplate = rewrite.templates.get(template_identifier)"
 					},
 					{
 						"lang": "kotlin",
 						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val projectId = \"748395130237498368\"\n  val templateIdentifier = \"order_shipped\"\n\n  val template = rewrite.templates.get(templateIdentifier, projectId)\n\n  println(template)\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val templateIdentifier = \"order_shipped\"\n\n  val template = rewrite.templates.get(templateIdentifier)\n\n  println(template)\n}"
 					},
 					{
 						"lang": "swift",
 						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet projectId = \"748395130237498368\"\nlet templateIdentifier = \"order_shipped\"\n\nlet template = try await rewrite.templates.get(templateIdentifier, project: projectId)\n\nprint(template)"
+						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet templateIdentifier = \"order_shipped\"\n\nlet template = try await rewrite.templates.get(templateIdentifier)\n\nprint(template)"
 					},
 					{
 						"lang": "csharp",
 						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar projectId = \"748395130237498368\";\nvar templateIdentifier = \"order_shipped\";\n\nvar template = await rewrite.Templates.GetAsync(templateIdentifier, projectId);\n\nConsole.WriteLine(template);"
+						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar templateIdentifier = \"order_shipped\";\n\nvar template = await rewrite.Templates.GetAsync(templateIdentifier);\n\nConsole.WriteLine(template);"
 					}
 				]
 			}
 		},
-		"/projects/{id}/templates/{templateId}": {
+		"/templates/{templateId}": {
 			"patch": {
 				"tags": ["Templates"],
 				"operationId": "updateProjectTemplate",
@@ -383,15 +354,6 @@
 					}
 				],
 				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"example": "748395130237498368"
-					},
 					{
 						"name": "templateId",
 						"in": "path",
@@ -456,47 +418,47 @@
 					{
 						"lang": "node",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\nconst templateId = '748395130237498500';\n\nconst template = await rewrite.templates.update(templateId, {\n  project: projectId,\n  content: 'Hi {{first_name}}, your package {{order_id}} has shipped.',\n  variables: [\n    { name: 'first_name', fallback: 'customer' },\n    { name: 'order_id', fallback: '0000' },\n  ],\n});"
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst templateId = '748395130237498500';\n\nconst template = await rewrite.templates.update(templateId, {\n  content: 'Hi {{first_name}}, your package {{order_id}} has shipped.',\n  variables: [\n    { name: 'first_name', fallback: 'customer' },\n    { name: 'order_id', fallback: '0000' },\n  ],\n});"
 					},
 					{
 						"lang": "go",
 						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\nprojectID := \"748395130237498368\"\ntemplateID := \"748395130237498500\"\nfirstNameFallback := \"customer\"\norderIDFallback := \"0000\"\n\n_, err = client.Templates.Update(context.Background(), templateID, rewrite.UpdateTemplateOptions{\n  Project: projectID,\n  RESTPatchUpdateTemplateBody: rewrite.RESTPatchUpdateTemplateBody{\n    Content: \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n    Variables: []rewrite.APITemplateVariable{\n      {Name: \"first_name\", Fallback: &firstNameFallback},\n      {Name: \"order_id\", Fallback: &orderIDFallback},\n    },\n  },\n})\nif err != nil { log.Fatal(err) }\n}"
+						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  templateID := \"748395130237498500\"\n  firstNameFallback := \"customer\"\n  orderIDFallback := \"0000\"\n\n  _, err = client.Templates.Update(context.Background(), templateID, rewrite.UpdateTemplateOptions{\n    RESTPatchUpdateTemplateBody: rewrite.RESTPatchUpdateTemplateBody{\n      Content: \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n      Variables: []rewrite.APITemplateVariable{\n        {Name: \"first_name\", Fallback: &firstNameFallback},\n        {Name: \"order_id\", Fallback: &orderIDFallback},\n      },\n    },\n  })\n  if err != nil { log.Fatal(err) }\n}"
 					},
 					{
 						"lang": "python",
 						"label": "Python",
-						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\nproject_id = \"748395130237498368\"\ntemplate_id = \"748395130237498500\"\n\ntemplate = client.templates.update(\n    template_id,\n    {\n        \"project\": project_id,\n        \"content\": \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n        \"variables\": [\n            {\"name\": \"first_name\", \"fallback\": \"customer\"},\n            {\"name\": \"order_id\", \"fallback\": \"0000\"},\n        ],\n    }\n)"
+						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\ntemplate_id = \"748395130237498500\"\n\ntemplate = client.templates.update(\n    template_id,\n    {\n        \"content\": \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n        \"variables\": [\n            {\"name\": \"first_name\", \"fallback\": \"customer\"},\n            {\"name\": \"order_id\", \"fallback\": \"0000\"},\n        ],\n    }\n)"
 					},
 					{
 						"lang": "java",
 						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.templates.TemplateVariable;\nimport com.rewritetoday.sdk.models.templates.UpdateTemplateOptions;\nimport java.util.List;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var projectId = \"748395130237498368\";\n    var templateId = \"748395130237498500\";\n\n    var template = rewrite.templates().update(\n      templateId,\n      UpdateTemplateOptions.builder()\n        .project(projectId)\n        .content(\"Hi {{first_name}}, your package {{order_id}} has shipped.\")\n        .variables(List.of(\n          TemplateVariable.builder().name(\"first_name\").fallback(\"customer\").build(),\n          TemplateVariable.builder().name(\"order_id\").fallback(\"0000\").build()\n        ))\n        .build()\n    );\n\n    System.out.println(template);\n  }\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.templates.TemplateVariable;\nimport com.rewritetoday.sdk.models.templates.UpdateTemplateOptions;\nimport java.util.List;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var templateId = \"748395130237498500\";\n\n    var template = rewrite.templates().update(\n      templateId,\n      UpdateTemplateOptions.builder()\n        .content(\"Hi {{first_name}}, your package {{order_id}} has shipped.\")\n        .variables(List.of(\n          TemplateVariable.builder().name(\"first_name\").fallback(\"customer\").build(),\n          TemplateVariable.builder().name(\"order_id\").fallback(\"0000\").build()\n        ))\n        .build()\n    );\n\n    System.out.println(template);\n  }\n}"
 					},
 					{
 						"lang": "php",
 						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$projectId = '748395130237498368';\n$templateId = '748395130237498500';\n\n$template = $rewrite->templates->update($templateId, [\n  'project' => $projectId,\n  'content' => 'Hi {{first_name}}, your package {{order_id}} has shipped.',\n  'variables' => [\n    ['name' => 'first_name', 'fallback' => 'customer'],\n    ['name' => 'order_id', 'fallback' => '0000'],\n  ],\n]);"
+						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$templateId = '748395130237498500';\n\n$template = $rewrite->templates->update($templateId, [\n  'content' => 'Hi {{first_name}}, your package {{order_id}} has shipped.',\n  'variables' => [\n    ['name' => 'first_name', 'fallback' => 'customer'],\n    ['name' => 'order_id', 'fallback' => '0000'],\n  ],\n]);"
 					},
 					{
 						"lang": "ruby",
 						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nproject_id = \"748395130237498368\"\ntemplate_id = \"748395130237498500\"\n\ntemplate = rewrite.templates.update(\n  template_id,\n  project: project_id,\n  content: \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n  variables: [\n    { name: \"first_name\", fallback: \"customer\" },\n    { name: \"order_id\", fallback: \"0000\" }\n  ]\n)"
+						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\ntemplate_id = \"748395130237498500\"\n\ntemplate = rewrite.templates.update(\n  template_id,\n  content: \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n  variables: [\n    { name: \"first_name\", fallback: \"customer\" },\n    { name: \"order_id\", fallback: \"0000\" }\n  ]\n)"
 					},
 					{
 						"lang": "kotlin",
 						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.templates.TemplateVariable\nimport com.rewritetoday.sdk.models.templates.UpdateTemplateOptions\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val projectId = \"748395130237498368\"\n  val templateId = \"748395130237498500\"\n\n  val template = rewrite.templates.update(\n    templateId,\n    UpdateTemplateOptions(\n      project = projectId,\n      content = \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n      variables = listOf(\n        TemplateVariable(name = \"first_name\", fallback = \"customer\"),\n        TemplateVariable(name = \"order_id\", fallback = \"0000\")\n      )\n    )\n  )\n\n  println(template)\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.templates.TemplateVariable\nimport com.rewritetoday.sdk.models.templates.UpdateTemplateOptions\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val templateId = \"748395130237498500\"\n\n  val template = rewrite.templates.update(\n    templateId,\n    UpdateTemplateOptions(\n      content = \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n      variables = listOf(\n        TemplateVariable(name = \"first_name\", fallback = \"customer\"),\n        TemplateVariable(name = \"order_id\", fallback = \"0000\")\n      )\n    )\n  )\n\n  println(template)\n}"
 					},
 					{
 						"lang": "swift",
 						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet projectId = \"748395130237498368\"\nlet templateId = \"748395130237498500\"\n\nlet template = try await rewrite.templates.update(\n  templateId,\n  project: projectId,\n  content: \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n  variables: [\n    TemplateVariable(name: \"first_name\", fallback: \"customer\"),\n    TemplateVariable(name: \"order_id\", fallback: \"0000\")\n  ]\n)\n\nprint(template)"
+						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet templateId = \"748395130237498500\"\n\nlet template = try await rewrite.templates.update(\n  templateId,\n  content: \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n  variables: [\n    TemplateVariable(name: \"first_name\", fallback: \"customer\"),\n    TemplateVariable(name: \"order_id\", fallback: \"0000\")\n  ]\n)\n\nprint(template)"
 					},
 					{
 						"lang": "csharp",
 						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar projectId = \"748395130237498368\";\nvar templateId = \"748395130237498500\";\n\nvar template = await rewrite.Templates.UpdateAsync(templateId, new UpdateTemplateOptions\n{\n  Project = projectId,\n  Content = \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n  Variables = new[]\n  {\n    new TemplateVariable { Name = \"first_name\", Fallback = \"customer\" },\n    new TemplateVariable { Name = \"order_id\", Fallback = \"0000\" }\n  }\n});\n\nConsole.WriteLine(template);"
+						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar templateId = \"748395130237498500\";\n\nvar template = await rewrite.Templates.UpdateAsync(templateId, new UpdateTemplateOptions\n{\n  Content = \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n  Variables = new[]\n  {\n    new TemplateVariable { Name = \"first_name\", Fallback = \"customer\" },\n    new TemplateVariable { Name = \"order_id\", Fallback = \"0000\" }\n  }\n});\n\nConsole.WriteLine(template);"
 					}
 				]
 			},
@@ -510,15 +472,6 @@
 					}
 				],
 				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"example": "748395130237498368"
-					},
 					{
 						"name": "templateId",
 						"in": "path",
@@ -555,47 +508,47 @@
 					{
 						"lang": "node",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\nconst templateId = '748395130237498500';\n\nawait rewrite.templates.delete(templateId, projectId);"
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst templateId = '748395130237498500';\n\nawait rewrite.templates.delete(templateId);"
 					},
 					{
 						"lang": "go",
 						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\nprojectID := \"748395130237498368\"\ntemplateID := \"748395130237498500\"\n\nif err := client.Templates.Delete(context.Background(), templateID, projectID); err != nil {\n  log.Fatal(err)\n}\n}"
+						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  templateID := \"748395130237498500\"\n\n  if err := client.Templates.Delete(context.Background(), templateID); err != nil {\n    log.Fatal(err)\n  }\n}"
 					},
 					{
 						"lang": "python",
 						"label": "Python",
-						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\nproject_id = \"748395130237498368\"\ntemplate_id = \"748395130237498500\"\n\nclient.templates.delete(template_id, project_id)"
+						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\ntemplate_id = \"748395130237498500\"\n\nclient.templates.delete(template_id)"
 					},
 					{
 						"lang": "java",
 						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var projectId = \"748395130237498368\";\n    var templateId = \"748395130237498500\";\n\n    rewrite.templates().delete(templateId, projectId);\n  }\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var templateId = \"748395130237498500\";\n\n    rewrite.templates().delete(templateId);\n  }\n}"
 					},
 					{
 						"lang": "php",
 						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$projectId = '748395130237498368';\n$templateId = '748395130237498500';\n\n$rewrite->templates->delete($templateId, $projectId);"
+						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$templateId = '748395130237498500';\n\n$rewrite->templates->delete($templateId);"
 					},
 					{
 						"lang": "ruby",
 						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nproject_id = \"748395130237498368\"\ntemplate_id = \"748395130237498500\"\n\nrewrite.templates.delete(template_id, project_id)"
+						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\ntemplate_id = \"748395130237498500\"\n\nrewrite.templates.delete(template_id)"
 					},
 					{
 						"lang": "kotlin",
 						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val projectId = \"748395130237498368\"\n  val templateId = \"748395130237498500\"\n\n  rewrite.templates.delete(templateId, projectId)\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val templateId = \"748395130237498500\"\n\n  rewrite.templates.delete(templateId)\n}"
 					},
 					{
 						"lang": "swift",
 						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet projectId = \"748395130237498368\"\nlet templateId = \"748395130237498500\"\n\ntry await rewrite.templates.delete(templateId, project: projectId)"
+						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet templateId = \"748395130237498500\"\n\ntry await rewrite.templates.delete(templateId)"
 					},
 					{
 						"lang": "csharp",
 						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar projectId = \"748395130237498368\";\nvar templateId = \"748395130237498500\";\n\nawait rewrite.Templates.DeleteAsync(templateId, projectId);"
+						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar templateId = \"748395130237498500\";\n\nawait rewrite.Templates.DeleteAsync(templateId);"
 					}
 				]
 			}

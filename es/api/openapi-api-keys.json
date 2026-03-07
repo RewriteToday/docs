@@ -19,7 +19,7 @@
 		}
 	],
 	"paths": {
-		"/projects/{id}/api-keys": {
+		"/api-keys": {
 			"get": {
 				"tags": ["API Keys"],
 				"operationId": "listProjectApiKeys",
@@ -30,15 +30,6 @@
 					}
 				],
 				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"example": "748395130237498368"
-					},
 					{
 						"$ref": "#/components/parameters/after"
 					},
@@ -86,47 +77,47 @@
 					{
 						"lang": "node",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nconst apiKeys = await rewrite.apiKeys.list(projectId, { limit: 20 });"
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst apiKeys = await rewrite.apiKeys.list({ limit: 20 });"
 					},
 					{
 						"lang": "go",
 						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\nprojectID := \"748395130237498368\"\n\n_, err = client.APIKeys.List(context.Background(), projectID, &rewrite.RESTGetListAPIKeysQueryParams{Limit: 20})\nif err != nil { log.Fatal(err) }\n}"
+						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  _, err = client.APIKeys.List(context.Background(), &rewrite.RESTGetListAPIKeysQueryParams{Limit: 20})\n  if err != nil { log.Fatal(err) }\n}"
 					},
 					{
 						"lang": "python",
 						"label": "Python",
-						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\nproject_id = \"748395130237498368\"\n\napi_keys = client.api_keys.list(project_id, {\"limit\": 20})"
+						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\napi_keys = client.api_keys.list({\"limit\": 20})"
 					},
 					{
 						"lang": "java",
 						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.apiKeys.ListApiKeysOptions;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var projectId = \"748395130237498368\";\n\n    var apiKeys = rewrite.apiKeys().list(\n      projectId,\n      ListApiKeysOptions.builder()\n        .limit(20)\n        .build()\n    );\n\n    System.out.println(apiKeys);\n  }\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.apiKeys.ListApiKeysOptions;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var apiKeys = rewrite.apiKeys().list(\n      ListApiKeysOptions.builder()\n        .limit(20)\n        .build()\n    );\n\n    System.out.println(apiKeys);\n  }\n}"
 					},
 					{
 						"lang": "php",
 						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$projectId = '748395130237498368';\n\n$apiKeys = $rewrite->apiKeys->list($projectId, [\n  'limit' => 20,\n]);"
+						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$apiKeys = $rewrite->apiKeys->list([\n  'limit' => 20,\n]);"
 					},
 					{
 						"lang": "ruby",
 						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nproject_id = \"748395130237498368\"\n\napi_keys = rewrite.api_keys.list(project_id, limit: 20)"
+						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\napi_keys = rewrite.api_keys.list(limit: 20)"
 					},
 					{
 						"lang": "kotlin",
 						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.apiKeys.ListApiKeysOptions\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val projectId = \"748395130237498368\"\n\n  val apiKeys = rewrite.apiKeys.list(\n    projectId,\n    ListApiKeysOptions(limit = 20)\n  )\n\n  println(apiKeys)\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.apiKeys.ListApiKeysOptions\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val apiKeys = rewrite.apiKeys.list(\n    ListApiKeysOptions(limit = 20)\n  )\n\n  println(apiKeys)\n}"
 					},
 					{
 						"lang": "swift",
 						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet projectId = \"748395130237498368\"\n\nlet apiKeys = try await rewrite.apiKeys.list(project: projectId, limit: 20)\n\nprint(apiKeys)"
+						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet apiKeys = try await rewrite.apiKeys.list(limit: 20)\n\nprint(apiKeys)"
 					},
 					{
 						"lang": "csharp",
 						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar projectId = \"748395130237498368\";\n\nvar apiKeys = await rewrite.ApiKeys.ListAsync(projectId, new ListApiKeysOptions\n{\n  Limit = 20\n});\n\nConsole.WriteLine(apiKeys);"
+						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar apiKeys = await rewrite.ApiKeys.ListAsync(new ListApiKeysOptions\n{\n  Limit = 20\n});\n\nConsole.WriteLine(apiKeys);"
 					}
 				]
 			},
@@ -137,17 +128,6 @@
 				"security": [
 					{
 						"bearerAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"example": "748395130237498368"
 					}
 				],
 				"requestBody": {
@@ -203,52 +183,52 @@
 					{
 						"lang": "node",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nconst apiKey = await rewrite.apiKeys.create({\n  project: projectId,\n  name: 'Jobs worker',\n  scopes: ['project:templates:read', 'projects:webhooks:read'],\n});"
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst apiKey = await rewrite.apiKeys.create({\n  name: 'Jobs worker',\n  scopes: ['project:templates:read', 'projects:webhooks:read'],\n});"
 					},
 					{
 						"lang": "go",
 						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\nprojectID := \"748395130237498368\"\n\n_, err = client.APIKeys.Create(context.Background(), rewrite.CreateAPIKeyOptions{\n  Project: projectID,\n  RESTPostCreateAPIKeyBody: rewrite.RESTPostCreateAPIKeyBody{\n    Name: \"Jobs worker\",\n    Scopes: []rewrite.APIKeyScope{\n      rewrite.APIKeyScopeReadTemplates,\n      rewrite.APIKeyScopeReadWebhooks,\n    },\n  },\n})\nif err != nil { log.Fatal(err) }\n}"
+						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  _, err = client.APIKeys.Create(context.Background(), rewrite.CreateAPIKeyOptions{\n    RESTPostCreateAPIKeyBody: rewrite.RESTPostCreateAPIKeyBody{\n      Name: \"Jobs worker\",\n      Scopes: []rewrite.APIKeyScope{\n        rewrite.APIKeyScopeReadTemplates,\n        rewrite.APIKeyScopeReadWebhooks,\n      },\n    },\n  })\n  if err != nil { log.Fatal(err) }\n}"
 					},
 					{
 						"lang": "python",
 						"label": "Python",
-						"source": "from rewrite import APIKeyScope, Client\n\nclient = Client(\"rw_your_api_key\")\n\nproject_id = \"748395130237498368\"\n\napi_key = client.api_keys.create(\n    {\n        \"project\": project_id,\n        \"name\": \"Jobs worker\",\n        \"scopes\": [\n            APIKeyScope.READ_TEMPLATES,\n            APIKeyScope.READ_WEBHOOKS,\n        ],\n    }\n)"
+						"source": "from rewrite import APIKeyScope, Client\n\nclient = Client(\"rw_your_api_key\")\n\napi_key = client.api_keys.create(\n    {\n        \"name\": \"Jobs worker\",\n        \"scopes\": [\n            APIKeyScope.READ_TEMPLATES,\n            APIKeyScope.READ_WEBHOOKS,\n        ],\n    }\n)"
 					},
 					{
 						"lang": "java",
 						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.apiKeys.CreateApiKeyOptions;\nimport java.util.List;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var projectId = \"748395130237498368\";\n\n    var apiKey = rewrite.apiKeys().create(\n      CreateApiKeyOptions.builder()\n        .project(projectId)\n        .name(\"Jobs worker\")\n        .scopes(List.of(\"project:templates:read\", \"projects:webhooks:read\"))\n        .build()\n    );\n\n    System.out.println(apiKey);\n  }\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.apiKeys.CreateApiKeyOptions;\nimport java.util.List;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var apiKey = rewrite.apiKeys().create(\n      CreateApiKeyOptions.builder()\n        .name(\"Jobs worker\")\n        .scopes(List.of(\"project:templates:read\", \"projects:webhooks:read\"))\n        .build()\n    );\n\n    System.out.println(apiKey);\n  }\n}"
 					},
 					{
 						"lang": "php",
 						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$projectId = '748395130237498368';\n\n$apiKey = $rewrite->apiKeys->create([\n  'project' => $projectId,\n  'name' => 'Jobs worker',\n  'scopes' => ['project:templates:read', 'projects:webhooks:read'],\n]);"
+						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$apiKey = $rewrite->apiKeys->create([\n  'name' => 'Jobs worker',\n  'scopes' => ['project:templates:read', 'projects:webhooks:read'],\n]);"
 					},
 					{
 						"lang": "ruby",
 						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nproject_id = \"748395130237498368\"\n\napi_key = rewrite.api_keys.create(\n  project: project_id,\n  name: \"Jobs worker\",\n  scopes: [\"project:templates:read\", \"projects:webhooks:read\"]\n)"
+						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\napi_key = rewrite.api_keys.create(\n  name: \"Jobs worker\",\n  scopes: [\"project:templates:read\", \"projects:webhooks:read\"]\n)"
 					},
 					{
 						"lang": "kotlin",
 						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.apiKeys.CreateApiKeyOptions\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val projectId = \"748395130237498368\"\n\n  val apiKey = rewrite.apiKeys.create(\n    CreateApiKeyOptions(\n      project = projectId,\n      name = \"Jobs worker\",\n      scopes = listOf(\"project:templates:read\", \"projects:webhooks:read\")\n    )\n  )\n\n  println(apiKey)\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.apiKeys.CreateApiKeyOptions\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val apiKey = rewrite.apiKeys.create(\n    CreateApiKeyOptions(\n      name = \"Jobs worker\",\n      scopes = listOf(\"project:templates:read\", \"projects:webhooks:read\")\n    )\n  )\n\n  println(apiKey)\n}"
 					},
 					{
 						"lang": "swift",
 						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet projectId = \"748395130237498368\"\n\nlet apiKey = try await rewrite.apiKeys.create(\n  project: projectId,\n  name: \"Jobs worker\",\n  scopes: [\"project:templates:read\", \"projects:webhooks:read\"]\n)\n\nprint(apiKey)"
+						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet apiKey = try await rewrite.apiKeys.create(\n  name: \"Jobs worker\",\n  scopes: [\"project:templates:read\", \"projects:webhooks:read\"]\n)\n\nprint(apiKey)"
 					},
 					{
 						"lang": "csharp",
 						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar projectId = \"748395130237498368\";\n\nvar apiKey = await rewrite.ApiKeys.CreateAsync(new CreateApiKeyOptions\n{\n  Project = projectId,\n  Name = \"Jobs worker\",\n  Scopes = new[] { \"project:templates:read\", \"projects:webhooks:read\" }\n});\n\nConsole.WriteLine(apiKey);"
+						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar apiKey = await rewrite.ApiKeys.CreateAsync(new CreateApiKeyOptions\n{\n  Name = \"Jobs worker\",\n  Scopes = new[] { \"project:templates:read\", \"projects:webhooks:read\" }\n});\n\nConsole.WriteLine(apiKey);"
 					}
 				]
 			}
 		},
-		"/projects/{id}/api-keys/{key}": {
+		"/api-keys/{key}": {
 			"delete": {
 				"tags": ["API Keys"],
 				"operationId": "deleteProjectApiKey",
@@ -259,15 +239,6 @@
 					}
 				],
 				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"example": "748395130237498368"
-					},
 					{
 						"name": "key",
 						"in": "path",
@@ -304,47 +275,47 @@
 					{
 						"lang": "node",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\nconst apiKeyId = '748395130237498400';\n\nawait rewrite.apiKeys.delete(apiKeyId, projectId);"
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst apiKeyId = '748395130237498400';\n\nawait rewrite.apiKeys.delete(apiKeyId);"
 					},
 					{
 						"lang": "go",
 						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\nprojectID := \"748395130237498368\"\napiKeyID := \"748395130237498400\"\n\nif err := client.APIKeys.Delete(context.Background(), apiKeyID, projectID); err != nil {\n  log.Fatal(err)\n}\n}"
+						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  apiKeyID := \"748395130237498400\"\n\n  if err := client.APIKeys.Delete(context.Background(), apiKeyID); err != nil {\n    log.Fatal(err)\n  }\n}"
 					},
 					{
 						"lang": "python",
 						"label": "Python",
-						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\nproject_id = \"748395130237498368\"\napi_key_id = \"748395130237498400\"\n\nclient.api_keys.delete(api_key_id, project_id)"
+						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\napi_key_id = \"748395130237498400\"\n\nclient.api_keys.delete(api_key_id)"
 					},
 					{
 						"lang": "java",
 						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var projectId = \"748395130237498368\";\n    var apiKeyId = \"748395130237498400\";\n\n    rewrite.apiKeys().delete(apiKeyId, projectId);\n  }\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var apiKeyId = \"748395130237498400\";\n\n    rewrite.apiKeys().delete(apiKeyId);\n  }\n}"
 					},
 					{
 						"lang": "php",
 						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$projectId = '748395130237498368';\n$apiKeyId = '748395130237498400';\n\n$rewrite->apiKeys->delete($apiKeyId, $projectId);"
+						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$apiKeyId = '748395130237498400';\n\n$rewrite->apiKeys->delete($apiKeyId);"
 					},
 					{
 						"lang": "ruby",
 						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nproject_id = \"748395130237498368\"\napi_key_id = \"748395130237498400\"\n\nrewrite.api_keys.delete(api_key_id, project_id)"
+						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\napi_key_id = \"748395130237498400\"\n\nrewrite.api_keys.delete(api_key_id)"
 					},
 					{
 						"lang": "kotlin",
 						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val projectId = \"748395130237498368\"\n  val apiKeyId = \"748395130237498400\"\n\n  rewrite.apiKeys.delete(apiKeyId, projectId)\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val apiKeyId = \"748395130237498400\"\n\n  rewrite.apiKeys.delete(apiKeyId)\n}"
 					},
 					{
 						"lang": "swift",
 						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet projectId = \"748395130237498368\"\nlet apiKeyId = \"748395130237498400\"\n\ntry await rewrite.apiKeys.delete(apiKeyId, project: projectId)"
+						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet apiKeyId = \"748395130237498400\"\n\ntry await rewrite.apiKeys.delete(apiKeyId)"
 					},
 					{
 						"lang": "csharp",
 						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar projectId = \"748395130237498368\";\nvar apiKeyId = \"748395130237498400\";\n\nawait rewrite.ApiKeys.DeleteAsync(apiKeyId, projectId);"
+						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar apiKeyId = \"748395130237498400\";\n\nawait rewrite.ApiKeys.DeleteAsync(apiKeyId);"
 					}
 				]
 			}

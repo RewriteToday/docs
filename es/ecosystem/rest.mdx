@@ -63,7 +63,7 @@ const rewrite = new REST({
   timeout: 12_000,
 });
 
-const response = await rewrite.get<RESTGetListAPIKeysData>(Routes.apiKeys.list('748395130237498368'));
+const response = await rewrite.get<RESTGetListAPIKeysData>(Routes.apiKeys.list());
 console.log(response.data);
 ```
 

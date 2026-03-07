@@ -12,7 +12,7 @@ Repositorio: [github.com/RewriteToday/types](https://github.com/RewriteToday/typ
 
 <CardGroup cols={2}>
   <Card title="Rotas" icon="signs-post" color="#C9CBD1">
-    Builders como `Routes.apiKeys.create(projectId)`.
+    Builders como `Routes.apiKeys.create()`.
   </Card>
   <Card title="Enums" icon="list" color="#C9CBD1">
     Enums compartilhados para escopos, eventos, status e constantes de dominio.
@@ -50,8 +50,8 @@ bun add @rewritejs/types
 ```ts
 import { Routes } from '@rewritejs/types';
 
-const listRoute = Routes.apiKeys.list('748395130237498368');
-const createRoute = Routes.apiKeys.create('748395130237498368');
+const listRoute = Routes.apiKeys.list();
+const createRoute = Routes.apiKeys.create();
 
 console.log({ listRoute, createRoute });
 ```

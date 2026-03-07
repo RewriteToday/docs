@@ -103,31 +103,31 @@
 								"group": "API Keys",
 								"openapi": "en/api/openapi-api-keys.json",
 								"pages": [
-									"GET /projects/{id}/api-keys",
-									"POST /projects/{id}/api-keys",
-									"DELETE /projects/{id}/api-keys/{key}"
+									"GET /api-keys",
+									"POST /api-keys",
+									"DELETE /api-keys/{key}"
 								]
 							},
 							{
 								"group": "Templates",
 								"openapi": "en/api/openapi-templates.json",
 								"pages": [
-									"GET /projects/{id}/templates",
-									"POST /projects/{id}/templates",
-									"GET /projects/{id}/templates/{identifier}",
-									"PATCH /projects/{id}/templates/{templateId}",
-									"DELETE /projects/{id}/templates/{templateId}"
+									"GET /templates",
+									"POST /templates",
+									"GET /templates/{identifier}",
+									"PATCH /templates/{templateId}",
+									"DELETE /templates/{templateId}"
 								]
 							},
 							{
 								"group": "Webhooks",
 								"openapi": "en/api/openapi-webhooks.json",
 								"pages": [
-									"GET /projects/{id}/webhooks",
-									"POST /projects/{id}/webhooks",
-									"GET /projects/{id}/webhooks/{webhookId}",
-									"PATCH /projects/{id}/webhooks/{webhookId}",
-									"DELETE /projects/{id}/webhooks/{webhookId}"
+									"GET /webhooks",
+									"POST /webhooks",
+									"GET /webhooks/{webhookId}",
+									"PATCH /webhooks/{webhookId}",
+									"DELETE /webhooks/{webhookId}"
 								]
 							}
 						]
@@ -288,31 +288,31 @@
 								"group": "API Keys",
 								"openapi": "en/api/openapi-api-keys.json",
 								"pages": [
-									"GET /projects/{id}/api-keys",
-									"POST /projects/{id}/api-keys",
-									"DELETE /projects/{id}/api-keys/{key}"
+									"GET /api-keys",
+									"POST /api-keys",
+									"DELETE /api-keys/{key}"
 								]
 							},
 							{
 								"group": "Templates",
 								"openapi": "en/api/openapi-templates.json",
 								"pages": [
-									"GET /projects/{id}/templates",
-									"POST /projects/{id}/templates",
-									"GET /projects/{id}/templates/{identifier}",
-									"PATCH /projects/{id}/templates/{templateId}",
-									"DELETE /projects/{id}/templates/{templateId}"
+									"GET /templates",
+									"POST /templates",
+									"GET /templates/{identifier}",
+									"PATCH /templates/{templateId}",
+									"DELETE /templates/{templateId}"
 								]
 							},
 							{
 								"group": "Webhooks",
 								"openapi": "en/api/openapi-webhooks.json",
 								"pages": [
-									"GET /projects/{id}/webhooks",
-									"POST /projects/{id}/webhooks",
-									"GET /projects/{id}/webhooks/{webhookId}",
-									"PATCH /projects/{id}/webhooks/{webhookId}",
-									"DELETE /projects/{id}/webhooks/{webhookId}"
+									"GET /webhooks",
+									"POST /webhooks",
+									"GET /webhooks/{webhookId}",
+									"PATCH /webhooks/{webhookId}",
+									"DELETE /webhooks/{webhookId}"
 								]
 							}
 						]
@@ -477,31 +477,31 @@
 								"group": "Claves API",
 								"openapi": "es/api/openapi-api-keys.json",
 								"pages": [
-									"GET /projects/{id}/api-keys",
-									"POST /projects/{id}/api-keys",
-									"DELETE /projects/{id}/api-keys/{key}"
+									"GET /api-keys",
+									"POST /api-keys",
+									"DELETE /api-keys/{key}"
 								]
 							},
 							{
 								"group": "Plantillas",
 								"openapi": "es/api/openapi-templates.json",
 								"pages": [
-									"GET /projects/{id}/templates",
-									"POST /projects/{id}/templates",
-									"GET /projects/{id}/templates/{identifier}",
-									"PATCH /projects/{id}/templates/{templateId}",
-									"DELETE /projects/{id}/templates/{templateId}"
+									"GET /templates",
+									"POST /templates",
+									"GET /templates/{identifier}",
+									"PATCH /templates/{templateId}",
+									"DELETE /templates/{templateId}"
 								]
 							},
 							{
 								"group": "Webhooks",
 								"openapi": "es/api/openapi-webhooks.json",
 								"pages": [
-									"GET /projects/{id}/webhooks",
-									"POST /projects/{id}/webhooks",
-									"GET /projects/{id}/webhooks/{webhookId}",
-									"PATCH /projects/{id}/webhooks/{webhookId}",
-									"DELETE /projects/{id}/webhooks/{webhookId}"
+									"GET /webhooks",
+									"POST /webhooks",
+									"GET /webhooks/{webhookId}",
+									"PATCH /webhooks/{webhookId}",
+									"DELETE /webhooks/{webhookId}"
 								]
 							}
 						]
@@ -662,31 +662,31 @@
 								"group": "Clés API",
 								"openapi": "fr/api/openapi-api-keys.json",
 								"pages": [
-									"GET /projects/{id}/api-keys",
-									"POST /projects/{id}/api-keys",
-									"DELETE /projects/{id}/api-keys/{key}"
+									"GET /api-keys",
+									"POST /api-keys",
+									"DELETE /api-keys/{key}"
 								]
 							},
 							{
 								"group": "Modèles",
 								"openapi": "fr/api/openapi-templates.json",
 								"pages": [
-									"GET /projects/{id}/templates",
-									"POST /projects/{id}/templates",
-									"GET /projects/{id}/templates/{identifier}",
-									"PATCH /projects/{id}/templates/{templateId}",
-									"DELETE /projects/{id}/templates/{templateId}"
+									"GET /templates",
+									"POST /templates",
+									"GET /templates/{identifier}",
+									"PATCH /templates/{templateId}",
+									"DELETE /templates/{templateId}"
 								]
 							},
 							{
 								"group": "Webhooks",
 								"openapi": "fr/api/openapi-webhooks.json",
 								"pages": [
-									"GET /projects/{id}/webhooks",
-									"POST /projects/{id}/webhooks",
-									"GET /projects/{id}/webhooks/{webhookId}",
-									"PATCH /projects/{id}/webhooks/{webhookId}",
-									"DELETE /projects/{id}/webhooks/{webhookId}"
+									"GET /webhooks",
+									"POST /webhooks",
+									"GET /webhooks/{webhookId}",
+									"PATCH /webhooks/{webhookId}",
+									"DELETE /webhooks/{webhookId}"
 								]
 							}
 						]

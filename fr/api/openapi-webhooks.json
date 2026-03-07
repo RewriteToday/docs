@@ -19,7 +19,7 @@
 		}
 	],
 	"paths": {
-		"/projects/{id}/webhooks": {
+		"/webhooks": {
 			"get": {
 				"tags": ["Webhooks"],
 				"operationId": "listProjectWebhooks",
@@ -30,15 +30,6 @@
 					}
 				],
 				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"example": "748395130237498368"
-					},
 					{
 						"$ref": "#/components/parameters/after"
 					},
@@ -91,47 +82,47 @@
 					{
 						"lang": "node",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nconst webhooks = await rewrite.webhooks.list(projectId, { limit: 20 });"
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst webhooks = await rewrite.webhooks.list({ limit: 20 });"
 					},
 					{
 						"lang": "go",
 						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\nprojectID := \"748395130237498368\"\n\n_, err = client.Webhooks.List(context.Background(), projectID, &rewrite.RESTGetListWebhooksQueryParams{Limit: 20})\nif err != nil { log.Fatal(err) }\n}"
+						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  _, err = client.Webhooks.List(context.Background(), &rewrite.RESTGetListWebhooksQueryParams{Limit: 20})\n  if err != nil { log.Fatal(err) }\n}"
 					},
 					{
 						"lang": "python",
 						"label": "Python",
-						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\nproject_id = \"748395130237498368\"\n\nwebhooks = client.webhooks.list(project_id, {\"limit\": 20})"
+						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\nwebhooks = client.webhooks.list({\"limit\": 20})"
 					},
 					{
 						"lang": "java",
 						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.webhooks.ListWebhooksOptions;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var projectId = \"748395130237498368\";\n\n    var webhooks = rewrite.webhooks().list(\n      projectId,\n      ListWebhooksOptions.builder()\n        .limit(20)\n        .build()\n    );\n\n    System.out.println(webhooks);\n  }\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.webhooks.ListWebhooksOptions;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var webhooks = rewrite.webhooks().list(\n      ListWebhooksOptions.builder()\n        .limit(20)\n        .build()\n    );\n\n    System.out.println(webhooks);\n  }\n}"
 					},
 					{
 						"lang": "php",
 						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$projectId = '748395130237498368';\n\n$webhooks = $rewrite->webhooks->list($projectId, [\n  'limit' => 20,\n]);"
+						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$webhooks = $rewrite->webhooks->list([\n  'limit' => 20,\n]);"
 					},
 					{
 						"lang": "ruby",
 						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nproject_id = \"748395130237498368\"\n\nwebhooks = rewrite.webhooks.list(project_id, limit: 20)"
+						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nwebhooks = rewrite.webhooks.list(limit: 20)"
 					},
 					{
 						"lang": "kotlin",
 						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.webhooks.ListWebhooksOptions\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val projectId = \"748395130237498368\"\n\n  val webhooks = rewrite.webhooks.list(\n    projectId,\n    ListWebhooksOptions(limit = 20)\n  )\n\n  println(webhooks)\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.webhooks.ListWebhooksOptions\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val webhooks = rewrite.webhooks.list(\n    ListWebhooksOptions(limit = 20)\n  )\n\n  println(webhooks)\n}"
 					},
 					{
 						"lang": "swift",
 						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet projectId = \"748395130237498368\"\n\nlet webhooks = try await rewrite.webhooks.list(project: projectId, limit: 20)\n\nprint(webhooks)"
+						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet webhooks = try await rewrite.webhooks.list(limit: 20)\n\nprint(webhooks)"
 					},
 					{
 						"lang": "csharp",
 						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar projectId = \"748395130237498368\";\n\nvar webhooks = await rewrite.Webhooks.ListAsync(projectId, new ListWebhooksOptions\n{\n  Limit = 20\n});\n\nConsole.WriteLine(webhooks);"
+						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar webhooks = await rewrite.Webhooks.ListAsync(new ListWebhooksOptions\n{\n  Limit = 20\n});\n\nConsole.WriteLine(webhooks);"
 					}
 				]
 			},
@@ -142,17 +133,6 @@
 				"security": [
 					{
 						"bearerAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"example": "748395130237498368"
 					}
 				],
 				"requestBody": {
@@ -203,52 +183,52 @@
 					{
 						"lang": "node",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nconst webhook = await rewrite.webhooks.create({\n  project: projectId,\n  name: 'Delivery events',\n  endpoint: 'https://example.com/webhooks/rewrite',\n  events: ['sms.queued', 'sms.delivered', 'sms.failed'],\n});"
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst webhook = await rewrite.webhooks.create({\n  name: 'Delivery events',\n  endpoint: 'https://example.com/webhooks/rewrite',\n  events: ['sms.queued', 'sms.delivered', 'sms.failed'],\n});"
 					},
 					{
 						"lang": "go",
 						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\nprojectID := \"748395130237498368\"\n\n_, err = client.Webhooks.Create(context.Background(), rewrite.CreateWebhookOptions{\n  Project:  projectID,\n  Name:     \"Delivery events\",\n  Endpoint: \"https://example.com/webhooks/rewrite\",\n  Events: []rewrite.WebhookEventType{\n    rewrite.WebhookEventTypeSMSQueued,\n    rewrite.WebhookEventTypeSMSDelivered,\n    rewrite.WebhookEventTypeSMSFailed,\n  },\n})\nif err != nil { log.Fatal(err) }\n}"
+						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  _, err = client.Webhooks.Create(context.Background(), rewrite.CreateWebhookOptions{\n    Name:     \"Delivery events\",\n    Endpoint: \"https://example.com/webhooks/rewrite\",\n    Events: []rewrite.WebhookEventType{\n      rewrite.WebhookEventTypeSMSQueued,\n      rewrite.WebhookEventTypeSMSDelivered,\n      rewrite.WebhookEventTypeSMSFailed,\n    },\n  })\n  if err != nil { log.Fatal(err) }\n}"
 					},
 					{
 						"lang": "python",
 						"label": "Python",
-						"source": "from rewrite import Client, WebhookEventType\n\nclient = Client(\"rw_your_api_key\")\n\nproject_id = \"748395130237498368\"\n\nwebhook = client.webhooks.create(\n    {\n        \"project\": project_id,\n        \"name\": \"Delivery events\",\n        \"endpoint\": \"https://example.com/webhooks/rewrite\",\n        \"events\": [\n            WebhookEventType.SMS_QUEUED,\n            WebhookEventType.SMS_DELIVERED,\n            WebhookEventType.SMS_FAILED,\n        ],\n    }\n)"
+						"source": "from rewrite import Client, WebhookEventType\n\nclient = Client(\"rw_your_api_key\")\n\nwebhook = client.webhooks.create(\n    {\n        \"name\": \"Delivery events\",\n        \"endpoint\": \"https://example.com/webhooks/rewrite\",\n        \"events\": [\n            WebhookEventType.SMS_QUEUED,\n            WebhookEventType.SMS_DELIVERED,\n            WebhookEventType.SMS_FAILED,\n        ],\n    }\n)"
 					},
 					{
 						"lang": "java",
 						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.webhooks.CreateWebhookOptions;\nimport java.util.List;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var projectId = \"748395130237498368\";\n\n    var webhook = rewrite.webhooks().create(\n      CreateWebhookOptions.builder()\n        .project(projectId)\n        .name(\"Delivery events\")\n        .endpoint(\"https://example.com/webhooks/rewrite\")\n        .events(List.of(\"sms.queued\", \"sms.delivered\", \"sms.failed\"))\n        .build()\n    );\n\n    System.out.println(webhook);\n  }\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.webhooks.CreateWebhookOptions;\nimport java.util.List;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var webhook = rewrite.webhooks().create(\n      CreateWebhookOptions.builder()\n        .name(\"Delivery events\")\n        .endpoint(\"https://example.com/webhooks/rewrite\")\n        .events(List.of(\"sms.queued\", \"sms.delivered\", \"sms.failed\"))\n        .build()\n    );\n\n    System.out.println(webhook);\n  }\n}"
 					},
 					{
 						"lang": "php",
 						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$projectId = '748395130237498368';\n\n$webhook = $rewrite->webhooks->create([\n  'project' => $projectId,\n  'name' => 'Delivery events',\n  'endpoint' => 'https://example.com/webhooks/rewrite',\n  'events' => ['sms.queued', 'sms.delivered', 'sms.failed'],\n]);"
+						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$webhook = $rewrite->webhooks->create([\n  'name' => 'Delivery events',\n  'endpoint' => 'https://example.com/webhooks/rewrite',\n  'events' => ['sms.queued', 'sms.delivered', 'sms.failed'],\n]);"
 					},
 					{
 						"lang": "ruby",
 						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nproject_id = \"748395130237498368\"\n\nwebhook = rewrite.webhooks.create(\n  project: project_id,\n  name: \"Delivery events\",\n  endpoint: \"https://example.com/webhooks/rewrite\",\n  events: [\"sms.queued\", \"sms.delivered\", \"sms.failed\"]\n)"
+						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nwebhook = rewrite.webhooks.create(\n  name: \"Delivery events\",\n  endpoint: \"https://example.com/webhooks/rewrite\",\n  events: [\"sms.queued\", \"sms.delivered\", \"sms.failed\"]\n)"
 					},
 					{
 						"lang": "kotlin",
 						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.webhooks.CreateWebhookOptions\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val projectId = \"748395130237498368\"\n\n  val webhook = rewrite.webhooks.create(\n    CreateWebhookOptions(\n      project = projectId,\n      name = \"Delivery events\",\n      endpoint = \"https://example.com/webhooks/rewrite\",\n      events = listOf(\"sms.queued\", \"sms.delivered\", \"sms.failed\")\n    )\n  )\n\n  println(webhook)\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.webhooks.CreateWebhookOptions\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val webhook = rewrite.webhooks.create(\n    CreateWebhookOptions(\n      name = \"Delivery events\",\n      endpoint = \"https://example.com/webhooks/rewrite\",\n      events = listOf(\"sms.queued\", \"sms.delivered\", \"sms.failed\")\n    )\n  )\n\n  println(webhook)\n}"
 					},
 					{
 						"lang": "swift",
 						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet projectId = \"748395130237498368\"\n\nlet webhook = try await rewrite.webhooks.create(\n  project: projectId,\n  name: \"Delivery events\",\n  endpoint: \"https://example.com/webhooks/rewrite\",\n  events: [\"sms.queued\", \"sms.delivered\", \"sms.failed\"]\n)\n\nprint(webhook)"
+						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet webhook = try await rewrite.webhooks.create(\n  name: \"Delivery events\",\n  endpoint: \"https://example.com/webhooks/rewrite\",\n  events: [\"sms.queued\", \"sms.delivered\", \"sms.failed\"]\n)\n\nprint(webhook)"
 					},
 					{
 						"lang": "csharp",
 						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar projectId = \"748395130237498368\";\n\nvar webhook = await rewrite.Webhooks.CreateAsync(new CreateWebhookOptions\n{\n  Project = projectId,\n  Name = \"Delivery events\",\n  Endpoint = \"https://example.com/webhooks/rewrite\",\n  Events = new[] { \"sms.queued\", \"sms.delivered\", \"sms.failed\" }\n});\n\nConsole.WriteLine(webhook);"
+						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar webhook = await rewrite.Webhooks.CreateAsync(new CreateWebhookOptions\n{\n  Name = \"Delivery events\",\n  Endpoint = \"https://example.com/webhooks/rewrite\",\n  Events = new[] { \"sms.queued\", \"sms.delivered\", \"sms.failed\" }\n});\n\nConsole.WriteLine(webhook);"
 					}
 				]
 			}
 		},
-		"/projects/{id}/webhooks/{webhookId}": {
+		"/webhooks/{webhookId}": {
 			"get": {
 				"tags": ["Webhooks"],
 				"operationId": "getProjectWebhook",
@@ -259,15 +239,6 @@
 					}
 				],
 				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"example": "748395130237498368"
-					},
 					{
 						"name": "webhookId",
 						"in": "path",
@@ -311,47 +282,47 @@
 					{
 						"lang": "node",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\nconst webhookId = '748395130237498700';\n\nconst webhook = await rewrite.webhooks.get(webhookId, projectId);"
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst webhookId = '748395130237498700';\n\nconst webhook = await rewrite.webhooks.get(webhookId);"
 					},
 					{
 						"lang": "go",
 						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\nprojectID := \"748395130237498368\"\nwebhookID := \"748395130237498700\"\n\n_, err = client.Webhooks.Get(context.Background(), webhookID, projectID)\nif err != nil { log.Fatal(err) }\n}"
+						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  webhookID := \"748395130237498700\"\n\n  _, err = client.Webhooks.Get(context.Background(), webhookID)\n  if err != nil { log.Fatal(err) }\n}"
 					},
 					{
 						"lang": "python",
 						"label": "Python",
-						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\nproject_id = \"748395130237498368\"\nwebhook_id = \"748395130237498700\"\n\nwebhook = client.webhooks.get(webhook_id, project_id)"
+						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\nwebhook_id = \"748395130237498700\"\n\nwebhook = client.webhooks.get(webhook_id)"
 					},
 					{
 						"lang": "java",
 						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var projectId = \"748395130237498368\";\n    var webhookId = \"748395130237498700\";\n\n    var webhook = rewrite.webhooks().get(webhookId, projectId);\n\n    System.out.println(webhook);\n  }\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var webhookId = \"748395130237498700\";\n\n    var webhook = rewrite.webhooks().get(webhookId);\n\n    System.out.println(webhook);\n  }\n}"
 					},
 					{
 						"lang": "php",
 						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$projectId = '748395130237498368';\n$webhookId = '748395130237498700';\n\n$webhook = $rewrite->webhooks->get($webhookId, $projectId);"
+						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$webhookId = '748395130237498700';\n\n$webhook = $rewrite->webhooks->get($webhookId);"
 					},
 					{
 						"lang": "ruby",
 						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nproject_id = \"748395130237498368\"\nwebhook_id = \"748395130237498700\"\n\nwebhook = rewrite.webhooks.get(webhook_id, project_id)"
+						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nwebhook_id = \"748395130237498700\"\n\nwebhook = rewrite.webhooks.get(webhook_id)"
 					},
 					{
 						"lang": "kotlin",
 						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val projectId = \"748395130237498368\"\n  val webhookId = \"748395130237498700\"\n\n  val webhook = rewrite.webhooks.get(webhookId, projectId)\n\n  println(webhook)\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val webhookId = \"748395130237498700\"\n\n  val webhook = rewrite.webhooks.get(webhookId)\n\n  println(webhook)\n}"
 					},
 					{
 						"lang": "swift",
 						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet projectId = \"748395130237498368\"\nlet webhookId = \"748395130237498700\"\n\nlet webhook = try await rewrite.webhooks.get(webhookId, project: projectId)\n\nprint(webhook)"
+						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet webhookId = \"748395130237498700\"\n\nlet webhook = try await rewrite.webhooks.get(webhookId)\n\nprint(webhook)"
 					},
 					{
 						"lang": "csharp",
 						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar projectId = \"748395130237498368\";\nvar webhookId = \"748395130237498700\";\n\nvar webhook = await rewrite.Webhooks.GetAsync(webhookId, projectId);\n\nConsole.WriteLine(webhook);"
+						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar webhookId = \"748395130237498700\";\n\nvar webhook = await rewrite.Webhooks.GetAsync(webhookId);\n\nConsole.WriteLine(webhook);"
 					}
 				]
 			},
@@ -365,15 +336,6 @@
 					}
 				],
 				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"example": "748395130237498368"
-					},
 					{
 						"name": "webhookId",
 						"in": "path",
@@ -430,47 +392,47 @@
 					{
 						"lang": "node",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\nconst webhookId = '748395130237498700';\n\nconst webhook = await rewrite.webhooks.update(webhookId, {\n  project: projectId,\n  endpoint: 'https://example.com/webhooks/rewrite-v2',\n  events: ['sms.delivered', 'sms.failed'],\n  status: 'ACTIVE',\n});"
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst webhookId = '748395130237498700';\n\nconst webhook = await rewrite.webhooks.update(webhookId, {\n  endpoint: 'https://example.com/webhooks/rewrite-v2',\n  events: ['sms.delivered', 'sms.failed'],\n  status: 'ACTIVE',\n});"
 					},
 					{
 						"lang": "go",
 						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\nprojectID := \"748395130237498368\"\nwebhookID := \"748395130237498700\"\n\n_, err = client.Webhooks.Update(context.Background(), webhookID, rewrite.UpdateWebhookOptions{\n  Project: projectID,\n  RESTPatchUpdateWebhookBody: rewrite.RESTPatchUpdateWebhookBody{\n    Endpoint: \"https://example.com/webhooks/rewrite-v2\",\n    Events: []rewrite.WebhookEventType{\n      rewrite.WebhookEventTypeSMSDelivered,\n      rewrite.WebhookEventTypeSMSFailed,\n    },\n    Status: rewrite.WebhookStatusActive,\n  },\n})\nif err != nil { log.Fatal(err) }\n}"
+						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  webhookID := \"748395130237498700\"\n\n  _, err = client.Webhooks.Update(context.Background(), webhookID, rewrite.UpdateWebhookOptions{\n    RESTPatchUpdateWebhookBody: rewrite.RESTPatchUpdateWebhookBody{\n      Endpoint: \"https://example.com/webhooks/rewrite-v2\",\n      Events: []rewrite.WebhookEventType{\n        rewrite.WebhookEventTypeSMSDelivered,\n        rewrite.WebhookEventTypeSMSFailed,\n      },\n      Status: rewrite.WebhookStatusActive,\n    },\n  })\n  if err != nil { log.Fatal(err) }\n}"
 					},
 					{
 						"lang": "python",
 						"label": "Python",
-						"source": "from rewrite import Client, WebhookEventType, WebhookStatus\n\nclient = Client(\"rw_your_api_key\")\n\nproject_id = \"748395130237498368\"\nwebhook_id = \"748395130237498700\"\n\nwebhook = client.webhooks.update(\n    webhook_id,\n    {\n        \"project\": project_id,\n        \"endpoint\": \"https://example.com/webhooks/rewrite-v2\",\n        \"events\": [\n            WebhookEventType.SMS_DELIVERED,\n            WebhookEventType.SMS_FAILED,\n        ],\n        \"status\": WebhookStatus.ACTIVE,\n    }\n)"
+						"source": "from rewrite import Client, WebhookEventType, WebhookStatus\n\nclient = Client(\"rw_your_api_key\")\n\nwebhook_id = \"748395130237498700\"\n\nwebhook = client.webhooks.update(\n    webhook_id,\n    {\n        \"endpoint\": \"https://example.com/webhooks/rewrite-v2\",\n        \"events\": [\n            WebhookEventType.SMS_DELIVERED,\n            WebhookEventType.SMS_FAILED,\n        ],\n        \"status\": WebhookStatus.ACTIVE,\n    }\n)"
 					},
 					{
 						"lang": "java",
 						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.webhooks.UpdateWebhookOptions;\nimport java.util.List;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var projectId = \"748395130237498368\";\n    var webhookId = \"748395130237498700\";\n\n    var webhook = rewrite.webhooks().update(\n      webhookId,\n      UpdateWebhookOptions.builder()\n        .project(projectId)\n        .endpoint(\"https://example.com/webhooks/rewrite-v2\")\n        .events(List.of(\"sms.delivered\", \"sms.failed\"))\n        .status(\"ACTIVE\")\n        .build()\n    );\n\n    System.out.println(webhook);\n  }\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.webhooks.UpdateWebhookOptions;\nimport java.util.List;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var webhookId = \"748395130237498700\";\n\n    var webhook = rewrite.webhooks().update(\n      webhookId,\n      UpdateWebhookOptions.builder()\n        .endpoint(\"https://example.com/webhooks/rewrite-v2\")\n        .events(List.of(\"sms.delivered\", \"sms.failed\"))\n        .status(\"ACTIVE\")\n        .build()\n    );\n\n    System.out.println(webhook);\n  }\n}"
 					},
 					{
 						"lang": "php",
 						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$projectId = '748395130237498368';\n$webhookId = '748395130237498700';\n\n$webhook = $rewrite->webhooks->update($webhookId, [\n  'project' => $projectId,\n  'endpoint' => 'https://example.com/webhooks/rewrite-v2',\n  'events' => ['sms.delivered', 'sms.failed'],\n  'status' => 'ACTIVE',\n]);"
+						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$webhookId = '748395130237498700';\n\n$webhook = $rewrite->webhooks->update($webhookId, [\n  'endpoint' => 'https://example.com/webhooks/rewrite-v2',\n  'events' => ['sms.delivered', 'sms.failed'],\n  'status' => 'ACTIVE',\n]);"
 					},
 					{
 						"lang": "ruby",
 						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nproject_id = \"748395130237498368\"\nwebhook_id = \"748395130237498700\"\n\nwebhook = rewrite.webhooks.update(\n  webhook_id,\n  project: project_id,\n  endpoint: \"https://example.com/webhooks/rewrite-v2\",\n  events: [\"sms.delivered\", \"sms.failed\"],\n  status: \"ACTIVE\"\n)"
+						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nwebhook_id = \"748395130237498700\"\n\nwebhook = rewrite.webhooks.update(\n  webhook_id,\n  endpoint: \"https://example.com/webhooks/rewrite-v2\",\n  events: [\"sms.delivered\", \"sms.failed\"],\n  status: \"ACTIVE\"\n)"
 					},
 					{
 						"lang": "kotlin",
 						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.webhooks.UpdateWebhookOptions\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val projectId = \"748395130237498368\"\n  val webhookId = \"748395130237498700\"\n\n  val webhook = rewrite.webhooks.update(\n    webhookId,\n    UpdateWebhookOptions(\n      project = projectId,\n      endpoint = \"https://example.com/webhooks/rewrite-v2\",\n      events = listOf(\"sms.delivered\", \"sms.failed\"),\n      status = \"ACTIVE\"\n    )\n  )\n\n  println(webhook)\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.webhooks.UpdateWebhookOptions\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val webhookId = \"748395130237498700\"\n\n  val webhook = rewrite.webhooks.update(\n    webhookId,\n    UpdateWebhookOptions(\n      endpoint = \"https://example.com/webhooks/rewrite-v2\",\n      events = listOf(\"sms.delivered\", \"sms.failed\"),\n      status = \"ACTIVE\"\n    )\n  )\n\n  println(webhook)\n}"
 					},
 					{
 						"lang": "swift",
 						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet projectId = \"748395130237498368\"\nlet webhookId = \"748395130237498700\"\n\nlet webhook = try await rewrite.webhooks.update(\n  webhookId,\n  project: projectId,\n  endpoint: \"https://example.com/webhooks/rewrite-v2\",\n  events: [\"sms.delivered\", \"sms.failed\"],\n  status: \"ACTIVE\"\n)\n\nprint(webhook)"
+						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet webhookId = \"748395130237498700\"\n\nlet webhook = try await rewrite.webhooks.update(\n  webhookId,\n  endpoint: \"https://example.com/webhooks/rewrite-v2\",\n  events: [\"sms.delivered\", \"sms.failed\"],\n  status: \"ACTIVE\"\n)\n\nprint(webhook)"
 					},
 					{
 						"lang": "csharp",
 						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar projectId = \"748395130237498368\";\nvar webhookId = \"748395130237498700\";\n\nvar webhook = await rewrite.Webhooks.UpdateAsync(webhookId, new UpdateWebhookOptions\n{\n  Project = projectId,\n  Endpoint = \"https://example.com/webhooks/rewrite-v2\",\n  Events = new[] { \"sms.delivered\", \"sms.failed\" },\n  Status = \"ACTIVE\"\n});\n\nConsole.WriteLine(webhook);"
+						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar webhookId = \"748395130237498700\";\n\nvar webhook = await rewrite.Webhooks.UpdateAsync(webhookId, new UpdateWebhookOptions\n{\n  Endpoint = \"https://example.com/webhooks/rewrite-v2\",\n  Events = new[] { \"sms.delivered\", \"sms.failed\" },\n  Status = \"ACTIVE\"\n});\n\nConsole.WriteLine(webhook);"
 					}
 				]
 			},
@@ -484,15 +446,6 @@
 					}
 				],
 				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"example": "748395130237498368"
-					},
 					{
 						"name": "webhookId",
 						"in": "path",
@@ -529,47 +482,47 @@
 					{
 						"lang": "node",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\nconst webhookId = '748395130237498700';\n\nawait rewrite.webhooks.delete(webhookId, projectId);"
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst webhookId = '748395130237498700';\n\nawait rewrite.webhooks.delete(webhookId);"
 					},
 					{
 						"lang": "go",
 						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\nprojectID := \"748395130237498368\"\nwebhookID := \"748395130237498700\"\n\nif err := client.Webhooks.Delete(context.Background(), webhookID, projectID); err != nil {\n  log.Fatal(err)\n}\n}"
+						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  webhookID := \"748395130237498700\"\n\n  if err := client.Webhooks.Delete(context.Background(), webhookID); err != nil {\n    log.Fatal(err)\n  }\n}"
 					},
 					{
 						"lang": "python",
 						"label": "Python",
-						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\nproject_id = \"748395130237498368\"\nwebhook_id = \"748395130237498700\"\n\nclient.webhooks.delete(webhook_id, project_id)"
+						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\nwebhook_id = \"748395130237498700\"\n\nclient.webhooks.delete(webhook_id)"
 					},
 					{
 						"lang": "java",
 						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var projectId = \"748395130237498368\";\n    var webhookId = \"748395130237498700\";\n\n    rewrite.webhooks().delete(webhookId, projectId);\n  }\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var webhookId = \"748395130237498700\";\n\n    rewrite.webhooks().delete(webhookId);\n  }\n}"
 					},
 					{
 						"lang": "php",
 						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$projectId = '748395130237498368';\n$webhookId = '748395130237498700';\n\n$rewrite->webhooks->delete($webhookId, $projectId);"
+						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$webhookId = '748395130237498700';\n\n$rewrite->webhooks->delete($webhookId);"
 					},
 					{
 						"lang": "ruby",
 						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nproject_id = \"748395130237498368\"\nwebhook_id = \"748395130237498700\"\n\nrewrite.webhooks.delete(webhook_id, project_id)"
+						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nwebhook_id = \"748395130237498700\"\n\nrewrite.webhooks.delete(webhook_id)"
 					},
 					{
 						"lang": "kotlin",
 						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val projectId = \"748395130237498368\"\n  val webhookId = \"748395130237498700\"\n\n  rewrite.webhooks.delete(webhookId, projectId)\n}"
+						"source": "import com.rewritetoday.sdk.Rewrite\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val webhookId = \"748395130237498700\"\n\n  rewrite.webhooks.delete(webhookId)\n}"
 					},
 					{
 						"lang": "swift",
 						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet projectId = \"748395130237498368\"\nlet webhookId = \"748395130237498700\"\n\ntry await rewrite.webhooks.delete(webhookId, project: projectId)"
+						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet webhookId = \"748395130237498700\"\n\ntry await rewrite.webhooks.delete(webhookId)"
 					},
 					{
 						"lang": "csharp",
 						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar projectId = \"748395130237498368\";\nvar webhookId = \"748395130237498700\";\n\nawait rewrite.Webhooks.DeleteAsync(webhookId, projectId);"
+						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar webhookId = \"748395130237498700\";\n\nawait rewrite.Webhooks.DeleteAsync(webhookId);"
 					}
 				]
 			}

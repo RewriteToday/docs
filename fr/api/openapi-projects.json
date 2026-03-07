@@ -19,7 +19,7 @@
 		}
 	],
 	"paths": {
-		"/projects/{id}": {
+		"/projects": {
 			"patch": {
 				"tags": ["Projects"],
 				"operationId": "updateProject",
@@ -27,17 +27,6 @@
 				"security": [
 					{
 						"bearerAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"example": "748395130237498368"
 					}
 				],
 				"requestBody": {
@@ -84,7 +73,7 @@
 					{
 						"lang": "node",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nconst project = await rewrite.projects.update(projectId, {\n  name: 'Marketing Alerts',\n});"
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst project = await rewrite.projects.update({\n  name: 'Marketing Alerts',\n});"
 					}
 				]
 			},
@@ -95,17 +84,6 @@
 				"security": [
 					{
 						"bearerAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						},
-						"example": "748395130237498368"
 					}
 				],
 				"responses": {
@@ -134,7 +112,7 @@
 					{
 						"lang": "node",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nawait rewrite.projects.delete(projectId);"
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nawait rewrite.projects.delete();"
 					}
 				]
 			}
