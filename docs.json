@@ -58,6 +58,9 @@
 		"playground": {
 			"display": "simple"
 		},
+		"examples": {
+			"autogenerate": false
+		},
 		"mdx": {
 			"server": "https://api.rewritetoday.com/v1",
 			"auth": {

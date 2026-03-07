@@ -90,54 +90,49 @@
 				"description": "Liste les modèles du projet avec pagination par curseur.\n\nUtilisez `limit`, `after` et `before` pour paginer.",
 				"x-codeSamples": [
 					{
-						"lang": "Node.js",
+						"lang": "node",
 						"label": "Node.js",
 						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nconst templates = await rewrite.templates.list(projectId, { limit: 20 });"
 					},
 					{
-						"lang": "Go",
+						"lang": "go",
 						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n\n  _, err = client.Templates.List(context.Background(), projectID, &rewrite.RESTGetListTemplatesQueryParams{Limit: 20})\n  if err != nil { log.Fatal(err) }\n}"
+						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\nprojectID := \"748395130237498368\"\n\n_, err = client.Templates.List(context.Background(), projectID, &rewrite.RESTGetListTemplatesQueryParams{Limit: 20})\nif err != nil { log.Fatal(err) }\n}"
 					},
 					{
-						"lang": "Python",
+						"lang": "python",
 						"label": "Python",
-						"source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_your_api_key')\n\nresponse = requests.request(\n    'GET',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/templates',\n    headers={\n        'Authorization': \"Bearer rw_your_api_key\",\n    },\n)\nprint(response.json())"
+						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\nproject_id = \"748395130237498368\"\n\ntemplates = client.templates.list(project_id, {\"limit\": 20})"
 					},
 					{
-						"lang": "Java",
+						"lang": "java",
 						"label": "Java",
-						"source": "var client = HttpClient.newHttpClient();\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates\"))\n  .header(\"Authorization\", \"Bearer rw_your_api_key\")\n  .method(\"GET\", HttpRequest.BodyPublishers.noBody());\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
+						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.templates.ListTemplatesOptions;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var projectId = \"748395130237498368\";\n\n    var templates = rewrite.templates().list(\n      projectId,\n      ListTemplatesOptions.builder()\n        .limit(20)\n        .build()\n    );\n\n    System.out.println(templates);\n  }\n}"
 					},
 					{
-						"lang": "PHP",
+						"lang": "php",
 						"label": "PHP",
-						"source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_your_api_key',\n]);\n$response = curl_exec($ch);\ncurl_close($ch);"
+						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$projectId = '748395130237498368';\n\n$templates = $rewrite->templates->list($projectId, [\n  'limit' => 20,\n]);"
 					},
 					{
-						"lang": "Ruby",
+						"lang": "ruby",
 						"label": "Ruby",
-						"source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/templates')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Get.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_your_api_key'\nresponse = http.request(request)\nputs response.body"
+						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nproject_id = \"748395130237498368\"\n\ntemplates = rewrite.templates.list(project_id, limit: 20)"
 					},
 					{
-						"lang": "Kotlin",
+						"lang": "kotlin",
 						"label": "Kotlin",
-						"source": "val client = OkHttpClient()\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates\")\n  .addHeader(\"Authorization\", \"Bearer rw_your_api_key\")\n  .method(\"GET\", null)\n  .build()\nval response = client.newCall(request).execute()"
+						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.templates.ListTemplatesOptions\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val projectId = \"748395130237498368\"\n\n  val templates = rewrite.templates.list(\n    projectId,\n    ListTemplatesOptions(limit = 20)\n  )\n\n  println(templates)\n}"
 					},
 					{
-						"lang": "Swift",
+						"lang": "swift",
 						"label": "Swift",
-						"source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/templates\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"GET\"\nrequest.setValue(\"rw_your_api_key\", forHTTPHeaderField: \"Authorization\")\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
+						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet projectId = \"748395130237498368\"\n\nlet templates = try await rewrite.templates.list(project: projectId, limit: 20)\n\nprint(templates)"
 					},
 					{
-						"lang": "C#",
+						"lang": "csharp",
 						"label": "C#",
-						"source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Get;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_your_api_key\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
-					},
-					{
-						"lang": "cURL",
-						"label": "cURL",
-						"source": "curl -X GET 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates' \\\\\n  -H 'Authorization: Bearer rw_your_api_key'"
+						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar projectId = \"748395130237498368\";\n\nvar templates = await rewrite.Templates.ListAsync(projectId, new ListTemplatesOptions\n{\n  Limit = 20\n});\n\nConsole.WriteLine(templates);"
 					}
 				]
 			},
@@ -217,54 +212,49 @@
 				"description": "Crée un modèle réutilisable avec variables et valeurs de repli.",
 				"x-codeSamples": [
 					{
-						"lang": "Node.js",
+						"lang": "node",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nconst template = await rewrite.templates.create({\n  project: projectId,\n  name: 'order_shipped',\n  content: 'Bonjour {{first_name}}, votre commande {{order_id}} est en route.',\n  variables: [\n    { name: 'first_name', fallback: 'customer' },\n    { name: 'order_id', fallback: '0000' },\n  ],\n});"
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\n\nconst template = await rewrite.templates.create({\n  project: projectId,\n  name: 'order_shipped',\n  content: 'Hi {{first_name}}, your order {{order_id}} is on the way.',\n  variables: [\n    { name: 'first_name', fallback: 'customer' },\n    { name: 'order_id', fallback: '0000' },\n  ],\n});"
 					},
 					{
-						"lang": "Go",
+						"lang": "go",
 						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n  firstNameFallback := \"customer\"\n  orderIDFallback := \"0000\"\n\n  _, err = client.Templates.Create(context.Background(), rewrite.CreateTemplateOptions{\n    Project: projectID,\n    RESTPostCreateTemplateBody: rewrite.RESTPostCreateTemplateBody{\n      Name: \"order_shipped\",\n      Variables: []rewrite.APITemplateVariable{\n        {Name: \"first_name\", Fallback: &firstNameFallback},\n        {Name: \"order_id\", Fallback: &orderIDFallback},\n      },\n    },\n  })\n  if err != nil { log.Fatal(err) }\n}"
+						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\nprojectID := \"748395130237498368\"\nfirstNameFallback := \"customer\"\norderIDFallback := \"0000\"\n\n_, err = client.Templates.Create(context.Background(), rewrite.CreateTemplateOptions{\n  Project: projectID,\n  RESTPostCreateTemplateBody: rewrite.RESTPostCreateTemplateBody{\n    Name:    \"order_shipped\",\n    Content: \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n    Variables: []rewrite.APITemplateVariable{\n      {Name: \"first_name\", Fallback: &firstNameFallback},\n      {Name: \"order_id\", Fallback: &orderIDFallback},\n    },\n  },\n})\nif err != nil { log.Fatal(err) }\n}"
 					},
 					{
-						"lang": "Python",
+						"lang": "python",
 						"label": "Python",
-						"source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_your_api_key')\n\nresponse = requests.request(\n    'POST',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/templates',\n    headers={\n        'Authorization': \"Bearer rw_your_api_key\",\n        'Content-Type': 'application/json',\n    },\n    json={\n      \"name\": \"order_shipped\",\n      \"content\": \"Bonjour {{first_name}}, votre commande {{order_id}} est en route.\",\n      \"variables\": [\n        {\n          \"name\": \"first_name\",\n          \"fallback\": \"customer\"\n        },\n        {\n          \"name\": \"order_id\",\n          \"fallback\": \"0000\"\n        }\n      ]\n    },\n)\nprint(response.json())"
+						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\nproject_id = \"748395130237498368\"\n\ntemplate = client.templates.create(\n    {\n        \"project\": project_id,\n        \"name\": \"order_shipped\",\n        \"content\": \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n        \"variables\": [\n            {\"name\": \"first_name\", \"fallback\": \"customer\"},\n            {\"name\": \"order_id\", \"fallback\": \"0000\"},\n        ],\n    }\n)"
 					},
 					{
-						"lang": "Java",
+						"lang": "java",
 						"label": "Java",
-						"source": "var client = HttpClient.newHttpClient();\nvar json = \"{\\\"name\\\":\\\"order_shipped\\\",\\\"content\\\":\\\"Bonjour {{first_name}}, votre commande {{order_id}} est en route.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\";\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates\"))\n  .header(\"Authorization\", \"Bearer rw_your_api_key\")\n  .header(\"Content-Type\", \"application/json\")\n  .method(\"POST\", HttpRequest.BodyPublishers.ofString(json));\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
+						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.templates.CreateTemplateOptions;\nimport com.rewritetoday.sdk.models.templates.TemplateVariable;\nimport java.util.List;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var projectId = \"748395130237498368\";\n\n    var template = rewrite.templates().create(\n      CreateTemplateOptions.builder()\n        .project(projectId)\n        .name(\"order_shipped\")\n        .content(\"Hi {{first_name}}, your order {{order_id}} is on the way.\")\n        .variables(List.of(\n          TemplateVariable.builder().name(\"first_name\").fallback(\"customer\").build(),\n          TemplateVariable.builder().name(\"order_id\").fallback(\"0000\").build()\n        ))\n        .build()\n    );\n\n    System.out.println(template);\n  }\n}"
 					},
 					{
-						"lang": "PHP",
+						"lang": "php",
 						"label": "PHP",
-						"source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_your_api_key',\n  'Content-Type: application/json',\n]);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, '{\"name\":\"order_shipped\",\"content\":\"Bonjour {{first_name}}, votre commande {{order_id}} est en route.\",\"variables\":[{\"name\":\"first_name\",\"fallback\":\"customer\"},{\"name\":\"order_id\",\"fallback\":\"0000\"}]}');\n$response = curl_exec($ch);\ncurl_close($ch);"
+						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$projectId = '748395130237498368';\n\n$template = $rewrite->templates->create([\n  'project' => $projectId,\n  'name' => 'order_shipped',\n  'content' => 'Hi {{first_name}}, your order {{order_id}} is on the way.',\n  'variables' => [\n    ['name' => 'first_name', 'fallback' => 'customer'],\n    ['name' => 'order_id', 'fallback' => '0000'],\n  ],\n]);"
 					},
 					{
-						"lang": "Ruby",
+						"lang": "ruby",
 						"label": "Ruby",
-						"source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/templates')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Post.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_your_api_key'\nrequest['Content-Type'] = 'application/json'\nrequest.body = \"{\\\"name\\\":\\\"order_shipped\\\",\\\"content\\\":\\\"Bonjour {{first_name}}, votre commande {{order_id}} est en route.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\"\nresponse = http.request(request)\nputs response.body"
+						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nproject_id = \"748395130237498368\"\n\ntemplate = rewrite.templates.create(\n  project: project_id,\n  name: \"order_shipped\",\n  content: \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n  variables: [\n    { name: \"first_name\", fallback: \"customer\" },\n    { name: \"order_id\", fallback: \"0000\" }\n  ]\n)"
 					},
 					{
-						"lang": "Kotlin",
+						"lang": "kotlin",
 						"label": "Kotlin",
-						"source": "val client = OkHttpClient()\nval body = \"{\\\"name\\\":\\\"order_shipped\\\",\\\"content\\\":\\\"Bonjour {{first_name}}, votre commande {{order_id}} est en route.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\".toRequestBody(\"application/json\".toMediaType())\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates\")\n  .addHeader(\"Authorization\", \"Bearer rw_your_api_key\")\n  .method(\"POST\", body)\n  .build()\nval response = client.newCall(request).execute()"
+						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.templates.CreateTemplateOptions\nimport com.rewritetoday.sdk.models.templates.TemplateVariable\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val projectId = \"748395130237498368\"\n\n  val template = rewrite.templates.create(\n    CreateTemplateOptions(\n      project = projectId,\n      name = \"order_shipped\",\n      content = \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n      variables = listOf(\n        TemplateVariable(name = \"first_name\", fallback = \"customer\"),\n        TemplateVariable(name = \"order_id\", fallback = \"0000\")\n      )\n    )\n  )\n\n  println(template)\n}"
 					},
 					{
-						"lang": "Swift",
+						"lang": "swift",
 						"label": "Swift",
-						"source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/templates\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"POST\"\nrequest.setValue(\"rw_your_api_key\", forHTTPHeaderField: \"Authorization\")\nrequest.setValue(\"application/json\", forHTTPHeaderField: \"Content-Type\")\nrequest.httpBody = \"{\\\"name\\\":\\\"order_shipped\\\",\\\"content\\\":\\\"Bonjour {{first_name}}, votre commande {{order_id}} est en route.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\".data(using: .utf8)\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
+						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet projectId = \"748395130237498368\"\n\nlet template = try await rewrite.templates.create(\n  project: projectId,\n  name: \"order_shipped\",\n  content: \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n  variables: [\n    TemplateVariable(name: \"first_name\", fallback: \"customer\"),\n    TemplateVariable(name: \"order_id\", fallback: \"0000\")\n  ]\n)\n\nprint(template)"
 					},
 					{
-						"lang": "C#",
+						"lang": "csharp",
 						"label": "C#",
-						"source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Post;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_your_api_key\");\nrequest.Content = new StringContent(\"{\\\"name\\\":\\\"order_shipped\\\",\\\"content\\\":\\\"Bonjour {{first_name}}, votre commande {{order_id}} est en route.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\", Encoding.UTF8, \"application/json\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
-					},
-					{
-						"lang": "cURL",
-						"label": "cURL",
-						"source": "curl -X POST 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates' \\\\\n  -H 'Authorization: Bearer rw_your_api_key'\n  -H 'Content-Type: application/json' \\\\\n  -d '{\"name\":\"order_shipped\",\"content\":\"Bonjour {{first_name}}, votre commande {{order_id}} est en route.\",\"variables\":[{\"name\":\"first_name\",\"fallback\":\"customer\"},{\"name\":\"order_id\",\"fallback\":\"0000\"}]}'"
+						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar projectId = \"748395130237498368\";\n\nvar template = await rewrite.Templates.CreateAsync(new CreateTemplateOptions\n{\n  Project = projectId,\n  Name = \"order_shipped\",\n  Content = \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n  Variables = new[]\n  {\n    new TemplateVariable { Name = \"first_name\", Fallback = \"customer\" },\n    new TemplateVariable { Name = \"order_id\", Fallback = \"0000\" }\n  }\n});\n\nConsole.WriteLine(template);"
 					}
 				]
 			}
@@ -335,54 +325,49 @@
 				"description": "Récupère un modèle par identifiant (id ou nom du modèle).",
 				"x-codeSamples": [
 					{
-						"lang": "Node.js",
+						"lang": "node",
 						"label": "Node.js",
 						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\nconst templateIdentifier = 'order_shipped';\n\nconst template = await rewrite.templates.get(templateIdentifier, projectId);"
 					},
 					{
-						"lang": "Go",
+						"lang": "go",
 						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n  templateIdentifier := \"order_shipped\"\n\n  _, err = client.Templates.Get(context.Background(), templateIdentifier, projectID)\n  if err != nil { log.Fatal(err) }\n}"
+						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\nprojectID := \"748395130237498368\"\ntemplateIdentifier := \"order_shipped\"\n\n_, err = client.Templates.Get(context.Background(), templateIdentifier, projectID)\nif err != nil { log.Fatal(err) }\n}"
 					},
 					{
-						"lang": "Python",
+						"lang": "python",
 						"label": "Python",
-						"source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_your_api_key')\n\nresponse = requests.request(\n    'GET',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/order_shipped',\n    headers={\n        'Authorization': \"Bearer rw_your_api_key\",\n    },\n)\nprint(response.json())"
+						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\nproject_id = \"748395130237498368\"\ntemplate_identifier = \"order_shipped\"\n\ntemplate = client.templates.get(template_identifier, project_id)"
 					},
 					{
-						"lang": "Java",
+						"lang": "java",
 						"label": "Java",
-						"source": "var client = HttpClient.newHttpClient();\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/order_shipped\"))\n  .header(\"Authorization\", \"Bearer rw_your_api_key\")\n  .method(\"GET\", HttpRequest.BodyPublishers.noBody());\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
+						"source": "import com.rewritetoday.sdk.Rewrite;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var projectId = \"748395130237498368\";\n    var templateIdentifier = \"order_shipped\";\n\n    var template = rewrite.templates().get(templateIdentifier, projectId);\n\n    System.out.println(template);\n  }\n}"
 					},
 					{
-						"lang": "PHP",
+						"lang": "php",
 						"label": "PHP",
-						"source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/order_shipped');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_your_api_key',\n]);\n$response = curl_exec($ch);\ncurl_close($ch);"
+						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$projectId = '748395130237498368';\n$templateIdentifier = 'order_shipped';\n\n$template = $rewrite->templates->get($templateIdentifier, $projectId);"
 					},
 					{
-						"lang": "Ruby",
+						"lang": "ruby",
 						"label": "Ruby",
-						"source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/templates/order_shipped')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Get.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_your_api_key'\nresponse = http.request(request)\nputs response.body"
+						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nproject_id = \"748395130237498368\"\ntemplate_identifier = \"order_shipped\"\n\ntemplate = rewrite.templates.get(template_identifier, project_id)"
 					},
 					{
-						"lang": "Kotlin",
+						"lang": "kotlin",
 						"label": "Kotlin",
-						"source": "val client = OkHttpClient()\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/order_shipped\")\n  .addHeader(\"Authorization\", \"Bearer rw_your_api_key\")\n  .method(\"GET\", null)\n  .build()\nval response = client.newCall(request).execute()"
+						"source": "import com.rewritetoday.sdk.Rewrite\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val projectId = \"748395130237498368\"\n  val templateIdentifier = \"order_shipped\"\n\n  val template = rewrite.templates.get(templateIdentifier, projectId)\n\n  println(template)\n}"
 					},
 					{
-						"lang": "Swift",
+						"lang": "swift",
 						"label": "Swift",
-						"source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/order_shipped\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"GET\"\nrequest.setValue(\"rw_your_api_key\", forHTTPHeaderField: \"Authorization\")\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
+						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet projectId = \"748395130237498368\"\nlet templateIdentifier = \"order_shipped\"\n\nlet template = try await rewrite.templates.get(templateIdentifier, project: projectId)\n\nprint(template)"
 					},
 					{
-						"lang": "C#",
+						"lang": "csharp",
 						"label": "C#",
-						"source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Get;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/order_shipped\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_your_api_key\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
-					},
-					{
-						"lang": "cURL",
-						"label": "cURL",
-						"source": "curl -X GET 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/order_shipped' \\\\\n  -H 'Authorization: Bearer rw_your_api_key'"
+						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar projectId = \"748395130237498368\";\nvar templateIdentifier = \"order_shipped\";\n\nvar template = await rewrite.Templates.GetAsync(templateIdentifier, projectId);\n\nConsole.WriteLine(template);"
 					}
 				]
 			}
@@ -469,54 +454,49 @@
 				"description": "Met à jour partiellement le contenu du modèle et/ou les variables.",
 				"x-codeSamples": [
 					{
-						"lang": "Node.js",
+						"lang": "node",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\nconst templateId = '748395130237498500';\n\nconst template = await rewrite.templates.update(templateId, {\n  project: projectId,\n  name: 'order_shipped',\n  content: 'Bonjour {{first_name}}, votre colis {{order_id}} a été expédié.',\n  variables: [\n    { name: 'first_name', fallback: 'customer' },\n    { name: 'order_id', fallback: '0000' },\n  ],\n});"
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\nconst templateId = '748395130237498500';\n\nconst template = await rewrite.templates.update(templateId, {\n  project: projectId,\n  content: 'Hi {{first_name}}, your package {{order_id}} has shipped.',\n  variables: [\n    { name: 'first_name', fallback: 'customer' },\n    { name: 'order_id', fallback: '0000' },\n  ],\n});"
 					},
 					{
-						"lang": "Go",
+						"lang": "go",
 						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n  templateID := \"748395130237498500\"\n  firstNameFallback := \"customer\"\n  orderIDFallback := \"0000\"\n\n  _, err = client.Templates.Update(context.Background(), templateID, rewrite.UpdateTemplateOptions{\n    Project: projectID,\n    RESTPostCreateTemplateBody: rewrite.RESTPostCreateTemplateBody{\n      Name: \"order_shipped\",\n      Variables: []rewrite.APITemplateVariable{\n        {Name: \"first_name\", Fallback: &firstNameFallback},\n        {Name: \"order_id\", Fallback: &orderIDFallback},\n      },\n    },\n  })\n  if err != nil { log.Fatal(err) }\n}"
+						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\nprojectID := \"748395130237498368\"\ntemplateID := \"748395130237498500\"\nfirstNameFallback := \"customer\"\norderIDFallback := \"0000\"\n\n_, err = client.Templates.Update(context.Background(), templateID, rewrite.UpdateTemplateOptions{\n  Project: projectID,\n  RESTPatchUpdateTemplateBody: rewrite.RESTPatchUpdateTemplateBody{\n    Content: \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n    Variables: []rewrite.APITemplateVariable{\n      {Name: \"first_name\", Fallback: &firstNameFallback},\n      {Name: \"order_id\", Fallback: &orderIDFallback},\n    },\n  },\n})\nif err != nil { log.Fatal(err) }\n}"
 					},
 					{
-						"lang": "Python",
+						"lang": "python",
 						"label": "Python",
-						"source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_your_api_key')\n\nresponse = requests.request(\n    'PATCH',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500',\n    headers={\n        'Authorization': \"Bearer rw_your_api_key\",\n        'Content-Type': 'application/json',\n    },\n    json={\n      \"content\": \"Bonjour {{first_name}}, votre colis {{order_id}} a été expédié.\",\n      \"variables\": [\n        {\n          \"name\": \"first_name\",\n          \"fallback\": \"customer\"\n        },\n        {\n          \"name\": \"order_id\",\n          \"fallback\": \"0000\"\n        }\n      ]\n    },\n)\nprint(response.json())"
+						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\nproject_id = \"748395130237498368\"\ntemplate_id = \"748395130237498500\"\n\ntemplate = client.templates.update(\n    template_id,\n    {\n        \"project\": project_id,\n        \"content\": \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n        \"variables\": [\n            {\"name\": \"first_name\", \"fallback\": \"customer\"},\n            {\"name\": \"order_id\", \"fallback\": \"0000\"},\n        ],\n    }\n)"
 					},
 					{
-						"lang": "Java",
+						"lang": "java",
 						"label": "Java",
-						"source": "var client = HttpClient.newHttpClient();\nvar json = \"{\\\"content\\\":\\\"Bonjour {{first_name}}, votre colis {{order_id}} a été expédié.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\";\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500\"))\n  .header(\"Authorization\", \"Bearer rw_your_api_key\")\n  .header(\"Content-Type\", \"application/json\")\n  .method(\"PATCH\", HttpRequest.BodyPublishers.ofString(json));\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
+						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.templates.TemplateVariable;\nimport com.rewritetoday.sdk.models.templates.UpdateTemplateOptions;\nimport java.util.List;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var projectId = \"748395130237498368\";\n    var templateId = \"748395130237498500\";\n\n    var template = rewrite.templates().update(\n      templateId,\n      UpdateTemplateOptions.builder()\n        .project(projectId)\n        .content(\"Hi {{first_name}}, your package {{order_id}} has shipped.\")\n        .variables(List.of(\n          TemplateVariable.builder().name(\"first_name\").fallback(\"customer\").build(),\n          TemplateVariable.builder().name(\"order_id\").fallback(\"0000\").build()\n        ))\n        .build()\n    );\n\n    System.out.println(template);\n  }\n}"
 					},
 					{
-						"lang": "PHP",
+						"lang": "php",
 						"label": "PHP",
-						"source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_your_api_key',\n  'Content-Type: application/json',\n]);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, '{\"content\":\"Bonjour {{first_name}}, votre colis {{order_id}} a été expédié.\",\"variables\":[{\"name\":\"first_name\",\"fallback\":\"customer\"},{\"name\":\"order_id\",\"fallback\":\"0000\"}]}');\n$response = curl_exec($ch);\ncurl_close($ch);"
+						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$projectId = '748395130237498368';\n$templateId = '748395130237498500';\n\n$template = $rewrite->templates->update($templateId, [\n  'project' => $projectId,\n  'content' => 'Hi {{first_name}}, your package {{order_id}} has shipped.',\n  'variables' => [\n    ['name' => 'first_name', 'fallback' => 'customer'],\n    ['name' => 'order_id', 'fallback' => '0000'],\n  ],\n]);"
 					},
 					{
-						"lang": "Ruby",
+						"lang": "ruby",
 						"label": "Ruby",
-						"source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Patch.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_your_api_key'\nrequest['Content-Type'] = 'application/json'\nrequest.body = \"{\\\"content\\\":\\\"Bonjour {{first_name}}, votre colis {{order_id}} a été expédié.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\"\nresponse = http.request(request)\nputs response.body"
+						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nproject_id = \"748395130237498368\"\ntemplate_id = \"748395130237498500\"\n\ntemplate = rewrite.templates.update(\n  template_id,\n  project: project_id,\n  content: \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n  variables: [\n    { name: \"first_name\", fallback: \"customer\" },\n    { name: \"order_id\", fallback: \"0000\" }\n  ]\n)"
 					},
 					{
-						"lang": "Kotlin",
+						"lang": "kotlin",
 						"label": "Kotlin",
-						"source": "val client = OkHttpClient()\nval body = \"{\\\"content\\\":\\\"Bonjour {{first_name}}, votre colis {{order_id}} a été expédié.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\".toRequestBody(\"application/json\".toMediaType())\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500\")\n  .addHeader(\"Authorization\", \"Bearer rw_your_api_key\")\n  .method(\"PATCH\", body)\n  .build()\nval response = client.newCall(request).execute()"
+						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.templates.TemplateVariable\nimport com.rewritetoday.sdk.models.templates.UpdateTemplateOptions\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val projectId = \"748395130237498368\"\n  val templateId = \"748395130237498500\"\n\n  val template = rewrite.templates.update(\n    templateId,\n    UpdateTemplateOptions(\n      project = projectId,\n      content = \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n      variables = listOf(\n        TemplateVariable(name = \"first_name\", fallback = \"customer\"),\n        TemplateVariable(name = \"order_id\", fallback = \"0000\")\n      )\n    )\n  )\n\n  println(template)\n}"
 					},
 					{
-						"lang": "Swift",
+						"lang": "swift",
 						"label": "Swift",
-						"source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"PATCH\"\nrequest.setValue(\"rw_your_api_key\", forHTTPHeaderField: \"Authorization\")\nrequest.setValue(\"application/json\", forHTTPHeaderField: \"Content-Type\")\nrequest.httpBody = \"{\\\"content\\\":\\\"Bonjour {{first_name}}, votre colis {{order_id}} a été expédié.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\".data(using: .utf8)\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
+						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet projectId = \"748395130237498368\"\nlet templateId = \"748395130237498500\"\n\nlet template = try await rewrite.templates.update(\n  templateId,\n  project: projectId,\n  content: \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n  variables: [\n    TemplateVariable(name: \"first_name\", fallback: \"customer\"),\n    TemplateVariable(name: \"order_id\", fallback: \"0000\")\n  ]\n)\n\nprint(template)"
 					},
 					{
-						"lang": "C#",
+						"lang": "csharp",
 						"label": "C#",
-						"source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Patch;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_your_api_key\");\nrequest.Content = new StringContent(\"{\\\"content\\\":\\\"Bonjour {{first_name}}, votre colis {{order_id}} a été expédié.\\\",\\\"variables\\\":[{\\\"name\\\":\\\"first_name\\\",\\\"fallback\\\":\\\"customer\\\"},{\\\"name\\\":\\\"order_id\\\",\\\"fallback\\\":\\\"0000\\\"}]}\", Encoding.UTF8, \"application/json\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
-					},
-					{
-						"lang": "cURL",
-						"label": "cURL",
-						"source": "curl -X PATCH 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500' \\\\\n  -H 'Authorization: Bearer rw_your_api_key'\n  -H 'Content-Type: application/json' \\\\\n  -d '{\"content\":\"Bonjour {{first_name}}, votre colis {{order_id}} a été expédié.\",\"variables\":[{\"name\":\"first_name\",\"fallback\":\"customer\"},{\"name\":\"order_id\",\"fallback\":\"0000\"}]}'"
+						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar projectId = \"748395130237498368\";\nvar templateId = \"748395130237498500\";\n\nvar template = await rewrite.Templates.UpdateAsync(templateId, new UpdateTemplateOptions\n{\n  Project = projectId,\n  Content = \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n  Variables = new[]\n  {\n    new TemplateVariable { Name = \"first_name\", Fallback = \"customer\" },\n    new TemplateVariable { Name = \"order_id\", Fallback = \"0000\" }\n  }\n});\n\nConsole.WriteLine(template);"
 					}
 				]
 			},
@@ -573,54 +553,49 @@
 				"description": "Supprime un modèle du projet.",
 				"x-codeSamples": [
 					{
-						"lang": "Node.js",
+						"lang": "node",
 						"label": "Node.js",
 						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst projectId = '748395130237498368';\nconst templateId = '748395130237498500';\n\nawait rewrite.templates.delete(templateId, projectId);"
 					},
 					{
-						"lang": "Go",
+						"lang": "go",
 						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  projectID := \"748395130237498368\"\n  templateID := \"748395130237498500\"\n\n  if err := client.Templates.Delete(context.Background(), templateID, projectID); err != nil {\n    log.Fatal(err)\n  }\n}"
+						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\nprojectID := \"748395130237498368\"\ntemplateID := \"748395130237498500\"\n\nif err := client.Templates.Delete(context.Background(), templateID, projectID); err != nil {\n  log.Fatal(err)\n}\n}"
 					},
 					{
-						"lang": "Python",
+						"lang": "python",
 						"label": "Python",
-						"source": "from rewrite import Rewrite\nimport requests\n\nclient = Rewrite(api_key='rw_your_api_key')\n\nresponse = requests.request(\n    'DELETE',\n    'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500',\n    headers={\n        'Authorization': \"Bearer rw_your_api_key\",\n    },\n)\nprint(response.json())"
+						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\nproject_id = \"748395130237498368\"\ntemplate_id = \"748395130237498500\"\n\nclient.templates.delete(template_id, project_id)"
 					},
 					{
-						"lang": "Java",
+						"lang": "java",
 						"label": "Java",
-						"source": "var client = HttpClient.newHttpClient();\nvar requestBuilder = HttpRequest.newBuilder()\n  .uri(URI.create(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500\"))\n  .header(\"Authorization\", \"Bearer rw_your_api_key\")\n  .method(\"DELETE\", HttpRequest.BodyPublishers.noBody());\nvar response = client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());"
+						"source": "import com.rewritetoday.sdk.Rewrite;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var projectId = \"748395130237498368\";\n    var templateId = \"748395130237498500\";\n\n    rewrite.templates().delete(templateId, projectId);\n  }\n}"
 					},
 					{
-						"lang": "PHP",
+						"lang": "php",
 						"label": "PHP",
-						"source": "<?php\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500');\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, [\n  'Authorization: Bearer rw_your_api_key',\n]);\n$response = curl_exec($ch);\ncurl_close($ch);"
+						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$projectId = '748395130237498368';\n$templateId = '748395130237498500';\n\n$rewrite->templates->delete($templateId, $projectId);"
 					},
 					{
-						"lang": "Ruby",
+						"lang": "ruby",
 						"label": "Ruby",
-						"source": "uri = URI.parse('https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500')\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\nrequest = Net::HTTP::Delete.new(uri.request_uri)\nrequest['Authorization'] = 'Bearer rw_your_api_key'\nresponse = http.request(request)\nputs response.body"
+						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nproject_id = \"748395130237498368\"\ntemplate_id = \"748395130237498500\"\n\nrewrite.templates.delete(template_id, project_id)"
 					},
 					{
-						"lang": "Kotlin",
+						"lang": "kotlin",
 						"label": "Kotlin",
-						"source": "val client = OkHttpClient()\nval request = Request.Builder()\n  .url(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500\")\n  .addHeader(\"Authorization\", \"Bearer rw_your_api_key\")\n  .method(\"DELETE\", null)\n  .build()\nval response = client.newCall(request).execute()"
+						"source": "import com.rewritetoday.sdk.Rewrite\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val projectId = \"748395130237498368\"\n  val templateId = \"748395130237498500\"\n\n  rewrite.templates.delete(templateId, projectId)\n}"
 					},
 					{
-						"lang": "Swift",
+						"lang": "swift",
 						"label": "Swift",
-						"source": "let url = URL(string: \"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"DELETE\"\nrequest.setValue(\"rw_your_api_key\", forHTTPHeaderField: \"Authorization\")\nlet (data, _, _) = try await URLSession.shared.data(for: request)"
+						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet projectId = \"748395130237498368\"\nlet templateId = \"748395130237498500\"\n\ntry await rewrite.templates.delete(templateId, project: projectId)"
 					},
 					{
-						"lang": "C#",
+						"lang": "csharp",
 						"label": "C#",
-						"source": "using var client = new HttpClient();\nusing var request = new HttpRequestMessage();\nrequest.Method = HttpMethod.Delete;\nrequest.RequestUri = new Uri(\"https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500\");\nrequest.Headers.Add(\"Authorization\", \"Bearer rw_your_api_key\");\nvar response = await client.SendAsync(request);\nvar content = await response.Content.ReadAsStringAsync();"
-					},
-					{
-						"lang": "cURL",
-						"label": "cURL",
-						"source": "curl -X DELETE 'https://api.rewritetoday.com/v1/projects/748395130237498368/templates/748395130237498500' \\\\\n  -H 'Authorization: Bearer rw_your_api_key'"
+						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar projectId = \"748395130237498368\";\nvar templateId = \"748395130237498500\";\n\nawait rewrite.Templates.DeleteAsync(templateId, projectId);"
 					}
 				]
 			}
