@@ -14,22 +14,123 @@
 	],
 	"tags": [
 		{
-			"name": "Webhooks",
-			"description": "Create and manage webhook endpoints for Rewrite events."
+			"name": "Messages",
+			"description": "Send, read and manage SMS messages."
 		}
 	],
 	"paths": {
-		"/webhooks": {
-			"get": {
-				"tags": ["Webhooks"],
-				"operationId": "listWebhooks",
-				"summary": "List webhooks",
-				"description": "List webhook endpoints configured for the current project. Results are paginated with a top-level cursor. Requires API key scope `project:webhooks:read`.",
+		"/messages": {
+			"post": {
+				"tags": ["Messages"],
+				"operationId": "createMessage",
+				"summary": "Send a message",
+				"description": "Send one SMS with inline content or by rendering a saved template. This route accepts Brazilian destination numbers in `+55` format and returns the accepted message ID immediately. Requires API key scope `message:write`.",
 				"x-codeSamples": [
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error, cursor } = await rewrite.webhooks.list({\n  limit: 20,\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.messages.send({\n  to: '+5511999999999',\n  content: 'Rewrite: seu codigo e 478201',\n  tags: [{ name: 'flow', value: 'login' }],\n});\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"$ref": "#/components/parameters/IdempotencyKey"
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/MessageCreateBody"
+							},
+							"examples": {
+								"withContent": {
+									"summary": "With content",
+									"value": {
+										"to": "+5511999999999",
+										"content": "Rewrite: seu codigo e 478201",
+										"tags": [
+											{
+												"name": "flow",
+												"value": "login"
+											}
+										],
+										"scheduledAt": "2026-03-20T14:30:00.000Z",
+										"segmentation": {
+											"max": 2,
+											"mode": "send",
+											"smart": true
+										}
+									}
+								},
+								"usingTemplate": {
+									"summary": "Using templates",
+									"value": {
+										"to": "+5511888888888",
+										"templateId": "748395130237498620",
+										"variables": {
+											"code": "941205",
+											"name": "Fernanda"
+										},
+										"tags": [
+											{
+												"name": "flow",
+												"value": "login"
+											}
+										]
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageCreateResponse"
+								},
+								"example": {
+									"ok": true,
+									"data": {
+										"id": "748395130237498412",
+										"createdAt": "2026-03-20T14:22:31.562Z",
+										"analysis": {
+											"characters": 33,
+											"encoding": "gsm7",
+											"segments": {
+												"concat": 153,
+												"count": 1,
+												"reason": "fits",
+												"single": 160
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["message:write"]
+			},
+			"get": {
+				"tags": ["Messages"],
+				"operationId": "listMessages",
+				"summary": "List messages",
+				"description": "List accepted messages for the current project. Results are returned in reverse chronological order with a top-level cursor for pagination. Requires API key scope `message:read`.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error, cursor } = await rewrite.messages.list({\n  limit: 25,\n  status: 'DELIVERED',\n});\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -46,6 +147,12 @@
 					},
 					{
 						"$ref": "#/components/parameters/Limit"
+					},
+					{
+						"$ref": "#/components/parameters/MessageStatus"
+					},
+					{
+						"$ref": "#/components/parameters/CountryCode"
 					}
 				],
 				"responses": {
@@ -54,97 +161,77 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/WebhookListResponse"
+									"$ref": "#/components/schemas/MessageListResponse"
 								},
 								"example": {
 									"ok": true,
 									"data": [
 										{
-											"id": "748395130237498750",
-											"name": "delivery-events",
-											"events": ["message.sent", "message.failed", "sms.otp"],
-											"status": "ACTIVE",
-											"endpoint": "https://example.com/rewrite/webhooks",
-											"createdAt": "2026-03-20T14:22:31.562Z"
+											"id": "748395130237498412",
+											"createdAt": "2026-03-20T14:22:31.562Z",
+											"to": "+5511999999999",
+											"from": "Rewrite",
+											"type": "SMS",
+											"tags": [
+												{
+													"name": "flow",
+													"value": "login"
+												}
+											],
+											"status": "DELIVERED",
+											"country": "br",
+											"content": "Rewrite: seu codigo e 478201",
+											"encoding": "GSM7",
+											"templateId": null,
+											"deliveredAt": "2026-03-20T14:22:39.914Z",
+											"scheduledAt": null,
+											"isPayAsYouGo": false
+										},
+										{
+											"id": "748395130237498413",
+											"createdAt": "2026-03-20T14:22:31.562Z",
+											"to": "+5511888888888",
+											"from": "Rewrite",
+											"type": "SMS",
+											"tags": [
+												{
+													"name": "flow",
+													"value": "login"
+												}
+											],
+											"status": "SENT",
+											"country": "br",
+											"content": "Rewrite: seu codigo e 478201",
+											"encoding": "GSM7",
+											"templateId": null,
+											"deliveredAt": null,
+											"scheduledAt": null,
+											"isPayAsYouGo": false
 										}
 									],
 									"cursor": {
-										"persist": false
+										"persist": true,
+										"after": "748395130237498414"
 									}
 								}
 							}
 						}
 					}
 				},
-				"x-required-scopes": ["project:webhooks:read"]
-			},
-			"post": {
-				"tags": ["Webhooks"],
-				"operationId": "createWebhook",
-				"summary": "Create a webhook",
-				"description": "Create a webhook endpoint and choose which Rewrite events should be delivered to it. Requires API key scope `project:webhooks:write`.",
-				"x-codeSamples": [
-					{
-						"lang": "typescript",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.webhooks.create({\n  name: 'delivery-events',\n  endpoint: 'https://example.com/rewrite/webhooks',\n  events: ['message.sent', 'message.failed', 'sms.otp'],\n});\n\nif (error) throw error;"
-					}
-				],
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/WebhookCreateBody"
-							},
-							"example": {
-								"name": "delivery-events",
-								"endpoint": "https://example.com/rewrite/webhooks",
-								"events": ["message.sent", "message.failed", "sms.otp"],
-								"secret": "whsec_dGVzdF9zZWNyZXRfdmFsdWU="
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Successful response",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/WebhookCreateResponse"
-								},
-								"example": {
-									"ok": true,
-									"data": {
-										"id": "748395130237498750",
-										"secret": "whsec_dGVzdF9zZWNyZXRfdmFsdWU=",
-										"createdAt": "2026-03-20T14:22:31.562Z"
-									}
-								}
-							}
-						}
-					}
-				},
-				"x-required-scopes": ["project:webhooks:write"]
+				"x-required-scopes": ["message:read"]
 			}
 		},
-		"/webhooks/{id}": {
-			"get": {
-				"tags": ["Webhooks"],
-				"operationId": "getWebhook",
-				"summary": "Get a webhook",
-				"description": "Fetch one webhook endpoint together with its current signing secret. Requires API key scope `project:webhooks:read`.",
+		"/messages/batch": {
+			"post": {
+				"tags": ["Messages"],
+				"operationId": "createMessageBatch",
+				"summary": "Send batch messages",
+				"description": "Send between 1 and 100 SMS messages in one request. This route accepts Brazilian destination numbers in `+55` format and returns only the accepted message IDs. Requires API key scope `message:write`.",
 				"x-codeSamples": [
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.webhooks.get({\n  id: '748395130237498750',\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.messages.sendBatch([\n  {\n    to: '+5511999999999',\n    content: 'Rewrite: seu codigo e 478201',\n  },\n  {\n    to: '+5511888888888',\n    templateId: '748395130237498620',\n    variables: { code: '941205' },\n  },\n]);\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -154,67 +241,7 @@
 				],
 				"parameters": [
 					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"description": "Webhook identifier returned by Rewrite.",
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Successful response",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/WebhookResponse"
-								},
-								"example": {
-									"ok": true,
-									"data": {
-										"id": "748395130237498750",
-										"name": "delivery-events",
-										"events": ["message.sent", "message.failed", "sms.otp"],
-										"status": "ACTIVE",
-										"endpoint": "https://example.com/rewrite/webhooks",
-										"createdAt": "2026-03-20T14:22:31.562Z",
-										"secret": "whsec_dGVzdF9zZWNyZXRfdmFsdWU="
-									}
-								}
-							}
-						}
-					}
-				},
-				"x-required-scopes": ["project:webhooks:read"]
-			},
-			"patch": {
-				"tags": ["Webhooks"],
-				"operationId": "updateWebhook",
-				"summary": "Update a webhook",
-				"description": "Update an existing webhook endpoint, including its event list, URL, status or signing secret. Requires API key scope `project:webhooks:write`.",
-				"x-codeSamples": [
-					{
-						"lang": "typescript",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { error } = await rewrite.webhooks.update({\n  id: '748395130237498750',\n  status: 'INACTIVE',\n});\n\nif (error) throw error;"
-					}
-				],
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"description": "Webhook identifier returned by Rewrite.",
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						}
+						"$ref": "#/components/parameters/IdempotencyKey"
 					}
 				],
 				"requestBody": {
@@ -222,10 +249,81 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/WebhookUpdateBody"
+								"type": "array",
+								"minItems": 1,
+								"maxItems": 100,
+								"items": {
+									"$ref": "#/components/schemas/MessageCreateBody"
+								}
+							},
+							"example": [
+								{
+									"to": "+5511999999999",
+									"content": "Rewrite: seu codigo e 478201"
+								},
+								{
+									"to": "+5511888888888",
+									"templateId": "748395130237498620",
+									"variables": {
+										"code": "941205"
+									}
+								}
+							]
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageBatchCreateResponse"
+								},
+								"example": {
+									"ok": true,
+									"data": {
+										"ids": [
+											"748395130237498412",
+											"748395130237498413",
+											"748395130237498414"
+										]
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["message:write"]
+			}
+		},
+		"/messages/cancel": {
+			"post": {
+				"tags": ["Messages"],
+				"operationId": "cancelMessage",
+				"summary": "Cancel a message",
+				"description": "Cancel a queued or scheduled message before it reaches the provider. Requires API key scope `message:write`.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { error } = await rewrite.messages.cancel({\n  id: '748395130237498412',\n});\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/MessageCancelBody"
 							},
 							"example": {
-								"status": "INACTIVE"
+								"id": "748395130237498412"
 							}
 						}
 					}
@@ -246,18 +344,20 @@
 						}
 					}
 				},
-				"x-required-scopes": ["project:webhooks:write"]
-			},
-			"delete": {
-				"tags": ["Webhooks"],
-				"operationId": "deleteWebhook",
-				"summary": "Delete a webhook",
-				"description": "Permanently delete a webhook endpoint and stop future event deliveries to it. Requires API key scope `project:webhooks:write`.",
+				"x-required-scopes": ["message:write"]
+			}
+		},
+		"/messages/{id}": {
+			"get": {
+				"tags": ["Messages"],
+				"operationId": "getMessage",
+				"summary": "Get a message",
+				"description": "Fetch the current state of a single message, including delivery timestamps and rendered content. Requires API key scope `message:read`.",
 				"x-codeSamples": [
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { error } = await rewrite.webhooks.delete({\n  id: '748395130237498750',\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.messages.get({\n  id: '748395130237498412',\n});\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -270,7 +370,7 @@
 						"name": "id",
 						"in": "path",
 						"required": true,
-						"description": "Webhook identifier returned by Rewrite.",
+						"description": "Message identifier returned by Rewrite.",
 						"schema": {
 							"$ref": "#/components/schemas/Snowflake"
 						}
@@ -282,17 +382,37 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/OkEmptyResponse"
+									"$ref": "#/components/schemas/MessageResponse"
 								},
 								"example": {
 									"ok": true,
-									"data": null
+									"data": {
+										"id": "748395130237498412",
+										"createdAt": "2026-03-20T14:22:31.562Z",
+										"to": "+5511999999999",
+										"from": "Rewrite",
+										"type": "SMS",
+										"tags": [
+											{
+												"name": "flow",
+												"value": "login"
+											}
+										],
+										"status": "DELIVERED",
+										"country": "br",
+										"content": "Rewrite: seu codigo e 478201",
+										"encoding": "GSM7",
+										"templateId": null,
+										"deliveredAt": "2026-03-20T14:22:39.914Z",
+										"scheduledAt": null,
+										"isPayAsYouGo": false
+									}
 								}
 							}
 						}
 					}
 				},
-				"x-required-scopes": ["project:webhooks:write"]
+				"x-required-scopes": ["message:read"]
 			}
 		}
 	},

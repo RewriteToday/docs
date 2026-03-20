@@ -1,0 +1,29 @@
+---
+title: "message.batch"
+description: "Resumo de batch emitido ao fim do dispatch."
+---
+
+`message.batch` e emitido quando um batch nao tem mais mensagens pendentes e pelo menos uma chegou a `SENT`.
+
+```json
+{
+  "id": "748395130237498912",
+  "createdAt": "2026-03-19T18:42:25.000Z",
+  "type": "message.batch",
+  "data": {
+    "id": "748395130237498700",
+    "projectId": "748395130237498412",
+    "ids": [
+      "748395130237498500",
+      "748395130237498501",
+      "748395130237498502"
+    ]
+  }
+}
+```
+
+Notas:
+
+- `data.id` e o id do batch.
+- `data.ids` lista os ids das mensagens enviadas nesse batch.
+- Se todas falharem, `message.batch` nao e emitido.

@@ -1,0 +1,16 @@
+---
+title: "message.delivered"
+description: "Evento em work in progress para estado de mensagem entregue."
+---
+
+`message.delivered` esta em WIP.
+
+O nome do evento ja faz parte do contrato publico e vai usar o envelope padrao de mensagem.
+
+Formato esperado do payload:
+
+- envelope padrao de evento de mensagem
+- `data.status = "DELIVERED"`
+- `data.deliveredAt` preenchido quando houver confirmacao de entrega
+
+Esta pagina sera atualizada quando o evento estiver disponivel de forma geral.

@@ -1,0 +1,38 @@
+---
+title: "message.queued"
+description: "SMS imediato persistido na fila antes do dispatch."
+---
+
+`message.queued` e emitido assim que a Rewrite persiste um SMS imediato para envio.
+
+```json
+{
+  "id": "748395130237498913",
+  "createdAt": "2026-03-19T18:42:11.000Z",
+  "type": "message.queued",
+  "data": {
+    "id": "748395130237498500",
+    "projectId": "748395130237498412",
+    "to": "+5511999999999",
+    "tags": [{ "name": "use_case", "value": "otp_login" }],
+    "type": "SMS",
+    "status": "QUEUED",
+    "content": "Rewrite: seu codigo de verificacao e 123456",
+    "country": "br",
+    "analysis": {
+      "characters": 41,
+      "encoding": "gsm7",
+      "segments": { "concat": 153, "count": 1, "reason": "fits", "single": 160 }
+    },
+    "error": null,
+    "deliveredAt": null,
+    "scheduledAt": null,
+    "templateId": null
+  }
+}
+```
+
+Notas:
+
+- `message.queued` e usado para envios imediatos.
+- Envios agendados usam [`message.scheduled`](./message-scheduled).

@@ -36,7 +36,7 @@ Esta pagina explica:
   <Tab title="PAYG">
     No PAYG, a cobranca e feita por SMS enviado.
 
-    **Preco:** `0.20` por SMS (conforme politica comercial da Rewrite).
+    **Preco:** `0.18` por SMS (conforme politica comercial da Rewrite).
 
     Esse modelo e ideal para trafego variavel ou workloads em fase inicial.
   </Tab>
@@ -71,9 +71,8 @@ Quando houver rate limit, inspecione:
 - `X-RateLimit-Global`
 - `X-RateLimit-Limit`
 - `X-RateLimit-Retry-After`
-- `Retry-After`
 
-Se houver mais de um hint de retry, use o tempo de espera mais conservador.
+Use `X-RateLimit-Retry-After` como hint de retry.
 
 ## Padroes de arquitetura para trabalhar com quota
 

@@ -1,125 +1,58 @@
 ---
-title: "Quickstart"
-description: "Envie seu primeiro SMS em minutos usando a API da Rewrite."
+title: Quickstart
+description: Envie seu primeiro SMS com a API publica da Rewrite.
 ---
 
-export function SmsRequestPlayground() {
-  const curlCommand = [
-    'curl -X POST "https://api.rewritetoday.com/v1/messages" \\\\',
-    '  -H "Authorization: Bearer (Sua API key aqui)" \\\\',
-    '  -H "Content-Type: application/json" \\\\',
-    "  -d '{",
-    '    "to": "+5511999999999",',
-    '    "message": "Seu codigo OTP e 123456",',
-    '    "metadata": { "source": "quickstart" }',
-    "  }'",
-  ].join("\n");
+# Antes de comecar
 
-  return (
-    <div style={{ display: "grid", gap: "12px" }}>
-      <div
-        style={{
-          border: "1px solid rgba(255, 255, 255, 0.12)",
-          borderRadius: "12px",
-          overflow: "hidden",
-        }}
-      >
-        <div
-          style={{
-            fontSize: "12px",
-            letterSpacing: "0.04em",
-            textTransform: "uppercase",
-            color: "rgba(255, 255, 255, 0.68)",
-            padding: "10px 12px",
-            borderBottom: "1px solid rgba(255, 255, 255, 0.12)",
-            background: "rgba(255, 255, 255, 0.03)",
-          }}
-        >
-          requisicao cURL
-        </div>
-        <pre style={{ margin: 0, padding: "14px", overflowX: "auto" }}>
-          <code>{curlCommand}</code>
-        </pre>
-      </div>
-    </div>
-  );
-}
-
-## Antes de comecar
-
-- Crie uma API key da Rewrite no seu dashboard.
-- Mantenha sua API key somente no backend.
-- Use numeros de destino no formato **E.164** (exemplo: `+5511999999999`).
-
----
+- Crie uma API key de projeto no dashboard da Rewrite.
+- Mantenha a chave apenas no backend.
+- Use um numero brasileiro em E.164, por exemplo `+5511999999999`.
 
 ## Envie seu primeiro SMS
 
-<Steps>
-  <Step title="Monte sua requisicao" titleSize="h3">
-    Use esta requisicao cURL base como ponto de partida.
+```bash
+curl -X POST "https://api.rewritetoday.com/v1/messages" \
+  -H "Authorization: Bearer rw_..." \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: msg:quickstart:2026-03-19T18:30" \
+  -d '{
+    "to": "+5511999999999",
+    "content": "Rewrite: seu codigo de verificacao e 123456"
+  }'
+```
 
-    <SmsRequestPlayground />
-  </Step>
+Resposta de sucesso:
 
-  <Step title="Confira a resposta" titleSize="h3">
-    Execute esta requisicao e compare sua saida com o exemplo abaixo:
-
-    ```bash
-    curl -X POST "https://api.rewritetoday.com/v1/messages" \
-      -H "Authorization: Bearer rw_..." \
-      -H "Content-Type: application/json" \
-      -d '{
-        "to": "+5511999999999",
-        "message": "Seu codigo OTP e 123456",
-        "metadata": { "source": "quickstart" }
-      }'
-    ```
-
-    Uma requisicao bem-sucedida retorna um envelope de resposta semelhante a:
-
-    ```json
-    {
-      "ok": true,
-      "data": {
-        "id": "733501234567890123",
-        "to": "+5511999999999",
-        "message": "Seu codigo OTP e 123456",
-        "status": "QUEUED"
+```json
+{
+  "ok": true,
+  "data": {
+    "id": "748395130237498500",
+    "createdAt": "2026-03-19T18:30:00.000Z",
+    "analysis": {
+      "characters": 41,
+      "encoding": "gsm7",
+      "segments": {
+        "concat": 153,
+        "count": 1,
+        "reason": "fits",
+        "single": 160
       }
     }
-    ```
-  </Step>
-</Steps>
+  }
+}
+```
 
-<Info>
-Use seu proprio numero verificado/de teste em desenvolvimento. Nao exponha API keys e segredos em codigo cliente.
-</Info>
+## Proximos passos comuns
 
----
+- Consulte a mensagem depois com `GET /messages/{id}`.
+- Adicione [webhooks](/pt-br/webhooks/introduction) para receber [`message.sent`](/pt-br/webhooks/events/message-sent), [`message.failed`](/pt-br/webhooks/events/message-failed), [`message.scheduled`](/pt-br/webhooks/events/message-scheduled), [`message.canceled`](/pt-br/webhooks/events/message-canceled), [`message.batch`](/pt-br/webhooks/events/message-batch) e [`sms.otp`](/pt-br/webhooks/events/sms-otp).
+- Use [templates](/pt-br/api/i18n) quando precisar de conteudo por pais.
 
-## Solucao de problemas
+## Troubleshooting
 
-<CardGroup cols={2}>
-  <Card title="401 Unauthorized" icon="key" color="#C9CBD1">
-    Sua API key esta ausente ou invalida. Verifique o token bearer no header `Authorization` do cURL.
-  </Card>
-
-  <Card title="422 Unprocessable Entity" icon="triangle-exclamation" color="#C9CBD1">
-    Seu payload esta invalido. Confira o formato do numero em `to` e os campos obrigatorios.
-  </Card>
-</CardGroup>
-
----
-
-## Proximos passos
-
-<CardGroup cols={2}>
-  <Card title="Referencia da API" icon="book-open" href="./introduction" color="#C9CBD1">
-    Explore todos os endpoints de SMS, parametros e modelos de resposta.
-  </Card>
-
-  <Card title="Webhooks" icon="webhook" href="../webhooks" color="#C9CBD1">
-    Receba eventos de entrega em tempo real e trate retentativas com seguranca.
-  </Card>
-</CardGroup>
+- `400 INVALID_JSON_BODY`: body, telefone ou validacao especifica da rota falhou.
+- `401 INVALID_OR_MISSING_API_KEY`: bearer token ausente ou invalido.
+- `403 PROJECT_SUBSCRIPTION_REQUIRED` ou `PROJECT_BILLING_PAYMENT_REQUIRED`: projeto bloqueado para envio.
+- `429 RATE_LIMITED`: faca backoff e respeite os headers de retry.

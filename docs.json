@@ -100,13 +100,25 @@
 								]
 							},
 							{
+								"group": "Messages",
+								"openapi": "en/api/openapi-messages.json",
+								"pages": [
+									"POST /messages",
+									"GET /messages",
+									"POST /messages/batch",
+									"POST /messages/cancel",
+									"GET /messages/{id}"
+								]
+							},
+							{
+								"group": "OTP",
+								"openapi": "en/api/openapi-otp.json",
+								"pages": ["POST /otp", "POST /otp/{id}/verify"]
+							},
+							{
 								"group": "API Keys",
 								"openapi": "en/api/openapi-api-keys.json",
-								"pages": [
-									"GET /api-keys",
-									"POST /api-keys",
-									"DELETE /api-keys/{key}"
-								]
+								"pages": ["DELETE /api-keys/{key}"]
 							},
 							{
 								"group": "Templates",
@@ -115,8 +127,8 @@
 									"GET /templates",
 									"POST /templates",
 									"GET /templates/{identifier}",
-									"PATCH /templates/{templateId}",
-									"DELETE /templates/{templateId}"
+									"PATCH /templates/{id}",
+									"DELETE /templates/{id}"
 								]
 							},
 							{
@@ -125,10 +137,15 @@
 								"pages": [
 									"GET /webhooks",
 									"POST /webhooks",
-									"GET /webhooks/{webhookId}",
-									"PATCH /webhooks/{webhookId}",
-									"DELETE /webhooks/{webhookId}"
+									"GET /webhooks/{id}",
+									"PATCH /webhooks/{id}",
+									"DELETE /webhooks/{id}"
 								]
+							},
+							{
+								"group": "Logs",
+								"openapi": "en/api/openapi-logs.json",
+								"pages": ["GET /webhooks/{id}/logs", "GET /logs/{id}"]
 							}
 						]
 					},
@@ -213,11 +230,14 @@
 							{
 								"group": "Events",
 								"pages": [
-									"en/webhooks/events/sms-queued",
-									"en/webhooks/events/sms-delivered",
-									"en/webhooks/events/sms-scheduled",
-									"en/webhooks/events/sms-failed",
-									"en/webhooks/events/sms-canceled"
+									"en/webhooks/events/sms-otp",
+									"en/webhooks/events/message-sent",
+									"en/webhooks/events/message-batch",
+									"en/webhooks/events/message-queued",
+									"en/webhooks/events/message-delivered",
+									"en/webhooks/events/message-scheduled",
+									"en/webhooks/events/message-failed",
+									"en/webhooks/events/message-canceled"
 								]
 							}
 						]
@@ -285,35 +305,52 @@
 								]
 							},
 							{
-								"group": "API Keys",
-								"openapi": "en/api/openapi-api-keys.json",
+								"group": "Messages",
+								"openapi": "pt-br/api/openapi-messages.json",
 								"pages": [
-									"GET /api-keys",
-									"POST /api-keys",
-									"DELETE /api-keys/{key}"
+									"POST /messages",
+									"GET /messages",
+									"POST /messages/batch",
+									"POST /messages/cancel",
+									"GET /messages/{id}"
 								]
 							},
 							{
+								"group": "OTP",
+								"openapi": "pt-br/api/openapi-otp.json",
+								"pages": ["POST /otp", "POST /otp/{id}/verify"]
+							},
+							{
+								"group": "API Keys",
+								"openapi": "pt-br/api/openapi-api-keys.json",
+								"pages": ["DELETE /api-keys/{key}"]
+							},
+							{
 								"group": "Templates",
-								"openapi": "en/api/openapi-templates.json",
+								"openapi": "pt-br/api/openapi-templates.json",
 								"pages": [
 									"GET /templates",
 									"POST /templates",
 									"GET /templates/{identifier}",
-									"PATCH /templates/{templateId}",
-									"DELETE /templates/{templateId}"
+									"PATCH /templates/{id}",
+									"DELETE /templates/{id}"
 								]
 							},
 							{
 								"group": "Webhooks",
-								"openapi": "en/api/openapi-webhooks.json",
+								"openapi": "pt-br/api/openapi-webhooks.json",
 								"pages": [
 									"GET /webhooks",
 									"POST /webhooks",
-									"GET /webhooks/{webhookId}",
-									"PATCH /webhooks/{webhookId}",
-									"DELETE /webhooks/{webhookId}"
+									"GET /webhooks/{id}",
+									"PATCH /webhooks/{id}",
+									"DELETE /webhooks/{id}"
 								]
+							},
+							{
+								"group": "Logs",
+								"openapi": "pt-br/api/openapi-logs.json",
+								"pages": ["GET /webhooks/{id}/logs", "GET /logs/{id}"]
 							}
 						]
 					},
@@ -402,11 +439,14 @@
 							{
 								"group": "Events",
 								"pages": [
-									"pt-br/webhooks/events/sms-queued",
-									"pt-br/webhooks/events/sms-delivered",
-									"pt-br/webhooks/events/sms-scheduled",
-									"pt-br/webhooks/events/sms-failed",
-									"pt-br/webhooks/events/sms-canceled"
+									"pt-br/webhooks/events/sms-otp",
+									"pt-br/webhooks/events/message-sent",
+									"pt-br/webhooks/events/message-batch",
+									"pt-br/webhooks/events/message-queued",
+									"pt-br/webhooks/events/message-delivered",
+									"pt-br/webhooks/events/message-scheduled",
+									"pt-br/webhooks/events/message-failed",
+									"pt-br/webhooks/events/message-canceled"
 								]
 							}
 						]
@@ -448,376 +488,6 @@
 					{
 						"tab": "Changelog",
 						"pages": ["pt-br/changelog"]
-					}
-				]
-			},
-			{
-				"language": "es",
-				"tabs": [
-					{
-						"tab": "Bienvenida",
-						"pages": ["es/welcome"]
-					},
-					{
-						"tab": "API",
-						"groups": [
-							{
-								"group": "Referencia",
-								"pages": [
-									"es/api/introduction",
-									"es/api/quickstart",
-									"es/api/limits",
-									"es/api/pagination",
-									"es/api/i18n",
-									"es/api/deliverability",
-									"es/api/errors"
-								]
-							},
-							{
-								"group": "Claves API",
-								"openapi": "es/api/openapi-api-keys.json",
-								"pages": [
-									"GET /api-keys",
-									"POST /api-keys",
-									"DELETE /api-keys/{key}"
-								]
-							},
-							{
-								"group": "Plantillas",
-								"openapi": "es/api/openapi-templates.json",
-								"pages": [
-									"GET /templates",
-									"POST /templates",
-									"GET /templates/{identifier}",
-									"PATCH /templates/{templateId}",
-									"DELETE /templates/{templateId}"
-								]
-							},
-							{
-								"group": "Webhooks",
-								"openapi": "es/api/openapi-webhooks.json",
-								"pages": [
-									"GET /webhooks",
-									"POST /webhooks",
-									"GET /webhooks/{webhookId}",
-									"PATCH /webhooks/{webhookId}",
-									"DELETE /webhooks/{webhookId}"
-								]
-							}
-						]
-					},
-					{
-						"tab": "CLI",
-						"pages": ["es/cli/introduction", "es/cli/auth", "es/cli/config"]
-					},
-					{
-						"tab": "SDKs",
-						"groups": [
-							{
-								"group": "Visión general",
-								"pages": ["es/sdks/introduction"]
-							},
-							{
-								"group": "Node.js",
-								"icon": "node-js",
-								"pages": ["es/sdks/node"]
-							},
-							{
-								"group": "Go",
-								"icon": "golang",
-								"pages": ["es/sdks/golang"]
-							},
-							{
-								"group": "Python",
-								"icon": "python",
-								"pages": ["es/sdks/python"]
-							},
-							{
-								"group": "Java",
-								"icon": "java",
-								"pages": ["es/sdks/java"]
-							},
-							{
-								"group": "PHP",
-								"icon": "php",
-								"pages": ["es/sdks/php"]
-							},
-							{
-								"group": "Ruby",
-								"icon": "gem",
-								"pages": ["es/sdks/ruby"]
-							},
-							{
-								"group": "Kotlin",
-								"icon": "android",
-								"pages": ["es/sdks/kotlin"]
-							},
-							{
-								"group": "Swift",
-								"icon": "apple",
-								"pages": ["es/sdks/swift"]
-							},
-							{
-								"group": "C#",
-								"icon": "code",
-								"pages": ["es/sdks/csharp"]
-							}
-						]
-					},
-					{
-						"tab": "AI",
-						"groups": [
-							{
-								"group": "Vision general",
-								"pages": ["es/ai/introduction", "es/ai/skills"]
-							}
-						]
-					},
-					{
-						"tab": "Webhooks",
-						"groups": [
-							{
-								"group": "Referencia",
-								"pages": [
-									"es/webhooks/introduction",
-									"es/webhooks/retry",
-									"es/webhooks/types"
-								]
-							},
-							{
-								"group": "Eventos",
-								"pages": [
-									"es/webhooks/events/sms-queued",
-									"es/webhooks/events/sms-delivered",
-									"es/webhooks/events/sms-scheduled",
-									"es/webhooks/events/sms-failed",
-									"es/webhooks/events/sms-canceled"
-								]
-							}
-						]
-					},
-					{
-						"tab": "Ecosystem",
-						"groups": [
-							{
-								"group": "Vision general",
-								"pages": ["es/ecosystem/introduction"]
-							},
-							{
-								"group": "Paquetes",
-								"pages": [
-									"es/ecosystem/rest",
-									"es/ecosystem/types",
-									"es/ecosystem/zod"
-								]
-							}
-						]
-					},
-					{
-						"tab": "Serverless",
-						"groups": [
-							{
-								"group": "Visión general",
-								"pages": ["es/serveless/introduction"]
-							},
-							{
-								"group": "Plataformas",
-								"pages": [
-									"es/serveless/vercel-functions",
-									"es/serveless/cloudflare-workers",
-									"es/serveless/supabase-edge-functions"
-								]
-							}
-						]
-					},
-					{
-						"tab": "Changelog",
-						"pages": ["es/changelog"]
-					}
-				]
-			},
-			{
-				"language": "fr",
-				"tabs": [
-					{
-						"tab": "Bienvenue",
-						"pages": ["fr/welcome"]
-					},
-					{
-						"tab": "API",
-						"groups": [
-							{
-								"group": "Référence",
-								"pages": [
-									"fr/api/introduction",
-									"fr/api/quickstart",
-									"fr/api/limits",
-									"fr/api/pagination",
-									"fr/api/i18n",
-									"fr/api/deliverability",
-									"fr/api/errors"
-								]
-							},
-							{
-								"group": "Clés API",
-								"openapi": "fr/api/openapi-api-keys.json",
-								"pages": [
-									"GET /api-keys",
-									"POST /api-keys",
-									"DELETE /api-keys/{key}"
-								]
-							},
-							{
-								"group": "Modèles",
-								"openapi": "fr/api/openapi-templates.json",
-								"pages": [
-									"GET /templates",
-									"POST /templates",
-									"GET /templates/{identifier}",
-									"PATCH /templates/{templateId}",
-									"DELETE /templates/{templateId}"
-								]
-							},
-							{
-								"group": "Webhooks",
-								"openapi": "fr/api/openapi-webhooks.json",
-								"pages": [
-									"GET /webhooks",
-									"POST /webhooks",
-									"GET /webhooks/{webhookId}",
-									"PATCH /webhooks/{webhookId}",
-									"DELETE /webhooks/{webhookId}"
-								]
-							}
-						]
-					},
-					{
-						"tab": "CLI",
-						"pages": ["fr/cli/introduction", "fr/cli/auth", "fr/cli/config"]
-					},
-					{
-						"tab": "SDKs",
-						"groups": [
-							{
-								"group": "Vue d'ensemble",
-								"pages": ["fr/sdks/introduction"]
-							},
-							{
-								"group": "Node.js",
-								"icon": "node-js",
-								"pages": ["fr/sdks/node"]
-							},
-							{
-								"group": "Go",
-								"icon": "golang",
-								"pages": ["fr/sdks/golang"]
-							},
-							{
-								"group": "Python",
-								"icon": "python",
-								"pages": ["fr/sdks/python"]
-							},
-							{
-								"group": "Java",
-								"icon": "java",
-								"pages": ["fr/sdks/java"]
-							},
-							{
-								"group": "PHP",
-								"icon": "php",
-								"pages": ["fr/sdks/php"]
-							},
-							{
-								"group": "Ruby",
-								"icon": "gem",
-								"pages": ["fr/sdks/ruby"]
-							},
-							{
-								"group": "Kotlin",
-								"icon": "android",
-								"pages": ["fr/sdks/kotlin"]
-							},
-							{
-								"group": "Swift",
-								"icon": "apple",
-								"pages": ["fr/sdks/swift"]
-							},
-							{
-								"group": "C#",
-								"icon": "code",
-								"pages": ["fr/sdks/csharp"]
-							}
-						]
-					},
-					{
-						"tab": "AI",
-						"groups": [
-							{
-								"group": "Vue d'ensemble",
-								"pages": ["fr/ai/introduction", "fr/ai/skills"]
-							}
-						]
-					},
-					{
-						"tab": "Webhooks",
-						"groups": [
-							{
-								"group": "Référence",
-								"pages": [
-									"fr/webhooks/introduction",
-									"fr/webhooks/retry",
-									"fr/webhooks/types"
-								]
-							},
-							{
-								"group": "Événements",
-								"pages": [
-									"fr/webhooks/events/sms-queued",
-									"fr/webhooks/events/sms-delivered",
-									"fr/webhooks/events/sms-scheduled",
-									"fr/webhooks/events/sms-failed",
-									"fr/webhooks/events/sms-canceled"
-								]
-							}
-						]
-					},
-					{
-						"tab": "Ecosystem",
-						"groups": [
-							{
-								"group": "Vue d'ensemble",
-								"pages": ["fr/ecosystem/introduction"]
-							},
-							{
-								"group": "Packages",
-								"pages": [
-									"fr/ecosystem/rest",
-									"fr/ecosystem/types",
-									"fr/ecosystem/zod"
-								]
-							}
-						]
-					},
-					{
-						"tab": "Serverless",
-						"groups": [
-							{
-								"group": "Vue d'ensemble",
-								"pages": ["fr/serveless/introduction"]
-							},
-							{
-								"group": "Plateformes",
-								"pages": [
-									"fr/serveless/vercel-functions",
-									"fr/serveless/cloudflare-workers",
-									"fr/serveless/supabase-edge-functions"
-								]
-							}
-						]
-					},
-					{
-						"tab": "Changelog",
-						"pages": ["fr/changelog"]
 					}
 				]
 			}

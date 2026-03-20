@@ -1,0 +1,44 @@
+---
+title: "sms.otp"
+description: "Successful OTP delivery event."
+---
+
+`sms.otp` is emitted when Rewrite successfully sends an OTP request.
+
+```json
+{
+  "id": "748395130237498910",
+  "createdAt": "2026-03-19T18:42:11.000Z",
+  "type": "sms.otp",
+  "data": {
+    "id": "748395130237498500",
+    "projectId": "748395130237498412",
+    "to": "+5511999999999",
+    "tags": [],
+    "type": "OTP",
+    "status": "SENT",
+    "content": "OTP prefix=\"Rewrite\" expiresIn=5 secure=true to=\"+5511999999999\"",
+    "country": "br",
+    "analysis": {
+      "characters": 67,
+      "encoding": "gsm7",
+      "segments": { "concat": 153, "count": 1, "reason": "fits", "single": 160 }
+    },
+    "error": null,
+    "deliveredAt": null,
+    "scheduledAt": null,
+    "templateId": null,
+    "otp": {
+      "prefix": "Rewrite",
+      "expiresIn": 5,
+      "expiresAt": "2026-03-19T18:47:11.000Z"
+    }
+  }
+}
+```
+
+Notes:
+
+- `data.type` is always `OTP`.
+- `data.otp` is present only on this successful OTP event.
+- Failed OTP sends use [`message.failed`](./message-failed).

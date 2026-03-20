@@ -1,254 +1,71 @@
 ---
 title: i18n
-description: Localize conteudo de mensagens e templates com a chave i18n, escolhendo idioma pelo numero de destino.
+description: Localize conteudo de templates com o mapa `i18n` usado nos envios da Rewrite.
 ---
 
 # Visao geral
 
-A Rewrite suporta a chave `i18n` tanto para mensagens diretas quanto para templates.
+A criacao publica de mensagens nao aceita um campo `i18n` direto no body.
 
-Use `message` como fallback padrao e informe variacoes localizadas em `i18n`.
-A Rewrite resolve a melhor variante com base no numero de destino (`to`) inferindo pais/regiao no formato E.164.
+A localizacao acontece hoje na camada de template:
 
-## Quando usar i18n
+- `POST /templates` e `PATCH /templates/{id}` aceitam um objeto `i18n`.
+- `GET /templates` e `GET /templates/{identifier}` podem incluir `i18n` com `withi18n=true`.
+- `POST /messages` resolve o conteudo localizado a partir de `templateId` e do pais inferido no destino.
 
-- Voce envia o mesmo fluxo para varios paises.
-- Voce quer uma unica integracao de API com copy por idioma.
-- Voce precisa de fallback seguro quando nao houver match de locale.
+## Formato das chaves `i18n`
 
-## Formato do payload
+As chaves do mapa usam codigos ISO de pais em lowercase, por exemplo:
 
-```json
-{
-  "to": "+5511999999999",
-  "message": "Your OTP code is 123456",
-  "i18n": {
-    "pt-BR": "Seu codigo OTP e 123456",
-    "es": "Tu codigo OTP es 123456",
-    "en": "Your OTP code is 123456"
-  }
-}
+- `br`
+- `us`
+- `mx`
+
+Os envios publicos hoje resolvem apenas numeros brasileiros, entao `br` e o locale pratico para trafego publico.
+
+## Crie um template localizado
+
+```bash
+curl -X POST "https://api.rewritetoday.com/v1/templates" \
+  -H "Authorization: Bearer rw_..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "otp_login",
+    "content": "Rewrite: seu codigo e {{code}}",
+    "i18n": {
+      "br": "Rewrite: seu codigo e {{code}}"
+    },
+    "variables": [
+      { "name": "code", "fallback": "000000" }
+    ],
+    "description": "SMS de OTP para login"
+  }'
 ```
 
-## Ordem de resolucao
+## Envie com `templateId`
 
-1. A Rewrite inspeciona o prefixo do numero de destino (`to`) e infere locale/pais.
-2. Se existir match exato em `i18n` (exemplo: `pt-BR`), usa esse texto.
-3. Se nao houver locale exato, pode usar a chave de idioma base quando disponivel (exemplo: `pt`).
-4. Se nao houver mapeamento, usa `message`.
-
-<Info>
-Sempre envie `message` completo como fallback. Nao dependa apenas das chaves de `i18n`.
-</Info>
-
-## Formatos recomendados de chave i18n
-
-- Idioma: `en`, `pt`, `es`
-- Idioma + regiao: `en-US`, `pt-BR`, `es-MX`
-
-Use chaves no padrao BCP-47 para matching previsivel.
-
-## Exemplo de requisicao (todos os SDKs)
-
-<CodeGroup>
-  ```bash cURL
-  curl -X POST "https://api.rewritetoday.com/v1/messages" \
-    -H "Authorization: Bearer rw_..." \
-    -H "Content-Type: application/json" \
-    -d '{
-      "to": "+5511999999999",
-      "message": "Your OTP code is 123456",
-      "i18n": {
-        "pt-BR": "Seu codigo OTP e 123456",
-        "en": "Your OTP code is 123456"
-      },
-      "metadata": { "source": "api-i18n" }
-    }'
-  ```
-
-  ```ts Node.js
-  import { Rewrite } from '@rewritejs/sdk';
-
-  const rewrite = new Rewrite(process.env.REWRITE_API_KEY);
-
-  const { data, error } = await rewrite.messages.send({
-    to: '+5511999999999',
-    message: 'Your OTP code is 123456',
-    i18n: {
-      'pt-BR': 'Seu codigo OTP e 123456',
-      en: 'Your OTP code is 123456',
-    },
-    metadata: { source: 'api-i18n' },
-  });
-  ```
-
-  ```go Go
-  package main
-
-  import (
-    "os"
-    rewrite "github.com/rewritetoday/golang"
-  )
-
-  func main() {
-    client := rewrite.New(os.Getenv("REWRITE_API_KEY"))
-
-    _, _ = client.Messages.Send(&rewrite.Messages.SendOptions{
-      To:      "+5511999999999",
-      Message: "Your OTP code is 123456",
-      I18n: map[string]string{
-        "pt-BR": "Seu codigo OTP e 123456",
-        "en":    "Your OTP code is 123456",
-      },
-    })
-  }
-  ```
-
-  ```py Python
-  import os
-  import rewrite
-
-  rewrite.api_key = os.environ["REWRITE_API_KEY"]
-
-  rewrite.messages.send({
+```bash
+curl -X POST "https://api.rewritetoday.com/v1/messages" \
+  -H "Authorization: Bearer rw_..." \
+  -H "Content-Type: application/json" \
+  -d '{
     "to": "+5511999999999",
-    "message": "Your OTP code is 123456",
-    "i18n": {
-      "pt-BR": "Seu codigo OTP e 123456",
-      "en": "Your OTP code is 123456"
+    "templateId": "748395130237498600",
+    "variables": {
+      "code": "123456"
     }
-  })
-  ```
+  }'
+```
 
-  ```java Java
-  import com.rewritetoday.sdk.Rewrite;
-  import com.rewritetoday.sdk.models.messages.SendOptions;
-  import java.util.Map;
+## Consulte as variantes salvas
 
-  var rewrite = new Rewrite(System.getenv("REWRITE_API_KEY"));
+```bash
+curl "https://api.rewritetoday.com/v1/templates/otp_login?withi18n=true" \
+  -H "Authorization: Bearer rw_..."
+```
 
-  var params = SendOptions.builder()
-    .to("+5511999999999")
-    .message("Your OTP code is 123456")
-    .i18n(Map.of(
-      "pt-BR", "Seu codigo OTP e 123456",
-      "en", "Your OTP code is 123456"
-    ))
-    .build();
+## Notas
 
-  var message = rewrite.messages().send(params);
-  ```
-
-  ```php PHP
-  <?php
-
-  use RewriteToday\Rewrite;
-
-  $rewrite = new Rewrite(getenv('REWRITE_API_KEY'));
-
-  $message = $rewrite->messages->send([
-    'to' => '+5511999999999',
-    'message' => 'Your OTP code is 123456',
-    'i18n' => [
-      'pt-BR' => 'Seu codigo OTP e 123456',
-      'en' => 'Your OTP code is 123456',
-    ],
-  ]);
-  ```
-
-  ```rb Ruby
-  require "rewrite"
-
-  rewrite = Rewrite::Client.new(api_key: ENV.fetch("REWRITE_API_KEY"))
-
-  message = rewrite.messages.send(
-    to: "+5511999999999",
-    message: "Your OTP code is 123456",
-    i18n: {
-      "pt-BR" => "Seu codigo OTP e 123456",
-      "en" => "Your OTP code is 123456"
-    }
-  )
-  ```
-
-  ```kt Kotlin
-  import com.rewritetoday.sdk.Rewrite
-  import com.rewritetoday.sdk.models.messages.SendOptions
-
-  val rewrite = Rewrite(System.getenv("REWRITE_API_KEY"))
-
-  val params = SendOptions(
-    to = "+5511999999999",
-    message = "Your OTP code is 123456",
-    i18n = mapOf(
-      "pt-BR" to "Seu codigo OTP e 123456",
-      "en" to "Your OTP code is 123456"
-    )
-  )
-
-  val message = rewrite.messages.send(params)
-  ```
-
-  ```swift Swift
-  import Foundation
-  import RewriteSDK
-
-  let rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment["REWRITE_API_KEY"] ?? "")
-
-  let message = try await rewrite.messages.send(
-    to: "+5511999999999",
-    message: "Your OTP code is 123456",
-    i18n: [
-      "pt-BR": "Seu codigo OTP e 123456",
-      "en": "Your OTP code is 123456"
-    ]
-  )
-  ```
-
-  ```csharp C#
-  using RewriteToday;
-
-  var rewrite = new RewriteClient(Environment.GetEnvironmentVariable("REWRITE_API_KEY"));
-
-  var message = await rewrite.Messages.SendAsync(new SendMessageOptions
-  {
-    To = "+5511999999999",
-    Message = "Your OTP code is 123456",
-    I18n = new Dictionary<string, string>
-    {
-      ["pt-BR"] = "Seu codigo OTP e 123456",
-      ["en"] = "Your OTP code is 123456"
-    }
-  });
-  ```
-</CodeGroup>
-
-## Templates + i18n
-
-Ao usar templates, `i18n` segue o mesmo comportamento:
-
-- Mantenha um template/mensagem padrao.
-- Adicione variantes localizadas em `i18n`.
-- Mantenha variaveis/placeholders consistentes em todos os idiomas.
-
-## Boas praticas
-
-- Mantenha placeholders identicos em todos os idiomas (exemplo: `{{code}}`).
-- Respeite limites regionais de tamanho de SMS.
-- Prefira locales explicitos (`pt-BR`) quando o texto muda por pais.
-- Monitore entrega por locale para detectar mapeamentos ausentes.
-- Teste com formatos reais dos seus principais paises.
-
-## Erros comuns
-
-<Tabs sync={false}>
-  <Tab title="Sem message de fallback">
-    Enviar apenas chaves em `i18n` sem `message` padrao pode quebrar envios para destinos sem match.
-  </Tab>
-  <Tab title="Placeholders inconsistentes">
-    Se um locale usar placeholders diferentes, a interpolacao pode falhar em runtime.
-  </Tab>
-  <Tab title="Chave de locale fora do padrao">
-    Evite chaves customizadas como `portugues-brasil`. Use BCP-47.
-  </Tab>
-</Tabs>
+- `content` continua sendo o fallback padrao.
+- `i18n` fica no template, nao no body de `POST /messages`.
+- Mantenha os nomes das variaveis identicos em todas as variantes.

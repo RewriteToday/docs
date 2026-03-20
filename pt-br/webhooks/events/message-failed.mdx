@@ -1,0 +1,42 @@
+---
+title: "message.failed"
+description: "Falha de envio de SMS ou OTP."
+---
+
+`message.failed` e emitido quando a Rewrite nao consegue concluir o envio no provider.
+
+```json
+{
+  "id": "748395130237498915",
+  "createdAt": "2026-03-19T18:42:19.000Z",
+  "type": "message.failed",
+  "data": {
+    "id": "748395130237498504",
+    "projectId": "748395130237498412",
+    "to": "+5511999999999",
+    "tags": [{ "name": "use_case", "value": "otp_login" }],
+    "type": "SMS",
+    "status": "FAILED",
+    "content": "Rewrite: seu codigo de verificacao e 123456",
+    "country": "br",
+    "analysis": {
+      "characters": 41,
+      "encoding": "gsm7",
+      "segments": { "concat": 153, "count": 1, "reason": "fits", "single": 160 }
+    },
+    "error": {
+      "code": "COMTELE_INVALID_RESPONSE",
+      "message": "Comtele rejected the SMS request"
+    },
+    "deliveredAt": null,
+    "scheduledAt": null,
+    "templateId": null
+  }
+}
+```
+
+Notas:
+
+- `data.type` pode ser `SMS` ou `OTP`.
+- Falhas de OTP tambem usam esse evento, nao `sms.otp`.
+- Inspecione `data.error` para detalhes do provider.

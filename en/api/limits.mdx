@@ -36,7 +36,7 @@ This page explains:
   <Tab title="PAYG">
     PAYG is billed per SMS sent.
 
-    **Price:** `0.20` per SMS (as configured by Rewrite commercial policy).
+    **Price:** `0.18` per SMS (as configured by Rewrite commercial policy).
 
     This model is best for variable traffic or early-stage workloads.
   </Tab>
@@ -71,9 +71,8 @@ When rate limited, inspect:
 - `X-RateLimit-Global`
 - `X-RateLimit-Limit`
 - `X-RateLimit-Retry-After`
-- `Retry-After`
 
-If multiple retry hints are present, use the most conservative wait time.
+Use `X-RateLimit-Retry-After` as the retry hint.
 
 ## Quota-friendly architecture patterns
 

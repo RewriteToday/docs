@@ -3,8 +3,8 @@
 	"info": {
 		"title": "Rewrite API",
 		"version": "1.0.0",
-		"summary": "Projects API reference (Projects, API Keys, Templates, Webhooks).",
-		"description": "Complete public reference for project-level endpoints in Rewrite API v1.\n\nAll endpoints return a consistent envelope (`ok`, `data`, and optional `cursor`).\nUse either bearer token (API key) with scopes or authenticated cookie session."
+		"summary": "Project-level API reference for Rewrite v1.",
+		"description": "Reference for the externally supported API-key-accessible endpoints in Rewrite API v1.\n\nAll successful responses use the `ok` / `data` envelope. Paginated list endpoints return `cursor` at the top level."
 	},
 	"servers": [
 		{
@@ -14,237 +14,44 @@
 	],
 	"tags": [
 		{
-			"name": "Projects",
-			"description": "Project metadata and lifecycle."
+			"name": "API Keys",
+			"description": "Manage project API keys exposed through the public API."
 		},
 		{
-			"name": "API Keys",
-			"description": "Create, list, and revoke project API keys."
+			"name": "Messages",
+			"description": "Send, read and manage SMS messages."
+		},
+		{
+			"name": "OTP",
+			"description": "Send and verify one-time-password codes."
 		},
 		{
 			"name": "Templates",
-			"description": "Manage reusable SMS templates with variables."
+			"description": "Reusable SMS templates with locale-aware content and variables."
 		},
 		{
 			"name": "Webhooks",
-			"description": "Register and manage delivery event webhooks."
+			"description": "Create and manage webhook endpoints for Rewrite events."
+		},
+		{
+			"name": "Logs",
+			"description": "Inspect webhook delivery attempts and their payloads."
 		}
 	],
 	"paths": {
-		"/api-keys": {
-			"get": {
-				"tags": ["API Keys"],
-				"operationId": "listProjectApiKeys",
-				"summary": "List API keys",
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"$ref": "#/components/parameters/after"
-					},
-					{
-						"$ref": "#/components/parameters/before"
-					},
-					{
-						"$ref": "#/components/parameters/limit"
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Response",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/APIKeysListResponse"
-								},
-								"examples": {
-									"response": {
-										"summary": "Response example",
-										"value": {
-											"ok": true,
-											"data": [
-												{
-													"id": "748395130237498400",
-													"name": "Production backend",
-													"prefix": "rw_8e4c",
-													"scopes": ["project:templates:write"],
-													"createdAt": "2026-02-19T19:10:02.000Z"
-												}
-											],
-											"cursor": {
-												"persist": false
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				},
-				"description": "Returns active API keys for the project using cursor pagination.\n\nUse `limit`, `after`, and `before` for pagination.",
-				"x-codeSamples": [
-					{
-						"lang": "node",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst apiKeys = await rewrite.apiKeys.list({ limit: 20 });"
-					},
-					{
-						"lang": "go",
-						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  _, err = client.APIKeys.List(context.Background(), &rewrite.RESTGetListAPIKeysQueryParams{Limit: 20})\n  if err != nil { log.Fatal(err) }\n}"
-					},
-					{
-						"lang": "python",
-						"label": "Python",
-						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\napi_keys = client.api_keys.list({\"limit\": 20})"
-					},
-					{
-						"lang": "java",
-						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.apiKeys.ListApiKeysOptions;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var apiKeys = rewrite.apiKeys().list(\n      ListApiKeysOptions.builder()\n        .limit(20)\n        .build()\n    );\n\n    System.out.println(apiKeys);\n  }\n}"
-					},
-					{
-						"lang": "php",
-						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$apiKeys = $rewrite->apiKeys->list([\n  'limit' => 20,\n]);"
-					},
-					{
-						"lang": "ruby",
-						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\napi_keys = rewrite.api_keys.list(limit: 20)"
-					},
-					{
-						"lang": "kotlin",
-						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.apiKeys.ListApiKeysOptions\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val apiKeys = rewrite.apiKeys.list(\n    ListApiKeysOptions(limit = 20)\n  )\n\n  println(apiKeys)\n}"
-					},
-					{
-						"lang": "swift",
-						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet apiKeys = try await rewrite.apiKeys.list(limit: 20)\n\nprint(apiKeys)"
-					},
-					{
-						"lang": "csharp",
-						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar apiKeys = await rewrite.ApiKeys.ListAsync(new ListApiKeysOptions\n{\n  Limit = 20\n});\n\nConsole.WriteLine(apiKeys);"
-					}
-				]
-			},
-			"post": {
-				"tags": ["API Keys"],
-				"operationId": "createProjectApiKey",
-				"summary": "Create API key",
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/APIKeyCreateBody"
-							},
-							"examples": {
-								"request": {
-									"summary": "Request example",
-									"value": {
-										"name": "Jobs worker",
-										"scopes": [
-											"project:templates:read",
-											"projects:webhooks:read"
-										]
-									}
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Response",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/APIKeyCreateResponse"
-								},
-								"examples": {
-									"response": {
-										"summary": "Response example",
-										"value": {
-											"ok": true,
-											"data": {
-												"id": "748395130237498412",
-												"key": "rw_8e4c3f7f8f9f0ab12cd34ef56",
-												"count": 3,
-												"createdAt": "2026-02-19T19:12:48.000Z"
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				},
-				"description": "Creates a project API key and returns the secret once. Store it securely.",
-				"x-codeSamples": [
-					{
-						"lang": "node",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst apiKey = await rewrite.apiKeys.create({\n  name: 'Jobs worker',\n  scopes: ['project:templates:read', 'projects:webhooks:read'],\n});"
-					},
-					{
-						"lang": "go",
-						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  _, err = client.APIKeys.Create(context.Background(), rewrite.CreateAPIKeyOptions{\n    RESTPostCreateAPIKeyBody: rewrite.RESTPostCreateAPIKeyBody{\n      Name: \"Jobs worker\",\n      Scopes: []rewrite.APIKeyScope{\n        rewrite.APIKeyScopeReadTemplates,\n        rewrite.APIKeyScopeReadWebhooks,\n      },\n    },\n  })\n  if err != nil { log.Fatal(err) }\n}"
-					},
-					{
-						"lang": "python",
-						"label": "Python",
-						"source": "from rewrite import APIKeyScope, Client\n\nclient = Client(\"rw_your_api_key\")\n\napi_key = client.api_keys.create(\n    {\n        \"name\": \"Jobs worker\",\n        \"scopes\": [\n            APIKeyScope.READ_TEMPLATES,\n            APIKeyScope.READ_WEBHOOKS,\n        ],\n    }\n)"
-					},
-					{
-						"lang": "java",
-						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.apiKeys.CreateApiKeyOptions;\nimport java.util.List;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var apiKey = rewrite.apiKeys().create(\n      CreateApiKeyOptions.builder()\n        .name(\"Jobs worker\")\n        .scopes(List.of(\"project:templates:read\", \"projects:webhooks:read\"))\n        .build()\n    );\n\n    System.out.println(apiKey);\n  }\n}"
-					},
-					{
-						"lang": "php",
-						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$apiKey = $rewrite->apiKeys->create([\n  'name' => 'Jobs worker',\n  'scopes' => ['project:templates:read', 'projects:webhooks:read'],\n]);"
-					},
-					{
-						"lang": "ruby",
-						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\napi_key = rewrite.api_keys.create(\n  name: \"Jobs worker\",\n  scopes: [\"project:templates:read\", \"projects:webhooks:read\"]\n)"
-					},
-					{
-						"lang": "kotlin",
-						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.apiKeys.CreateApiKeyOptions\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val apiKey = rewrite.apiKeys.create(\n    CreateApiKeyOptions(\n      name = \"Jobs worker\",\n      scopes = listOf(\"project:templates:read\", \"projects:webhooks:read\")\n    )\n  )\n\n  println(apiKey)\n}"
-					},
-					{
-						"lang": "swift",
-						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet apiKey = try await rewrite.apiKeys.create(\n  name: \"Jobs worker\",\n  scopes: [\"project:templates:read\", \"projects:webhooks:read\"]\n)\n\nprint(apiKey)"
-					},
-					{
-						"lang": "csharp",
-						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar apiKey = await rewrite.ApiKeys.CreateAsync(new CreateApiKeyOptions\n{\n  Name = \"Jobs worker\",\n  Scopes = new[] { \"project:templates:read\", \"projects:webhooks:read\" }\n});\n\nConsole.WriteLine(apiKey);"
-					}
-				]
-			}
-		},
 		"/api-keys/{key}": {
 			"delete": {
 				"tags": ["API Keys"],
 				"operationId": "deleteProjectApiKey",
-				"summary": "Revoke API key",
+				"summary": "Delete an API key",
+				"description": "Revoke an API key that should no longer be allowed to call Rewrite. Requires API key scope `project:write`.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { error } = await rewrite.apiKeys.delete({\n  key: '748395130237498990',\n});\n\nif (error) throw error;"
+					}
+				],
 				"security": [
 					{
 						"bearerAuth": []
@@ -255,88 +62,44 @@
 						"name": "key",
 						"in": "path",
 						"required": true,
+						"description": "API key identifier to revoke.",
 						"schema": {
 							"$ref": "#/components/schemas/Snowflake"
-						},
-						"example": "748395130237498400"
+						}
 					}
 				],
 				"responses": {
 					"200": {
-						"description": "Response",
+						"description": "Successful response",
 						"content": {
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/OkEmptyResponse"
 								},
-								"examples": {
-									"response": {
-										"summary": "Response example",
-										"value": {
-											"ok": true,
-											"data": null
-										}
-									}
+								"example": {
+									"ok": true,
+									"data": null
 								}
 							}
 						}
 					}
 				},
-				"description": "Revokes an API key immediately by key id.",
-				"x-codeSamples": [
-					{
-						"lang": "node",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst apiKeyId = '748395130237498400';\n\nawait rewrite.apiKeys.delete(apiKeyId);"
-					},
-					{
-						"lang": "go",
-						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  apiKeyID := \"748395130237498400\"\n\n  if err := client.APIKeys.Delete(context.Background(), apiKeyID); err != nil {\n    log.Fatal(err)\n  }\n}"
-					},
-					{
-						"lang": "python",
-						"label": "Python",
-						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\napi_key_id = \"748395130237498400\"\n\nclient.api_keys.delete(api_key_id)"
-					},
-					{
-						"lang": "java",
-						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var apiKeyId = \"748395130237498400\";\n\n    rewrite.apiKeys().delete(apiKeyId);\n  }\n}"
-					},
-					{
-						"lang": "php",
-						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$apiKeyId = '748395130237498400';\n\n$rewrite->apiKeys->delete($apiKeyId);"
-					},
-					{
-						"lang": "ruby",
-						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\napi_key_id = \"748395130237498400\"\n\nrewrite.api_keys.delete(api_key_id)"
-					},
-					{
-						"lang": "kotlin",
-						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val apiKeyId = \"748395130237498400\"\n\n  rewrite.apiKeys.delete(apiKeyId)\n}"
-					},
-					{
-						"lang": "swift",
-						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet apiKeyId = \"748395130237498400\"\n\ntry await rewrite.apiKeys.delete(apiKeyId)"
-					},
-					{
-						"lang": "csharp",
-						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar apiKeyId = \"748395130237498400\";\n\nawait rewrite.ApiKeys.DeleteAsync(apiKeyId);"
-					}
-				]
+				"x-required-scopes": ["project:write"]
 			}
 		},
-		"/templates": {
-			"get": {
-				"tags": ["Templates"],
-				"operationId": "listProjectTemplates",
-				"summary": "List templates",
+		"/messages": {
+			"post": {
+				"tags": ["Messages"],
+				"operationId": "createMessage",
+				"summary": "Send a message",
+				"description": "Send one SMS with inline content or by rendering a saved template. This route accepts Brazilian destination numbers in `+55` format and returns the accepted message ID immediately. Requires API key scope `message:write`.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.messages.send({\n  to: '+5511999999999',\n  content: 'Rewrite: seu codigo e 478201',\n  tags: [{ name: 'flow', value: 'login' }],\n});\n\nif (error) throw error;"
+					}
+				],
 				"security": [
 					{
 						"bearerAuth": []
@@ -344,45 +107,78 @@
 				],
 				"parameters": [
 					{
-						"$ref": "#/components/parameters/after"
-					},
-					{
-						"$ref": "#/components/parameters/before"
-					},
-					{
-						"$ref": "#/components/parameters/limit"
+						"$ref": "#/components/parameters/IdempotencyKey"
 					}
 				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/MessageCreateBody"
+							},
+							"examples": {
+								"withContent": {
+									"summary": "With content",
+									"value": {
+										"to": "+5511999999999",
+										"content": "Rewrite: seu codigo e 478201",
+										"tags": [
+											{
+												"name": "flow",
+												"value": "login"
+											}
+										],
+										"scheduledAt": "2026-03-20T14:30:00.000Z",
+										"segmentation": {
+											"max": 2,
+											"mode": "send",
+											"smart": true
+										}
+									}
+								},
+								"usingTemplate": {
+									"summary": "Using templates",
+									"value": {
+										"to": "+5511888888888",
+										"templateId": "748395130237498620",
+										"variables": {
+											"code": "941205",
+											"name": "Fernanda"
+										},
+										"tags": [
+											{
+												"name": "flow",
+												"value": "login"
+											}
+										]
+									}
+								}
+							}
+						}
+					}
+				},
 				"responses": {
 					"200": {
-						"description": "Response",
+						"description": "Successful response",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/TemplatesListResponse"
+									"$ref": "#/components/schemas/MessageCreateResponse"
 								},
-								"examples": {
-									"response": {
-										"summary": "Response example",
-										"value": {
-											"ok": true,
-											"data": [
-												{
-													"id": "748395130237498500",
-													"name": "order_shipped",
-													"content": "Hi {{first_name}}, your order {{order_id}} is on the way.",
-													"variables": [
-														{
-															"name": "first_name",
-															"fallback": "customer"
-														}
-													],
-													"createdAt": "2026-02-19T18:00:00.000Z"
-												}
-											],
-											"cursor": {
-												"persist": true,
-												"next": "748395130237498588"
+								"example": {
+									"ok": true,
+									"data": {
+										"id": "748395130237498412",
+										"createdAt": "2026-03-20T14:22:31.562Z",
+										"analysis": {
+											"characters": 33,
+											"encoding": "gsm7",
+											"segments": {
+												"concat": 153,
+												"count": 1,
+												"reason": "fits",
+												"single": 160
 											}
 										}
 									}
@@ -391,59 +187,513 @@
 						}
 					}
 				},
-				"description": "Lists project templates using cursor pagination.\n\nUse `limit`, `after`, and `before` for pagination.",
+				"x-required-scopes": ["message:write"]
+			},
+			"get": {
+				"tags": ["Messages"],
+				"operationId": "listMessages",
+				"summary": "List messages",
+				"description": "List accepted messages for the current project. Results are returned in reverse chronological order with a top-level cursor for pagination. Requires API key scope `message:read`.",
 				"x-codeSamples": [
 					{
-						"lang": "node",
+						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst templates = await rewrite.templates.list({ limit: 20 });"
-					},
-					{
-						"lang": "go",
-						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  _, err = client.Templates.List(context.Background(), &rewrite.RESTGetListTemplatesQueryParams{Limit: 20})\n  if err != nil { log.Fatal(err) }\n}"
-					},
-					{
-						"lang": "python",
-						"label": "Python",
-						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\ntemplates = client.templates.list({\"limit\": 20})"
-					},
-					{
-						"lang": "java",
-						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.templates.ListTemplatesOptions;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var templates = rewrite.templates().list(\n      ListTemplatesOptions.builder()\n        .limit(20)\n        .build()\n    );\n\n    System.out.println(templates);\n  }\n}"
-					},
-					{
-						"lang": "php",
-						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$templates = $rewrite->templates->list([\n  'limit' => 20,\n]);"
-					},
-					{
-						"lang": "ruby",
-						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\ntemplates = rewrite.templates.list(limit: 20)"
-					},
-					{
-						"lang": "kotlin",
-						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.templates.ListTemplatesOptions\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val templates = rewrite.templates.list(\n    ListTemplatesOptions(limit = 20)\n  )\n\n  println(templates)\n}"
-					},
-					{
-						"lang": "swift",
-						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet templates = try await rewrite.templates.list(limit: 20)\n\nprint(templates)"
-					},
-					{
-						"lang": "csharp",
-						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar templates = await rewrite.Templates.ListAsync(new ListTemplatesOptions\n{\n  Limit = 20\n});\n\nConsole.WriteLine(templates);"
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error, cursor } = await rewrite.messages.list({\n  limit: 25,\n  status: 'DELIVERED',\n});\n\nif (error) throw error;"
 					}
-				]
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"$ref": "#/components/parameters/After"
+					},
+					{
+						"$ref": "#/components/parameters/Before"
+					},
+					{
+						"$ref": "#/components/parameters/Limit"
+					},
+					{
+						"$ref": "#/components/parameters/MessageStatus"
+					},
+					{
+						"$ref": "#/components/parameters/CountryCode"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageListResponse"
+								},
+								"example": {
+									"ok": true,
+									"data": [
+										{
+											"id": "748395130237498412",
+											"createdAt": "2026-03-20T14:22:31.562Z",
+											"to": "+5511999999999",
+											"from": "Rewrite",
+											"type": "SMS",
+											"tags": [
+												{
+													"name": "flow",
+													"value": "login"
+												}
+											],
+											"status": "DELIVERED",
+											"country": "br",
+											"content": "Rewrite: seu codigo e 478201",
+											"encoding": "GSM7",
+											"templateId": null,
+											"deliveredAt": "2026-03-20T14:22:39.914Z",
+											"scheduledAt": null,
+											"isPayAsYouGo": false
+										},
+										{
+											"id": "748395130237498413",
+											"createdAt": "2026-03-20T14:22:31.562Z",
+											"to": "+5511888888888",
+											"from": "Rewrite",
+											"type": "SMS",
+											"tags": [
+												{
+													"name": "flow",
+													"value": "login"
+												}
+											],
+											"status": "SENT",
+											"country": "br",
+											"content": "Rewrite: seu codigo e 478201",
+											"encoding": "GSM7",
+											"templateId": null,
+											"deliveredAt": null,
+											"scheduledAt": null,
+											"isPayAsYouGo": false
+										}
+									],
+									"cursor": {
+										"persist": true,
+										"after": "748395130237498414"
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["message:read"]
+			}
+		},
+		"/messages/batch": {
+			"post": {
+				"tags": ["Messages"],
+				"operationId": "createMessageBatch",
+				"summary": "Send batch messages",
+				"description": "Send between 1 and 100 SMS messages in one request. This route accepts Brazilian destination numbers in `+55` format and returns only the accepted message IDs. Requires API key scope `message:write`.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.messages.sendBatch([\n  {\n    to: '+5511999999999',\n    content: 'Rewrite: seu codigo e 478201',\n  },\n  {\n    to: '+5511888888888',\n    templateId: '748395130237498620',\n    variables: { code: '941205' },\n  },\n]);\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"$ref": "#/components/parameters/IdempotencyKey"
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "array",
+								"minItems": 1,
+								"maxItems": 100,
+								"items": {
+									"$ref": "#/components/schemas/MessageCreateBody"
+								}
+							},
+							"example": [
+								{
+									"to": "+5511999999999",
+									"content": "Rewrite: seu codigo e 478201"
+								},
+								{
+									"to": "+5511888888888",
+									"templateId": "748395130237498620",
+									"variables": {
+										"code": "941205"
+									}
+								}
+							]
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageBatchCreateResponse"
+								},
+								"example": {
+									"ok": true,
+									"data": {
+										"ids": [
+											"748395130237498412",
+											"748395130237498413",
+											"748395130237498414"
+										]
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["message:write"]
+			}
+		},
+		"/messages/cancel": {
+			"post": {
+				"tags": ["Messages"],
+				"operationId": "cancelMessage",
+				"summary": "Cancel a message",
+				"description": "Cancel a queued or scheduled message before it reaches the provider. Requires API key scope `message:write`.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { error } = await rewrite.messages.cancel({\n  id: '748395130237498412',\n});\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/MessageCancelBody"
+							},
+							"example": {
+								"id": "748395130237498412"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OkEmptyResponse"
+								},
+								"example": {
+									"ok": true,
+									"data": null
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["message:write"]
+			}
+		},
+		"/messages/{id}": {
+			"get": {
+				"tags": ["Messages"],
+				"operationId": "getMessage",
+				"summary": "Get a message",
+				"description": "Fetch the current state of a single message, including delivery timestamps and rendered content. Requires API key scope `message:read`.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.messages.get({\n  id: '748395130237498412',\n});\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "Message identifier returned by Rewrite.",
+						"schema": {
+							"$ref": "#/components/schemas/Snowflake"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								},
+								"example": {
+									"ok": true,
+									"data": {
+										"id": "748395130237498412",
+										"createdAt": "2026-03-20T14:22:31.562Z",
+										"to": "+5511999999999",
+										"from": "Rewrite",
+										"type": "SMS",
+										"tags": [
+											{
+												"name": "flow",
+												"value": "login"
+											}
+										],
+										"status": "DELIVERED",
+										"country": "br",
+										"content": "Rewrite: seu codigo e 478201",
+										"encoding": "GSM7",
+										"templateId": null,
+										"deliveredAt": "2026-03-20T14:22:39.914Z",
+										"scheduledAt": null,
+										"isPayAsYouGo": false
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["message:read"]
+			}
+		},
+		"/otp": {
+			"post": {
+				"tags": ["OTP"],
+				"operationId": "createOtp",
+				"summary": "Send an OTP code",
+				"description": "Create and send an OTP SMS to a Brazilian destination number in `+55` format. Requires API key scope `message:write`.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.otp.send({\n  to: '+5511999999999',\n  prefix: 'Rewrite',\n  expiresIn: 5,\n});\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"$ref": "#/components/parameters/IdempotencyKey"
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/OTPCreateBody"
+							},
+							"example": {
+								"to": "+5511999999999",
+								"prefix": "Rewrite",
+								"expiresIn": 5
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OTPCreateResponse"
+								},
+								"example": {
+									"ok": true,
+									"data": {
+										"id": "748395130237499120",
+										"to": "+5511999999999",
+										"prefix": "Rewrite",
+										"createdAt": "2026-03-20T14:22:31.562Z",
+										"expiresAt": "2026-03-20T14:27:31.562Z"
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["message:write"]
+			}
+		},
+		"/otp/{id}/verify": {
+			"post": {
+				"tags": ["OTP"],
+				"operationId": "verifyOtp",
+				"summary": "Verify an OTP code",
+				"description": "Validate the OTP code previously sent by Rewrite and close the verification flow. Requires API key scope `message:write`.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.otp.verify({\n  id: '748395130237499120',\n  to: '+5511999999999',\n  code: '478201',\n});\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "OTP identifier returned by Rewrite.",
+						"schema": {
+							"$ref": "#/components/schemas/Snowflake"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/OTPVerifyBody"
+							},
+							"example": {
+								"to": "+5511999999999",
+								"code": "478201"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OTPVerifyResponse"
+								},
+								"example": {
+									"ok": true,
+									"data": {
+										"id": "748395130237499120",
+										"valid": true,
+										"verifiedAt": "2026-03-20T14:23:18.000Z"
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["message:write"]
+			}
+		},
+		"/templates": {
+			"get": {
+				"tags": ["Templates"],
+				"operationId": "listTemplates",
+				"summary": "List templates",
+				"description": "List reusable templates available to the current project. Results are paginated with a top-level cursor. Requires API key scope `project:templates:read`.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error, cursor } = await rewrite.templates.list({\n  limit: 20,\n  withi18n: true,\n});\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"$ref": "#/components/parameters/After"
+					},
+					{
+						"$ref": "#/components/parameters/Before"
+					},
+					{
+						"$ref": "#/components/parameters/Limit"
+					},
+					{
+						"$ref": "#/components/parameters/WithI18n"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TemplateListResponse"
+								},
+								"example": {
+									"ok": true,
+									"data": [
+										{
+											"id": "748395130237498620",
+											"name": "login_code",
+											"content": "Rewrite: seu codigo e {{code}}",
+											"i18n": {
+												"br": "Rewrite: seu codigo e {{code}}"
+											},
+											"variables": [
+												{
+													"name": "code",
+													"fallback": "478201"
+												}
+											],
+											"description": "Template usado no fluxo de login",
+											"createdAt": "2026-03-20T14:22:31.562Z"
+										}
+									],
+									"cursor": {
+										"persist": false
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["project:templates:read"]
 			},
 			"post": {
 				"tags": ["Templates"],
-				"operationId": "createProjectTemplate",
-				"summary": "Create template",
+				"operationId": "createTemplate",
+				"summary": "Create a template",
+				"description": "Create a reusable SMS template with variables and optional locale overrides. Requires API key scope `project:templates:write`.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.templates.create({\n  name: 'login_code',\n  description: 'Template usado no fluxo de login',\n  content: 'Rewrite: seu codigo e {{code}}',\n  i18n: { br: 'Rewrite: seu codigo e {{code}}' },\n  variables: [{ name: 'code', fallback: '478201' }],\n});\n\nif (error) throw error;"
+					}
+				],
 				"security": [
 					{
 						"bearerAuth": []
@@ -456,107 +706,58 @@
 							"schema": {
 								"$ref": "#/components/schemas/TemplateCreateBody"
 							},
-							"examples": {
-								"request": {
-									"summary": "Request example",
-									"value": {
-										"name": "order_shipped",
-										"content": "Hi {{first_name}}, your order {{order_id}} is on the way.",
-										"variables": [
-											{
-												"name": "first_name",
-												"fallback": "customer"
-											},
-											{
-												"name": "order_id",
-												"fallback": "0000"
-											}
-										]
+							"example": {
+								"name": "login_code",
+								"description": "Template usado no fluxo de login",
+								"content": "Rewrite: seu codigo e {{code}}",
+								"i18n": {
+									"br": "Rewrite: seu codigo e {{code}}"
+								},
+								"variables": [
+									{
+										"name": "code",
+										"fallback": "478201"
 									}
-								}
+								]
 							}
 						}
 					}
 				},
 				"responses": {
 					"200": {
-						"description": "Response",
+						"description": "Successful response",
 						"content": {
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/TemplateCreateResponse"
 								},
-								"examples": {
-									"response": {
-										"summary": "Response example",
-										"value": {
-											"ok": true,
-											"data": {
-												"id": "748395130237498600",
-												"createdAt": "2026-02-19T20:01:09.000Z"
-											}
-										}
+								"example": {
+									"ok": true,
+									"data": {
+										"id": "748395130237498620",
+										"createdAt": "2026-03-20T14:22:31.562Z"
 									}
 								}
 							}
 						}
 					}
 				},
-				"description": "Creates a reusable template with variables and fallback values.",
-				"x-codeSamples": [
-					{
-						"lang": "node",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst template = await rewrite.templates.create({\n  name: 'order_shipped',\n  content: 'Hi {{first_name}}, your order {{order_id}} is on the way.',\n  variables: [\n    { name: 'first_name', fallback: 'customer' },\n    { name: 'order_id', fallback: '0000' },\n  ],\n});"
-					},
-					{
-						"lang": "go",
-						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  firstNameFallback := \"customer\"\n  orderIDFallback := \"0000\"\n\n  _, err = client.Templates.Create(context.Background(), rewrite.CreateTemplateOptions{\n    RESTPostCreateTemplateBody: rewrite.RESTPostCreateTemplateBody{\n      Name:    \"order_shipped\",\n      Content: \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n      Variables: []rewrite.APITemplateVariable{\n        {Name: \"first_name\", Fallback: &firstNameFallback},\n        {Name: \"order_id\", Fallback: &orderIDFallback},\n      },\n    },\n  })\n  if err != nil { log.Fatal(err) }\n}"
-					},
-					{
-						"lang": "python",
-						"label": "Python",
-						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\ntemplate = client.templates.create(\n    {\n        \"name\": \"order_shipped\",\n        \"content\": \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n        \"variables\": [\n            {\"name\": \"first_name\", \"fallback\": \"customer\"},\n            {\"name\": \"order_id\", \"fallback\": \"0000\"},\n        ],\n    }\n)"
-					},
-					{
-						"lang": "java",
-						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.templates.CreateTemplateOptions;\nimport com.rewritetoday.sdk.models.templates.TemplateVariable;\nimport java.util.List;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var template = rewrite.templates().create(\n      CreateTemplateOptions.builder()\n        .name(\"order_shipped\")\n        .content(\"Hi {{first_name}}, your order {{order_id}} is on the way.\")\n        .variables(List.of(\n          TemplateVariable.builder().name(\"first_name\").fallback(\"customer\").build(),\n          TemplateVariable.builder().name(\"order_id\").fallback(\"0000\").build()\n        ))\n        .build()\n    );\n\n    System.out.println(template);\n  }\n}"
-					},
-					{
-						"lang": "php",
-						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$template = $rewrite->templates->create([\n  'name' => 'order_shipped',\n  'content' => 'Hi {{first_name}}, your order {{order_id}} is on the way.',\n  'variables' => [\n    ['name' => 'first_name', 'fallback' => 'customer'],\n    ['name' => 'order_id', 'fallback' => '0000'],\n  ],\n]);"
-					},
-					{
-						"lang": "ruby",
-						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\ntemplate = rewrite.templates.create(\n  name: \"order_shipped\",\n  content: \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n  variables: [\n    { name: \"first_name\", fallback: \"customer\" },\n    { name: \"order_id\", fallback: \"0000\" }\n  ]\n)"
-					},
-					{
-						"lang": "kotlin",
-						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.templates.CreateTemplateOptions\nimport com.rewritetoday.sdk.models.templates.TemplateVariable\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val template = rewrite.templates.create(\n    CreateTemplateOptions(\n      name = \"order_shipped\",\n      content = \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n      variables = listOf(\n        TemplateVariable(name = \"first_name\", fallback = \"customer\"),\n        TemplateVariable(name = \"order_id\", fallback = \"0000\")\n      )\n    )\n  )\n\n  println(template)\n}"
-					},
-					{
-						"lang": "swift",
-						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet template = try await rewrite.templates.create(\n  name: \"order_shipped\",\n  content: \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n  variables: [\n    TemplateVariable(name: \"first_name\", fallback: \"customer\"),\n    TemplateVariable(name: \"order_id\", fallback: \"0000\")\n  ]\n)\n\nprint(template)"
-					},
-					{
-						"lang": "csharp",
-						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar template = await rewrite.Templates.CreateAsync(new CreateTemplateOptions\n{\n  Name = \"order_shipped\",\n  Content = \"Hi {{first_name}}, your order {{order_id}} is on the way.\",\n  Variables = new[]\n  {\n    new TemplateVariable { Name = \"first_name\", Fallback = \"customer\" },\n    new TemplateVariable { Name = \"order_id\", Fallback = \"0000\" }\n  }\n});\n\nConsole.WriteLine(template);"
-					}
-				]
+				"x-required-scopes": ["project:templates:write"]
 			}
 		},
 		"/templates/{identifier}": {
 			"get": {
 				"tags": ["Templates"],
-				"operationId": "getProjectTemplate",
-				"summary": "Get template",
+				"operationId": "getTemplate",
+				"summary": "Get a template",
+				"description": "Fetch a single template by its ID or by its name. Requires API key scope `project:templates:read`.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.templates.get({\n  identifier: 'login_code',\n  withi18n: true,\n});\n\nif (error) throw error;"
+					}
+				],
 				"security": [
 					{
 						"bearerAuth": []
@@ -567,100 +768,62 @@
 						"name": "identifier",
 						"in": "path",
 						"required": true,
+						"description": "Template identifier. It accepts either a template ID or a template name.",
 						"schema": {
 							"type": "string"
-						},
-						"description": "Unique template ID or unique template name.",
-						"example": "order_shipped"
+						}
+					},
+					{
+						"$ref": "#/components/parameters/WithI18n"
 					}
 				],
 				"responses": {
 					"200": {
-						"description": "Response",
+						"description": "Successful response",
 						"content": {
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/TemplateResponse"
 								},
-								"examples": {
-									"response": {
-										"summary": "Response example",
-										"value": {
-											"ok": true,
-											"data": {
-												"id": "748395130237498500",
-												"name": "order_shipped",
-												"content": "Hi {{first_name}}, your order {{order_id}} is on the way.",
-												"variables": [
-													{
-														"name": "first_name",
-														"fallback": "customer"
-													}
-												],
-												"createdAt": "2026-02-19T18:00:00.000Z"
+								"example": {
+									"ok": true,
+									"data": {
+										"id": "748395130237498620",
+										"name": "login_code",
+										"content": "Rewrite: seu codigo e {{code}}",
+										"i18n": {
+											"br": "Rewrite: seu codigo e {{code}}"
+										},
+										"variables": [
+											{
+												"name": "code",
+												"fallback": "478201"
 											}
-										}
+										],
+										"description": "Template usado no fluxo de login",
+										"createdAt": "2026-03-20T14:22:31.562Z"
 									}
 								}
 							}
 						}
 					}
 				},
-				"description": "Fetch a template by identifier (template id or template name).",
-				"x-codeSamples": [
-					{
-						"lang": "node",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst templateIdentifier = 'order_shipped';\n\nconst template = await rewrite.templates.get(templateIdentifier);"
-					},
-					{
-						"lang": "go",
-						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  templateIdentifier := \"order_shipped\"\n\n  _, err = client.Templates.Get(context.Background(), templateIdentifier)\n  if err != nil { log.Fatal(err) }\n}"
-					},
-					{
-						"lang": "python",
-						"label": "Python",
-						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\ntemplate_identifier = \"order_shipped\"\n\ntemplate = client.templates.get(template_identifier)"
-					},
-					{
-						"lang": "java",
-						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var templateIdentifier = \"order_shipped\";\n\n    var template = rewrite.templates().get(templateIdentifier);\n\n    System.out.println(template);\n  }\n}"
-					},
-					{
-						"lang": "php",
-						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$templateIdentifier = 'order_shipped';\n\n$template = $rewrite->templates->get($templateIdentifier);"
-					},
-					{
-						"lang": "ruby",
-						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\ntemplate_identifier = \"order_shipped\"\n\ntemplate = rewrite.templates.get(template_identifier)"
-					},
-					{
-						"lang": "kotlin",
-						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val templateIdentifier = \"order_shipped\"\n\n  val template = rewrite.templates.get(templateIdentifier)\n\n  println(template)\n}"
-					},
-					{
-						"lang": "swift",
-						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet templateIdentifier = \"order_shipped\"\n\nlet template = try await rewrite.templates.get(templateIdentifier)\n\nprint(template)"
-					},
-					{
-						"lang": "csharp",
-						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar templateIdentifier = \"order_shipped\";\n\nvar template = await rewrite.Templates.GetAsync(templateIdentifier);\n\nConsole.WriteLine(template);"
-					}
-				]
+				"x-required-scopes": ["project:templates:read"]
 			}
 		},
-		"/templates/{templateId}": {
+		"/templates/{id}": {
 			"patch": {
 				"tags": ["Templates"],
-				"operationId": "updateProjectTemplate",
-				"summary": "Update template",
+				"operationId": "updateTemplate",
+				"summary": "Update a template",
+				"description": "Update the content, variables or description of an existing template. Requires API key scope `project:templates:write`.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { error } = await rewrite.templates.update({\n  id: '748395130237498620',\n  description: 'Template usado no fluxo de recuperacao de conta',\n});\n\nif (error) throw error;"
+					}
+				],
 				"security": [
 					{
 						"bearerAuth": []
@@ -668,13 +831,13 @@
 				],
 				"parameters": [
 					{
-						"name": "templateId",
+						"name": "id",
 						"in": "path",
 						"required": true,
+						"description": "Template identifier returned by Rewrite.",
 						"schema": {
 							"$ref": "#/components/schemas/Snowflake"
-						},
-						"example": "748395130237498500"
+						}
 					}
 				],
 				"requestBody": {
@@ -684,101 +847,42 @@
 							"schema": {
 								"$ref": "#/components/schemas/TemplateUpdateBody"
 							},
-							"examples": {
-								"request": {
-									"summary": "Request example",
-									"value": {
-										"content": "Hi {{first_name}}, your package {{order_id}} has shipped.",
-										"variables": [
-											{
-												"name": "first_name",
-												"fallback": "customer"
-											},
-											{
-												"name": "order_id",
-												"fallback": "0000"
-											}
-										]
-									}
-								}
+							"example": {
+								"description": "Template usado no fluxo de recuperacao de conta"
 							}
 						}
 					}
 				},
 				"responses": {
 					"200": {
-						"description": "Response",
+						"description": "Successful response",
 						"content": {
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/OkEmptyResponse"
 								},
-								"examples": {
-									"response": {
-										"summary": "Response example",
-										"value": {
-											"ok": true,
-											"data": null
-										}
-									}
+								"example": {
+									"ok": true,
+									"data": null
 								}
 							}
 						}
 					}
 				},
-				"description": "Partially updates template content and/or variables.",
-				"x-codeSamples": [
-					{
-						"lang": "node",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst templateId = '748395130237498500';\n\nconst template = await rewrite.templates.update(templateId, {\n  content: 'Hi {{first_name}}, your package {{order_id}} has shipped.',\n  variables: [\n    { name: 'first_name', fallback: 'customer' },\n    { name: 'order_id', fallback: '0000' },\n  ],\n});"
-					},
-					{
-						"lang": "go",
-						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  templateID := \"748395130237498500\"\n  firstNameFallback := \"customer\"\n  orderIDFallback := \"0000\"\n\n  _, err = client.Templates.Update(context.Background(), templateID, rewrite.UpdateTemplateOptions{\n    RESTPatchUpdateTemplateBody: rewrite.RESTPatchUpdateTemplateBody{\n      Content: \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n      Variables: []rewrite.APITemplateVariable{\n        {Name: \"first_name\", Fallback: &firstNameFallback},\n        {Name: \"order_id\", Fallback: &orderIDFallback},\n      },\n    },\n  })\n  if err != nil { log.Fatal(err) }\n}"
-					},
-					{
-						"lang": "python",
-						"label": "Python",
-						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\ntemplate_id = \"748395130237498500\"\n\ntemplate = client.templates.update(\n    template_id,\n    {\n        \"content\": \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n        \"variables\": [\n            {\"name\": \"first_name\", \"fallback\": \"customer\"},\n            {\"name\": \"order_id\", \"fallback\": \"0000\"},\n        ],\n    }\n)"
-					},
-					{
-						"lang": "java",
-						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.templates.TemplateVariable;\nimport com.rewritetoday.sdk.models.templates.UpdateTemplateOptions;\nimport java.util.List;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var templateId = \"748395130237498500\";\n\n    var template = rewrite.templates().update(\n      templateId,\n      UpdateTemplateOptions.builder()\n        .content(\"Hi {{first_name}}, your package {{order_id}} has shipped.\")\n        .variables(List.of(\n          TemplateVariable.builder().name(\"first_name\").fallback(\"customer\").build(),\n          TemplateVariable.builder().name(\"order_id\").fallback(\"0000\").build()\n        ))\n        .build()\n    );\n\n    System.out.println(template);\n  }\n}"
-					},
-					{
-						"lang": "php",
-						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$templateId = '748395130237498500';\n\n$template = $rewrite->templates->update($templateId, [\n  'content' => 'Hi {{first_name}}, your package {{order_id}} has shipped.',\n  'variables' => [\n    ['name' => 'first_name', 'fallback' => 'customer'],\n    ['name' => 'order_id', 'fallback' => '0000'],\n  ],\n]);"
-					},
-					{
-						"lang": "ruby",
-						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\ntemplate_id = \"748395130237498500\"\n\ntemplate = rewrite.templates.update(\n  template_id,\n  content: \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n  variables: [\n    { name: \"first_name\", fallback: \"customer\" },\n    { name: \"order_id\", fallback: \"0000\" }\n  ]\n)"
-					},
-					{
-						"lang": "kotlin",
-						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.templates.TemplateVariable\nimport com.rewritetoday.sdk.models.templates.UpdateTemplateOptions\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val templateId = \"748395130237498500\"\n\n  val template = rewrite.templates.update(\n    templateId,\n    UpdateTemplateOptions(\n      content = \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n      variables = listOf(\n        TemplateVariable(name = \"first_name\", fallback = \"customer\"),\n        TemplateVariable(name = \"order_id\", fallback = \"0000\")\n      )\n    )\n  )\n\n  println(template)\n}"
-					},
-					{
-						"lang": "swift",
-						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet templateId = \"748395130237498500\"\n\nlet template = try await rewrite.templates.update(\n  templateId,\n  content: \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n  variables: [\n    TemplateVariable(name: \"first_name\", fallback: \"customer\"),\n    TemplateVariable(name: \"order_id\", fallback: \"0000\")\n  ]\n)\n\nprint(template)"
-					},
-					{
-						"lang": "csharp",
-						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar templateId = \"748395130237498500\";\n\nvar template = await rewrite.Templates.UpdateAsync(templateId, new UpdateTemplateOptions\n{\n  Content = \"Hi {{first_name}}, your package {{order_id}} has shipped.\",\n  Variables = new[]\n  {\n    new TemplateVariable { Name = \"first_name\", Fallback = \"customer\" },\n    new TemplateVariable { Name = \"order_id\", Fallback = \"0000\" }\n  }\n});\n\nConsole.WriteLine(template);"
-					}
-				]
+				"x-required-scopes": ["project:templates:write"]
 			},
 			"delete": {
 				"tags": ["Templates"],
-				"operationId": "deleteProjectTemplate",
-				"summary": "Delete template",
+				"operationId": "deleteTemplate",
+				"summary": "Delete a template",
+				"description": "Permanently delete a template that should no longer be used for message rendering. Requires API key scope `project:templates:write`.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { error } = await rewrite.templates.delete({\n  id: '748395130237498620',\n});\n\nif (error) throw error;"
+					}
+				],
 				"security": [
 					{
 						"bearerAuth": []
@@ -786,91 +890,47 @@
 				],
 				"parameters": [
 					{
-						"name": "templateId",
+						"name": "id",
 						"in": "path",
 						"required": true,
+						"description": "Template identifier returned by Rewrite.",
 						"schema": {
 							"$ref": "#/components/schemas/Snowflake"
-						},
-						"example": "748395130237498500"
+						}
 					}
 				],
 				"responses": {
 					"200": {
-						"description": "Response",
+						"description": "Successful response",
 						"content": {
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/OkEmptyResponse"
 								},
-								"examples": {
-									"response": {
-										"summary": "Response example",
-										"value": {
-											"ok": true,
-											"data": null
-										}
-									}
+								"example": {
+									"ok": true,
+									"data": null
 								}
 							}
 						}
 					}
 				},
-				"description": "Deletes a template from the project.",
-				"x-codeSamples": [
-					{
-						"lang": "node",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst templateId = '748395130237498500';\n\nawait rewrite.templates.delete(templateId);"
-					},
-					{
-						"lang": "go",
-						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  templateID := \"748395130237498500\"\n\n  if err := client.Templates.Delete(context.Background(), templateID); err != nil {\n    log.Fatal(err)\n  }\n}"
-					},
-					{
-						"lang": "python",
-						"label": "Python",
-						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\ntemplate_id = \"748395130237498500\"\n\nclient.templates.delete(template_id)"
-					},
-					{
-						"lang": "java",
-						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var templateId = \"748395130237498500\";\n\n    rewrite.templates().delete(templateId);\n  }\n}"
-					},
-					{
-						"lang": "php",
-						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$templateId = '748395130237498500';\n\n$rewrite->templates->delete($templateId);"
-					},
-					{
-						"lang": "ruby",
-						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\ntemplate_id = \"748395130237498500\"\n\nrewrite.templates.delete(template_id)"
-					},
-					{
-						"lang": "kotlin",
-						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val templateId = \"748395130237498500\"\n\n  rewrite.templates.delete(templateId)\n}"
-					},
-					{
-						"lang": "swift",
-						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet templateId = \"748395130237498500\"\n\ntry await rewrite.templates.delete(templateId)"
-					},
-					{
-						"lang": "csharp",
-						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar templateId = \"748395130237498500\";\n\nawait rewrite.Templates.DeleteAsync(templateId);"
-					}
-				]
+				"x-required-scopes": ["project:templates:write"]
 			}
 		},
 		"/webhooks": {
 			"get": {
 				"tags": ["Webhooks"],
-				"operationId": "listProjectWebhooks",
+				"operationId": "listWebhooks",
 				"summary": "List webhooks",
+				"description": "List webhook endpoints configured for the current project. Results are paginated with a top-level cursor. Requires API key scope `project:webhooks:read`.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error, cursor } = await rewrite.webhooks.list({\n  limit: 20,\n});\n\nif (error) throw error;"
+					}
+				],
 				"security": [
 					{
 						"bearerAuth": []
@@ -878,105 +938,57 @@
 				],
 				"parameters": [
 					{
-						"$ref": "#/components/parameters/after"
+						"$ref": "#/components/parameters/After"
 					},
 					{
-						"$ref": "#/components/parameters/before"
+						"$ref": "#/components/parameters/Before"
 					},
 					{
-						"$ref": "#/components/parameters/limit"
+						"$ref": "#/components/parameters/Limit"
 					}
 				],
 				"responses": {
 					"200": {
-						"description": "Response",
+						"description": "Successful response",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/WebhooksListResponse"
+									"$ref": "#/components/schemas/WebhookListResponse"
 								},
-								"examples": {
-									"response": {
-										"summary": "Response example",
-										"value": {
-											"ok": true,
-											"data": [
-												{
-													"id": "748395130237498700",
-													"name": "Delivery events",
-													"endpoint": "https://example.com/webhooks/rewrite",
-													"events": [
-														"sms.queued",
-														"sms.delivered",
-														"sms.failed"
-													],
-													"status": "ACTIVE",
-													"createdAt": "2026-02-19T16:05:00.000Z"
-												}
-											],
-											"cursor": {
-												"persist": false
-											}
+								"example": {
+									"ok": true,
+									"data": [
+										{
+											"id": "748395130237498750",
+											"name": "delivery-events",
+											"events": ["message.sent", "message.failed", "sms.otp"],
+											"status": "ACTIVE",
+											"endpoint": "https://example.com/rewrite/webhooks",
+											"createdAt": "2026-03-20T14:22:31.562Z"
 										}
+									],
+									"cursor": {
+										"persist": false
 									}
 								}
 							}
 						}
 					}
 				},
-				"description": "Lists webhook endpoints configured for this project.\n\nUse `limit`, `after`, and `before` for pagination.",
-				"x-codeSamples": [
-					{
-						"lang": "node",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst webhooks = await rewrite.webhooks.list({ limit: 20 });"
-					},
-					{
-						"lang": "go",
-						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  _, err = client.Webhooks.List(context.Background(), &rewrite.RESTGetListWebhooksQueryParams{Limit: 20})\n  if err != nil { log.Fatal(err) }\n}"
-					},
-					{
-						"lang": "python",
-						"label": "Python",
-						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\nwebhooks = client.webhooks.list({\"limit\": 20})"
-					},
-					{
-						"lang": "java",
-						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.webhooks.ListWebhooksOptions;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var webhooks = rewrite.webhooks().list(\n      ListWebhooksOptions.builder()\n        .limit(20)\n        .build()\n    );\n\n    System.out.println(webhooks);\n  }\n}"
-					},
-					{
-						"lang": "php",
-						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$webhooks = $rewrite->webhooks->list([\n  'limit' => 20,\n]);"
-					},
-					{
-						"lang": "ruby",
-						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nwebhooks = rewrite.webhooks.list(limit: 20)"
-					},
-					{
-						"lang": "kotlin",
-						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.webhooks.ListWebhooksOptions\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val webhooks = rewrite.webhooks.list(\n    ListWebhooksOptions(limit = 20)\n  )\n\n  println(webhooks)\n}"
-					},
-					{
-						"lang": "swift",
-						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet webhooks = try await rewrite.webhooks.list(limit: 20)\n\nprint(webhooks)"
-					},
-					{
-						"lang": "csharp",
-						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar webhooks = await rewrite.Webhooks.ListAsync(new ListWebhooksOptions\n{\n  Limit = 20\n});\n\nConsole.WriteLine(webhooks);"
-					}
-				]
+				"x-required-scopes": ["project:webhooks:read"]
 			},
 			"post": {
 				"tags": ["Webhooks"],
-				"operationId": "createProjectWebhook",
-				"summary": "Create webhook",
+				"operationId": "createWebhook",
+				"summary": "Create a webhook",
+				"description": "Create a webhook endpoint and choose which Rewrite events should be delivered to it. Requires API key scope `project:webhooks:write`.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.webhooks.create({\n  name: 'delivery-events',\n  endpoint: 'https://example.com/rewrite/webhooks',\n  events: ['message.sent', 'message.failed', 'sms.otp'],\n});\n\nif (error) throw error;"
+					}
+				],
 				"security": [
 					{
 						"bearerAuth": []
@@ -989,97 +1001,51 @@
 							"schema": {
 								"$ref": "#/components/schemas/WebhookCreateBody"
 							},
-							"examples": {
-								"request": {
-									"summary": "Request example",
-									"value": {
-										"name": "Delivery events",
-										"endpoint": "https://example.com/webhooks/rewrite",
-										"events": ["sms.queued", "sms.delivered", "sms.failed"]
-									}
-								}
+							"example": {
+								"name": "delivery-events",
+								"endpoint": "https://example.com/rewrite/webhooks",
+								"events": ["message.sent", "message.failed", "sms.otp"],
+								"secret": "whsec_dGVzdF9zZWNyZXRfdmFsdWU="
 							}
 						}
 					}
 				},
 				"responses": {
 					"200": {
-						"description": "Response",
+						"description": "Successful response",
 						"content": {
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/WebhookCreateResponse"
 								},
-								"examples": {
-									"response": {
-										"summary": "Response example",
-										"value": {
-											"ok": true,
-											"data": {
-												"id": "748395130237498711"
-											}
-										}
+								"example": {
+									"ok": true,
+									"data": {
+										"id": "748395130237498750",
+										"secret": "whsec_dGVzdF9zZWNyZXRfdmFsdWU=",
+										"createdAt": "2026-03-20T14:22:31.562Z"
 									}
 								}
 							}
 						}
 					}
 				},
-				"description": "Creates a webhook endpoint and event subscriptions.",
-				"x-codeSamples": [
-					{
-						"lang": "node",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst webhook = await rewrite.webhooks.create({\n  name: 'Delivery events',\n  endpoint: 'https://example.com/webhooks/rewrite',\n  events: ['sms.queued', 'sms.delivered', 'sms.failed'],\n});"
-					},
-					{
-						"lang": "go",
-						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  _, err = client.Webhooks.Create(context.Background(), rewrite.CreateWebhookOptions{\n    Name:     \"Delivery events\",\n    Endpoint: \"https://example.com/webhooks/rewrite\",\n    Events: []rewrite.WebhookEventType{\n      rewrite.WebhookEventTypeSMSQueued,\n      rewrite.WebhookEventTypeSMSDelivered,\n      rewrite.WebhookEventTypeSMSFailed,\n    },\n  })\n  if err != nil { log.Fatal(err) }\n}"
-					},
-					{
-						"lang": "python",
-						"label": "Python",
-						"source": "from rewrite import Client, WebhookEventType\n\nclient = Client(\"rw_your_api_key\")\n\nwebhook = client.webhooks.create(\n    {\n        \"name\": \"Delivery events\",\n        \"endpoint\": \"https://example.com/webhooks/rewrite\",\n        \"events\": [\n            WebhookEventType.SMS_QUEUED,\n            WebhookEventType.SMS_DELIVERED,\n            WebhookEventType.SMS_FAILED,\n        ],\n    }\n)"
-					},
-					{
-						"lang": "java",
-						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.webhooks.CreateWebhookOptions;\nimport java.util.List;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var webhook = rewrite.webhooks().create(\n      CreateWebhookOptions.builder()\n        .name(\"Delivery events\")\n        .endpoint(\"https://example.com/webhooks/rewrite\")\n        .events(List.of(\"sms.queued\", \"sms.delivered\", \"sms.failed\"))\n        .build()\n    );\n\n    System.out.println(webhook);\n  }\n}"
-					},
-					{
-						"lang": "php",
-						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$webhook = $rewrite->webhooks->create([\n  'name' => 'Delivery events',\n  'endpoint' => 'https://example.com/webhooks/rewrite',\n  'events' => ['sms.queued', 'sms.delivered', 'sms.failed'],\n]);"
-					},
-					{
-						"lang": "ruby",
-						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nwebhook = rewrite.webhooks.create(\n  name: \"Delivery events\",\n  endpoint: \"https://example.com/webhooks/rewrite\",\n  events: [\"sms.queued\", \"sms.delivered\", \"sms.failed\"]\n)"
-					},
-					{
-						"lang": "kotlin",
-						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.webhooks.CreateWebhookOptions\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val webhook = rewrite.webhooks.create(\n    CreateWebhookOptions(\n      name = \"Delivery events\",\n      endpoint = \"https://example.com/webhooks/rewrite\",\n      events = listOf(\"sms.queued\", \"sms.delivered\", \"sms.failed\")\n    )\n  )\n\n  println(webhook)\n}"
-					},
-					{
-						"lang": "swift",
-						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet webhook = try await rewrite.webhooks.create(\n  name: \"Delivery events\",\n  endpoint: \"https://example.com/webhooks/rewrite\",\n  events: [\"sms.queued\", \"sms.delivered\", \"sms.failed\"]\n)\n\nprint(webhook)"
-					},
-					{
-						"lang": "csharp",
-						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar webhook = await rewrite.Webhooks.CreateAsync(new CreateWebhookOptions\n{\n  Name = \"Delivery events\",\n  Endpoint = \"https://example.com/webhooks/rewrite\",\n  Events = new[] { \"sms.queued\", \"sms.delivered\", \"sms.failed\" }\n});\n\nConsole.WriteLine(webhook);"
-					}
-				]
+				"x-required-scopes": ["project:webhooks:write"]
 			}
 		},
-		"/webhooks/{webhookId}": {
+		"/webhooks/{id}": {
 			"get": {
 				"tags": ["Webhooks"],
-				"operationId": "getProjectWebhook",
-				"summary": "Get webhook",
+				"operationId": "getWebhook",
+				"summary": "Get a webhook",
+				"description": "Fetch one webhook endpoint together with its current signing secret. Requires API key scope `project:webhooks:read`.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.webhooks.get({\n  id: '748395130237498750',\n});\n\nif (error) throw error;"
+					}
+				],
 				"security": [
 					{
 						"bearerAuth": []
@@ -1087,96 +1053,53 @@
 				],
 				"parameters": [
 					{
-						"name": "webhookId",
+						"name": "id",
 						"in": "path",
 						"required": true,
+						"description": "Webhook identifier returned by Rewrite.",
 						"schema": {
 							"$ref": "#/components/schemas/Snowflake"
-						},
-						"example": "748395130237498700"
+						}
 					}
 				],
 				"responses": {
 					"200": {
-						"description": "Response",
+						"description": "Successful response",
 						"content": {
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/WebhookResponse"
 								},
-								"examples": {
-									"response": {
-										"summary": "Response example",
-										"value": {
-											"ok": true,
-											"data": {
-												"id": "748395130237498700",
-												"name": "Delivery events",
-												"endpoint": "https://example.com/webhooks/rewrite",
-												"events": ["sms.queued", "sms.delivered", "sms.failed"],
-												"status": "ACTIVE",
-												"createdAt": "2026-02-19T16:05:00.000Z"
-											}
-										}
+								"example": {
+									"ok": true,
+									"data": {
+										"id": "748395130237498750",
+										"name": "delivery-events",
+										"events": ["message.sent", "message.failed", "sms.otp"],
+										"status": "ACTIVE",
+										"endpoint": "https://example.com/rewrite/webhooks",
+										"createdAt": "2026-03-20T14:22:31.562Z",
+										"secret": "whsec_dGVzdF9zZWNyZXRfdmFsdWU="
 									}
 								}
 							}
 						}
 					}
 				},
-				"description": "Returns a single webhook configuration.",
-				"x-codeSamples": [
-					{
-						"lang": "node",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst webhookId = '748395130237498700';\n\nconst webhook = await rewrite.webhooks.get(webhookId);"
-					},
-					{
-						"lang": "go",
-						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  webhookID := \"748395130237498700\"\n\n  _, err = client.Webhooks.Get(context.Background(), webhookID)\n  if err != nil { log.Fatal(err) }\n}"
-					},
-					{
-						"lang": "python",
-						"label": "Python",
-						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\nwebhook_id = \"748395130237498700\"\n\nwebhook = client.webhooks.get(webhook_id)"
-					},
-					{
-						"lang": "java",
-						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var webhookId = \"748395130237498700\";\n\n    var webhook = rewrite.webhooks().get(webhookId);\n\n    System.out.println(webhook);\n  }\n}"
-					},
-					{
-						"lang": "php",
-						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$webhookId = '748395130237498700';\n\n$webhook = $rewrite->webhooks->get($webhookId);"
-					},
-					{
-						"lang": "ruby",
-						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nwebhook_id = \"748395130237498700\"\n\nwebhook = rewrite.webhooks.get(webhook_id)"
-					},
-					{
-						"lang": "kotlin",
-						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val webhookId = \"748395130237498700\"\n\n  val webhook = rewrite.webhooks.get(webhookId)\n\n  println(webhook)\n}"
-					},
-					{
-						"lang": "swift",
-						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet webhookId = \"748395130237498700\"\n\nlet webhook = try await rewrite.webhooks.get(webhookId)\n\nprint(webhook)"
-					},
-					{
-						"lang": "csharp",
-						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar webhookId = \"748395130237498700\";\n\nvar webhook = await rewrite.Webhooks.GetAsync(webhookId);\n\nConsole.WriteLine(webhook);"
-					}
-				]
+				"x-required-scopes": ["project:webhooks:read"]
 			},
 			"patch": {
 				"tags": ["Webhooks"],
-				"operationId": "updateProjectWebhook",
-				"summary": "Update webhook",
+				"operationId": "updateWebhook",
+				"summary": "Update a webhook",
+				"description": "Update an existing webhook endpoint, including its event list, URL, status or signing secret. Requires API key scope `project:webhooks:write`.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { error } = await rewrite.webhooks.update({\n  id: '748395130237498750',\n  status: 'INACTIVE',\n});\n\nif (error) throw error;"
+					}
+				],
 				"security": [
 					{
 						"bearerAuth": []
@@ -1184,13 +1107,13 @@
 				],
 				"parameters": [
 					{
-						"name": "webhookId",
+						"name": "id",
 						"in": "path",
 						"required": true,
+						"description": "Webhook identifier returned by Rewrite.",
 						"schema": {
 							"$ref": "#/components/schemas/Snowflake"
-						},
-						"example": "748395130237498700"
+						}
 					}
 				],
 				"requestBody": {
@@ -1200,93 +1123,42 @@
 							"schema": {
 								"$ref": "#/components/schemas/WebhookUpdateBody"
 							},
-							"examples": {
-								"request": {
-									"summary": "Request example",
-									"value": {
-										"endpoint": "https://example.com/webhooks/rewrite-v2",
-										"events": ["sms.delivered", "sms.failed"],
-										"status": "ACTIVE"
-									}
-								}
+							"example": {
+								"status": "INACTIVE"
 							}
 						}
 					}
 				},
 				"responses": {
 					"200": {
-						"description": "Response",
+						"description": "Successful response",
 						"content": {
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/OkEmptyResponse"
 								},
-								"examples": {
-									"response": {
-										"summary": "Response example",
-										"value": {
-											"ok": true,
-											"data": null
-										}
-									}
+								"example": {
+									"ok": true,
+									"data": null
 								}
 							}
 						}
 					}
 				},
-				"description": "Updates webhook endpoint, events, name or status.",
-				"x-codeSamples": [
-					{
-						"lang": "node",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst webhookId = '748395130237498700';\n\nconst webhook = await rewrite.webhooks.update(webhookId, {\n  endpoint: 'https://example.com/webhooks/rewrite-v2',\n  events: ['sms.delivered', 'sms.failed'],\n  status: 'ACTIVE',\n});"
-					},
-					{
-						"lang": "go",
-						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  webhookID := \"748395130237498700\"\n\n  _, err = client.Webhooks.Update(context.Background(), webhookID, rewrite.UpdateWebhookOptions{\n    RESTPatchUpdateWebhookBody: rewrite.RESTPatchUpdateWebhookBody{\n      Endpoint: \"https://example.com/webhooks/rewrite-v2\",\n      Events: []rewrite.WebhookEventType{\n        rewrite.WebhookEventTypeSMSDelivered,\n        rewrite.WebhookEventTypeSMSFailed,\n      },\n      Status: rewrite.WebhookStatusActive,\n    },\n  })\n  if err != nil { log.Fatal(err) }\n}"
-					},
-					{
-						"lang": "python",
-						"label": "Python",
-						"source": "from rewrite import Client, WebhookEventType, WebhookStatus\n\nclient = Client(\"rw_your_api_key\")\n\nwebhook_id = \"748395130237498700\"\n\nwebhook = client.webhooks.update(\n    webhook_id,\n    {\n        \"endpoint\": \"https://example.com/webhooks/rewrite-v2\",\n        \"events\": [\n            WebhookEventType.SMS_DELIVERED,\n            WebhookEventType.SMS_FAILED,\n        ],\n        \"status\": WebhookStatus.ACTIVE,\n    }\n)"
-					},
-					{
-						"lang": "java",
-						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\nimport com.rewritetoday.sdk.models.webhooks.UpdateWebhookOptions;\nimport java.util.List;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var webhookId = \"748395130237498700\";\n\n    var webhook = rewrite.webhooks().update(\n      webhookId,\n      UpdateWebhookOptions.builder()\n        .endpoint(\"https://example.com/webhooks/rewrite-v2\")\n        .events(List.of(\"sms.delivered\", \"sms.failed\"))\n        .status(\"ACTIVE\")\n        .build()\n    );\n\n    System.out.println(webhook);\n  }\n}"
-					},
-					{
-						"lang": "php",
-						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$webhookId = '748395130237498700';\n\n$webhook = $rewrite->webhooks->update($webhookId, [\n  'endpoint' => 'https://example.com/webhooks/rewrite-v2',\n  'events' => ['sms.delivered', 'sms.failed'],\n  'status' => 'ACTIVE',\n]);"
-					},
-					{
-						"lang": "ruby",
-						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nwebhook_id = \"748395130237498700\"\n\nwebhook = rewrite.webhooks.update(\n  webhook_id,\n  endpoint: \"https://example.com/webhooks/rewrite-v2\",\n  events: [\"sms.delivered\", \"sms.failed\"],\n  status: \"ACTIVE\"\n)"
-					},
-					{
-						"lang": "kotlin",
-						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\nimport com.rewritetoday.sdk.models.webhooks.UpdateWebhookOptions\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val webhookId = \"748395130237498700\"\n\n  val webhook = rewrite.webhooks.update(\n    webhookId,\n    UpdateWebhookOptions(\n      endpoint = \"https://example.com/webhooks/rewrite-v2\",\n      events = listOf(\"sms.delivered\", \"sms.failed\"),\n      status = \"ACTIVE\"\n    )\n  )\n\n  println(webhook)\n}"
-					},
-					{
-						"lang": "swift",
-						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet webhookId = \"748395130237498700\"\n\nlet webhook = try await rewrite.webhooks.update(\n  webhookId,\n  endpoint: \"https://example.com/webhooks/rewrite-v2\",\n  events: [\"sms.delivered\", \"sms.failed\"],\n  status: \"ACTIVE\"\n)\n\nprint(webhook)"
-					},
-					{
-						"lang": "csharp",
-						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar webhookId = \"748395130237498700\";\n\nvar webhook = await rewrite.Webhooks.UpdateAsync(webhookId, new UpdateWebhookOptions\n{\n  Endpoint = \"https://example.com/webhooks/rewrite-v2\",\n  Events = new[] { \"sms.delivered\", \"sms.failed\" },\n  Status = \"ACTIVE\"\n});\n\nConsole.WriteLine(webhook);"
-					}
-				]
+				"x-required-scopes": ["project:webhooks:write"]
 			},
 			"delete": {
 				"tags": ["Webhooks"],
-				"operationId": "deleteProjectWebhook",
-				"summary": "Delete webhook",
+				"operationId": "deleteWebhook",
+				"summary": "Delete a webhook",
+				"description": "Permanently delete a webhook endpoint and stop future event deliveries to it. Requires API key scope `project:webhooks:write`.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { error } = await rewrite.webhooks.delete({\n  id: '748395130237498750',\n});\n\nif (error) throw error;"
+					}
+				],
 				"security": [
 					{
 						"bearerAuth": []
@@ -1294,84 +1166,220 @@
 				],
 				"parameters": [
 					{
-						"name": "webhookId",
+						"name": "id",
 						"in": "path",
 						"required": true,
+						"description": "Webhook identifier returned by Rewrite.",
 						"schema": {
 							"$ref": "#/components/schemas/Snowflake"
-						},
-						"example": "748395130237498700"
+						}
 					}
 				],
 				"responses": {
 					"200": {
-						"description": "Response",
+						"description": "Successful response",
 						"content": {
 							"application/json": {
 								"schema": {
 									"$ref": "#/components/schemas/OkEmptyResponse"
 								},
-								"examples": {
-									"response": {
-										"summary": "Response example",
-										"value": {
-											"ok": true,
-											"data": null
+								"example": {
+									"ok": true,
+									"data": null
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["project:webhooks:write"]
+			}
+		},
+		"/webhooks/{id}/logs": {
+			"get": {
+				"tags": ["Logs"],
+				"operationId": "listWebhookLogs",
+				"summary": "List webhook delivery logs",
+				"description": "List delivery attempts for a specific webhook endpoint. Combine `type`, `status` and cursor parameters to inspect a particular delivery flow. Requires API key scope `project:write`.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error, cursor } = await rewrite.logs.listWebhook({\n  webhookId: '748395130237498750',\n  type: 'message.sent',\n  status: 'SUCCESS',\n  limit: 25,\n});\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "Webhook identifier returned by Rewrite.",
+						"schema": {
+							"$ref": "#/components/schemas/Snowflake"
+						}
+					},
+					{
+						"$ref": "#/components/parameters/After"
+					},
+					{
+						"$ref": "#/components/parameters/Before"
+					},
+					{
+						"$ref": "#/components/parameters/Limit"
+					},
+					{
+						"$ref": "#/components/parameters/WebhookEventTypeRequired"
+					},
+					{
+						"$ref": "#/components/parameters/WebhookDeliveryStatusRequired"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/WebhookLogListResponse"
+								},
+								"example": {
+									"ok": true,
+									"data": [
+										{
+											"id": "748395130237498880",
+											"url": "https://example.com/rewrite/webhooks",
+											"type": "message.sent",
+											"code": 200,
+											"error": null,
+											"status": "SUCCESS",
+											"attempt": 1,
+											"latency": 182,
+											"retryAt": null,
+											"createdAt": "2026-03-20T14:22:31.562Z",
+											"messageId": "748395130237498412"
+										},
+										{
+											"id": "748395130237498881",
+											"url": "https://example.com/rewrite/webhooks",
+											"type": "message.sent",
+											"code": 200,
+											"error": null,
+											"status": "SUCCESS",
+											"attempt": 1,
+											"latency": 182,
+											"retryAt": null,
+											"createdAt": "2026-03-20T14:22:39.914Z",
+											"messageId": "748395130237498412"
 										}
+									],
+									"cursor": {
+										"persist": false
 									}
 								}
 							}
 						}
 					}
 				},
-				"description": "Deletes a webhook and stops future event deliveries.",
+				"x-required-scopes": ["project:write"]
+			}
+		},
+		"/logs/{id}": {
+			"get": {
+				"tags": ["Logs"],
+				"operationId": "getWebhookLog",
+				"summary": "Get a webhook delivery log",
+				"description": "Fetch one webhook delivery attempt together with the exact event payload delivered by Rewrite. Requires API key scope `project:logs:read`.",
 				"x-codeSamples": [
 					{
-						"lang": "node",
+						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst webhookId = '748395130237498700';\n\nawait rewrite.webhooks.delete(webhookId);"
-					},
-					{
-						"lang": "go",
-						"label": "Go",
-						"source": "package main\n\nimport (\n  \"context\"\n  \"log\"\n\n  rewrite \"github.com/rewritetoday/golang\"\n)\n\nfunc main() {\n  client, err := rewrite.New(\"rw_your_api_key\")\n  if err != nil { log.Fatal(err) }\n\n  webhookID := \"748395130237498700\"\n\n  if err := client.Webhooks.Delete(context.Background(), webhookID); err != nil {\n    log.Fatal(err)\n  }\n}"
-					},
-					{
-						"lang": "python",
-						"label": "Python",
-						"source": "from rewrite import Client\n\nclient = Client(\"rw_your_api_key\")\n\nwebhook_id = \"748395130237498700\"\n\nclient.webhooks.delete(webhook_id)"
-					},
-					{
-						"lang": "java",
-						"label": "Java",
-						"source": "import com.rewritetoday.sdk.Rewrite;\n\npublic class Main {\n  public static void main(String[] args) throws Exception {\n    var rewrite = new Rewrite(System.getenv(\"REWRITE_API_KEY\"));\n\n    var webhookId = \"748395130237498700\";\n\n    rewrite.webhooks().delete(webhookId);\n  }\n}"
-					},
-					{
-						"lang": "php",
-						"label": "PHP",
-						"source": "<?php\n\nrequire __DIR__ . '/vendor/autoload.php';\n\nuse RewriteToday\\Rewrite;\n\n$rewrite = new Rewrite(getenv('REWRITE_API_KEY'));\n\n$webhookId = '748395130237498700';\n\n$rewrite->webhooks->delete($webhookId);"
-					},
-					{
-						"lang": "ruby",
-						"label": "Ruby",
-						"source": "require \"rewrite\"\n\nrewrite = Rewrite::Client.new(api_key: ENV.fetch(\"REWRITE_API_KEY\"))\n\nwebhook_id = \"748395130237498700\"\n\nrewrite.webhooks.delete(webhook_id)"
-					},
-					{
-						"lang": "kotlin",
-						"label": "Kotlin",
-						"source": "import com.rewritetoday.sdk.Rewrite\n\nfun main() {\n  val rewrite = Rewrite(System.getenv(\"REWRITE_API_KEY\"))\n\n  val webhookId = \"748395130237498700\"\n\n  rewrite.webhooks.delete(webhookId)\n}"
-					},
-					{
-						"lang": "swift",
-						"label": "Swift",
-						"source": "import Foundation\nimport RewriteSDK\n\nlet rewrite = Rewrite(apiKey: ProcessInfo.processInfo.environment[\"REWRITE_API_KEY\"] ?? \"\")\n\nlet webhookId = \"748395130237498700\"\n\ntry await rewrite.webhooks.delete(webhookId)"
-					},
-					{
-						"lang": "csharp",
-						"label": "C#",
-						"source": "using RewriteToday;\n\nvar rewrite = new RewriteClient(Environment.GetEnvironmentVariable(\"REWRITE_API_KEY\"));\n\nvar webhookId = \"748395130237498700\";\n\nawait rewrite.Webhooks.DeleteAsync(webhookId);"
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.logs.get({\n  id: '748395130237498880',\n});\n\nif (error) throw error;"
 					}
-				]
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "Webhook delivery log identifier.",
+						"schema": {
+							"$ref": "#/components/schemas/Snowflake"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/WebhookLogResponse"
+								},
+								"example": {
+									"ok": true,
+									"data": {
+										"id": "748395130237498880",
+										"url": "https://example.com/rewrite/webhooks",
+										"type": "message.sent",
+										"code": 200,
+										"error": null,
+										"status": "SUCCESS",
+										"attempt": 1,
+										"latency": 182,
+										"retryAt": null,
+										"createdAt": "2026-03-20T14:22:31.562Z",
+										"messageId": "748395130237498412",
+										"payload": {
+											"id": "748395130237498880",
+											"createdAt": "2026-03-20T14:22:31.562Z",
+											"type": "message.sent",
+											"data": {
+												"id": "748395130237498412",
+												"projectId": "748395130237499220",
+												"to": "+5511999999999",
+												"tags": [
+													{
+														"name": "flow",
+														"value": "login"
+													}
+												],
+												"type": "SMS",
+												"status": "DELIVERED",
+												"content": "Rewrite: seu codigo e 478201",
+												"country": "br",
+												"analysis": {
+													"characters": 33,
+													"encoding": "gsm7",
+													"segments": {
+														"concat": 153,
+														"count": 1,
+														"reason": "fits",
+														"single": 160
+													}
+												},
+												"error": null,
+												"deliveredAt": "2026-03-20T14:22:39.914Z",
+												"scheduledAt": null,
+												"templateId": null
+											}
+										},
+										"webhookId": "748395130237498750"
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["project:logs:read"]
 			}
 		}
 	},
@@ -1380,91 +1388,313 @@
 			"bearerAuth": {
 				"type": "http",
 				"scheme": "bearer",
-				"bearerFormat": "API Key",
-				"description": "Send your API key as `Authorization: Bearer <api-key>`."
+				"bearerFormat": "API key",
+				"description": "Send your project API key as `Authorization: Bearer rw_...`."
 			}
 		},
 		"parameters": {
-			"after": {
+			"IdempotencyKey": {
+				"name": "Idempotency-Key",
+				"in": "header",
+				"required": false,
+				"description": "Optional key used to safely retry the same create request without creating duplicates.",
+				"schema": {
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 64,
+					"example": "msg:login-otp:2026-03-20T14:22"
+				}
+			},
+			"After": {
 				"name": "after",
 				"in": "query",
 				"required": false,
+				"description": "Cursor for forward pagination. Send exactly one of `after` or `before` when paginating.",
 				"schema": {
 					"$ref": "#/components/schemas/Snowflake"
-				},
-				"description": "Unique cursor ID to fetch items after this value.",
-				"example": "748395130237498588"
+				}
 			},
-			"before": {
+			"Before": {
 				"name": "before",
 				"in": "query",
 				"required": false,
+				"description": "Cursor for backward pagination. Send exactly one of `after` or `before` when paginating.",
 				"schema": {
 					"$ref": "#/components/schemas/Snowflake"
-				},
-				"description": "Unique cursor ID to fetch items before this value.",
-				"example": "748395130237498399"
+				}
 			},
-			"limit": {
+			"Limit": {
 				"name": "limit",
 				"in": "query",
 				"required": false,
+				"description": "Page size. Backend cursor schemas validate this between `2` and the route-specific maximum.",
 				"schema": {
 					"type": "integer",
 					"minimum": 2,
 					"maximum": 100
-				},
-				"description": "Number of items to return.",
-				"example": 20
+				}
+			},
+			"WithI18n": {
+				"name": "withi18n",
+				"in": "query",
+				"required": false,
+				"description": "When `true`, include the template `i18n` map in list/detail responses.",
+				"schema": {
+					"type": "boolean"
+				}
+			},
+			"MessageStatus": {
+				"name": "status",
+				"in": "query",
+				"required": false,
+				"description": "Filter by message status.",
+				"schema": {
+					"type": "string",
+					"enum": [
+						"SENT",
+						"QUEUED",
+						"FAILED",
+						"CANCELED",
+						"SCHEDULED",
+						"DELIVERED"
+					]
+				}
+			},
+			"CountryCode": {
+				"name": "country",
+				"in": "query",
+				"required": false,
+				"description": "Lowercase ISO 3166-1 alpha-2 country code inferred from the destination number.",
+				"schema": {
+					"type": "string",
+					"example": "br"
+				}
+			},
+			"WebhookEventTypeRequired": {
+				"name": "type",
+				"in": "query",
+				"required": true,
+				"description": "Webhook event type to include in the result set.",
+				"schema": {
+					"type": "string",
+					"enum": [
+						"sms.otp",
+						"message.sent",
+						"message.batch",
+						"message.queued",
+						"message.failed",
+						"message.canceled",
+						"message.delivered",
+						"message.scheduled"
+					]
+				}
+			},
+			"WebhookDeliveryStatusRequired": {
+				"name": "status",
+				"in": "query",
+				"required": true,
+				"description": "Delivery status to include in the result set.",
+				"schema": {
+					"type": "string",
+					"enum": ["FAILED", "SUCCESS"]
+				}
 			}
 		},
-		"responses": {},
+		"responses": {
+			"BadRequest": {
+				"description": "Bad request",
+				"content": {
+					"application/json": {
+						"schema": {
+							"$ref": "#/components/schemas/ErrorResponse"
+						}
+					}
+				}
+			},
+			"Unauthorized": {
+				"description": "Unauthorized",
+				"content": {
+					"application/json": {
+						"schema": {
+							"$ref": "#/components/schemas/ErrorResponse"
+						}
+					}
+				}
+			},
+			"Forbidden": {
+				"description": "Forbidden",
+				"content": {
+					"application/json": {
+						"schema": {
+							"$ref": "#/components/schemas/ErrorResponse"
+						}
+					}
+				}
+			},
+			"NotFound": {
+				"description": "Not found",
+				"content": {
+					"application/json": {
+						"schema": {
+							"$ref": "#/components/schemas/ErrorResponse"
+						}
+					}
+				}
+			},
+			"TooManyRequests": {
+				"description": "Rate limited. The backend sends `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Retry-After` and `X-RateLimit-Retry-Policy`. `X-RateLimit-Retry-After` is returned in milliseconds.",
+				"content": {
+					"application/json": {
+						"schema": {
+							"$ref": "#/components/schemas/ErrorResponse"
+						}
+					}
+				}
+			},
+			"InternalServerError": {
+				"description": "Internal server error",
+				"content": {
+					"application/json": {
+						"schema": {
+							"$ref": "#/components/schemas/ErrorResponse"
+						}
+					}
+				}
+			}
+		},
 		"schemas": {
 			"Snowflake": {
 				"type": "string",
-				"pattern": "^[0-9]{1,32}$",
-				"description": "Unique resource identifier in snowflake format.",
-				"example": "748395130237498368"
+				"example": "748395130237498412"
 			},
 			"Cursor": {
 				"type": "object",
-				"additionalProperties": false,
 				"required": ["persist"],
+				"additionalProperties": false,
 				"properties": {
 					"persist": {
 						"type": "boolean",
-						"description": "Whether another page can be requested using `next`."
+						"description": "When `true`, another page is available using the returned cursor values."
 					},
-					"next": {
+					"after": {
 						"$ref": "#/components/schemas/Snowflake",
-						"description": "Cursor to request the next page (`after`)."
+						"description": "Cursor to request the next page."
+					},
+					"before": {
+						"$ref": "#/components/schemas/Snowflake",
+						"description": "Cursor to request the previous page."
 					}
-				},
-				"description": "Cursor metadata for paginated responses.",
-				"example": {
-					"persist": true,
-					"next": "748395130237498399"
+				}
+			},
+			"ErrorResponse": {
+				"type": "object",
+				"required": ["ok", "error"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": false
+					},
+					"error": {
+						"type": "object",
+						"required": ["code", "message"],
+						"additionalProperties": false,
+						"properties": {
+							"code": {
+								"type": "string",
+								"example": "INVALID_JSON_BODY"
+							},
+							"message": {
+								"type": "string",
+								"example": "Invalid JSON body"
+							},
+							"detailed": {
+								"type": "object",
+								"additionalProperties": true
+							}
+						}
+					}
 				}
 			},
 			"OkEmptyResponse": {
 				"type": "object",
-				"additionalProperties": false,
 				"required": ["ok", "data"],
+				"additionalProperties": false,
 				"properties": {
 					"ok": {
 						"type": "boolean",
-						"const": true,
-						"description": "Indicates whether the request was successful."
+						"const": true
 					},
 					"data": {
-						"type": "null",
-						"description": "No data is returned for this response."
+						"type": "null"
 					}
-				},
-				"description": "Successful response. This endpoint does not return any data.",
-				"example": {
-					"ok": true,
-					"data": null
+				}
+			},
+			"StringArrayDeleteBody": {
+				"type": "object",
+				"required": ["ids"],
+				"additionalProperties": false,
+				"properties": {
+					"ids": {
+						"type": "array",
+						"minItems": 1,
+						"maxItems": 20,
+						"uniqueItems": true,
+						"items": {
+							"$ref": "#/components/schemas/Snowflake"
+						}
+					}
+				}
+			},
+			"DeletedIdsResponse": {
+				"type": "object",
+				"required": ["ok", "data"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/Snowflake"
+						}
+					}
+				}
+			},
+			"Project": {
+				"type": "object",
+				"required": [
+					"id",
+					"name",
+					"icon",
+					"ownerId",
+					"apiKeysCount",
+					"createdAt"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Snowflake"
+					},
+					"name": {
+						"type": "string",
+						"example": "Rewrite"
+					},
+					"icon": {
+						"type": ["string", "null"]
+					},
+					"ownerId": {
+						"$ref": "#/components/schemas/Snowflake"
+					},
+					"apiKeysCount": {
+						"type": "integer"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					}
 				}
 			},
 			"ProjectUpdateBody": {
@@ -1473,587 +1703,1092 @@
 				"properties": {
 					"icon": {
 						"type": "null",
-						"description": "Set to `null` to remove icon (when supported)."
+						"description": "Send `null` to remove the icon."
 					},
 					"name": {
 						"type": "string",
-						"pattern": "^[A-Za-z0-9,-_ ]{2,64}$",
-						"description": "Display name (2-64 chars)."
+						"example": "Rewrite"
 					}
-				},
-				"description": "Fields that can be updated in a project.",
-				"example": {
-					"name": "Marketing Alerts"
 				}
+			},
+			"ProjectCreateBody": {
+				"type": "object",
+				"required": ["name"],
+				"additionalProperties": false,
+				"properties": {
+					"name": {
+						"type": "string",
+						"example": "Rewrite"
+					}
+				}
+			},
+			"ProjectResponse": {
+				"type": "object",
+				"required": ["ok", "data"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"$ref": "#/components/schemas/Project"
+					}
+				}
+			},
+			"AuthScope": {
+				"type": "string",
+				"enum": [
+					"*",
+					"project:read",
+					"project:api_keys:read",
+					"project:write",
+					"project:webhooks:read",
+					"project:templates:write",
+					"project:templates:read",
+					"project:webhooks:write",
+					"message:write",
+					"message:read",
+					"project:logs:read"
+				]
 			},
 			"APIKey": {
 				"type": "object",
+				"required": [
+					"id",
+					"name",
+					"prefix",
+					"scopes",
+					"lastUsedAt",
+					"description",
+					"createdAt"
+				],
 				"additionalProperties": false,
-				"required": ["id", "name", "prefix", "scopes", "createdAt"],
 				"properties": {
 					"id": {
-						"$ref": "#/components/schemas/Snowflake",
-						"description": "API key id."
+						"$ref": "#/components/schemas/Snowflake"
 					},
 					"name": {
-						"type": "string",
-						"description": "Friendly key name."
+						"type": "string"
 					},
 					"prefix": {
 						"type": "string",
-						"description": "Public key prefix for identification."
+						"example": "rw_d5f3ce"
 					},
 					"scopes": {
 						"type": "array",
 						"items": {
 							"$ref": "#/components/schemas/AuthScope"
-						},
-						"description": "Scopes granted to this key."
+						}
+					},
+					"description": {
+						"type": ["string", "null"]
+					},
+					"lastUsedAt": {
+						"type": ["string", "null"],
+						"format": "date-time"
 					},
 					"createdAt": {
 						"type": "string",
-						"format": "date-time",
-						"description": "Creation timestamp (UTC)."
+						"format": "date-time"
 					}
-				},
-				"description": "Project API key metadata (secret is never returned again).",
-				"example": {
-					"id": "748395130237498400",
-					"name": "Production backend",
-					"prefix": "rw_8e4c",
-					"scopes": ["project:templates:write", "projects:webhooks:write"],
-					"createdAt": "2026-02-19T19:10:02.000Z"
 				}
 			},
-			"APIKeysListResponse": {
+			"APIKeyListResponse": {
 				"type": "object",
-				"additionalProperties": false,
 				"required": ["ok", "data", "cursor"],
+				"additionalProperties": false,
 				"properties": {
 					"ok": {
 						"type": "boolean",
-						"const": true,
-						"description": "Indicates whether the request was successful."
+						"const": true
 					},
 					"data": {
 						"type": "array",
 						"items": {
 							"$ref": "#/components/schemas/APIKey"
-						},
-						"description": "Primary response payload for this operation."
+						}
 					},
 					"cursor": {
-						"$ref": "#/components/schemas/Cursor",
-						"description": "Pagination cursor information for fetching the next page."
+						"$ref": "#/components/schemas/Cursor"
 					}
-				},
-				"example": {
-					"ok": true,
-					"data": [
-						{
-							"id": "748395130237498400",
-							"name": "Production backend",
-							"prefix": "rw_8e4c",
-							"scopes": ["project:templates:write", "projects:webhooks:write"],
-							"createdAt": "2026-02-19T19:10:02.000Z"
-						}
-					],
-					"cursor": {
-						"persist": false
-					}
-				},
-				"description": "APIKeysListResponse schema."
+				}
 			},
 			"APIKeyCreateBody": {
 				"type": "object",
-				"additionalProperties": false,
 				"required": ["name"],
+				"additionalProperties": false,
 				"properties": {
 					"name": {
 						"type": "string",
 						"minLength": 2,
-						"maxLength": 32,
-						"description": "Human-readable name used to identify this API key."
+						"maxLength": 32
+					},
+					"description": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 64
 					},
 					"scopes": {
 						"type": "array",
 						"uniqueItems": true,
 						"items": {
 							"$ref": "#/components/schemas/AuthScope"
-						},
-						"description": "Permission scopes granted to this API key."
+						}
 					}
-				},
-				"description": "Create a project API key with optional scopes.",
-				"example": {
-					"name": "Jobs worker",
-					"scopes": ["project:templates:read", "projects:webhooks:read"]
+				}
+			},
+			"APIKeyUpdateBody": {
+				"type": "object",
+				"additionalProperties": false,
+				"properties": {
+					"name": {
+						"type": "string",
+						"minLength": 2,
+						"maxLength": 32
+					},
+					"description": {
+						"type": ["string", "null"],
+						"minLength": 1,
+						"maxLength": 64
+					},
+					"scopes": {
+						"type": "array",
+						"uniqueItems": true,
+						"items": {
+							"$ref": "#/components/schemas/AuthScope"
+						}
+					}
+				}
+			},
+			"APIKeyCreateResult": {
+				"type": "object",
+				"required": ["id", "key", "createdAt"],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Snowflake"
+					},
+					"key": {
+						"type": "string",
+						"description": "Returned once. Persist it immediately.",
+						"example": "rw_d5f3ce.4pbbWQrluH4SOD5xvR9p9C2x"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					}
 				}
 			},
 			"APIKeyCreateResponse": {
 				"type": "object",
-				"additionalProperties": false,
 				"required": ["ok", "data"],
+				"additionalProperties": false,
 				"properties": {
 					"ok": {
 						"type": "boolean",
-						"const": true,
-						"description": "Indicates whether the API key was created successfully."
+						"const": true
 					},
 					"data": {
-						"type": "object",
-						"additionalProperties": false,
-						"required": ["id", "key", "createdAt"],
-						"properties": {
-							"id": {
-								"$ref": "#/components/schemas/Snowflake",
-								"description": "ID of the newly created API key."
-							},
-							"key": {
-								"type": "string",
-								"description": "One-time secret API key value. Store it securely; it will not be shown again."
-							},
-							"createdAt": {
-								"type": "string",
-								"format": "date-time",
-								"description": "Creation timestamp in ISO 8601 format (UTC)."
-							}
-						},
-						"description": "Details returned once after API key creation."
+						"$ref": "#/components/schemas/APIKeyCreateResult"
 					}
-				},
-				"description": "Creation response containing the one-time secret key.",
-				"example": {
-					"ok": true,
+				}
+			},
+			"MessageTag": {
+				"type": "object",
+				"required": ["name", "value"],
+				"additionalProperties": false,
+				"properties": {
+					"name": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 128,
+						"description": "Tag key attached to the message.",
+						"example": "flow"
+					},
+					"value": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 128,
+						"description": "Tag value attached to the message.",
+						"example": "login"
+					}
+				}
+			},
+			"MessageAnalysis": {
+				"type": "object",
+				"required": ["characters", "encoding", "segments"],
+				"additionalProperties": false,
+				"properties": {
+					"characters": {
+						"type": "integer",
+						"description": "Total character count in the rendered SMS content.",
+						"example": 33
+					},
+					"encoding": {
+						"type": "string",
+						"enum": ["gsm7", "ucs2"],
+						"description": "Encoding detected for the rendered SMS content.",
+						"example": "gsm7"
+					},
+					"segments": {
+						"type": "object",
+						"required": ["concat", "count", "reason", "single"],
+						"additionalProperties": false,
+						"properties": {
+							"concat": {
+								"type": "integer",
+								"description": "Maximum characters allowed per segment in multipart SMS.",
+								"example": 153
+							},
+							"count": {
+								"type": "integer",
+								"description": "Number of SMS segments required to send the message.",
+								"example": 1
+							},
+							"reason": {
+								"type": "string",
+								"enum": ["fits", "smart", "singleLimit", "nonGsm7"],
+								"description": "Why Rewrite selected the reported segmentation result.",
+								"example": "fits"
+							},
+							"single": {
+								"type": "integer",
+								"description": "Maximum characters allowed when the message fits in a single SMS.",
+								"example": 160
+							}
+						}
+					}
+				}
+			},
+			"MessageSegmentation": {
+				"type": "object",
+				"required": ["max"],
+				"additionalProperties": false,
+				"properties": {
+					"max": {
+						"type": "integer",
+						"minimum": 1,
+						"maximum": 24,
+						"description": "Maximum number of SMS segments Rewrite is allowed to send.",
+						"example": 2
+					},
+					"mode": {
+						"type": "string",
+						"enum": ["fail", "trim", "send"],
+						"description": "How Rewrite should behave when the message exceeds the allowed segment count.",
+						"example": "send"
+					},
+					"smart": {
+						"type": "boolean",
+						"description": "When `true`, Rewrite may optimize the content to fit GSM-7 when possible.",
+						"example": true
+					}
+				}
+			},
+			"MessageInlineBody": {
+				"title": "With content",
+				"type": "object",
+				"required": ["to", "content"],
+				"additionalProperties": false,
+				"properties": {
+					"to": {
+						"type": "string",
+						"description": "Destination number in E.164 format.",
+						"example": "+5511999999999"
+					},
+					"content": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 1600,
+						"description": "Rendered SMS content to send.",
+						"example": "Rewrite: seu codigo e 478201"
+					},
+					"tags": {
+						"type": "array",
+						"maxItems": 20,
+						"description": "Optional metadata stored with the message.",
+						"items": {
+							"$ref": "#/components/schemas/MessageTag"
+						},
+						"example": [
+							{
+								"name": "flow",
+								"value": "login"
+							}
+						]
+					},
+					"scheduledAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "When provided, Rewrite schedules the message for later delivery.",
+						"example": "2026-03-20T14:30:00.000Z"
+					},
+					"segmentation": {
+						"$ref": "#/components/schemas/MessageSegmentation",
+						"description": "Optional segmentation rules for long SMS bodies."
+					}
+				}
+			},
+			"MessageTemplateBody": {
+				"title": "Using templates",
+				"type": "object",
+				"required": ["to", "templateId"],
+				"additionalProperties": false,
+				"properties": {
+					"to": {
+						"type": "string",
+						"description": "Destination number in E.164 format.",
+						"example": "+5511888888888"
+					},
+					"templateId": {
+						"$ref": "#/components/schemas/Snowflake",
+						"description": "Template identifier to render before sending.",
+						"example": "748395130237498620"
+					},
+					"variables": {
+						"type": "object",
+						"additionalProperties": {
+							"type": "string"
+						},
+						"default": {},
+						"description": "Variable values used when rendering the selected template."
+					},
+					"tags": {
+						"type": "array",
+						"maxItems": 20,
+						"description": "Optional metadata stored with the message.",
+						"items": {
+							"$ref": "#/components/schemas/MessageTag"
+						},
+						"example": [
+							{
+								"name": "flow",
+								"value": "login"
+							}
+						]
+					},
+					"scheduledAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "When provided, Rewrite schedules the message for later delivery."
+					},
+					"segmentation": {
+						"$ref": "#/components/schemas/MessageSegmentation",
+						"description": "Optional segmentation rules for the rendered template output."
+					}
+				}
+			},
+			"MessageCreateBody": {
+				"oneOf": [
+					{
+						"$ref": "#/components/schemas/MessageInlineBody"
+					},
+					{
+						"$ref": "#/components/schemas/MessageTemplateBody"
+					}
+				]
+			},
+			"MessageRef": {
+				"type": "object",
+				"required": ["id", "createdAt"],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Snowflake",
+						"description": "Message identifier returned by Rewrite.",
+						"example": "748395130237498412"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Timestamp when Rewrite accepted the message.",
+						"example": "2026-03-20T14:22:31.562Z"
+					}
+				}
+			},
+			"MessageCreateResult": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/MessageRef"
+					},
+					{
+						"type": "object",
+						"required": ["analysis"],
+						"additionalProperties": false,
+						"properties": {
+							"analysis": {
+								"$ref": "#/components/schemas/MessageAnalysis",
+								"description": "Segmentation analysis for the SMS content accepted by Rewrite."
+							}
+						}
+					}
+				]
+			},
+			"MessageCreateResponse": {
+				"type": "object",
+				"required": ["ok", "data"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
 					"data": {
-						"id": "748395130237498412",
-						"key": "rw_8e4c3f7f8f9f0ab12cd34ef56",
-						"createdAt": "2026-02-19T19:12:48.000Z"
+						"$ref": "#/components/schemas/MessageCreateResult"
+					}
+				}
+			},
+			"MessageBatchCreateResult": {
+				"type": "object",
+				"required": ["ids"],
+				"additionalProperties": false,
+				"properties": {
+					"ids": {
+						"type": "array",
+						"description": "Identifiers for the messages accepted into the batch request.",
+						"items": {
+							"$ref": "#/components/schemas/Snowflake"
+						},
+						"example": [
+							"748395130237498412",
+							"748395130237498413",
+							"748395130237498414"
+						]
+					}
+				}
+			},
+			"MessageBatchCreateResponse": {
+				"type": "object",
+				"required": ["ok", "data"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"$ref": "#/components/schemas/MessageBatchCreateResult"
+					}
+				}
+			},
+			"MessageCancelBody": {
+				"type": "object",
+				"required": ["id"],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Snowflake",
+						"description": "Message identifier to cancel.",
+						"example": "748395130237498412"
+					}
+				}
+			},
+			"Message": {
+				"type": "object",
+				"required": [
+					"id",
+					"createdAt",
+					"to",
+					"from",
+					"type",
+					"tags",
+					"status",
+					"country",
+					"content",
+					"encoding",
+					"templateId",
+					"deliveredAt",
+					"scheduledAt",
+					"isPayAsYouGo"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Snowflake",
+						"description": "Message identifier returned by Rewrite.",
+						"example": "748395130237498412"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Timestamp when Rewrite accepted the message.",
+						"example": "2026-03-20T14:22:31.562Z"
+					},
+					"to": {
+						"type": "string",
+						"description": "Destination number in E.164 format.",
+						"example": "+5511999999999"
+					},
+					"from": {
+						"type": ["string", "null"],
+						"description": "Resolved sender ID used for this message, when available.",
+						"example": "Rewrite"
+					},
+					"type": {
+						"type": "string",
+						"enum": ["SMS", "OTP"],
+						"description": "Message type stored by Rewrite.",
+						"example": "SMS"
+					},
+					"tags": {
+						"type": "array",
+						"description": "Metadata attached to the message.",
+						"items": {
+							"$ref": "#/components/schemas/MessageTag"
+						},
+						"example": [
+							{
+								"name": "flow",
+								"value": "login"
+							}
+						]
+					},
+					"status": {
+						"type": "string",
+						"enum": [
+							"SENT",
+							"QUEUED",
+							"FAILED",
+							"CANCELED",
+							"SCHEDULED",
+							"DELIVERED"
+						],
+						"description": "Latest delivery status known by Rewrite.",
+						"example": "DELIVERED"
+					},
+					"country": {
+						"type": "string",
+						"description": "Country inferred from the destination number.",
+						"example": "br"
+					},
+					"content": {
+						"type": "string",
+						"description": "Final SMS content sent to the destination number.",
+						"example": "Rewrite: seu codigo e 478201"
+					},
+					"encoding": {
+						"type": "string",
+						"enum": ["GSM7", "UCS2"],
+						"description": "Encoding used by the provider when sending the SMS.",
+						"example": "GSM7"
+					},
+					"templateId": {
+						"type": ["string", "null"],
+						"description": "Template used to render the message, when applicable.",
+						"example": null
+					},
+					"deliveredAt": {
+						"type": ["string", "null"],
+						"format": "date-time",
+						"description": "Timestamp when the provider confirmed final delivery.",
+						"example": "2026-03-20T14:22:39.914Z"
+					},
+					"scheduledAt": {
+						"type": ["string", "null"],
+						"format": "date-time",
+						"description": "Scheduled send time, when the message was delayed intentionally.",
+						"example": null
+					},
+					"isPayAsYouGo": {
+						"type": "boolean",
+						"description": "Whether the message consumed pay-as-you-go balance instead of subscription quota.",
+						"example": false
+					}
+				}
+			},
+			"MessageResponse": {
+				"type": "object",
+				"required": ["ok", "data"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"$ref": "#/components/schemas/Message"
+					}
+				}
+			},
+			"MessageListResponse": {
+				"type": "object",
+				"required": ["ok", "data", "cursor"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/Message"
+						},
+						"example": [
+							{
+								"id": "748395130237498412",
+								"createdAt": "2026-03-20T14:22:31.562Z",
+								"to": "+5511999999999",
+								"from": "Rewrite",
+								"type": "SMS",
+								"tags": [
+									{
+										"name": "flow",
+										"value": "login"
+									}
+								],
+								"status": "DELIVERED",
+								"country": "br",
+								"content": "Rewrite: seu codigo e 478201",
+								"encoding": "GSM7",
+								"templateId": null,
+								"deliveredAt": "2026-03-20T14:22:39.914Z",
+								"scheduledAt": null,
+								"isPayAsYouGo": false
+							},
+							{
+								"id": "748395130237498413",
+								"createdAt": "2026-03-20T14:22:31.562Z",
+								"to": "+5511888888888",
+								"from": "Rewrite",
+								"type": "SMS",
+								"tags": [
+									{
+										"name": "flow",
+										"value": "login"
+									}
+								],
+								"status": "SENT",
+								"country": "br",
+								"content": "Rewrite: seu codigo e 478201",
+								"encoding": "GSM7",
+								"templateId": null,
+								"deliveredAt": null,
+								"scheduledAt": null,
+								"isPayAsYouGo": false
+							}
+						]
+					},
+					"cursor": {
+						"$ref": "#/components/schemas/Cursor"
+					}
+				}
+			},
+			"OTPCreateBody": {
+				"type": "object",
+				"required": ["to"],
+				"additionalProperties": false,
+				"properties": {
+					"to": {
+						"type": "string",
+						"description": "Destination number that should receive the OTP.",
+						"example": "+5511999999999"
+					},
+					"prefix": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 32,
+						"description": "Short brand prefix included in the OTP SMS.",
+						"example": "Rewrite"
+					},
+					"expiresIn": {
+						"type": "integer",
+						"minimum": 1,
+						"maximum": 15,
+						"description": "Minutes until the OTP expires.",
+						"example": 5
+					}
+				}
+			},
+			"OTPCreateResult": {
+				"type": "object",
+				"required": ["id", "to", "prefix", "createdAt", "expiresAt"],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Snowflake",
+						"description": "OTP identifier returned by Rewrite.",
+						"example": "748395130237499120"
+					},
+					"to": {
+						"type": "string",
+						"description": "Destination number used for the OTP.",
+						"example": "+5511999999999"
+					},
+					"prefix": {
+						"type": "string",
+						"description": "Brand prefix included in the OTP SMS.",
+						"example": "Rewrite"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Timestamp when Rewrite accepted the OTP request.",
+						"example": "2026-03-20T14:22:31.562Z"
+					},
+					"expiresAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Timestamp when the OTP becomes invalid.",
+						"example": "2026-03-20T14:27:31.562Z"
+					}
+				}
+			},
+			"OTPCreateResponse": {
+				"type": "object",
+				"required": ["ok", "data"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"$ref": "#/components/schemas/OTPCreateResult"
+					}
+				}
+			},
+			"OTPVerifyBody": {
+				"type": "object",
+				"required": ["to", "code"],
+				"additionalProperties": false,
+				"properties": {
+					"to": {
+						"type": "string",
+						"description": "Destination number used when the OTP was created.",
+						"example": "+5511999999999"
+					},
+					"code": {
+						"type": "string",
+						"minLength": 4,
+						"maxLength": 10,
+						"description": "Numeric OTP code provided by the user.",
+						"example": "478201"
+					}
+				}
+			},
+			"OTPVerifyResult": {
+				"type": "object",
+				"required": ["id", "valid", "verifiedAt"],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Snowflake",
+						"description": "OTP identifier being verified.",
+						"example": "748395130237499120"
+					},
+					"valid": {
+						"type": "boolean",
+						"const": true,
+						"description": "Always `true` when the OTP verification succeeds.",
+						"example": true
+					},
+					"verifiedAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Timestamp when Rewrite marked the OTP as verified.",
+						"example": "2026-03-20T14:23:18.000Z"
+					}
+				}
+			},
+			"OTPVerifyResponse": {
+				"type": "object",
+				"required": ["ok", "data"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"$ref": "#/components/schemas/OTPVerifyResult"
 					}
 				}
 			},
 			"TemplateVariable": {
 				"type": "object",
-				"additionalProperties": false,
 				"required": ["name", "fallback"],
+				"additionalProperties": false,
 				"properties": {
 					"name": {
 						"type": "string",
 						"minLength": 1,
 						"maxLength": 32,
-						"description": "Variable key used by your app."
+						"description": "Variable placeholder name used inside the template content.",
+						"example": "code"
 					},
 					"fallback": {
 						"type": "string",
 						"minLength": 1,
 						"maxLength": 64,
-						"description": "Default value when your payload does not provide the variable."
+						"description": "Fallback value used when the variable is omitted at send time.",
+						"example": "478201"
 					}
-				},
-				"description": "Named variable used in a template body.",
-				"example": {
-					"name": "first_name",
-					"fallback": "customer"
 				}
 			},
-			"Template": {
+			"TemplateI18n": {
 				"type": "object",
-				"additionalProperties": false,
-				"required": ["id", "name", "createdAt"],
-				"properties": {
-					"id": {
-						"$ref": "#/components/schemas/Snowflake",
-						"description": "Unique template ID."
-					},
-					"name": {
-						"type": "string",
-						"description": "Human-readable name used to identify this API key."
-					},
-					"content": {
-						"type": ["string", "null"],
-						"description": "content field."
-					},
-					"variables": {
-						"type": ["array", "null"],
-						"items": {
-							"$ref": "#/components/schemas/TemplateVariable"
-						},
-						"description": "variables field."
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time",
-						"description": "UTC creation timestamp."
-					}
-				},
-				"description": "Template metadata and optional content snapshot.",
-				"example": {
-					"id": "748395130237498500",
-					"name": "order_shipped",
-					"content": "Hi {{first_name}}, your order {{order_id}} is on the way.",
-					"variables": [
-						{
-							"name": "first_name",
-							"fallback": "customer"
-						}
-					],
-					"createdAt": "2026-02-19T18:00:00.000Z"
+				"description": "Locale overrides keyed by lowercase ISO country code, for example `br`.",
+				"additionalProperties": {
+					"type": "string",
+					"minLength": 1,
+					"maxLength": 1024
 				}
-			},
-			"TemplatesListResponse": {
-				"type": "object",
-				"additionalProperties": false,
-				"required": ["ok", "data", "cursor"],
-				"properties": {
-					"ok": {
-						"type": "boolean",
-						"const": true,
-						"description": "Indicates whether the request was successful."
-					},
-					"data": {
-						"type": "array",
-						"items": {
-							"$ref": "#/components/schemas/Template"
-						},
-						"description": "Primary response payload for this operation."
-					},
-					"cursor": {
-						"$ref": "#/components/schemas/Cursor",
-						"description": "Pagination cursor information for fetching the next page."
-					}
-				},
-				"example": {
-					"ok": true,
-					"data": [
-						{
-							"id": "748395130237498500",
-							"name": "order_shipped",
-							"content": "Hi {{first_name}}, your order {{order_id}} is on the way.",
-							"variables": [
-								{
-									"name": "first_name",
-									"fallback": "customer"
-								}
-							],
-							"createdAt": "2026-02-19T18:00:00.000Z"
-						}
-					],
-					"cursor": {
-						"persist": true,
-						"next": "748395130237498588"
-					}
-				},
-				"description": "TemplatesListResponse schema."
-			},
-			"TemplateResponse": {
-				"type": "object",
-				"additionalProperties": false,
-				"required": ["ok", "data"],
-				"properties": {
-					"ok": {
-						"type": "boolean",
-						"const": true,
-						"description": "Indicates whether the request was successful."
-					},
-					"data": {
-						"$ref": "#/components/schemas/Template",
-						"description": "Primary response payload for this operation."
-					}
-				},
-				"example": {
-					"ok": true,
-					"data": {
-						"id": "748395130237498500",
-						"name": "order_shipped",
-						"content": "Hi {{first_name}}, your order {{order_id}} is on the way.",
-						"variables": [
-							{
-								"name": "first_name",
-								"fallback": "customer"
-							}
-						],
-						"createdAt": "2026-02-19T18:00:00.000Z"
-					}
-				},
-				"description": "TemplateResponse schema."
 			},
 			"TemplateCreateBody": {
 				"type": "object",
+				"required": ["name", "i18n", "content", "variables", "description"],
 				"additionalProperties": false,
-				"required": ["name", "content", "variables"],
 				"properties": {
 					"name": {
 						"type": "string",
 						"minLength": 1,
 						"maxLength": 32,
-						"description": "Human-readable name used to identify this API key."
+						"description": "Template name used later in the dashboard and API responses.",
+						"example": "login_code"
+					},
+					"i18n": {
+						"$ref": "#/components/schemas/TemplateI18n",
+						"description": "Locale-specific overrides for the template content."
 					},
 					"content": {
 						"type": "string",
 						"minLength": 1,
 						"maxLength": 1024,
-						"description": "content field."
+						"description": "Default SMS content rendered when no locale override applies.",
+						"example": "Rewrite: seu codigo e {{code}}"
 					},
 					"variables": {
 						"type": "array",
-						"minItems": 1,
 						"maxItems": 15,
-						"uniqueItems": true,
+						"description": "Variables accepted by the template.",
 						"items": {
 							"$ref": "#/components/schemas/TemplateVariable"
 						},
-						"description": "variables field."
+						"example": [
+							{
+								"name": "code",
+								"fallback": "478201"
+							}
+						]
+					},
+					"description": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 72,
+						"description": "Short human-readable explanation of what the template is for.",
+						"example": "Template usado no fluxo de login"
 					}
-				},
-				"description": "Create a reusable SMS template.",
-				"example": {
-					"name": "order_shipped",
-					"content": "Hi {{first_name}}, your order {{order_id}} is on the way.",
-					"variables": [
-						{
-							"name": "first_name",
-							"fallback": "customer"
-						},
-						{
-							"name": "order_id",
-							"fallback": "0000"
-						}
-					]
 				}
 			},
 			"TemplateUpdateBody": {
 				"type": "object",
 				"additionalProperties": false,
 				"properties": {
+					"i18n": {
+						"$ref": "#/components/schemas/TemplateI18n",
+						"description": "Locale-specific overrides to replace on the template."
+					},
 					"content": {
 						"type": "string",
 						"minLength": 1,
 						"maxLength": 1024,
-						"description": "content field."
+						"description": "Updated default SMS content.",
+						"example": "Rewrite: seu codigo e {{code}}"
 					},
 					"variables": {
 						"type": "array",
-						"minItems": 1,
 						"maxItems": 15,
-						"uniqueItems": true,
+						"description": "Updated variable definitions for the template.",
 						"items": {
 							"$ref": "#/components/schemas/TemplateVariable"
 						},
-						"description": "variables field."
+						"example": [
+							{
+								"name": "code",
+								"fallback": "478201"
+							}
+						]
+					},
+					"description": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 72,
+						"description": "Updated human-readable description for the template.",
+						"example": "Template usado no fluxo de recuperacao de conta"
 					}
-				},
-				"description": "Patch template content and/or variables.",
-				"example": {
-					"content": "Hi {{first_name}}, your package {{order_id}} has shipped.",
-					"variables": [
-						{
-							"name": "first_name",
-							"fallback": "customer"
-						},
-						{
-							"name": "order_id",
-							"fallback": "0000"
-						}
-					]
 				}
 			},
-			"TemplateCreateResponse": {
+			"Template": {
 				"type": "object",
-				"additionalProperties": false,
-				"required": ["ok", "data"],
-				"properties": {
-					"ok": {
-						"type": "boolean",
-						"const": true,
-						"description": "Indicates whether the request was successful."
-					},
-					"data": {
-						"type": "object",
-						"required": ["id", "createdAt"],
-						"properties": {
-							"id": {
-								"$ref": "#/components/schemas/Snowflake"
-							},
-							"createdAt": {
-								"type": "string",
-								"format": "date-time"
-							}
-						},
-						"description": "Primary response payload for this operation."
-					}
-				},
-				"example": {
-					"ok": true,
-					"data": {
-						"id": "748395130237498600",
-						"createdAt": "2026-02-19T20:01:09.000Z"
-					}
-				},
-				"description": "TemplateCreateResponse schema."
-			},
-			"WebhookEventType": {
-				"type": "string",
-				"enum": [
-					"sms.queued",
-					"sms.delivered",
-					"sms.scheduled",
-					"sms.failed",
-					"sms.canceled"
+				"required": [
+					"id",
+					"name",
+					"content",
+					"variables",
+					"description",
+					"createdAt"
 				],
-				"description": "Supported webhook event types.",
-				"example": "sms.delivered"
-			},
-			"WebhookStatus": {
-				"type": "string",
-				"enum": ["ACTIVE", "INACTIVE"],
-				"description": "Webhook delivery state.",
-				"example": "ACTIVE"
-			},
-			"Webhook": {
-				"type": "object",
 				"additionalProperties": false,
-				"required": ["id", "endpoint", "events", "status", "createdAt"],
 				"properties": {
 					"id": {
 						"$ref": "#/components/schemas/Snowflake",
-						"description": "Unique webhook ID."
+						"description": "Template identifier returned by Rewrite.",
+						"example": "748395130237498620"
 					},
 					"name": {
-						"type": ["string", "null"],
-						"description": "Human-readable name used to identify this API key."
-					},
-					"endpoint": {
 						"type": "string",
-						"format": "uri",
-						"description": "endpoint field."
+						"description": "Template name.",
+						"example": "login_code"
 					},
-					"events": {
+					"content": {
+						"type": "string",
+						"description": "Default SMS content stored for the template.",
+						"example": "Rewrite: seu codigo e {{code}}"
+					},
+					"i18n": {
+						"$ref": "#/components/schemas/TemplateI18n",
+						"description": "Locale-specific overrides available for the template."
+					},
+					"variables": {
 						"type": "array",
+						"description": "Variable definitions accepted by the template.",
 						"items": {
-							"$ref": "#/components/schemas/WebhookEventType"
+							"$ref": "#/components/schemas/TemplateVariable"
 						},
-						"description": "events field."
+						"example": [
+							{
+								"name": "code",
+								"fallback": "478201"
+							}
+						]
 					},
-					"status": {
-						"$ref": "#/components/schemas/WebhookStatus",
-						"description": "status field."
+					"description": {
+						"type": ["string", "null"],
+						"description": "Human-readable description saved with the template.",
+						"example": "Template usado no fluxo de login"
 					},
 					"createdAt": {
 						"type": "string",
 						"format": "date-time",
-						"description": "UTC creation timestamp."
+						"description": "Timestamp when the template was created.",
+						"example": "2026-03-20T14:22:31.562Z"
 					}
-				},
-				"description": "Webhook endpoint configuration.",
-				"example": {
-					"id": "748395130237498700",
-					"name": "Delivery events",
-					"endpoint": "https://example.com/webhooks/rewrite",
-					"events": ["sms.queued", "sms.delivered", "sms.failed"],
-					"status": "ACTIVE",
-					"createdAt": "2026-02-19T16:05:00.000Z"
 				}
 			},
-			"WebhooksListResponse": {
+			"TemplateResponse": {
 				"type": "object",
+				"required": ["ok", "data"],
 				"additionalProperties": false,
-				"required": ["ok", "data", "cursor"],
 				"properties": {
 					"ok": {
 						"type": "boolean",
-						"const": true,
-						"description": "Indicates whether the request was successful."
+						"const": true
+					},
+					"data": {
+						"$ref": "#/components/schemas/Template"
+					}
+				}
+			},
+			"TemplateListResponse": {
+				"type": "object",
+				"required": ["ok", "data", "cursor"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
 					},
 					"data": {
 						"type": "array",
 						"items": {
-							"$ref": "#/components/schemas/Webhook"
-						},
-						"description": "Primary response payload for this operation."
+							"$ref": "#/components/schemas/Template"
+						}
 					},
 					"cursor": {
-						"$ref": "#/components/schemas/Cursor",
-						"description": "Pagination cursor information for fetching the next page."
+						"$ref": "#/components/schemas/Cursor"
 					}
-				},
-				"example": {
-					"ok": true,
-					"data": [
-						{
-							"id": "748395130237498700",
-							"name": "Delivery events",
-							"endpoint": "https://example.com/webhooks/rewrite",
-							"events": ["sms.queued", "sms.delivered", "sms.failed"],
-							"status": "ACTIVE",
-							"createdAt": "2026-02-19T16:05:00.000Z"
-						}
-					],
-					"cursor": {
-						"persist": false
-					}
-				},
-				"description": "WebhooksListResponse schema."
+				}
 			},
-			"WebhookResponse": {
+			"TemplateCreateResult": {
 				"type": "object",
+				"required": ["id", "createdAt"],
 				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Snowflake",
+						"description": "Template identifier returned by Rewrite.",
+						"example": "748395130237498620"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Timestamp when the template was created.",
+						"example": "2026-03-20T14:22:31.562Z"
+					}
+				}
+			},
+			"TemplateCreateResponse": {
+				"type": "object",
 				"required": ["ok", "data"],
+				"additionalProperties": false,
 				"properties": {
 					"ok": {
 						"type": "boolean",
-						"const": true,
-						"description": "Indicates whether the request was successful."
+						"const": true
 					},
 					"data": {
-						"$ref": "#/components/schemas/Webhook",
-						"description": "Primary response payload for this operation."
+						"$ref": "#/components/schemas/TemplateCreateResult"
 					}
-				},
-				"example": {
-					"ok": true,
-					"data": {
-						"id": "748395130237498700",
-						"name": "Delivery events",
-						"endpoint": "https://example.com/webhooks/rewrite",
-						"events": ["sms.queued", "sms.delivered", "sms.failed"],
-						"status": "ACTIVE",
-						"createdAt": "2026-02-19T16:05:00.000Z"
-					}
-				},
-				"description": "WebhookResponse schema."
+				}
 			},
 			"WebhookCreateBody": {
 				"type": "object",
-				"additionalProperties": false,
 				"required": ["events", "endpoint"],
+				"additionalProperties": false,
 				"properties": {
 					"name": {
 						"type": "string",
 						"minLength": 1,
 						"maxLength": 32,
-						"description": "Human-readable name used to identify this API key."
+						"description": "Friendly name shown in the dashboard and logs.",
+						"example": "delivery-events"
 					},
 					"events": {
 						"type": "array",
+						"minItems": 1,
 						"uniqueItems": true,
+						"description": "Event types that should be delivered to this endpoint.",
 						"items": {
-							"$ref": "#/components/schemas/WebhookEventType"
+							"type": "string",
+							"enum": [
+								"sms.otp",
+								"message.sent",
+								"message.batch",
+								"message.queued",
+								"message.failed",
+								"message.canceled",
+								"message.delivered",
+								"message.scheduled"
+							]
 						},
-						"description": "events field."
+						"example": ["message.sent", "message.failed", "sms.otp"]
+					},
+					"secret": {
+						"type": "string",
+						"minLength": 16,
+						"maxLength": 128,
+						"description": "Accepted formats: `whsec_<base64>`, raw base64, or legacy `rw_whsec_...`.",
+						"example": "whsec_dGVzdF9zZWNyZXRfdmFsdWU="
 					},
 					"endpoint": {
 						"type": "string",
 						"format": "uri",
-						"minLength": 1,
 						"maxLength": 255,
-						"description": "endpoint field."
+						"description": "Must be HTTPS in production. `http://localhost/...` is also accepted. Query strings and fragments are rejected.",
+						"example": "https://example.com/rewrite/webhooks"
 					}
-				},
-				"description": "Create a webhook to receive SMS events.",
-				"example": {
-					"name": "Delivery events",
-					"endpoint": "https://example.com/webhooks/rewrite",
-					"events": ["sms.queued", "sms.delivered", "sms.failed"]
 				}
 			},
 			"WebhookUpdateBody": {
@@ -2061,84 +2796,557 @@
 				"additionalProperties": false,
 				"properties": {
 					"name": {
-						"oneOf": [
-							{
-								"type": "string",
-								"minLength": 1,
-								"maxLength": 32
-							},
-							{
-								"type": "null"
-							}
-						],
-						"description": "Human-readable name used to identify this API key."
+						"type": ["string", "null"],
+						"minLength": 1,
+						"maxLength": 32,
+						"description": "Updated friendly name. Send `null` to remove the current name.",
+						"example": "delivery-events-staging"
 					},
 					"events": {
 						"type": "array",
+						"minItems": 1,
 						"uniqueItems": true,
+						"description": "Updated event selection for the webhook endpoint.",
 						"items": {
-							"$ref": "#/components/schemas/WebhookEventType"
+							"type": "string",
+							"enum": [
+								"sms.otp",
+								"message.sent",
+								"message.batch",
+								"message.queued",
+								"message.failed",
+								"message.canceled",
+								"message.delivered",
+								"message.scheduled"
+							]
 						},
-						"description": "events field."
+						"example": ["message.sent", "message.failed"]
+					},
+					"secret": {
+						"type": "string",
+						"minLength": 16,
+						"maxLength": 128,
+						"description": "New signing secret to use for future deliveries.",
+						"example": "whsec_bmV3X3NlY3JldF92YWx1ZQ=="
 					},
 					"endpoint": {
 						"type": "string",
 						"format": "uri",
-						"minLength": 1,
 						"maxLength": 255,
-						"description": "endpoint field."
+						"description": "Updated destination URL for future deliveries.",
+						"example": "https://example.com/rewrite/webhooks/secondary"
 					},
 					"status": {
-						"$ref": "#/components/schemas/WebhookStatus",
-						"description": "status field."
+						"type": "string",
+						"enum": ["ACTIVE", "INACTIVE"],
+						"description": "Whether Rewrite should actively deliver events to this endpoint.",
+						"example": "INACTIVE"
 					}
-				},
-				"description": "Update webhook endpoint, subscribed events, name or status.",
-				"example": {
-					"endpoint": "https://example.com/webhooks/rewrite-v2",
-					"events": ["sms.delivered", "sms.failed"],
-					"status": "ACTIVE"
+				}
+			},
+			"Webhook": {
+				"type": "object",
+				"required": ["id", "name", "events", "status", "endpoint", "createdAt"],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Snowflake",
+						"description": "Webhook identifier returned by Rewrite.",
+						"example": "748395130237498750"
+					},
+					"name": {
+						"type": ["string", "null"],
+						"description": "Friendly name shown in the dashboard and logs.",
+						"example": "delivery-events"
+					},
+					"events": {
+						"type": "array",
+						"description": "Events delivered to this endpoint.",
+						"items": {
+							"type": "string",
+							"enum": [
+								"sms.otp",
+								"message.sent",
+								"message.batch",
+								"message.queued",
+								"message.failed",
+								"message.canceled",
+								"message.delivered",
+								"message.scheduled"
+							]
+						},
+						"example": ["message.sent", "message.failed", "sms.otp"]
+					},
+					"status": {
+						"type": "string",
+						"enum": ["ACTIVE", "INACTIVE"],
+						"description": "Current lifecycle status of the webhook endpoint.",
+						"example": "ACTIVE"
+					},
+					"endpoint": {
+						"type": "string",
+						"description": "Destination URL that receives Rewrite webhook events.",
+						"example": "https://example.com/rewrite/webhooks"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Timestamp when the webhook endpoint was created.",
+						"example": "2026-03-20T14:22:31.562Z"
+					}
+				}
+			},
+			"WebhookWithSecret": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/Webhook"
+					},
+					{
+						"type": "object",
+						"required": ["secret"],
+						"additionalProperties": false,
+						"properties": {
+							"secret": {
+								"type": "string",
+								"description": "Signing secret associated with the webhook endpoint.",
+								"example": "whsec_dGVzdF9zZWNyZXRfdmFsdWU="
+							}
+						}
+					}
+				]
+			},
+			"WebhookListResponse": {
+				"type": "object",
+				"required": ["ok", "data", "cursor"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/Webhook"
+						}
+					},
+					"cursor": {
+						"$ref": "#/components/schemas/Cursor"
+					}
+				}
+			},
+			"WebhookResponse": {
+				"type": "object",
+				"required": ["ok", "data"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"$ref": "#/components/schemas/WebhookWithSecret"
+					}
+				}
+			},
+			"WebhookCreateResult": {
+				"type": "object",
+				"required": ["id", "secret", "createdAt"],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Snowflake",
+						"description": "Webhook identifier returned by Rewrite.",
+						"example": "748395130237498750"
+					},
+					"secret": {
+						"type": "string",
+						"description": "Generated signing secret to persist on your side.",
+						"example": "whsec_dGVzdF9zZWNyZXRfdmFsdWU="
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Timestamp when the webhook endpoint was created.",
+						"example": "2026-03-20T14:22:31.562Z"
+					}
 				}
 			},
 			"WebhookCreateResponse": {
 				"type": "object",
-				"additionalProperties": false,
 				"required": ["ok", "data"],
+				"additionalProperties": false,
 				"properties": {
 					"ok": {
 						"type": "boolean",
-						"const": true,
-						"description": "Indicates whether the request was successful."
+						"const": true
 					},
 					"data": {
-						"type": "object",
-						"required": ["id"],
+						"$ref": "#/components/schemas/WebhookCreateResult"
+					}
+				}
+			},
+			"WebhookOTPMetadata": {
+				"type": "object",
+				"required": ["prefix", "expiresIn", "expiresAt"],
+				"additionalProperties": false,
+				"properties": {
+					"prefix": {
+						"type": "string",
+						"description": "Brand prefix embedded in the OTP SMS.",
+						"example": "Rewrite"
+					},
+					"expiresIn": {
+						"type": "integer",
+						"description": "Minutes until the OTP expires.",
+						"example": 5
+					},
+					"expiresAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Timestamp when the OTP becomes invalid.",
+						"example": "2026-03-20T14:27:31.562Z"
+					}
+				}
+			},
+			"WebhookMessageData": {
+				"type": "object",
+				"required": [
+					"id",
+					"projectId",
+					"to",
+					"tags",
+					"type",
+					"status",
+					"content",
+					"country",
+					"analysis",
+					"error",
+					"deliveredAt",
+					"scheduledAt",
+					"templateId"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Snowflake",
+						"description": "Message identifier that triggered the webhook.",
+						"example": "748395130237498412"
+					},
+					"projectId": {
+						"$ref": "#/components/schemas/Snowflake",
+						"description": "Project identifier associated with the event.",
+						"example": "748395130237499220"
+					},
+					"to": {
+						"type": "string",
+						"description": "Destination number for the message.",
+						"example": "+5511999999999"
+					},
+					"tags": {
+						"type": "array",
+						"description": "Metadata attached to the message.",
+						"items": {
+							"$ref": "#/components/schemas/MessageTag"
+						},
+						"example": [
+							{
+								"name": "flow",
+								"value": "login"
+							}
+						]
+					},
+					"type": {
+						"type": "string",
+						"enum": ["SMS", "OTP"],
+						"description": "Message type associated with the event.",
+						"example": "SMS"
+					},
+					"status": {
+						"type": "string",
+						"enum": [
+							"SENT",
+							"QUEUED",
+							"FAILED",
+							"CANCELED",
+							"SCHEDULED",
+							"DELIVERED"
+						],
+						"description": "Delivery status reported in the event.",
+						"example": "DELIVERED"
+					},
+					"content": {
+						"type": "string",
+						"description": "Rendered SMS content included in the event payload.",
+						"example": "Rewrite: seu codigo e 478201"
+					},
+					"country": {
+						"type": "string",
+						"description": "Country inferred from the destination number.",
+						"example": "br"
+					},
+					"analysis": {
+						"$ref": "#/components/schemas/MessageAnalysis",
+						"description": "Segmentation analysis for the message content."
+					},
+					"error": {
+						"type": ["object", "null"],
+						"additionalProperties": false,
+						"required": ["code", "message"],
 						"properties": {
-							"id": {
-								"$ref": "#/components/schemas/Snowflake"
+							"code": {
+								"type": ["string", "number", "null"],
+								"description": "Provider or internal code associated with the delivery failure.",
+								"example": null
+							},
+							"message": {
+								"type": "string",
+								"description": "Human-readable explanation for the failure.",
+								"example": "Provider timeout"
 							}
 						},
-						"description": "Primary response payload for this operation."
+						"example": null
+					},
+					"deliveredAt": {
+						"type": ["string", "null"],
+						"format": "date-time",
+						"description": "Timestamp when the provider confirmed delivery.",
+						"example": "2026-03-20T14:22:39.914Z"
+					},
+					"scheduledAt": {
+						"type": ["string", "null"],
+						"format": "date-time",
+						"description": "Scheduled send time, when applicable.",
+						"example": null
+					},
+					"templateId": {
+						"type": ["string", "null"],
+						"description": "Template identifier used to render the message, when applicable.",
+						"example": null
+					},
+					"otp": {
+						"$ref": "#/components/schemas/WebhookOTPMetadata",
+						"description": "OTP metadata present only for `sms.otp` events."
 					}
-				},
-				"example": {
-					"ok": true,
-					"data": {
-						"id": "748395130237498711"
-					}
-				},
-				"description": "WebhookCreateResponse schema."
+				}
 			},
-			"AuthScope": {
-				"type": "string",
-				"description": "Permission scope accepted by API keys. Use scoped permissions whenever possible.\n\nCommon values:\n- `project:read`\n- `project:write`\n- `project:api_keys:read`\n- `project:templates:read`\n- `project:templates:write`\n- `projects:webhooks:read`\n- `projects:webhooks:write`\n- `projects:payments:read`\n- `*` (full access)",
-				"example": "project:templates:write"
+			"WebhookBatchData": {
+				"type": "object",
+				"required": ["id", "ids", "projectId"],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Snowflake",
+						"description": "Batch identifier returned by Rewrite.",
+						"example": "748395130237498414"
+					},
+					"projectId": {
+						"$ref": "#/components/schemas/Snowflake",
+						"description": "Project identifier associated with the batch event.",
+						"example": "748395130237499220"
+					},
+					"ids": {
+						"type": "array",
+						"description": "Accepted message identifiers that belong to the batch.",
+						"items": {
+							"$ref": "#/components/schemas/Snowflake"
+						},
+						"example": [
+							"748395130237498412",
+							"748395130237498413",
+							"748395130237498414"
+						]
+					}
+				}
+			},
+			"WebhookEvent": {
+				"type": "object",
+				"required": ["id", "createdAt", "type", "data"],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Snowflake",
+						"description": "Webhook event identifier generated by Rewrite.",
+						"example": "748395130237498880"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Timestamp when Rewrite created the event payload.",
+						"example": "2026-03-20T14:22:31.562Z"
+					},
+					"type": {
+						"type": "string",
+						"enum": [
+							"sms.otp",
+							"message.sent",
+							"message.batch",
+							"message.queued",
+							"message.failed",
+							"message.canceled",
+							"message.delivered",
+							"message.scheduled"
+						],
+						"description": "Webhook event type.",
+						"example": "message.sent"
+					},
+					"data": {
+						"oneOf": [
+							{
+								"$ref": "#/components/schemas/WebhookMessageData"
+							},
+							{
+								"$ref": "#/components/schemas/WebhookBatchData"
+							}
+						],
+						"description": "Event payload for either a single message or a batch."
+					}
+				}
+			},
+			"WebhookLogSummary": {
+				"type": "object",
+				"required": [
+					"id",
+					"url",
+					"type",
+					"code",
+					"error",
+					"status",
+					"attempt",
+					"latency",
+					"retryAt",
+					"createdAt",
+					"messageId"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Snowflake",
+						"description": "Webhook delivery log identifier.",
+						"example": "748395130237498880"
+					},
+					"url": {
+						"type": "string",
+						"description": "Endpoint URL that received the delivery attempt.",
+						"example": "https://example.com/rewrite/webhooks"
+					},
+					"type": {
+						"type": "string",
+						"enum": [
+							"sms.otp",
+							"message.sent",
+							"message.batch",
+							"message.queued",
+							"message.failed",
+							"message.canceled",
+							"message.delivered",
+							"message.scheduled"
+						],
+						"description": "Webhook event type delivered in this attempt.",
+						"example": "message.sent"
+					},
+					"code": {
+						"type": ["integer", "null"],
+						"description": "HTTP status code returned by the destination endpoint.",
+						"example": 200
+					},
+					"error": {
+						"type": ["string", "null"],
+						"description": "Transport or application error captured for the attempt.",
+						"example": null
+					},
+					"status": {
+						"type": "string",
+						"enum": ["FAILED", "SUCCESS"],
+						"description": "Delivery outcome recorded by Rewrite.",
+						"example": "SUCCESS"
+					},
+					"attempt": {
+						"type": "integer",
+						"description": "Attempt number for this delivery.",
+						"example": 1
+					},
+					"latency": {
+						"type": ["integer", "null"],
+						"description": "Round-trip time in milliseconds.",
+						"example": 182
+					},
+					"retryAt": {
+						"type": ["string", "null"],
+						"format": "date-time",
+						"description": "Next scheduled retry time, when the attempt failed and will retry.",
+						"example": null
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Timestamp when Rewrite recorded the delivery attempt.",
+						"example": "2026-03-20T14:22:31.562Z"
+					},
+					"messageId": {
+						"type": ["string", "null"],
+						"description": "Message identifier associated with the delivery attempt, when available.",
+						"example": "748395130237498412"
+					}
+				}
+			},
+			"WebhookLogDetail": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/WebhookLogSummary"
+					},
+					{
+						"type": "object",
+						"required": ["payload", "webhookId"],
+						"additionalProperties": false,
+						"properties": {
+							"payload": {
+								"$ref": "#/components/schemas/WebhookEvent",
+								"description": "Event payload delivered during this attempt."
+							},
+							"webhookId": {
+								"type": ["string", "null"],
+								"description": "Webhook identifier associated with the log entry.",
+								"example": "748395130237498750"
+							}
+						}
+					}
+				]
+			},
+			"WebhookLogListResponse": {
+				"type": "object",
+				"required": ["ok", "data", "cursor"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/WebhookLogSummary"
+						}
+					},
+					"cursor": {
+						"$ref": "#/components/schemas/Cursor"
+					}
+				}
+			},
+			"WebhookLogResponse": {
+				"type": "object",
+				"required": ["ok", "data"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"$ref": "#/components/schemas/WebhookLogDetail"
+					}
+				}
 			}
 		}
-	},
-	"security": [
-		{
-			"bearerAuth": []
-		}
-	]
+	}
 }

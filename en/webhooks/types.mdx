@@ -1,52 +1,41 @@
 ---
-title: "Event Types"
-description: "List of supported **Rewrite** webhook event types and their payloads."
+title: Event Types
+description: Current public Rewrite webhook event types and what each payload represents.
 ---
 
-## SMS Events
+# Declared webhook events
 
-<div style={{ display: 'grid', gap: '26px' }}>
+- [`sms.otp`](/en/webhooks/events/sms-otp)
+  Successful OTP send. Uses the message payload shape plus `data.otp`.
+- [`message.sent`](/en/webhooks/events/message-sent)
+  Immediate SMS accepted by the provider.
+- [`message.batch`](/en/webhooks/events/message-batch)
+  Batch summary emitted when no batch messages remain pending and at least one reached `SENT`.
+- [`message.queued`](/en/webhooks/events/message-queued)
+  Immediate SMS persisted in queue before provider dispatch.
+- [`message.failed`](/en/webhooks/events/message-failed)
+  SMS or OTP send failed. Includes `data.error`.
+- [`message.canceled`](/en/webhooks/events/message-canceled)
+  Queued or scheduled message was canceled.
+- [`message.scheduled`](/en/webhooks/events/message-scheduled)
+  Message accepted with a future `scheduledAt`.
+- [`message.delivered`](/en/webhooks/events/message-delivered)
+  Currently WIP.
 
-  <div>
-    <div>— <a href="/en/webhooks/events/sms-queued"><code style={{ color: '#B5B3AD' }}>sms.queued</code></a></div>
-    <div style={{ marginLeft: '18px', marginTop: '6px', opacity: 0.85 }}>
-      Occurs when a **SMS** is accepted and placed into the delivery queue.
-    </div>
-  </div>
+## Shared envelope
 
-  <div>
-    <div>— <a href="/en/webhooks/events/sms-delivered"><code style={{ color: '#3DD68C' }}>sms.delivered</code></a></div>
-    <div style={{ marginLeft: '18px', marginTop: '6px', opacity: 0.85 }}>
-      Occurs when the carrier confirms successful delivery to the recipient device.
-    </div>
-  </div>
+Every webhook event uses:
 
-  <div>
-    <div>— <code style={{ color: '#7BC4FF' }}>sms.sent</code></div>
-    <div style={{ marginLeft: '18px', marginTop: '6px', opacity: 0.85 }}>
-      Occurs when a **SMS** is sent by Rewrite.
-    </div>
-  </div>
+```json
+{
+  "id": "748395130237498900",
+  "createdAt": "2026-03-19T18:42:11.000Z",
+  "type": "message.sent",
+  "data": {}
+}
+```
 
-  <div>
-    <div>— <a href="/en/webhooks/events/sms-scheduled"><code style={{ color: '#FFCA16' }}>sms.scheduled</code></a></div>
-    <div style={{ marginLeft: '18px', marginTop: '6px', opacity: 0.85 }}>
-      Occurs when a **SMS** is scheduled for delivery at a future time.
-    </div>
-  </div>
-
-  <div>
-    <div>— <a href="/en/webhooks/events/sms-failed"><code style={{ color: '#FF9592' }}>sms.failed</code></a></div>
-    <div style={{ marginLeft: '18px', marginTop: '6px', opacity: 0.85 }}>
-      Occurs when the **SMS** failed permanently due to invalid numbers, blocked routes, quota limits, or provider rejection.
-    </div>
-  </div>
-
-  <div>
-    <div>— <a href="/en/webhooks/events/sms-canceled"><code style={{ color: '#BAA7FF' }}>sms.canceled</code></a></div>
-    <div style={{ marginLeft: '18px', marginTop: '6px', opacity: 0.85 }}>
-      Occurs when a scheduled **SMS** was canceled before it was sent.
-    </div>
-  </div>
-
-</div>
+- `id`: webhook event snowflake
+- `createdAt`: event creation timestamp
+- `type`: event name
+- `data`: event-specific payload

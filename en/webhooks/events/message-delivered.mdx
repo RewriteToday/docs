@@ -1,0 +1,16 @@
+---
+title: "message.delivered"
+description: "Work in progress event for delivered message state."
+---
+
+`message.delivered` is currently WIP.
+
+The event name is already part of the public contract and will use the standard message webhook envelope.
+
+Expected payload shape:
+
+- standard message event envelope
+- `data.status = "DELIVERED"`
+- `data.deliveredAt` filled when delivery confirmation is available
+
+This page will be updated once the event is generally available.

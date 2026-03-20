@@ -1,0 +1,29 @@
+---
+title: "message.batch"
+description: "Batch summary emitted after a send batch finishes dispatching."
+---
+
+`message.batch` is emitted when a batch has no pending messages left and at least one message in that batch reached `SENT`.
+
+```json
+{
+  "id": "748395130237498912",
+  "createdAt": "2026-03-19T18:42:25.000Z",
+  "type": "message.batch",
+  "data": {
+    "id": "748395130237498700",
+    "projectId": "748395130237498412",
+    "ids": [
+      "748395130237498500",
+      "748395130237498501",
+      "748395130237498502"
+    ]
+  }
+}
+```
+
+Notes:
+
+- `data.id` is the batch id.
+- `data.ids` are the first-message ids for the sent entries in that batch.
+- If every batch item fails, no `message.batch` event is emitted.

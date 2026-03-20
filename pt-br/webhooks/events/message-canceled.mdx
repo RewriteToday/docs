@@ -1,0 +1,38 @@
+---
+title: "message.canceled"
+description: "Mensagem em fila ou agendada cancelada antes da conclusao."
+---
+
+`message.canceled` e emitido quando a Rewrite cancela com sucesso uma mensagem em fila ou agendada.
+
+```json
+{
+  "id": "748395130237498916",
+  "createdAt": "2026-03-19T18:42:30.000Z",
+  "type": "message.canceled",
+  "data": {
+    "id": "748395130237498505",
+    "projectId": "748395130237498412",
+    "to": "+5511999999999",
+    "tags": [{ "name": "campaign", "value": "billing_reminder" }],
+    "type": "SMS",
+    "status": "CANCELED",
+    "content": "Rewrite: sua fatura vence amanha",
+    "country": "br",
+    "analysis": {
+      "characters": 33,
+      "encoding": "gsm7",
+      "segments": { "concat": 153, "count": 1, "reason": "fits", "single": 160 }
+    },
+    "error": null,
+    "deliveredAt": null,
+    "scheduledAt": "2026-03-19T20:00:00.000Z",
+    "templateId": null
+  }
+}
+```
+
+Notas:
+
+- Esse evento vem do fluxo publico de cancelamento.
+- `data.scheduledAt` pode continuar preenchido quando a mensagem era originalmente agendada.

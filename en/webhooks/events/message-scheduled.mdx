@@ -1,0 +1,38 @@
+---
+title: "message.scheduled"
+description: "Message accepted with a future scheduled send time."
+---
+
+`message.scheduled` is emitted when Rewrite accepts a message with `scheduledAt` in the future.
+
+```json
+{
+  "id": "748395130237498914",
+  "createdAt": "2026-03-19T18:42:11.000Z",
+  "type": "message.scheduled",
+  "data": {
+    "id": "748395130237498503",
+    "projectId": "748395130237498412",
+    "to": "+5511999999999",
+    "tags": [{ "name": "campaign", "value": "billing_reminder" }],
+    "type": "SMS",
+    "status": "SCHEDULED",
+    "content": "Rewrite: your invoice is due tomorrow",
+    "country": "br",
+    "analysis": {
+      "characters": 36,
+      "encoding": "gsm7",
+      "segments": { "concat": 153, "count": 1, "reason": "fits", "single": 160 }
+    },
+    "error": null,
+    "deliveredAt": null,
+    "scheduledAt": "2026-03-19T20:00:00.000Z",
+    "templateId": null
+  }
+}
+```
+
+Notes:
+
+- `data.scheduledAt` is non-null.
+- Later lifecycle events can be `message.sent`, `message.failed`, or `message.canceled`.

@@ -14,22 +14,22 @@
 	],
 	"tags": [
 		{
-			"name": "Webhooks",
-			"description": "Create and manage webhook endpoints for Rewrite events."
+			"name": "OTP",
+			"description": "Send and verify one-time-password codes."
 		}
 	],
 	"paths": {
-		"/webhooks": {
-			"get": {
-				"tags": ["Webhooks"],
-				"operationId": "listWebhooks",
-				"summary": "List webhooks",
-				"description": "List webhook endpoints configured for the current project. Results are paginated with a top-level cursor. Requires API key scope `project:webhooks:read`.",
+		"/otp": {
+			"post": {
+				"tags": ["OTP"],
+				"operationId": "createOtp",
+				"summary": "Send an OTP code",
+				"description": "Create and send an OTP SMS to a Brazilian destination number in `+55` format. Requires API key scope `message:write`.",
 				"x-codeSamples": [
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error, cursor } = await rewrite.webhooks.list({\n  limit: 20,\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.otp.send({\n  to: '+5511999999999',\n  prefix: 'Rewrite',\n  expiresIn: 5,\n});\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -39,60 +39,7 @@
 				],
 				"parameters": [
 					{
-						"$ref": "#/components/parameters/After"
-					},
-					{
-						"$ref": "#/components/parameters/Before"
-					},
-					{
-						"$ref": "#/components/parameters/Limit"
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Successful response",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/WebhookListResponse"
-								},
-								"example": {
-									"ok": true,
-									"data": [
-										{
-											"id": "748395130237498750",
-											"name": "delivery-events",
-											"events": ["message.sent", "message.failed", "sms.otp"],
-											"status": "ACTIVE",
-											"endpoint": "https://example.com/rewrite/webhooks",
-											"createdAt": "2026-03-20T14:22:31.562Z"
-										}
-									],
-									"cursor": {
-										"persist": false
-									}
-								}
-							}
-						}
-					}
-				},
-				"x-required-scopes": ["project:webhooks:read"]
-			},
-			"post": {
-				"tags": ["Webhooks"],
-				"operationId": "createWebhook",
-				"summary": "Create a webhook",
-				"description": "Create a webhook endpoint and choose which Rewrite events should be delivered to it. Requires API key scope `project:webhooks:write`.",
-				"x-codeSamples": [
-					{
-						"lang": "typescript",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.webhooks.create({\n  name: 'delivery-events',\n  endpoint: 'https://example.com/rewrite/webhooks',\n  events: ['message.sent', 'message.failed', 'sms.otp'],\n});\n\nif (error) throw error;"
-					}
-				],
-				"security": [
-					{
-						"bearerAuth": []
+						"$ref": "#/components/parameters/IdempotencyKey"
 					}
 				],
 				"requestBody": {
@@ -100,13 +47,12 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/WebhookCreateBody"
+								"$ref": "#/components/schemas/OTPCreateBody"
 							},
 							"example": {
-								"name": "delivery-events",
-								"endpoint": "https://example.com/rewrite/webhooks",
-								"events": ["message.sent", "message.failed", "sms.otp"],
-								"secret": "whsec_dGVzdF9zZWNyZXRfdmFsdWU="
+								"to": "+5511999999999",
+								"prefix": "Rewrite",
+								"expiresIn": 5
 							}
 						}
 					}
@@ -117,34 +63,36 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/WebhookCreateResponse"
+									"$ref": "#/components/schemas/OTPCreateResponse"
 								},
 								"example": {
 									"ok": true,
 									"data": {
-										"id": "748395130237498750",
-										"secret": "whsec_dGVzdF9zZWNyZXRfdmFsdWU=",
-										"createdAt": "2026-03-20T14:22:31.562Z"
+										"id": "748395130237499120",
+										"to": "+5511999999999",
+										"prefix": "Rewrite",
+										"createdAt": "2026-03-20T14:22:31.562Z",
+										"expiresAt": "2026-03-20T14:27:31.562Z"
 									}
 								}
 							}
 						}
 					}
 				},
-				"x-required-scopes": ["project:webhooks:write"]
+				"x-required-scopes": ["message:write"]
 			}
 		},
-		"/webhooks/{id}": {
-			"get": {
-				"tags": ["Webhooks"],
-				"operationId": "getWebhook",
-				"summary": "Get a webhook",
-				"description": "Fetch one webhook endpoint together with its current signing secret. Requires API key scope `project:webhooks:read`.",
+		"/otp/{id}/verify": {
+			"post": {
+				"tags": ["OTP"],
+				"operationId": "verifyOtp",
+				"summary": "Verify an OTP code",
+				"description": "Validate the OTP code previously sent by Rewrite and close the verification flow. Requires API key scope `message:write`.",
 				"x-codeSamples": [
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.webhooks.get({\n  id: '748395130237498750',\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.otp.verify({\n  id: '748395130237499120',\n  to: '+5511999999999',\n  code: '478201',\n});\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -157,61 +105,7 @@
 						"name": "id",
 						"in": "path",
 						"required": true,
-						"description": "Webhook identifier returned by Rewrite.",
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Successful response",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/WebhookResponse"
-								},
-								"example": {
-									"ok": true,
-									"data": {
-										"id": "748395130237498750",
-										"name": "delivery-events",
-										"events": ["message.sent", "message.failed", "sms.otp"],
-										"status": "ACTIVE",
-										"endpoint": "https://example.com/rewrite/webhooks",
-										"createdAt": "2026-03-20T14:22:31.562Z",
-										"secret": "whsec_dGVzdF9zZWNyZXRfdmFsdWU="
-									}
-								}
-							}
-						}
-					}
-				},
-				"x-required-scopes": ["project:webhooks:read"]
-			},
-			"patch": {
-				"tags": ["Webhooks"],
-				"operationId": "updateWebhook",
-				"summary": "Update a webhook",
-				"description": "Update an existing webhook endpoint, including its event list, URL, status or signing secret. Requires API key scope `project:webhooks:write`.",
-				"x-codeSamples": [
-					{
-						"lang": "typescript",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { error } = await rewrite.webhooks.update({\n  id: '748395130237498750',\n  status: 'INACTIVE',\n});\n\nif (error) throw error;"
-					}
-				],
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"description": "Webhook identifier returned by Rewrite.",
+						"description": "OTP identifier returned by Rewrite.",
 						"schema": {
 							"$ref": "#/components/schemas/Snowflake"
 						}
@@ -222,10 +116,11 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/WebhookUpdateBody"
+								"$ref": "#/components/schemas/OTPVerifyBody"
 							},
 							"example": {
-								"status": "INACTIVE"
+								"to": "+5511999999999",
+								"code": "478201"
 							}
 						}
 					}
@@ -236,63 +131,21 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/OkEmptyResponse"
+									"$ref": "#/components/schemas/OTPVerifyResponse"
 								},
 								"example": {
 									"ok": true,
-									"data": null
+									"data": {
+										"id": "748395130237499120",
+										"valid": true,
+										"verifiedAt": "2026-03-20T14:23:18.000Z"
+									}
 								}
 							}
 						}
 					}
 				},
-				"x-required-scopes": ["project:webhooks:write"]
-			},
-			"delete": {
-				"tags": ["Webhooks"],
-				"operationId": "deleteWebhook",
-				"summary": "Delete a webhook",
-				"description": "Permanently delete a webhook endpoint and stop future event deliveries to it. Requires API key scope `project:webhooks:write`.",
-				"x-codeSamples": [
-					{
-						"lang": "typescript",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { error } = await rewrite.webhooks.delete({\n  id: '748395130237498750',\n});\n\nif (error) throw error;"
-					}
-				],
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"description": "Webhook identifier returned by Rewrite.",
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Successful response",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/OkEmptyResponse"
-								},
-								"example": {
-									"ok": true,
-									"data": null
-								}
-							}
-						}
-					}
-				},
-				"x-required-scopes": ["project:webhooks:write"]
+				"x-required-scopes": ["message:write"]
 			}
 		}
 	},

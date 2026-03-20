@@ -1,118 +1,60 @@
 ---
-title: "Retentativas"
-description: "Como a **Rewrite** faz retentativas de webhooks com falha e como reenviar eventos manualmente."
+title: Retentativas
+description: Janela atual de retry, timeout de request e condicoes de parada da entrega de webhook na Rewrite.
 ---
 
-# Retentativas e replays
+# Comportamento de entrega
 
-\- Entenda como a **Rewrite** garante entrega de webhooks e o que acontece quando seu endpoint falha.
+A Rewrite considera a entrega bem-sucedida quando seu endpoint retorna qualquer resposta `2xx`.
 
-Quando a **Rewrite** envia um evento de webhook, seu servidor **deve responder com `HTTP 200 OK`** para confirmar entrega.
+Retries acontecem quando o endpoint:
 
-Se o endpoint nao retornar `2xx` (ou der timeout), a entrega e considerada **falha** e a **Rewrite** tentara novamente.
+- retorna status diferente de `2xx`
+- da timeout
+- falha na camada de rede
 
----
+O timeout atual da request de webhook e 5 segundos.
 
-## Retentativas automaticas
+## Agenda de retry
 
-A Rewrite usa **backoff exponencial com limite de tentativas** para garantir confiabilidade sem sobrecarregar sua infraestrutura.
+O backend usa hoje 5 tentativas no total:
 
-Cada evento de webhook e reenviado conforme a agenda abaixo:
-
-| Tentativa | Atraso apos a falha anterior |
+| Tentativa | Momento |
 | --- | --- |
-| 1 | Imediatamente |
-| 2 | 5 segundos |
-| 3 | 1 minuto |
-| 4 | 5 minutos |
-| 5 | 15 minutos |
+| 1 | imediata |
+| 2 | +5 segundos |
+| 3 | +1 minuto |
+| 4 | +5 minutos |
+| 5 | +15 minutos |
 
-Apos a ultima tentativa, o webhook e marcado como **falha permanente**.
+Depois da ultima tentativa, a entrega falha em definitivo.
 
----
-
-### Exemplo
-
-Se seu endpoint falhar nas tres primeiras tentativas e tiver sucesso na quarta:
-
-1. **Tentativa 1** (`t=0s`) - envio imediato, **falha**
-2. **Tentativa 2** (`t=+5s`) - retentativa apos 5 segundos, **falha**
-3. **Tentativa 3** (`t=+1m 5s`) - retentativa apos 1 minuto, **falha**
-4. **Tentativa 4** (`t=+6m 5s`) - retentativa apos 5 minutos, **sucesso**
-
-O tempo total da primeira tentativa ate o sucesso seria de aproximadamente **6 minutos e 5 segundos**.
-
----
-
-## Quando as retentativas param?
+## Quando o retry para
 
 As retentativas param quando:
 
-- Seu endpoint retorna resposta **2xx**
-- O limite maximo de tentativas e atingido
-- O endpoint de webhook e removido ou desativado
-- O evento expira (TTL atingido)
+- seu endpoint retorna `2xx`
+- a quinta tentativa falha
+- o webhook e removido ou desativado antes da proxima entrega
 
----
+## Expectativa de idempotencia
 
-## Boas praticas
+A entrega de webhook e at-least-once. Seu handler deve:
 
-Para evitar retentativas desnecessarias:
+- armazenar ids de evento processados
+- ignorar duplicados com seguranca
+- tornar as escritas downstream idempotentes
 
-- Sempre retorne `200 OK` assim que receber o evento
-- Processe logica pesada **assincronamente**
-- Use idempotencia (salve IDs de evento e ignore duplicados)
-- Implemente timeout abaixo de 10 segundos
+## Logs de entrega
 
-Exemplo de handler minimo:
+Use:
 
-```ts
-export async function webhookHandler(req, res) {
-  const { body } = req;
+- `GET /webhooks/{id}/logs` para listar tentativas
+- `GET /logs/{id}` para inspecionar um log especifico
 
-  // Confirmar recebimento imediatamente
-  res.status(200).end()
+A retencao atual depende do plano do projeto:
 
-  // Processar de forma assincrona
-  queue.push(body)
-}
-```
-
-## Replays manuais
-
-Se um webhook falhar permanentemente - ou se voce precisar reprocessar um evento - e possivel fazer replay manual.
-
-Voce pode reenviar:
-
-- entregas `failed`
-- entregas `successful` (util para debugging)
-
-## Como fazer replay
-
-1. Abra a secao **Webhooks** no **Dashboard da Rewrite**
-2. Selecione seu endpoint de webhook
-3. Abra o evento que deseja reenviar
-4. Clique em **Replay**
-
-A **Rewrite** reenviara exatamente o mesmo payload para seu endpoint.
-
-## Lembrete de idempotencia
-
-Replays manuais e retentativas automaticas podem entregar o mesmo evento varias vezes.
-
-Voce deve:
-
-- Armazenar IDs de eventos processados
-- Ignorar duplicados
-- Garantir comportamento seguro em repeticoes
-
-## Garantias de entrega
-
-A Rewrite fornece:
-
-- Entrega ao-menos-uma-vez
-- Entrega ordenada por mensagem (quando aplicavel)
-- Verificacao de payload assinado
-- Visibilidade de entrega no dashboard
-
-<Card title="Validar assinaturas de webhook" icon="shield-check" href="/pt-br/webhooks/introduction" color="#C9CBD1"> Sempre valide o header de assinatura antes de confiar no payload. </Card>
+- Starter/default: 3 dias
+- Pro: 14 dias
+- Business: 16 dias
+- Enterprise: 1 mes
