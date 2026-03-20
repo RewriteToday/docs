@@ -21,7 +21,9 @@
 	"paths": {
 		"/templates": {
 			"get": {
-				"tags": ["Templates"],
+				"tags": [
+					"Templates"
+				],
 				"operationId": "listTemplates",
 				"summary": "List templates",
 				"description": "List reusable templates available to the current project. Results are paginated with a top-level cursor. Requires API key scope `project:templates:read`.",
@@ -87,10 +89,14 @@
 						}
 					}
 				},
-				"x-required-scopes": ["project:templates:read"]
+				"x-required-scopes": [
+					"project:templates:read"
+				]
 			},
 			"post": {
-				"tags": ["Templates"],
+				"tags": [
+					"Templates"
+				],
 				"operationId": "createTemplate",
 				"summary": "Create a template",
 				"description": "Create a reusable SMS template with variables and optional locale overrides. Requires API key scope `project:templates:write`.",
@@ -149,12 +155,16 @@
 						}
 					}
 				},
-				"x-required-scopes": ["project:templates:write"]
+				"x-required-scopes": [
+					"project:templates:write"
+				]
 			}
 		},
 		"/templates/{identifier}": {
 			"get": {
-				"tags": ["Templates"],
+				"tags": [
+					"Templates"
+				],
 				"operationId": "getTemplate",
 				"summary": "Get a template",
 				"description": "Fetch a single template by its ID or by its name. Requires API key scope `project:templates:read`.",
@@ -215,12 +225,16 @@
 						}
 					}
 				},
-				"x-required-scopes": ["project:templates:read"]
+				"x-required-scopes": [
+					"project:templates:read"
+				]
 			}
 		},
 		"/templates/{id}": {
 			"patch": {
-				"tags": ["Templates"],
+				"tags": [
+					"Templates"
+				],
 				"operationId": "updateTemplate",
 				"summary": "Update a template",
 				"description": "Update the content, variables or description of an existing template. Requires API key scope `project:templates:write`.",
@@ -276,10 +290,14 @@
 						}
 					}
 				},
-				"x-required-scopes": ["project:templates:write"]
+				"x-required-scopes": [
+					"project:templates:write"
+				]
 			},
 			"delete": {
-				"tags": ["Templates"],
+				"tags": [
+					"Templates"
+				],
 				"operationId": "deleteTemplate",
 				"summary": "Delete a template",
 				"description": "Permanently delete a template that should no longer be used for message rendering. Requires API key scope `project:templates:write`.",
@@ -322,7 +340,9 @@
 						}
 					}
 				},
-				"x-required-scopes": ["project:templates:write"]
+				"x-required-scopes": [
+					"project:templates:write"
+				]
 			}
 		}
 	},
@@ -439,7 +459,10 @@
 				"description": "Delivery status to include in the result set.",
 				"schema": {
 					"type": "string",
-					"enum": ["FAILED", "SUCCESS"]
+					"enum": [
+						"FAILED",
+						"SUCCESS"
+					]
 				}
 			}
 		},
@@ -512,7 +535,9 @@
 			},
 			"Cursor": {
 				"type": "object",
-				"required": ["persist"],
+				"required": [
+					"persist"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"persist": {
@@ -531,7 +556,10 @@
 			},
 			"ErrorResponse": {
 				"type": "object",
-				"required": ["ok", "error"],
+				"required": [
+					"ok",
+					"error"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"ok": {
@@ -540,7 +568,10 @@
 					},
 					"error": {
 						"type": "object",
-						"required": ["code", "message"],
+						"required": [
+							"code",
+							"message"
+						],
 						"additionalProperties": false,
 						"properties": {
 							"code": {
@@ -561,7 +592,10 @@
 			},
 			"OkEmptyResponse": {
 				"type": "object",
-				"required": ["ok", "data"],
+				"required": [
+					"ok",
+					"data"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"ok": {
@@ -575,7 +609,9 @@
 			},
 			"StringArrayDeleteBody": {
 				"type": "object",
-				"required": ["ids"],
+				"required": [
+					"ids"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"ids": {
@@ -591,7 +627,10 @@
 			},
 			"DeletedIdsResponse": {
 				"type": "object",
-				"required": ["ok", "data"],
+				"required": [
+					"ok",
+					"data"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"ok": {
@@ -626,7 +665,10 @@
 						"example": "Rewrite"
 					},
 					"icon": {
-						"type": ["string", "null"]
+						"type": [
+							"string",
+							"null"
+						]
 					},
 					"ownerId": {
 						"$ref": "#/components/schemas/Snowflake"
@@ -656,7 +698,9 @@
 			},
 			"ProjectCreateBody": {
 				"type": "object",
-				"required": ["name"],
+				"required": [
+					"name"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"name": {
@@ -667,7 +711,10 @@
 			},
 			"ProjectResponse": {
 				"type": "object",
-				"required": ["ok", "data"],
+				"required": [
+					"ok",
+					"data"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"ok": {
@@ -725,10 +772,16 @@
 						}
 					},
 					"description": {
-						"type": ["string", "null"]
+						"type": [
+							"string",
+							"null"
+						]
 					},
 					"lastUsedAt": {
-						"type": ["string", "null"],
+						"type": [
+							"string",
+							"null"
+						],
 						"format": "date-time"
 					},
 					"createdAt": {
@@ -739,7 +792,11 @@
 			},
 			"APIKeyListResponse": {
 				"type": "object",
-				"required": ["ok", "data", "cursor"],
+				"required": [
+					"ok",
+					"data",
+					"cursor"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"ok": {
@@ -759,7 +816,9 @@
 			},
 			"APIKeyCreateBody": {
 				"type": "object",
-				"required": ["name"],
+				"required": [
+					"name"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"name": {
@@ -791,7 +850,10 @@
 						"maxLength": 32
 					},
 					"description": {
-						"type": ["string", "null"],
+						"type": [
+							"string",
+							"null"
+						],
 						"minLength": 1,
 						"maxLength": 64
 					},
@@ -806,7 +868,11 @@
 			},
 			"APIKeyCreateResult": {
 				"type": "object",
-				"required": ["id", "key", "createdAt"],
+				"required": [
+					"id",
+					"key",
+					"createdAt"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"id": {
@@ -825,7 +891,10 @@
 			},
 			"APIKeyCreateResponse": {
 				"type": "object",
-				"required": ["ok", "data"],
+				"required": [
+					"ok",
+					"data"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"ok": {
@@ -839,7 +908,10 @@
 			},
 			"MessageTag": {
 				"type": "object",
-				"required": ["name", "value"],
+				"required": [
+					"name",
+					"value"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"name": {
@@ -860,7 +932,11 @@
 			},
 			"MessageAnalysis": {
 				"type": "object",
-				"required": ["characters", "encoding", "segments"],
+				"required": [
+					"characters",
+					"encoding",
+					"segments"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"characters": {
@@ -870,13 +946,21 @@
 					},
 					"encoding": {
 						"type": "string",
-						"enum": ["gsm7", "ucs2"],
+						"enum": [
+							"gsm7",
+							"ucs2"
+						],
 						"description": "Encoding detected for the rendered SMS content.",
 						"example": "gsm7"
 					},
 					"segments": {
 						"type": "object",
-						"required": ["concat", "count", "reason", "single"],
+						"required": [
+							"concat",
+							"count",
+							"reason",
+							"single"
+						],
 						"additionalProperties": false,
 						"properties": {
 							"concat": {
@@ -891,7 +975,12 @@
 							},
 							"reason": {
 								"type": "string",
-								"enum": ["fits", "smart", "singleLimit", "nonGsm7"],
+								"enum": [
+									"fits",
+									"smart",
+									"singleLimit",
+									"nonGsm7"
+								],
 								"description": "Why Rewrite selected the reported segmentation result.",
 								"example": "fits"
 							},
@@ -906,7 +995,9 @@
 			},
 			"MessageSegmentation": {
 				"type": "object",
-				"required": ["max"],
+				"required": [
+					"max"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"max": {
@@ -918,7 +1009,11 @@
 					},
 					"mode": {
 						"type": "string",
-						"enum": ["fail", "trim", "send"],
+						"enum": [
+							"fail",
+							"trim",
+							"send"
+						],
 						"description": "How Rewrite should behave when the message exceeds the allowed segment count.",
 						"example": "send"
 					},
@@ -932,7 +1027,10 @@
 			"MessageInlineBody": {
 				"title": "With content",
 				"type": "object",
-				"required": ["to", "content"],
+				"required": [
+					"to",
+					"content"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"to": {
@@ -976,7 +1074,10 @@
 			"MessageTemplateBody": {
 				"title": "Using templates",
 				"type": "object",
-				"required": ["to", "templateId"],
+				"required": [
+					"to",
+					"templateId"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"to": {
@@ -1034,7 +1135,10 @@
 			},
 			"MessageRef": {
 				"type": "object",
-				"required": ["id", "createdAt"],
+				"required": [
+					"id",
+					"createdAt"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"id": {
@@ -1057,7 +1161,9 @@
 					},
 					{
 						"type": "object",
-						"required": ["analysis"],
+						"required": [
+							"analysis"
+						],
 						"additionalProperties": false,
 						"properties": {
 							"analysis": {
@@ -1070,7 +1176,10 @@
 			},
 			"MessageCreateResponse": {
 				"type": "object",
-				"required": ["ok", "data"],
+				"required": [
+					"ok",
+					"data"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"ok": {
@@ -1084,7 +1193,9 @@
 			},
 			"MessageBatchCreateResult": {
 				"type": "object",
-				"required": ["ids"],
+				"required": [
+					"ids"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"ids": {
@@ -1103,7 +1214,10 @@
 			},
 			"MessageBatchCreateResponse": {
 				"type": "object",
-				"required": ["ok", "data"],
+				"required": [
+					"ok",
+					"data"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"ok": {
@@ -1112,18 +1226,6 @@
 					},
 					"data": {
 						"$ref": "#/components/schemas/MessageBatchCreateResult"
-					}
-				}
-			},
-			"MessageCancelBody": {
-				"type": "object",
-				"required": ["id"],
-				"additionalProperties": false,
-				"properties": {
-					"id": {
-						"$ref": "#/components/schemas/Snowflake",
-						"description": "Message identifier to cancel.",
-						"example": "748395130237498412"
 					}
 				}
 			},
@@ -1164,13 +1266,19 @@
 						"example": "+5511999999999"
 					},
 					"from": {
-						"type": ["string", "null"],
+						"type": [
+							"string",
+							"null"
+						],
 						"description": "Resolved sender ID used for this message, when available.",
 						"example": "Rewrite"
 					},
 					"type": {
 						"type": "string",
-						"enum": ["SMS", "OTP"],
+						"enum": [
+							"SMS",
+							"OTP"
+						],
 						"description": "Message type stored by Rewrite.",
 						"example": "SMS"
 					},
@@ -1212,23 +1320,35 @@
 					},
 					"encoding": {
 						"type": "string",
-						"enum": ["GSM7", "UCS2"],
+						"enum": [
+							"GSM7",
+							"UCS2"
+						],
 						"description": "Encoding used by the provider when sending the SMS.",
 						"example": "GSM7"
 					},
 					"templateId": {
-						"type": ["string", "null"],
+						"type": [
+							"string",
+							"null"
+						],
 						"description": "Template used to render the message, when applicable.",
 						"example": null
 					},
 					"deliveredAt": {
-						"type": ["string", "null"],
+						"type": [
+							"string",
+							"null"
+						],
 						"format": "date-time",
 						"description": "Timestamp when the provider confirmed final delivery.",
 						"example": "2026-03-20T14:22:39.914Z"
 					},
 					"scheduledAt": {
-						"type": ["string", "null"],
+						"type": [
+							"string",
+							"null"
+						],
 						"format": "date-time",
 						"description": "Scheduled send time, when the message was delayed intentionally.",
 						"example": null
@@ -1242,7 +1362,10 @@
 			},
 			"MessageResponse": {
 				"type": "object",
-				"required": ["ok", "data"],
+				"required": [
+					"ok",
+					"data"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"ok": {
@@ -1256,7 +1379,11 @@
 			},
 			"MessageListResponse": {
 				"type": "object",
-				"required": ["ok", "data", "cursor"],
+				"required": [
+					"ok",
+					"data",
+					"cursor"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"ok": {
@@ -1320,7 +1447,9 @@
 			},
 			"OTPCreateBody": {
 				"type": "object",
-				"required": ["to"],
+				"required": [
+					"to"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"to": {
@@ -1346,7 +1475,13 @@
 			},
 			"OTPCreateResult": {
 				"type": "object",
-				"required": ["id", "to", "prefix", "createdAt", "expiresAt"],
+				"required": [
+					"id",
+					"to",
+					"prefix",
+					"createdAt",
+					"expiresAt"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"id": {
@@ -1380,7 +1515,10 @@
 			},
 			"OTPCreateResponse": {
 				"type": "object",
-				"required": ["ok", "data"],
+				"required": [
+					"ok",
+					"data"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"ok": {
@@ -1394,7 +1532,10 @@
 			},
 			"OTPVerifyBody": {
 				"type": "object",
-				"required": ["to", "code"],
+				"required": [
+					"to",
+					"code"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"to": {
@@ -1413,7 +1554,11 @@
 			},
 			"OTPVerifyResult": {
 				"type": "object",
-				"required": ["id", "valid", "verifiedAt"],
+				"required": [
+					"id",
+					"valid",
+					"verifiedAt"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"id": {
@@ -1437,7 +1582,10 @@
 			},
 			"OTPVerifyResponse": {
 				"type": "object",
-				"required": ["ok", "data"],
+				"required": [
+					"ok",
+					"data"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"ok": {
@@ -1451,7 +1599,10 @@
 			},
 			"TemplateVariable": {
 				"type": "object",
-				"required": ["name", "fallback"],
+				"required": [
+					"name",
+					"fallback"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"name": {
@@ -1481,7 +1632,13 @@
 			},
 			"TemplateCreateBody": {
 				"type": "object",
-				"required": ["name", "i18n", "content", "variables", "description"],
+				"required": [
+					"name",
+					"i18n",
+					"content",
+					"variables",
+					"description"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"name": {
@@ -1608,7 +1765,10 @@
 						]
 					},
 					"description": {
-						"type": ["string", "null"],
+						"type": [
+							"string",
+							"null"
+						],
 						"description": "Human-readable description saved with the template.",
 						"example": "Template usado no fluxo de login"
 					},
@@ -1622,7 +1782,10 @@
 			},
 			"TemplateResponse": {
 				"type": "object",
-				"required": ["ok", "data"],
+				"required": [
+					"ok",
+					"data"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"ok": {
@@ -1636,7 +1799,11 @@
 			},
 			"TemplateListResponse": {
 				"type": "object",
-				"required": ["ok", "data", "cursor"],
+				"required": [
+					"ok",
+					"data",
+					"cursor"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"ok": {
@@ -1656,7 +1823,10 @@
 			},
 			"TemplateCreateResult": {
 				"type": "object",
-				"required": ["id", "createdAt"],
+				"required": [
+					"id",
+					"createdAt"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"id": {
@@ -1674,7 +1844,10 @@
 			},
 			"TemplateCreateResponse": {
 				"type": "object",
-				"required": ["ok", "data"],
+				"required": [
+					"ok",
+					"data"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"ok": {
@@ -1688,7 +1861,10 @@
 			},
 			"WebhookCreateBody": {
 				"type": "object",
-				"required": ["events", "endpoint"],
+				"required": [
+					"events",
+					"endpoint"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"name": {
@@ -1716,7 +1892,11 @@
 								"message.scheduled"
 							]
 						},
-						"example": ["message.sent", "message.failed", "sms.otp"]
+						"example": [
+							"message.sent",
+							"message.failed",
+							"sms.otp"
+						]
 					},
 					"secret": {
 						"type": "string",
@@ -1739,7 +1919,10 @@
 				"additionalProperties": false,
 				"properties": {
 					"name": {
-						"type": ["string", "null"],
+						"type": [
+							"string",
+							"null"
+						],
 						"minLength": 1,
 						"maxLength": 32,
 						"description": "Updated friendly name. Send `null` to remove the current name.",
@@ -1763,7 +1946,10 @@
 								"message.scheduled"
 							]
 						},
-						"example": ["message.sent", "message.failed"]
+						"example": [
+							"message.sent",
+							"message.failed"
+						]
 					},
 					"secret": {
 						"type": "string",
@@ -1781,7 +1967,10 @@
 					},
 					"status": {
 						"type": "string",
-						"enum": ["ACTIVE", "INACTIVE"],
+						"enum": [
+							"ACTIVE",
+							"INACTIVE"
+						],
 						"description": "Whether Rewrite should actively deliver events to this endpoint.",
 						"example": "INACTIVE"
 					}
@@ -1789,7 +1978,14 @@
 			},
 			"Webhook": {
 				"type": "object",
-				"required": ["id", "name", "events", "status", "endpoint", "createdAt"],
+				"required": [
+					"id",
+					"name",
+					"events",
+					"status",
+					"endpoint",
+					"createdAt"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"id": {
@@ -1798,7 +1994,10 @@
 						"example": "748395130237498750"
 					},
 					"name": {
-						"type": ["string", "null"],
+						"type": [
+							"string",
+							"null"
+						],
 						"description": "Friendly name shown in the dashboard and logs.",
 						"example": "delivery-events"
 					},
@@ -1818,11 +2017,18 @@
 								"message.scheduled"
 							]
 						},
-						"example": ["message.sent", "message.failed", "sms.otp"]
+						"example": [
+							"message.sent",
+							"message.failed",
+							"sms.otp"
+						]
 					},
 					"status": {
 						"type": "string",
-						"enum": ["ACTIVE", "INACTIVE"],
+						"enum": [
+							"ACTIVE",
+							"INACTIVE"
+						],
 						"description": "Current lifecycle status of the webhook endpoint.",
 						"example": "ACTIVE"
 					},
@@ -1846,7 +2052,9 @@
 					},
 					{
 						"type": "object",
-						"required": ["secret"],
+						"required": [
+							"secret"
+						],
 						"additionalProperties": false,
 						"properties": {
 							"secret": {
@@ -1860,7 +2068,11 @@
 			},
 			"WebhookListResponse": {
 				"type": "object",
-				"required": ["ok", "data", "cursor"],
+				"required": [
+					"ok",
+					"data",
+					"cursor"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"ok": {
@@ -1880,7 +2092,10 @@
 			},
 			"WebhookResponse": {
 				"type": "object",
-				"required": ["ok", "data"],
+				"required": [
+					"ok",
+					"data"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"ok": {
@@ -1894,7 +2109,11 @@
 			},
 			"WebhookCreateResult": {
 				"type": "object",
-				"required": ["id", "secret", "createdAt"],
+				"required": [
+					"id",
+					"secret",
+					"createdAt"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"id": {
@@ -1917,7 +2136,10 @@
 			},
 			"WebhookCreateResponse": {
 				"type": "object",
-				"required": ["ok", "data"],
+				"required": [
+					"ok",
+					"data"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"ok": {
@@ -1931,7 +2153,11 @@
 			},
 			"WebhookOTPMetadata": {
 				"type": "object",
-				"required": ["prefix", "expiresIn", "expiresAt"],
+				"required": [
+					"prefix",
+					"expiresIn",
+					"expiresAt"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"prefix": {
@@ -2001,7 +2227,10 @@
 					},
 					"type": {
 						"type": "string",
-						"enum": ["SMS", "OTP"],
+						"enum": [
+							"SMS",
+							"OTP"
+						],
 						"description": "Message type associated with the event.",
 						"example": "SMS"
 					},
@@ -2033,12 +2262,22 @@
 						"description": "Segmentation analysis for the message content."
 					},
 					"error": {
-						"type": ["object", "null"],
+						"type": [
+							"object",
+							"null"
+						],
 						"additionalProperties": false,
-						"required": ["code", "message"],
+						"required": [
+							"code",
+							"message"
+						],
 						"properties": {
 							"code": {
-								"type": ["string", "number", "null"],
+								"type": [
+									"string",
+									"number",
+									"null"
+								],
 								"description": "Provider or internal code associated with the delivery failure.",
 								"example": null
 							},
@@ -2051,19 +2290,28 @@
 						"example": null
 					},
 					"deliveredAt": {
-						"type": ["string", "null"],
+						"type": [
+							"string",
+							"null"
+						],
 						"format": "date-time",
 						"description": "Timestamp when the provider confirmed delivery.",
 						"example": "2026-03-20T14:22:39.914Z"
 					},
 					"scheduledAt": {
-						"type": ["string", "null"],
+						"type": [
+							"string",
+							"null"
+						],
 						"format": "date-time",
 						"description": "Scheduled send time, when applicable.",
 						"example": null
 					},
 					"templateId": {
-						"type": ["string", "null"],
+						"type": [
+							"string",
+							"null"
+						],
 						"description": "Template identifier used to render the message, when applicable.",
 						"example": null
 					},
@@ -2075,7 +2323,11 @@
 			},
 			"WebhookBatchData": {
 				"type": "object",
-				"required": ["id", "ids", "projectId"],
+				"required": [
+					"id",
+					"ids",
+					"projectId"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"id": {
@@ -2104,7 +2356,12 @@
 			},
 			"WebhookEvent": {
 				"type": "object",
-				"required": ["id", "createdAt", "type", "data"],
+				"required": [
+					"id",
+					"createdAt",
+					"type",
+					"data"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"id": {
@@ -2189,18 +2446,27 @@
 						"example": "message.sent"
 					},
 					"code": {
-						"type": ["integer", "null"],
+						"type": [
+							"integer",
+							"null"
+						],
 						"description": "HTTP status code returned by the destination endpoint.",
 						"example": 200
 					},
 					"error": {
-						"type": ["string", "null"],
+						"type": [
+							"string",
+							"null"
+						],
 						"description": "Transport or application error captured for the attempt.",
 						"example": null
 					},
 					"status": {
 						"type": "string",
-						"enum": ["FAILED", "SUCCESS"],
+						"enum": [
+							"FAILED",
+							"SUCCESS"
+						],
 						"description": "Delivery outcome recorded by Rewrite.",
 						"example": "SUCCESS"
 					},
@@ -2210,12 +2476,18 @@
 						"example": 1
 					},
 					"latency": {
-						"type": ["integer", "null"],
+						"type": [
+							"integer",
+							"null"
+						],
 						"description": "Round-trip time in milliseconds.",
 						"example": 182
 					},
 					"retryAt": {
-						"type": ["string", "null"],
+						"type": [
+							"string",
+							"null"
+						],
 						"format": "date-time",
 						"description": "Next scheduled retry time, when the attempt failed and will retry.",
 						"example": null
@@ -2227,7 +2499,10 @@
 						"example": "2026-03-20T14:22:31.562Z"
 					},
 					"messageId": {
-						"type": ["string", "null"],
+						"type": [
+							"string",
+							"null"
+						],
 						"description": "Message identifier associated with the delivery attempt, when available.",
 						"example": "748395130237498412"
 					}
@@ -2240,7 +2515,10 @@
 					},
 					{
 						"type": "object",
-						"required": ["payload", "webhookId"],
+						"required": [
+							"payload",
+							"webhookId"
+						],
 						"additionalProperties": false,
 						"properties": {
 							"payload": {
@@ -2248,7 +2526,10 @@
 								"description": "Event payload delivered during this attempt."
 							},
 							"webhookId": {
-								"type": ["string", "null"],
+								"type": [
+									"string",
+									"null"
+								],
 								"description": "Webhook identifier associated with the log entry.",
 								"example": "748395130237498750"
 							}
@@ -2258,7 +2539,11 @@
 			},
 			"WebhookLogListResponse": {
 				"type": "object",
-				"required": ["ok", "data", "cursor"],
+				"required": [
+					"ok",
+					"data",
+					"cursor"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"ok": {
@@ -2278,7 +2563,10 @@
 			},
 			"WebhookLogResponse": {
 				"type": "object",
-				"required": ["ok", "data"],
+				"required": [
+					"ok",
+					"data"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"ok": {

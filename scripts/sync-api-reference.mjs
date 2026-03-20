@@ -1014,21 +1014,6 @@ const baseComponents = {
 				},
 			},
 		},
-		MessageCancelBody: {
-			type: 'object',
-			required: ['id'],
-			additionalProperties: false,
-			properties: {
-				id: {
-					$ref: '#/components/schemas/Snowflake',
-					description: 'Message identifier to cancel.',
-					example: exampleSnowflakes.message,
-				},
-			},
-			example: {
-				id: exampleSnowflakes.message,
-			},
-		},
 		Message: {
 			type: 'object',
 			required: [
@@ -2500,7 +2485,7 @@ if (error) throw error;`),
 			'x-required-scopes': ['message:write'],
 		},
 	},
-	'/messages/cancel': {
+	'/messages/{id}/cancel': {
 		post: {
 			tags: [tags.messages.name],
 			operationId: 'cancelMessage',
@@ -2517,14 +2502,18 @@ if (error) throw error;`),
 
 if (error) throw error;`),
 			security: [{ bearerAuth: [] }],
-			requestBody: jsonBody({
-				schema: {
-					$ref: '#/components/schemas/MessageCancelBody',
+			parameters: [
+				{
+					name: 'id',
+					in: 'path',
+					required: true,
+					description: 'Message identifier to cancel.',
+					schema: {
+						$ref: '#/components/schemas/Snowflake',
+					},
+					example: exampleSnowflakes.message,
 				},
-				example: {
-					id: exampleSnowflakes.message,
-				},
-			}),
+			],
 			responses: okResponse({
 				schemaRef: '#/components/schemas/OkEmptyResponse',
 				example: {
@@ -2677,7 +2666,7 @@ if (error) throw error;`),
 const messagesOnlyPaths = {
 	'/messages': messagesPaths['/messages'],
 	'/messages/batch': messagesPaths['/messages/batch'],
-	'/messages/cancel': messagesPaths['/messages/cancel'],
+	'/messages/{id}/cancel': messagesPaths['/messages/{id}/cancel'],
 	'/messages/{id}': messagesPaths['/messages/{id}'],
 };
 

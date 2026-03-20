@@ -106,7 +106,7 @@
 									"POST /messages",
 									"GET /messages",
 									"POST /messages/batch",
-									"POST /messages/cancel",
+									"POST /messages/{id}/cancel",
 									"GET /messages/{id}"
 								]
 							},
@@ -311,7 +311,7 @@
 									"POST /messages",
 									"GET /messages",
 									"POST /messages/batch",
-									"POST /messages/cancel",
+									"POST /messages/{id}/cancel",
 									"GET /messages/{id}"
 								]
 							},
