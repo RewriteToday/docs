@@ -17,6 +17,17 @@ const authScopes = [
 	'project:logs:read',
 ];
 
+const publicOperationScopes = [
+	'project:write',
+	'project:webhooks:read',
+	'project:templates:write',
+	'project:templates:read',
+	'project:webhooks:write',
+	'message:write',
+	'message:read',
+	'project:logs:read',
+];
+
 const messageStatuses = [
 	'SENT',
 	'QUEUED',
@@ -207,6 +218,9 @@ const info = {
 		'Reference for the externally supported API-key-accessible endpoints in Rewrite API v1.\n\nAll successful responses use the `ok` / `data` envelope. Paginated list endpoints return `cursor` at the top level.',
 };
 
+const securitySchemeName = (scope) => `apiKey.${scope.replaceAll(':', '.')}`;
+const securityRequirement = (scope) => [{ [securitySchemeName(scope)]: [] }];
+
 const servers = [
 	{
 		url: 'https://api.rewritetoday.com/v1',
@@ -216,13 +230,17 @@ const servers = [
 
 const baseComponents = {
 	securitySchemes: {
-		bearerAuth: {
-			type: 'http',
-			scheme: 'bearer',
-			bearerFormat: 'API key',
-			description:
-				'Send your project API key as `Authorization: Bearer rw_...`.',
-		},
+		...Object.fromEntries(
+			publicOperationScopes.map((scope) => [
+				securitySchemeName(scope),
+				{
+					type: 'http',
+					scheme: 'bearer',
+					bearerFormat: 'API key',
+					description: `Send your API key as \`Authorization: Bearer rw_...\`.\n\nRequired scope: \`${scope}\`.`,
+				},
+			]),
+		),
 	},
 	parameters: {
 		IdempotencyKey: {
@@ -1594,7 +1612,7 @@ const baseComponents = {
 					type: 'array',
 					minItems: 1,
 					uniqueItems: true,
-					description: 'Event types that should be delivered to this endpoint.',
+					description: 'Event types that should be delivered to this webhook.',
 					items: {
 						type: 'string',
 						enum: webhookEventTypes,
@@ -1641,7 +1659,7 @@ const baseComponents = {
 					type: 'array',
 					minItems: 1,
 					uniqueItems: true,
-					description: 'Updated event selection for the webhook endpoint.',
+					description: 'Updated event selection for the webhook.',
 					items: {
 						type: 'string',
 						enum: webhookEventTypes,
@@ -1666,7 +1684,7 @@ const baseComponents = {
 					type: 'string',
 					enum: webhookStatuses,
 					description:
-						'Whether Rewrite should actively deliver events to this endpoint.',
+						'Whether Rewrite should actively deliver events to this webhook.',
 					example: 'INACTIVE',
 				},
 			},
@@ -1691,7 +1709,7 @@ const baseComponents = {
 				},
 				events: {
 					type: 'array',
-					description: 'Events delivered to this endpoint.',
+					description: 'Events delivered to this webhook.',
 					items: {
 						type: 'string',
 						enum: webhookEventTypes,
@@ -1701,7 +1719,7 @@ const baseComponents = {
 				status: {
 					type: 'string',
 					enum: webhookStatuses,
-					description: 'Current lifecycle status of the webhook endpoint.',
+					description: 'Current lifecycle status of the webhook.',
 					example: exampleWebhookRecord.status,
 				},
 				endpoint: {
@@ -1712,7 +1730,7 @@ const baseComponents = {
 				createdAt: {
 					type: 'string',
 					format: 'date-time',
-					description: 'Timestamp when the webhook endpoint was created.',
+					description: 'Timestamp when the webhook was created.',
 					example: exampleWebhookRecord.createdAt,
 				},
 			},
@@ -1730,8 +1748,7 @@ const baseComponents = {
 					properties: {
 						secret: {
 							type: 'string',
-							description:
-								'Signing secret associated with the webhook endpoint.',
+							description: 'Signing secret associated with the webhook.',
 							example: 'whsec_dGVzdF9zZWNyZXRfdmFsdWU=',
 						},
 					},
@@ -1794,7 +1811,7 @@ const baseComponents = {
 				createdAt: {
 					type: 'string',
 					format: 'date-time',
-					description: 'Timestamp when the webhook endpoint was created.',
+					description: 'Timestamp when the webhook was created.',
 					example: exampleWebhookRecord.createdAt,
 				},
 			},
@@ -2056,7 +2073,7 @@ const baseComponents = {
 				},
 				url: {
 					type: 'string',
-					description: 'Endpoint URL that received the delivery attempt.',
+					description: 'Webhook URL that received the delivery attempt.',
 					example: exampleWebhookLogSummary.url,
 				},
 				type: {
@@ -2067,7 +2084,7 @@ const baseComponents = {
 				},
 				code: {
 					type: ['integer', 'null'],
-					description: 'HTTP status code returned by the destination endpoint.',
+					description: 'HTTP status code returned by the webhook URL.',
 					example: exampleWebhookLogSummary.code,
 				},
 				error: {
@@ -2225,7 +2242,16 @@ const okResponse = ({
 				schema: {
 					$ref: schemaRef,
 				},
-				...(example ? { example } : {}),
+				...(example
+					? {
+							examples: {
+								success: {
+									summary: 'Success',
+									value: example,
+								},
+							},
+						}
+					: {}),
 			},
 		},
 	},
@@ -2259,13 +2285,12 @@ const codeSamples = (snippet) => [
 	},
 ];
 
-const operationDescription = ({ details, scope }) =>
-	`${details.trim()} Requires API key scope \`${scope}\`.`;
+const operationDescription = ({ details }) => details.trim();
 
 const tags = {
 	apiKeys: {
 		name: 'API Keys',
-		description: 'Manage project API keys exposed through the public API.',
+		description: 'Manage API keys exposed through the public API.',
 	},
 	messages: {
 		name: 'Messages',
@@ -2282,7 +2307,7 @@ const tags = {
 	},
 	webhooks: {
 		name: 'Webhooks',
-		description: 'Create and manage webhook endpoints for Rewrite events.',
+		description: 'Create and manage webhooks for Rewrite events.',
 	},
 	logs: {
 		name: 'Logs',
@@ -2299,7 +2324,6 @@ const apiKeysPaths = {
 			description: operationDescription({
 				details:
 					'Revoke an API key that should no longer be allowed to call Rewrite.',
-				scope: 'project:write',
 			}),
 			'x-codeSamples':
 				codeSamples(`const { error } = await rewrite.apiKeys.delete({
@@ -2307,7 +2331,7 @@ const apiKeysPaths = {
 });
 
 if (error) throw error;`),
-			security: [{ bearerAuth: [] }],
+			security: securityRequirement('project:write'),
 			parameters: [
 				{
 					name: 'key',
@@ -2340,7 +2364,6 @@ const messagesPaths = {
 			description: operationDescription({
 				details:
 					'Send one SMS with inline content or by rendering a saved template. This route accepts Brazilian destination numbers in `+55` format and returns the accepted message ID immediately.',
-				scope: 'message:write',
 			}),
 			'x-codeSamples':
 				codeSamples(`const { data, error } = await rewrite.messages.send({
@@ -2350,7 +2373,7 @@ const messagesPaths = {
 });
 
 if (error) throw error;`),
-			security: [{ bearerAuth: [] }],
+			security: securityRequirement('message:write'),
 			parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }],
 			requestBody: jsonBody({
 				schema: {
@@ -2383,7 +2406,6 @@ if (error) throw error;`),
 			description: operationDescription({
 				details:
 					'List accepted messages for the current project. Results are returned in reverse chronological order with a top-level cursor for pagination.',
-				scope: 'message:read',
 			}),
 			'x-codeSamples':
 				codeSamples(`const { data, error, cursor } = await rewrite.messages.list({
@@ -2392,7 +2414,7 @@ if (error) throw error;`),
 });
 
 if (error) throw error;`),
-			security: [{ bearerAuth: [] }],
+			security: securityRequirement('message:read'),
 			parameters: [
 				{ $ref: '#/components/parameters/After' },
 				{ $ref: '#/components/parameters/Before' },
@@ -2428,7 +2450,6 @@ if (error) throw error;`),
 			description: operationDescription({
 				details:
 					'Send between 1 and 100 SMS messages in one request. This route accepts Brazilian destination numbers in `+55` format and returns only the accepted message IDs.',
-				scope: 'message:write',
 			}),
 			'x-codeSamples':
 				codeSamples(`const { data, error } = await rewrite.messages.sendBatch([
@@ -2444,7 +2465,7 @@ if (error) throw error;`),
 ]);
 
 if (error) throw error;`),
-			security: [{ bearerAuth: [] }],
+			security: securityRequirement('message:write'),
 			parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }],
 			requestBody: jsonBody({
 				schema: {
@@ -2493,7 +2514,6 @@ if (error) throw error;`),
 			description: operationDescription({
 				details:
 					'Cancel a queued or scheduled message before it reaches the provider.',
-				scope: 'message:write',
 			}),
 			'x-codeSamples':
 				codeSamples(`const { error } = await rewrite.messages.cancel({
@@ -2501,7 +2521,7 @@ if (error) throw error;`),
 });
 
 if (error) throw error;`),
-			security: [{ bearerAuth: [] }],
+			security: securityRequirement('message:write'),
 			parameters: [
 				{
 					name: 'id',
@@ -2532,7 +2552,6 @@ if (error) throw error;`),
 			description: operationDescription({
 				details:
 					'Fetch the current state of a single message, including delivery timestamps and rendered content.',
-				scope: 'message:read',
 			}),
 			'x-codeSamples':
 				codeSamples(`const { data, error } = await rewrite.messages.get({
@@ -2540,7 +2559,7 @@ if (error) throw error;`),
 });
 
 if (error) throw error;`),
-			security: [{ bearerAuth: [] }],
+			security: securityRequirement('message:read'),
 			parameters: [
 				{
 					name: 'id',
@@ -2570,7 +2589,6 @@ if (error) throw error;`),
 			description: operationDescription({
 				details:
 					'Create and send an OTP SMS to a Brazilian destination number in `+55` format.',
-				scope: 'message:write',
 			}),
 			'x-codeSamples':
 				codeSamples(`const { data, error } = await rewrite.otp.send({
@@ -2580,7 +2598,7 @@ if (error) throw error;`),
 });
 
 if (error) throw error;`),
-			security: [{ bearerAuth: [] }],
+			security: securityRequirement('message:write'),
 			parameters: [{ $ref: '#/components/parameters/IdempotencyKey' }],
 			requestBody: jsonBody({
 				schema: {
@@ -2616,7 +2634,6 @@ if (error) throw error;`),
 			description: operationDescription({
 				details:
 					'Validate the OTP code previously sent by Rewrite and close the verification flow.',
-				scope: 'message:write',
 			}),
 			'x-codeSamples':
 				codeSamples(`const { data, error } = await rewrite.otp.verify({
@@ -2626,7 +2643,7 @@ if (error) throw error;`),
 });
 
 if (error) throw error;`),
-			security: [{ bearerAuth: [] }],
+			security: securityRequirement('message:write'),
 			parameters: [
 				{
 					name: 'id',
@@ -2684,7 +2701,6 @@ const templatesPaths = {
 			description: operationDescription({
 				details:
 					'List reusable templates available to the current project. Results are paginated with a top-level cursor.',
-				scope: 'project:templates:read',
 			}),
 			'x-codeSamples':
 				codeSamples(`const { data, error, cursor } = await rewrite.templates.list({
@@ -2693,7 +2709,7 @@ const templatesPaths = {
 });
 
 if (error) throw error;`),
-			security: [{ bearerAuth: [] }],
+			security: securityRequirement('project:templates:read'),
 			parameters: [
 				{ $ref: '#/components/parameters/After' },
 				{ $ref: '#/components/parameters/Before' },
@@ -2719,7 +2735,6 @@ if (error) throw error;`),
 			description: operationDescription({
 				details:
 					'Create a reusable SMS template with variables and optional locale overrides.',
-				scope: 'project:templates:write',
 			}),
 			'x-codeSamples':
 				codeSamples(`const { data, error } = await rewrite.templates.create({
@@ -2731,7 +2746,7 @@ if (error) throw error;`),
 });
 
 if (error) throw error;`),
-			security: [{ bearerAuth: [] }],
+			security: securityRequirement('project:templates:write'),
 			requestBody: jsonBody({
 				schema: {
 					$ref: '#/components/schemas/TemplateCreateBody',
@@ -2764,7 +2779,6 @@ if (error) throw error;`),
 			summary: 'Get a template',
 			description: operationDescription({
 				details: 'Fetch a single template by its ID or by its name.',
-				scope: 'project:templates:read',
 			}),
 			'x-codeSamples':
 				codeSamples(`const { data, error } = await rewrite.templates.get({
@@ -2773,7 +2787,7 @@ if (error) throw error;`),
 });
 
 if (error) throw error;`),
-			security: [{ bearerAuth: [] }],
+			security: securityRequirement('project:templates:read'),
 			parameters: [
 				{
 					name: 'identifier',
@@ -2805,7 +2819,6 @@ if (error) throw error;`),
 			description: operationDescription({
 				details:
 					'Update the content, variables or description of an existing template.',
-				scope: 'project:templates:write',
 			}),
 			'x-codeSamples':
 				codeSamples(`const { error } = await rewrite.templates.update({
@@ -2814,7 +2827,7 @@ if (error) throw error;`),
 });
 
 if (error) throw error;`),
-			security: [{ bearerAuth: [] }],
+			security: securityRequirement('project:templates:write'),
 			parameters: [
 				{
 					name: 'id',
@@ -2850,7 +2863,6 @@ if (error) throw error;`),
 			description: operationDescription({
 				details:
 					'Permanently delete a template that should no longer be used for message rendering.',
-				scope: 'project:templates:write',
 			}),
 			'x-codeSamples':
 				codeSamples(`const { error } = await rewrite.templates.delete({
@@ -2858,7 +2870,7 @@ if (error) throw error;`),
 });
 
 if (error) throw error;`),
-			security: [{ bearerAuth: [] }],
+			security: securityRequirement('project:templates:write'),
 			parameters: [
 				{
 					name: 'id',
@@ -2890,8 +2902,7 @@ const webhooksPaths = {
 			summary: 'List webhooks',
 			description: operationDescription({
 				details:
-					'List webhook endpoints configured for the current project. Results are paginated with a top-level cursor.',
-				scope: 'project:webhooks:read',
+					'List webhooks configured for the current project. Results are paginated with a top-level cursor.',
 			}),
 			'x-codeSamples':
 				codeSamples(`const { data, error, cursor } = await rewrite.webhooks.list({
@@ -2899,7 +2910,7 @@ const webhooksPaths = {
 });
 
 if (error) throw error;`),
-			security: [{ bearerAuth: [] }],
+			security: securityRequirement('project:webhooks:read'),
 			parameters: [
 				{ $ref: '#/components/parameters/After' },
 				{ $ref: '#/components/parameters/Before' },
@@ -2923,8 +2934,7 @@ if (error) throw error;`),
 			summary: 'Create a webhook',
 			description: operationDescription({
 				details:
-					'Create a webhook endpoint and choose which Rewrite events should be delivered to it.',
-				scope: 'project:webhooks:write',
+					'Create a webhook and choose which Rewrite events should be delivered to it.',
 			}),
 			'x-codeSamples':
 				codeSamples(`const { data, error } = await rewrite.webhooks.create({
@@ -2934,7 +2944,7 @@ if (error) throw error;`),
 });
 
 if (error) throw error;`),
-			security: [{ bearerAuth: [] }],
+			security: securityRequirement('project:webhooks:write'),
 			requestBody: jsonBody({
 				schema: {
 					$ref: '#/components/schemas/WebhookCreateBody',
@@ -2966,9 +2976,7 @@ if (error) throw error;`),
 			operationId: 'getWebhook',
 			summary: 'Get a webhook',
 			description: operationDescription({
-				details:
-					'Fetch one webhook endpoint together with its current signing secret.',
-				scope: 'project:webhooks:read',
+				details: 'Fetch one webhook together with its current signing secret.',
 			}),
 			'x-codeSamples':
 				codeSamples(`const { data, error } = await rewrite.webhooks.get({
@@ -2976,7 +2984,7 @@ if (error) throw error;`),
 });
 
 if (error) throw error;`),
-			security: [{ bearerAuth: [] }],
+			security: securityRequirement('project:webhooks:read'),
 			parameters: [
 				{
 					name: 'id',
@@ -3006,8 +3014,7 @@ if (error) throw error;`),
 			summary: 'Update a webhook',
 			description: operationDescription({
 				details:
-					'Update an existing webhook endpoint, including its event list, URL, status or signing secret.',
-				scope: 'project:webhooks:write',
+					'Update an existing webhook, including its event list, URL, status or signing secret.',
 			}),
 			'x-codeSamples':
 				codeSamples(`const { error } = await rewrite.webhooks.update({
@@ -3016,7 +3023,7 @@ if (error) throw error;`),
 });
 
 if (error) throw error;`),
-			security: [{ bearerAuth: [] }],
+			security: securityRequirement('project:webhooks:write'),
 			parameters: [
 				{
 					name: 'id',
@@ -3051,8 +3058,7 @@ if (error) throw error;`),
 			summary: 'Delete a webhook',
 			description: operationDescription({
 				details:
-					'Permanently delete a webhook endpoint and stop future event deliveries to it.',
-				scope: 'project:webhooks:write',
+					'Permanently delete a webhook and stop future event deliveries to it.',
 			}),
 			'x-codeSamples':
 				codeSamples(`const { error } = await rewrite.webhooks.delete({
@@ -3060,7 +3066,7 @@ if (error) throw error;`),
 });
 
 if (error) throw error;`),
-			security: [{ bearerAuth: [] }],
+			security: securityRequirement('project:webhooks:write'),
 			parameters: [
 				{
 					name: 'id',
@@ -3092,8 +3098,7 @@ const logsPaths = {
 			summary: 'List webhook delivery logs',
 			description: operationDescription({
 				details:
-					'List delivery attempts for a specific webhook endpoint. Combine `type`, `status` and cursor parameters to inspect a particular delivery flow.',
-				scope: 'project:write',
+					'List delivery attempts for a specific webhook. Combine `type`, `status` and cursor parameters to inspect a particular delivery flow.',
 			}),
 			'x-codeSamples':
 				codeSamples(`const { data, error, cursor } = await rewrite.logs.listWebhook({
@@ -3104,7 +3109,7 @@ const logsPaths = {
 });
 
 if (error) throw error;`),
-			security: [{ bearerAuth: [] }],
+			security: securityRequirement('project:write'),
 			parameters: [
 				{
 					name: 'id',
@@ -3149,7 +3154,6 @@ if (error) throw error;`),
 			description: operationDescription({
 				details:
 					'Fetch one webhook delivery attempt together with the exact event payload delivered by Rewrite.',
-				scope: 'project:logs:read',
 			}),
 			'x-codeSamples':
 				codeSamples(`const { data, error } = await rewrite.logs.get({
@@ -3157,7 +3161,7 @@ if (error) throw error;`),
 });
 
 if (error) throw error;`),
-			security: [{ bearerAuth: [] }],
+			security: securityRequirement('project:logs:read'),
 			parameters: [
 				{
 					name: 'id',
