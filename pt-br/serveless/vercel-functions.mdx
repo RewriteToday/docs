@@ -8,7 +8,7 @@ Este guia mostra como enviar SMS usando Rewrite dentro de uma **Vercel Function*
 ## 1. Instale o SDK
 
 ```bash
-npm install @rewritejs/sdk
+npm install @rewritetoday/sdk
 ```
 
 ## 2. Configure variaveis de ambiente
@@ -22,7 +22,7 @@ REWRITE_API_KEY=rw...
 ## 3. Crie a funcao
 
 ```ts app/api/send-sms/route.ts
-import { Rewrite } from '@rewritejs/sdk';
+import { Rewrite } from '@rewritetoday/sdk';
 
 const rewrite = new Rewrite(process.env.REWRITE_API_KEY);
 
