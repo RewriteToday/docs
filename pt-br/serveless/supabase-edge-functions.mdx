@@ -57,8 +57,13 @@ Deno.serve(async (request) => {
 
   const { data, error } = await rewrite.messages.send({
     to,
-    message,
-    metadata: { source: 'supabase-edge-function' },
+    content: message,
+    tags: [
+    	{
+     		name: 'source',
+       		value: 'supabase-edge-function',
+     	},
+    ],
   });
 
   if (error) {

@@ -29,8 +29,13 @@ const rewrite = new Rewrite(process.env.REWRITE_API_KEY);
 export async function POST() {
   const { data, error } = await rewrite.messages.send({
     to: '+15551234567',
-    message: 'hello world',
-    metadata: { source: 'vercel-function' },
+    content: 'hello world',
+    tags: [
+    	{
+     		name: 'source',
+     		value: 'vercel-function'
+     	}
+    ],
   });
 
   if (error) {

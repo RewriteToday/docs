@@ -62,8 +62,13 @@ export default {
 
     const { data, error } = await rewrite.messages.send({
       to,
-      message,
-      metadata: { source: 'cloudflare-worker' },
+      content: message,
+      tags: [
+        {
+       		name: 'source',
+         	value: 'cloudflare-worker'
+        },
+      ],
     });
 
     if (error) {
