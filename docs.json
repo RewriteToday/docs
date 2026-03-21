@@ -112,8 +112,7 @@
 							},
 							{
 								"group": "OTP",
-								"openapi": "en/api/openapi-otp.json",
-								"pages": ["POST /otp", "POST /otp/{id}/verify"]
+								"pages": ["en/api/otp/send", "en/api/otp/verify"]
 							},
 							{
 								"group": "API Keys",
@@ -317,8 +316,7 @@
 							},
 							{
 								"group": "OTP",
-								"openapi": "pt-br/api/openapi-otp.json",
-								"pages": ["POST /otp", "POST /otp/{id}/verify"]
+								"pages": ["pt-br/api/otp/send", "pt-br/api/otp/verify"]
 							},
 							{
 								"group": "API Keys",
