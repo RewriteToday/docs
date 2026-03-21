@@ -1,10 +1,10 @@
 ---
 title: "Types Library"
-description: "Use @rewritejs/types for shared contracts, enums, and route helpers across Rewrite integrations."
+description: "Use @rewritetoday/types for shared contracts, enums, and route helpers across Rewrite integrations."
 icon: code
 ---
 
-`@rewritejs/types` centralizes Rewrite API contracts so your integrations stay consistent across services and packages.
+`@rewritetoday/types` centralizes Rewrite API contracts so your integrations stay consistent across services and packages.
 
 Repository: [github.com/RewriteToday/types](https://github.com/RewriteToday/types)
 
@@ -29,26 +29,26 @@ Repository: [github.com/RewriteToday/types](https://github.com/RewriteToday/type
 
 <CodeGroup>
 ```bash npm
-npm install @rewritejs/types
+npm install @rewritetoday/types
 ```
 
 ```bash pnpm
-pnpm add @rewritejs/types
+pnpm add @rewritetoday/types
 ```
 
 ```bash yarn
-yarn add @rewritejs/types
+yarn add @rewritetoday/types
 ```
 
 ```bash bun
-bun add @rewritejs/types
+bun add @rewritetoday/types
 ```
 </CodeGroup>
 
 ## Route builder example
 
 ```ts
-import { Routes } from '@rewritejs/types';
+import { Routes } from '@rewritetoday/types';
 
 const listRoute = Routes.apiKeys.list();
 const createRoute = Routes.apiKeys.create();
@@ -59,7 +59,7 @@ console.log({ listRoute, createRoute });
 ## Enum example
 
 ```ts
-import { APIKeyScope, WebhookEventType } from '@rewritejs/types';
+import { APIKeyScope, WebhookEventType } from '@rewritetoday/types';
 
 const scopes = [APIKeyScope.ReadTemplates, APIKeyScope.ReadWebhooks];
 const events = [WebhookEventType.SMSDelivered, WebhookEventType.SMSFailed];
@@ -75,7 +75,7 @@ console.log({ scopes, events });
 - Standardizes API usage across teams and services.
 
 <Info>
-Using `@rewritejs/types` with `@rewritejs/rest` keeps request paths, enums, and payload contracts aligned end-to-end.
+Using `@rewritetoday/types` with `@rewritetoday/rest` keeps request paths, enums, and payload contracts aligned end-to-end.
 </Info>
 
 ## Related docs
