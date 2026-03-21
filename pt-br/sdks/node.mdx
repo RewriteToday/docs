@@ -52,7 +52,7 @@ description: Aprenda a usar o SDK de Node.js para enviar SMS com a API.
       async function sendSms(to: string) {
         const params = {
           to,
-          message: 'Your OTP code is 478201',
+          content: 'Your OTP code is 478201',
         };
 
         const { data, error } = await rewrite.messages.send(params);

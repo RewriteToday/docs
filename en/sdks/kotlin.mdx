@@ -39,7 +39,7 @@ description: Learn how to use the Kotlin SDK to send SMS with the API.
 
       val params = SendOptions(
         to = "+1234567890",
-        message = "Your OTP code is 478201"
+        content = "Your OTP code is 478201"
       )
 
       val message = rewrite.messages.send(params)

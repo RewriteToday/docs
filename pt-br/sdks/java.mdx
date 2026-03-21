@@ -50,7 +50,7 @@ description: Aprenda a usar o SDK de Java para enviar SMS com a API.
 
         var params = SendOptions.builder()
           .to("+1234567890")
-          .message("Your OTP code is 478201")
+          .content("Your OTP code is 478201")
           .build();
 
         var message = rewrite.messages().send(params);

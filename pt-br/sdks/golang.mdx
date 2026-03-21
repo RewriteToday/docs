@@ -42,7 +42,7 @@ description: Aprenda a usar o SDK de Golang para enviar SMS com a API.
 
         data, err := client.Messages.Send(&rewrite.Messages.SendOptions{
             To:      to,
-            Message: "Your OTP code is 478201",
+            Content: "Your OTP code is 478201",
         })
 
         if err != nil {

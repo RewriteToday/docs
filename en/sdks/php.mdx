@@ -39,7 +39,7 @@ description: Learn how to use the PHP SDK to send SMS with the API.
 
     $message = $rewrite->messages->send([
       'to' => '+1234567890',
-      'message' => 'Your OTP code is 478201',
+      'content' => 'Your OTP code is 478201',
     ]);
 
     var_dump($message);

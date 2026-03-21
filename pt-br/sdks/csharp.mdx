@@ -36,7 +36,7 @@ description: Aprenda a usar o SDK de C# para enviar SMS com a API.
     var message = await rewrite.Messages.SendAsync(new SendMessageOptions
     {
       To = "+1234567890",
-      Message = "Your OTP code is 478201"
+      Content = "Your OTP code is 478201"
     });
 
     Console.WriteLine(message);
