@@ -19,7 +19,7 @@ Use estes eventos no seu monitoramento:
 - [`message.canceled`](/pt-br/webhooks/events/message-canceled)
 - [`message.batch`](/pt-br/webhooks/events/message-batch)
 
-`message.delivered` esta em WIP.
+[`message.delivered`](/pt-br/webhooks/events/message-delivered) esta em WIP.
 
 ## Praticas de maior impacto
 
@@ -54,7 +54,7 @@ Exemplo de body:
 - Retente apenas cenarios `429` e `5xx` transientes.
 - Trate `400` de validacao como falha permanente ate corrigir o payload.
 - Trate `403` de assinatura/faturamento como bloqueio operacional, nao como retry de envio.
-- Inspecione o payload de `message.failed` para ver detalhes do erro de provider.
+- Inspecione o payload de [`message.failed`](/pt-br/webhooks/events/message-failed) para ver detalhes do erro de provider.
 
 ## Guias relacionados
 
