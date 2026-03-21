@@ -1,10 +1,10 @@
 ---
 title: "Biblioteca REST"
-description: "Use @rewritejs/rest para controle HTTP de baixo nivel com helpers de rota e recursos de seguranca para producao."
+description: "Use @rewritetoday/rest para controle HTTP de baixo nivel com helpers de rota e recursos de seguranca para producao."
 icon: route
 ---
 
-`@rewritejs/rest` e o cliente de baixo nivel da Rewrite para times que precisam de controle direto do comportamento HTTP.
+`@rewritetoday/rest` e o cliente de baixo nivel da Rewrite para times que precisam de controle direto do comportamento HTTP.
 
 Repositorio: [github.com/RewriteToday/rest](https://github.com/RewriteToday/rest)
 
@@ -19,7 +19,7 @@ Repositorio: [github.com/RewriteToday/rest](https://github.com/RewriteToday/rest
 
 <CardGroup cols={2}>
   <Card title="Helpers de rota" icon="signs-post" color="#C9CBD1">
-    Use builders do `@rewritejs/types` para evitar erros de montagem de path.
+    Use builders do `@rewritetoday/types` para evitar erros de montagem de path.
   </Card>
   <Card title="Controle de retry" icon="rotate" color="#C9CBD1">
     Trate falhas transientes e respostas de rate limit com backoff customizado.
@@ -36,27 +36,27 @@ Repositorio: [github.com/RewriteToday/rest](https://github.com/RewriteToday/rest
 
 <CodeGroup>
 ```bash npm
-npm install @rewritejs/rest @rewritejs/types
+npm install @rewritetoday/rest @rewritetoday/types
 ```
 
 ```bash pnpm
-pnpm add @rewritejs/rest @rewritejs/types
+pnpm add @rewritetoday/rest @rewritetoday/types
 ```
 
 ```bash yarn
-yarn add @rewritejs/rest @rewritejs/types
+yarn add @rewritetoday/rest @rewritetoday/types
 ```
 
 ```bash bun
-bun add @rewritejs/rest @rewritejs/types
+bun add @rewritetoday/rest @rewritetoday/types
 ```
 </CodeGroup>
 
 ## Exemplo basico
 
 ```ts
-import { REST } from '@rewritejs/rest';
-import { Routes, type RESTGetListAPIKeysData } from '@rewritejs/types';
+import { REST } from '@rewritetoday/rest';
+import { Routes, type RESTGetListAPIKeysData } from '@rewritetoday/types';
 
 const rewrite = new REST({
   secret: process.env.REWRITE_API_KEY,
@@ -70,8 +70,8 @@ console.log(response.data);
 ## Exemplo de resiliencia
 
 ```ts
-import { REST } from '@rewritejs/rest';
-import { Routes } from '@rewritejs/types';
+import { REST } from '@rewritetoday/rest';
+import { Routes } from '@rewritetoday/types';
 
 const rewrite = new REST({
   secret: process.env.REWRITE_API_KEY,
@@ -108,8 +108,8 @@ await rewrite.post(Routes.messages.create(), {
   Envie chaves de idempotencia em acoes de criacao/envio para evitar duplicacoes em retries.
 </Accordion>
 
-<Accordion title="Alinhe com @rewritejs/types">
-  Combine `@rewritejs/rest` com `@rewritejs/types` para manter paths e contratos sincronizados.
+<Accordion title="Alinhe com @rewritetoday/types">
+  Combine `@rewritetoday/rest` com `@rewritetoday/types` para manter paths e contratos sincronizados.
 </Accordion>
 
 <Accordion title="Adicione observabilidade cedo">

@@ -1,10 +1,10 @@
 ---
 title: "Biblioteca Zod"
-description: "Use @rewritejs/zod para schemas Zod oficiais e versionados com validacao em runtime nas integracoes Rewrite."
+description: "Use @rewritetoday/zod para schemas Zod oficiais e versionados com validacao em runtime nas integracoes Rewrite."
 icon: shield-check
 ---
 
-`@rewritejs/zod` fornece schemas oficiais em Zod para a API da Rewrite, permitindo validar requests, responses, recursos reutilizaveis e payloads de webhook em runtime.
+`@rewritetoday/zod` fornece schemas oficiais em Zod para a API da Rewrite, permitindo validar requests, responses, recursos reutilizaveis e payloads de webhook em runtime.
 
 Repositorio: [github.com/RewriteToday/zod](https://github.com/RewriteToday/zod)
 
@@ -19,7 +19,7 @@ Repositorio: [github.com/RewriteToday/zod](https://github.com/RewriteToday/zod)
 
 <CardGroup cols={2}>
   <Card title="Schemas versionados" icon="tag" color="#C9CBD1">
-    Importe schemas de namespaces como `@rewritejs/zod/v1`.
+    Importe schemas de namespaces como `@rewritetoday/zod/v1`.
   </Card>
   <Card title="Contratos REST" icon="route" color="#C9CBD1">
     Valide bodies e responses especificos de endpoint com schemas `REST<Method>*`.
@@ -36,26 +36,26 @@ Repositorio: [github.com/RewriteToday/zod](https://github.com/RewriteToday/zod)
 
 <CodeGroup>
 ```bash npm
-npm install @rewritejs/zod zod
+npm install @rewritetoday/zod zod
 ```
 
 ```bash pnpm
-pnpm add @rewritejs/zod zod
+pnpm add @rewritetoday/zod zod
 ```
 
 ```bash yarn
-yarn add @rewritejs/zod zod
+yarn add @rewritetoday/zod zod
 ```
 
 ```bash bun
-bun add @rewritejs/zod zod
+bun add @rewritetoday/zod zod
 ```
 </CodeGroup>
 
 ## Exemplo de validacao de request
 
 ```ts
-import { RESTPostCreateTemplateBody } from '@rewritejs/zod/v1';
+import { RESTPostCreateTemplateBody } from '@rewritetoday/zod/v1';
 
 const data = RESTPostCreateTemplateBody.parse({
   name: 'order_shipped',
@@ -72,7 +72,7 @@ console.log(data);
 ## Exemplo de validacao de webhook
 
 ```ts
-import { WebhookEvent } from '@rewritejs/zod/v1';
+import { WebhookEvent } from '@rewritetoday/zod/v1';
 
 const result = WebhookEvent.safeParse(payload);
 
@@ -91,11 +91,11 @@ console.log({ data: result.data });
 </Accordion>
 
 <Accordion title="Mantenha versoes explicitas">
-  Importe de um namespace especifico, como `@rewritejs/zod/v1`, para manter upgrades intencionais.
+  Importe de um namespace especifico, como `@rewritetoday/zod/v1`, para manter upgrades intencionais.
 </Accordion>
 
 <Accordion title="Combine validacao e transporte">
-  Use `@rewritejs/zod` junto com `@rewritejs/rest` e `@rewritejs/types` para fechar validacao, rotas e transporte na mesma stack.
+  Use `@rewritetoday/zod` junto com `@rewritetoday/rest` e `@rewritetoday/types` para fechar validacao, rotas e transporte na mesma stack.
 </Accordion>
 
 ## Documentacao relacionada
