@@ -49,7 +49,7 @@
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { error } = await rewrite.apiKeys.delete({\n  key: '748395130237498990',\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { error } = await rewrite.apiKeys.delete(\n  '748395130237498990',\n);\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -102,7 +102,7 @@
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.messages.send({\n  to: '+5511999999999',\n  content: 'Rewrite: seu codigo e 478201',\n  tags: [{ name: 'flow', value: 'login' }],\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.messages.send({\n  to: '+5511999999999',\n  content: 'Rewrite: seu codigo e 478201',\n  tags: [{ name: 'flow', value: 'login' }],\n});\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -208,7 +208,7 @@
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error, cursor } = await rewrite.messages.list({\n  limit: 25,\n  status: 'DELIVERED',\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error, cursor } = await rewrite.messages.list({\n  limit: 25,\n  status: 'DELIVERED',\n});\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -314,7 +314,7 @@
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.messages.sendBatch([\n  {\n    to: '+5511999999999',\n    content: 'Rewrite: seu codigo e 478201',\n  },\n  {\n    to: '+5511888888888',\n    templateId: '748395130237498620',\n    variables: { code: '941205' },\n  },\n]);\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.messages.batch(\n  [\n    {\n      to: '+5511999999999',\n      content: 'Rewrite: seu codigo e 478201',\n    },\n    {\n      to: '+5511888888888',\n      templateId: '748395130237498620',\n      variables: { code: '941205' },\n    },\n  ],\n  {\n    idempotencyKey: 'msg:batch:login-otp:2026-03-20T14:22',\n  },\n);\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -395,7 +395,7 @@
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { error } = await rewrite.messages.cancel({\n  id: '748395130237498412',\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { error } = await rewrite.messages.cancel(\n  '748395130237498412',\n);\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -449,7 +449,7 @@
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.messages.get({\n  id: '748395130237498412',\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.messages.get(\n  '748395130237498412',\n);\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -522,7 +522,7 @@
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.otp.send({\n  to: '+5511999999999',\n  prefix: 'Rewrite',\n  expiresIn: 5,\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.otp.send({\n  to: '+5511999999999',\n  prefix: 'Rewrite',\n  expiresIn: 5,\n  idempotencyKey: 'otp:login:2026-03-20T14:22',\n});\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -590,7 +590,7 @@
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.otp.verify({\n  id: '748395130237499120',\n  to: '+5511999999999',\n  code: '478201',\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.otp.verify({\n  id: '748395130237499120',\n  to: '+5511999999999',\n  code: '478201',\n});\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -661,7 +661,7 @@
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error, cursor } = await rewrite.templates.list({\n  limit: 20,\n  withi18n: true,\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error, cursor } = await rewrite.templates.list({\n  limit: 20,\n  withi18n: true,\n});\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -735,7 +735,7 @@
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.templates.create({\n  name: 'login_code',\n  description: 'Template usado no fluxo de login',\n  content: 'Rewrite: seu codigo e {{code}}',\n  i18n: { br: 'Rewrite: seu codigo e {{code}}' },\n  variables: [{ name: 'code', fallback: '478201' }],\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.templates.create({\n  name: 'login_code',\n  description: 'Template usado no fluxo de login',\n  content: 'Rewrite: seu codigo e {{code}}',\n  i18n: { br: 'Rewrite: seu codigo e {{code}}' },\n  variables: [{ name: 'code', fallback: '478201' }],\n});\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -804,7 +804,7 @@
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.templates.get({\n  identifier: 'login_code',\n  withi18n: true,\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.templates.get(\n  '748395130237498620',\n);\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -875,7 +875,7 @@
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { error } = await rewrite.templates.update({\n  id: '748395130237498620',\n  description: 'Template usado no fluxo de recuperacao de conta',\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { error } = await rewrite.templates.update(\n  '748395130237498620',\n  {\n    name: 'login_code',\n    description: 'Template usado no fluxo de recuperacao de conta',\n    content: 'Rewrite: seu codigo e {{code}}',\n    i18n: { br: 'Rewrite: seu codigo e {{code}}' },\n    variables: [{ name: 'code', fallback: '478201' }],\n  },\n);\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -939,7 +939,7 @@
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { error } = await rewrite.templates.delete({\n  id: '748395130237498620',\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { error } = await rewrite.templates.delete(\n  '748395130237498620',\n);\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -992,7 +992,7 @@
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error, cursor } = await rewrite.webhooks.list({\n  limit: 20,\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error, cursor } = await rewrite.webhooks.list({\n  limit: 20,\n});\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -1059,7 +1059,7 @@
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.webhooks.create({\n  name: 'delivery-events',\n  endpoint: 'https://example.com/rewrite/webhooks',\n  events: ['message.sent', 'message.failed', 'sms.otp'],\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.webhooks.create({\n  name: 'delivery-events',\n  endpoint: 'https://example.com/rewrite/webhooks',\n  events: ['message.sent', 'message.failed', 'sms.otp'],\n});\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -1121,7 +1121,7 @@
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.webhooks.get({\n  id: '748395130237498750',\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.webhooks.get(\n  '748395130237498750',\n);\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -1180,7 +1180,7 @@
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { error } = await rewrite.webhooks.update({\n  id: '748395130237498750',\n  status: 'INACTIVE',\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { error } = await rewrite.webhooks.update(\n  '748395130237498750',\n  {\n    status: 'INACTIVE',\n  },\n);\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -1244,7 +1244,7 @@
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { error } = await rewrite.webhooks.delete({\n  id: '748395130237498750',\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { error } = await rewrite.webhooks.delete(\n  '748395130237498750',\n);\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -1297,7 +1297,7 @@
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error, cursor } = await rewrite.logs.listWebhook({\n  webhookId: '748395130237498750',\n  type: 'message.sent',\n  status: 'SUCCESS',\n  limit: 25,\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error, cursor } = await rewrite.logs.list(\n  '748395130237498750',\n  {\n    type: 'message.sent',\n    status: 'SUCCESS',\n    limit: 25,\n  },\n);\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -1395,7 +1395,7 @@
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.logs.get({\n  id: '748395130237498880',\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.logs.get(\n  '748395130237498880',\n);\n\nif (error) throw error;"
 					}
 				],
 				"security": [

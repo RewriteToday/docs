@@ -2270,9 +2270,9 @@ const jsonBody = ({ schema, example, examples }) => ({
 
 const sdkSource = (snippet) =>
 	[
-		"import { Rewrite } from '@rewritejs/sdk';",
+		"import { Rewrite } from '@rewritetoday/sdk';",
 		'',
-		'const rewrite = new Rewrite(process.env.REWRITE_API_KEY);',
+		'const rewrite = new Rewrite(process.env.REWRITE_API_KEY!);',
 		'',
 		snippet.trim(),
 	].join('\n');
@@ -2326,9 +2326,9 @@ const apiKeysPaths = {
 					'Revoke an API key that should no longer be allowed to call Rewrite.',
 			}),
 			'x-codeSamples':
-				codeSamples(`const { error } = await rewrite.apiKeys.delete({
-  key: '${exampleSnowflakes.apiKey}',
-});
+				codeSamples(`const { error } = await rewrite.apiKeys.delete(
+  '${exampleSnowflakes.apiKey}',
+);
 
 if (error) throw error;`),
 			security: securityRequirement('project:write'),
@@ -2452,17 +2452,22 @@ if (error) throw error;`),
 					'Send between 1 and 100 SMS messages in one request. This route accepts Brazilian destination numbers in `+55` format and returns only the accepted message IDs.',
 			}),
 			'x-codeSamples':
-				codeSamples(`const { data, error } = await rewrite.messages.sendBatch([
+				codeSamples(`const { data, error } = await rewrite.messages.batch(
+  [
+    {
+      to: '+5511999999999',
+      content: 'Rewrite: seu codigo e 478201',
+    },
+    {
+      to: '+5511888888888',
+      templateId: '${exampleSnowflakes.template}',
+      variables: { code: '941205' },
+    },
+  ],
   {
-    to: '+5511999999999',
-    content: 'Rewrite: seu codigo e 478201',
+    idempotencyKey: 'msg:batch:login-otp:2026-03-20T14:22',
   },
-  {
-    to: '+5511888888888',
-    templateId: '${exampleSnowflakes.template}',
-    variables: { code: '941205' },
-  },
-]);
+);
 
 if (error) throw error;`),
 			security: securityRequirement('message:write'),
@@ -2516,9 +2521,9 @@ if (error) throw error;`),
 					'Cancel a queued or scheduled message before it reaches the provider.',
 			}),
 			'x-codeSamples':
-				codeSamples(`const { error } = await rewrite.messages.cancel({
-  id: '${exampleSnowflakes.message}',
-});
+				codeSamples(`const { error } = await rewrite.messages.cancel(
+  '${exampleSnowflakes.message}',
+);
 
 if (error) throw error;`),
 			security: securityRequirement('message:write'),
@@ -2554,9 +2559,9 @@ if (error) throw error;`),
 					'Fetch the current state of a single message, including delivery timestamps and rendered content.',
 			}),
 			'x-codeSamples':
-				codeSamples(`const { data, error } = await rewrite.messages.get({
-  id: '${exampleSnowflakes.message}',
-});
+				codeSamples(`const { data, error } = await rewrite.messages.get(
+  '${exampleSnowflakes.message}',
+);
 
 if (error) throw error;`),
 			security: securityRequirement('message:read'),
@@ -2595,6 +2600,7 @@ if (error) throw error;`),
   to: '+5511999999999',
   prefix: 'Rewrite',
   expiresIn: 5,
+  idempotencyKey: 'otp:login:2026-03-20T14:22',
 });
 
 if (error) throw error;`),
@@ -2781,10 +2787,9 @@ if (error) throw error;`),
 				details: 'Fetch a single template by its ID or by its name.',
 			}),
 			'x-codeSamples':
-				codeSamples(`const { data, error } = await rewrite.templates.get({
-  identifier: 'login_code',
-  withi18n: true,
-});
+				codeSamples(`const { data, error } = await rewrite.templates.get(
+  '${exampleSnowflakes.template}',
+);
 
 if (error) throw error;`),
 			security: securityRequirement('project:templates:read'),
@@ -2821,10 +2826,16 @@ if (error) throw error;`),
 					'Update the content, variables or description of an existing template.',
 			}),
 			'x-codeSamples':
-				codeSamples(`const { error } = await rewrite.templates.update({
-  id: '${exampleSnowflakes.template}',
-  description: 'Template usado no fluxo de recuperacao de conta',
-});
+				codeSamples(`const { error } = await rewrite.templates.update(
+  '${exampleSnowflakes.template}',
+  {
+    name: 'login_code',
+    description: 'Template usado no fluxo de recuperacao de conta',
+    content: 'Rewrite: seu codigo e {{code}}',
+    i18n: { br: 'Rewrite: seu codigo e {{code}}' },
+    variables: [{ name: 'code', fallback: '478201' }],
+  },
+);
 
 if (error) throw error;`),
 			security: securityRequirement('project:templates:write'),
@@ -2865,9 +2876,9 @@ if (error) throw error;`),
 					'Permanently delete a template that should no longer be used for message rendering.',
 			}),
 			'x-codeSamples':
-				codeSamples(`const { error } = await rewrite.templates.delete({
-  id: '${exampleSnowflakes.template}',
-});
+				codeSamples(`const { error } = await rewrite.templates.delete(
+  '${exampleSnowflakes.template}',
+);
 
 if (error) throw error;`),
 			security: securityRequirement('project:templates:write'),
@@ -2979,9 +2990,9 @@ if (error) throw error;`),
 				details: 'Fetch one webhook together with its current signing secret.',
 			}),
 			'x-codeSamples':
-				codeSamples(`const { data, error } = await rewrite.webhooks.get({
-  id: '${exampleSnowflakes.webhook}',
-});
+				codeSamples(`const { data, error } = await rewrite.webhooks.get(
+  '${exampleSnowflakes.webhook}',
+);
 
 if (error) throw error;`),
 			security: securityRequirement('project:webhooks:read'),
@@ -3017,10 +3028,12 @@ if (error) throw error;`),
 					'Update an existing webhook, including its event list, URL, status or signing secret.',
 			}),
 			'x-codeSamples':
-				codeSamples(`const { error } = await rewrite.webhooks.update({
-  id: '${exampleSnowflakes.webhook}',
-  status: 'INACTIVE',
-});
+				codeSamples(`const { error } = await rewrite.webhooks.update(
+  '${exampleSnowflakes.webhook}',
+  {
+    status: 'INACTIVE',
+  },
+);
 
 if (error) throw error;`),
 			security: securityRequirement('project:webhooks:write'),
@@ -3061,9 +3074,9 @@ if (error) throw error;`),
 					'Permanently delete a webhook and stop future event deliveries to it.',
 			}),
 			'x-codeSamples':
-				codeSamples(`const { error } = await rewrite.webhooks.delete({
-  id: '${exampleSnowflakes.webhook}',
-});
+				codeSamples(`const { error } = await rewrite.webhooks.delete(
+  '${exampleSnowflakes.webhook}',
+);
 
 if (error) throw error;`),
 			security: securityRequirement('project:webhooks:write'),
@@ -3101,12 +3114,14 @@ const logsPaths = {
 					'List delivery attempts for a specific webhook. Combine `type`, `status` and cursor parameters to inspect a particular delivery flow.',
 			}),
 			'x-codeSamples':
-				codeSamples(`const { data, error, cursor } = await rewrite.logs.listWebhook({
-  webhookId: '${exampleSnowflakes.webhook}',
-  type: 'message.sent',
-  status: 'SUCCESS',
-  limit: 25,
-});
+				codeSamples(`const { data, error, cursor } = await rewrite.logs.list(
+  '${exampleSnowflakes.webhook}',
+  {
+    type: 'message.sent',
+    status: 'SUCCESS',
+    limit: 25,
+  },
+);
 
 if (error) throw error;`),
 			security: securityRequirement('project:write'),
@@ -3156,9 +3171,9 @@ if (error) throw error;`),
 					'Fetch one webhook delivery attempt together with the exact event payload delivered by Rewrite.',
 			}),
 			'x-codeSamples':
-				codeSamples(`const { data, error } = await rewrite.logs.get({
-  id: '${exampleSnowflakes.log}',
-});
+				codeSamples(`const { data, error } = await rewrite.logs.get(
+  '${exampleSnowflakes.log}',
+);
 
 if (error) throw error;`),
 			security: securityRequirement('project:logs:read'),

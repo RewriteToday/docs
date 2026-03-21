@@ -29,7 +29,7 @@
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error, cursor } = await rewrite.logs.listWebhook({\n  webhookId: '748395130237498750',\n  type: 'message.sent',\n  status: 'SUCCESS',\n  limit: 25,\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error, cursor } = await rewrite.logs.list(\n  '748395130237498750',\n  {\n    type: 'message.sent',\n    status: 'SUCCESS',\n    limit: 25,\n  },\n);\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -127,7 +127,7 @@
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.logs.get({\n  id: '748395130237498880',\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.logs.get(\n  '748395130237498880',\n);\n\nif (error) throw error;"
 					}
 				],
 				"security": [

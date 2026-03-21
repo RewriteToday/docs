@@ -29,7 +29,7 @@
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.otp.send({\n  to: '+5511999999999',\n  prefix: 'Rewrite',\n  expiresIn: 5,\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.otp.send({\n  to: '+5511999999999',\n  prefix: 'Rewrite',\n  expiresIn: 5,\n  idempotencyKey: 'otp:login:2026-03-20T14:22',\n});\n\nif (error) throw error;"
 					}
 				],
 				"security": [
@@ -97,7 +97,7 @@
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritejs/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY);\n\nconst { data, error } = await rewrite.otp.verify({\n  id: '748395130237499120',\n  to: '+5511999999999',\n  code: '478201',\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.otp.verify({\n  id: '748395130237499120',\n  to: '+5511999999999',\n  code: '478201',\n});\n\nif (error) throw error;"
 					}
 				],
 				"security": [
