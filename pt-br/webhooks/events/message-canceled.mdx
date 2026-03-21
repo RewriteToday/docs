@@ -3,7 +3,7 @@ title: "message.canceled"
 description: "Mensagem em fila ou agendada cancelada antes da conclusao."
 ---
 
-`message.canceled` e emitido quando a Rewrite cancela com sucesso uma mensagem em fila ou agendada.
+`message.canceled` e emitido quando a Rewrite cancela com sucesso um SMS cancelavel de entrega futura.
 
 ```json
 {
@@ -20,7 +20,7 @@ description: "Mensagem em fila ou agendada cancelada antes da conclusao."
     "content": "Rewrite: sua fatura vence amanha",
     "country": "br",
     "analysis": {
-      "characters": 33,
+      "characters": 32,
       "encoding": "gsm7",
       "segments": { "concat": 153, "count": 1, "reason": "fits", "single": 160 }
     },
@@ -35,4 +35,5 @@ description: "Mensagem em fila ou agendada cancelada antes da conclusao."
 Notas:
 
 - Esse evento vem do fluxo publico de cancelamento.
+- Mensagens imediatas em fila sem `scheduledAt` nao podem ser canceladas pela API publica.
 - `data.scheduledAt` pode continuar preenchido quando a mensagem era originalmente agendada.

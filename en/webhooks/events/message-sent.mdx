@@ -1,9 +1,9 @@
 ---
 title: "message.sent"
-description: "Immediate SMS accepted by the provider."
+description: "SMS accepted by the provider after dispatch."
 ---
 
-`message.sent` is emitted when an immediate SMS leaves the queued state and the provider accepts it.
+`message.sent` is emitted when Rewrite receives provider acceptance for an SMS dispatch.
 
 ```json
 {
@@ -20,7 +20,7 @@ description: "Immediate SMS accepted by the provider."
     "content": "Rewrite: your verification code is 123456",
     "country": "br",
     "analysis": {
-      "characters": 39,
+      "characters": 41,
       "encoding": "gsm7",
       "segments": { "concat": 153, "count": 1, "reason": "fits", "single": 160 }
     },
@@ -37,3 +37,4 @@ Notes:
 - `data.status` is `SENT`.
 - `data.error` is `null`.
 - Immediate sends usually emit [`message.queued`](./message-queued) first.
+- Messages previously accepted with `scheduledAt` also emit `message.sent` later and can keep their original `data.scheduledAt`.

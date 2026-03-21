@@ -8,15 +8,15 @@ description: Current public Rewrite webhook event types and what each payload re
 - [`sms.otp`](/en/webhooks/events/sms-otp)
   Successful OTP send. Uses the message payload shape plus `data.otp`.
 - [`message.sent`](/en/webhooks/events/message-sent)
-  Immediate SMS accepted by the provider.
+  SMS accepted by the provider after dispatch.
 - [`message.batch`](/en/webhooks/events/message-batch)
-  Batch summary emitted when no batch messages remain pending and at least one reached `SENT`.
+  Batch summary emitted when no batch messages remain pending and at least one stored message row reached `SENT`.
 - [`message.queued`](/en/webhooks/events/message-queued)
   Immediate SMS persisted in queue before provider dispatch.
 - [`message.failed`](/en/webhooks/events/message-failed)
   SMS or OTP send failed. Includes `data.error`.
 - [`message.canceled`](/en/webhooks/events/message-canceled)
-  Queued or scheduled message was canceled.
+  Cancelable future-delivery SMS was canceled.
 - [`message.scheduled`](/en/webhooks/events/message-scheduled)
   Message accepted with a future `scheduledAt`.
 - [`message.delivered`](/en/webhooks/events/message-delivered)

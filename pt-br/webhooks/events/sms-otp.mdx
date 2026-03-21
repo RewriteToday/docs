@@ -20,7 +20,7 @@ description: "Evento de envio de OTP bem-sucedido."
     "content": "OTP prefix=\"Rewrite\" expiresIn=5 secure=true to=\"+5511999999999\"",
     "country": "br",
     "analysis": {
-      "characters": 67,
+      "characters": 64,
       "encoding": "gsm7",
       "segments": { "concat": 153, "count": 1, "reason": "fits", "single": 160 }
     },
@@ -40,5 +40,6 @@ description: "Evento de envio de OTP bem-sucedido."
 Notas:
 
 - `data.type` e sempre `OTP`.
+- `data.content` e o envelope de auditoria de OTP armazenado pelo backend.
 - `data.otp` so aparece neste evento de sucesso.
 - Falhas de OTP usam [`message.failed`](./message-failed).

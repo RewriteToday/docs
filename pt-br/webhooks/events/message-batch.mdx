@@ -25,5 +25,6 @@ description: "Resumo de batch emitido ao fim do dispatch."
 Notas:
 
 - `data.id` e o id do batch.
-- `data.ids` lista os ids das mensagens enviadas nesse batch.
+- `data.ids` lista os ids das mensagens armazenadas que terminaram com `SENT`, em ordem crescente.
+- `data.ids` pode ter mais itens do que o numero original de entradas quando alguma foi segmentada em varios SMS.
 - Se todas falharem, `message.batch` nao e emitido.

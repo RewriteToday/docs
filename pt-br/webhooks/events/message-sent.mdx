@@ -1,9 +1,9 @@
 ---
 title: "message.sent"
-description: "SMS imediato aceito pelo provider."
+description: "SMS aceito pelo provider apos o dispatch."
 ---
 
-`message.sent` e emitido quando um SMS imediato sai da fila e o provider aceita o envio.
+`message.sent` e emitido quando a Rewrite recebe a confirmacao do provider para o dispatch de um SMS.
 
 ```json
 {
@@ -20,7 +20,7 @@ description: "SMS imediato aceito pelo provider."
     "content": "Rewrite: seu codigo de verificacao e 123456",
     "country": "br",
     "analysis": {
-      "characters": 41,
+      "characters": 43,
       "encoding": "gsm7",
       "segments": { "concat": 153, "count": 1, "reason": "fits", "single": 160 }
     },
@@ -37,3 +37,4 @@ Notas:
 - `data.status` e `SENT`.
 - `data.error` e `null`.
 - Envios imediatos normalmente emitem [`message.queued`](./message-queued) antes.
+- Mensagens aceitas antes com `scheduledAt` tambem emitem `message.sent` depois e podem manter o `data.scheduledAt` original.

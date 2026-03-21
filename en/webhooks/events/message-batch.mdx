@@ -25,5 +25,6 @@ description: "Batch summary emitted after a send batch finishes dispatching."
 Notes:
 
 - `data.id` is the batch id.
-- `data.ids` are the first-message ids for the sent entries in that batch.
+- `data.ids` are the stored message ids that finished with `SENT`, sorted ascending.
+- `data.ids` can be longer than the original number of request items when some entries were segmented into multiple SMS parts.
 - If every batch item fails, no `message.batch` event is emitted.

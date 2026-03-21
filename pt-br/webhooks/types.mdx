@@ -8,15 +8,15 @@ description: Tipos publicos atuais de webhook da Rewrite e o significado de cada
 - [`sms.otp`](/pt-br/webhooks/events/sms-otp)
   Envio de OTP bem-sucedido. Usa o payload de mensagem com `data.otp`.
 - [`message.sent`](/pt-br/webhooks/events/message-sent)
-  SMS imediato aceito pelo provider.
+  SMS aceito pelo provider apos o dispatch.
 - [`message.batch`](/pt-br/webhooks/events/message-batch)
-  Resumo de batch emitido quando nao resta mensagem pendente e pelo menos uma chegou a `SENT`.
+  Resumo de batch emitido quando nao resta mensagem pendente e pelo menos uma linha de mensagem armazenada chegou a `SENT`.
 - [`message.queued`](/pt-br/webhooks/events/message-queued)
   SMS imediato persistido na fila antes do dispatch.
 - [`message.failed`](/pt-br/webhooks/events/message-failed)
   Envio de SMS ou OTP falhou. Inclui `data.error`.
 - [`message.canceled`](/pt-br/webhooks/events/message-canceled)
-  Mensagem em fila ou agendada foi cancelada.
+  SMS cancelavel de entrega futura foi cancelado.
 - [`message.scheduled`](/pt-br/webhooks/events/message-scheduled)
   Mensagem aceita com `scheduledAt` futuro.
 - [`message.delivered`](/pt-br/webhooks/events/message-delivered)

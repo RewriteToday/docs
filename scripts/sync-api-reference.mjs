@@ -78,7 +78,7 @@ const exampleTimestamps = {
 };
 
 const exampleMessageAnalysis = {
-	characters: 33,
+	characters: 28,
 	encoding: 'gsm7',
 	segments: {
 		concat: 153,
@@ -179,12 +179,12 @@ const exampleWebhookEvent = {
 		to: '+5511999999999',
 		tags: [exampleMessageTag],
 		type: 'SMS',
-		status: 'DELIVERED',
+		status: 'SENT',
 		content: 'Rewrite: seu codigo e 478201',
 		country: 'br',
 		analysis: exampleMessageAnalysis,
 		error: null,
-		deliveredAt: exampleTimestamps.deliveredAt,
+		deliveredAt: null,
 		scheduledAt: null,
 		templateId: null,
 	},

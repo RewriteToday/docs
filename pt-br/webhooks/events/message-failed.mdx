@@ -20,7 +20,7 @@ description: "Falha de envio de SMS ou OTP."
     "content": "Rewrite: seu codigo de verificacao e 123456",
     "country": "br",
     "analysis": {
-      "characters": 41,
+      "characters": 43,
       "encoding": "gsm7",
       "segments": { "concat": 153, "count": 1, "reason": "fits", "single": 160 }
     },
@@ -39,4 +39,6 @@ Notas:
 
 - `data.type` pode ser `SMS` ou `OTP`.
 - Falhas de OTP tambem usam esse evento, nao [`sms.otp`](./sms-otp).
+- Falhas de OTP nao incluem `data.otp`.
+- Falhas de SMS agendado podem manter o `data.scheduledAt` original.
 - Inspecione `data.error` para detalhes do provider.

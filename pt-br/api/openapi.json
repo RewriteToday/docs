@@ -180,7 +180,7 @@
 												"id": "748395130237498412",
 												"createdAt": "2026-03-20T14:22:31.562Z",
 												"analysis": {
-													"characters": 33,
+													"characters": 28,
 													"encoding": "gsm7",
 													"segments": {
 														"concat": 153,
@@ -1454,11 +1454,11 @@
 															}
 														],
 														"type": "SMS",
-														"status": "DELIVERED",
+														"status": "SENT",
 														"content": "Rewrite: seu codigo e 478201",
 														"country": "br",
 														"analysis": {
-															"characters": 33,
+															"characters": 28,
 															"encoding": "gsm7",
 															"segments": {
 																"concat": 153,
@@ -1468,7 +1468,7 @@
 															}
 														},
 														"error": null,
-														"deliveredAt": "2026-03-20T14:22:39.914Z",
+														"deliveredAt": null,
 														"scheduledAt": null,
 														"templateId": null
 													}
@@ -2068,7 +2068,7 @@
 					"characters": {
 						"type": "integer",
 						"description": "Total character count in the rendered SMS content.",
-						"example": 33
+						"example": 28
 					},
 					"encoding": {
 						"type": "string",

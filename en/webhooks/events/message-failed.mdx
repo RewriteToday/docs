@@ -20,7 +20,7 @@ description: "SMS or OTP send failed."
     "content": "Rewrite: your verification code is 123456",
     "country": "br",
     "analysis": {
-      "characters": 39,
+      "characters": 41,
       "encoding": "gsm7",
       "segments": { "concat": 153, "count": 1, "reason": "fits", "single": 160 }
     },
@@ -39,4 +39,6 @@ Notes:
 
 - `data.type` can be `SMS` or `OTP`.
 - OTP failures also use this event, not [`sms.otp`](./sms-otp).
+- OTP failures do not include `data.otp`.
+- Scheduled SMS failures can keep the original `data.scheduledAt`.
 - Inspect `data.error` for provider-facing details.

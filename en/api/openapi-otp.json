@@ -741,7 +741,7 @@
 					"characters": {
 						"type": "integer",
 						"description": "Total character count in the rendered SMS content.",
-						"example": 33
+						"example": 28
 					},
 					"encoding": {
 						"type": "string",
