@@ -56,15 +56,16 @@ bun add @rewritetoday/rest @rewritetoday/types
 
 ```ts
 import { REST } from '@rewritetoday/rest';
-import { Routes, type RESTGetListAPIKeysData } from '@rewritetoday/types';
+import { Routes, type RESTGetWebhookData } from '@rewritetoday/types';
 
 const rewrite = new REST({
-  secret: process.env.REWRITE_API_KEY,
   timeout: 12_000,
+  secret: process.env.REWRITE_API_KEY,
 });
 
-const response = await rewrite.get<RESTGetListAPIKeysData>(Routes.apiKeys.list());
-console.log(response.data);
+const { data } = await rewrite.get<RESTGetWebhookData>(Routes.webhooks.get('123'));
+
+console.log({ data });
 ```
 
 ## Resilience example
@@ -74,28 +75,30 @@ import { REST } from '@rewritetoday/rest';
 import { Routes } from '@rewritetoday/types';
 
 const rewrite = new REST({
-  secret: process.env.REWRITE_API_KEY,
   timeout: 12_000,
+  secret: process.env.REWRITE_API_KEY,
   retry: {
     max: 5,
     delay(attempt) {
       return Math.min(8_000, 2 ** attempt * 250);
     },
   },
-  onRateLimit({ limit, retryAfter, global }) {
-    console.log({ limit, retryAfter, global });
+  onRateLimit(context) {
+    console.log({ context });
   },
 });
 
-await rewrite.post(Routes.messages.create(), {
-  data: {
-    to: '+15555550123',
-    text: 'Your verification code is 382991',
+await rewrite.post(Routes.messages.create(), 
+  {
+    to: '+5511999999999',
+    content: 'Seu codigo de verificacao e 382991',
   },
-  headers: {
-    'X-Idempotency-Key': 'msg_382991',
-  },
-});
+  {
+  	headers: {
+    	'Idempotency-Key': 'msg_382991',
+   	}
+  }
+);
 ```
 
 ## Best practices
