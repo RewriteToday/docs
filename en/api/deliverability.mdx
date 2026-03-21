@@ -19,7 +19,7 @@ Use these webhook events in your monitoring:
 - [`message.canceled`](/en/webhooks/events/message-canceled)
 - [`message.batch`](/en/webhooks/events/message-batch)
 
-`message.delivered` is currently WIP.
+[`message.delivered`](/en/webhooks/events/message-delivered) is currently WIP.
 
 ## High-impact practices
 
@@ -54,7 +54,7 @@ Example send body:
 - Retry only `429` and transient `5xx` scenarios.
 - Treat `400` validation failures as permanent until the payload is fixed.
 - Treat `403` billing/subscription blocks as operational issues, not retryable sends.
-- Inspect `message.failed` webhook payloads for provider-facing error details.
+- Inspect [`message.failed`](/en/webhooks/events/message-failed) webhook payloads for provider-facing error details.
 
 ## Related guides
 
