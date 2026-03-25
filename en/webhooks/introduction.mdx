@@ -92,6 +92,8 @@ Important implementation details:
 - Read `svix-id`, `svix-timestamp`, and `svix-signature` from headers.
 - Verify against the webhook secret returned by `POST /webhooks` or `GET /webhooks/{id}`.
 
+For the full verification flow, canonical signed string, and a Node example, see [Signature](/en/webhooks/signature).
+
 ## Handler guidance
 
 - Return any `2xx` response quickly.
@@ -101,6 +103,7 @@ Important implementation details:
 
 ## Related pages
 
+- [Signature](/en/webhooks/signature)
 - [Event types](/en/webhooks/types)
 - [Retries](/en/webhooks/retry)
 - [Webhook management API](/en/api/introduction)

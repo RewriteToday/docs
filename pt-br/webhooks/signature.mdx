@@ -1,0 +1,230 @@
+---
+title: Assinatura
+description: Entenda como a Rewrite assina requests de webhook e como valida-las com seguranca usando raw body e headers Svix.
+---
+
+# Validacao de assinatura
+
+A Rewrite assina toda entrega de webhook antes dela chegar ao seu endpoint.
+
+Voce deve validar essa assinatura antes de fazer parse do JSON ou executar qualquer logica de negocio.
+
+## Headers assinados
+
+Toda entrega assinada inclui estes headers:
+
+- `svix-id`
+  Id unico da tentativa de entrega do webhook.
+- `svix-timestamp`
+  Timestamp usado quando a request foi assinada.
+- `svix-signature`
+  Header de assinatura usado na verificacao.
+
+## O que a Rewrite assina
+
+A assinatura e calculada a partir desta string exata:
+
+```txt
+${svix-id}.${svix-timestamp}.${payload}
+```
+
+Detalhes importantes:
+
+- `payload` precisa ser o raw body exato da request.
+- Nao faca `JSON.parse(...)` antes da verificacao.
+- Nao serialize o payload de novo antes da verificacao.
+- Nao remova espacos nem altere a codificacao.
+
+Se o body mudar em um unico byte, a assinatura calculada nao vai bater.
+
+## Qual segredo usar
+
+Use o segredo de assinatura do webhook retornado por:
+
+- `POST /webhooks`
+- `GET /webhooks/{id}`
+
+Nao use sua API key da Rewrite para verificar webhooks.
+
+O formato publico do segredo normalmente comeca com `whsec_...`.
+
+## Fluxo de verificacao
+
+1. Leia o raw body da request como string.
+2. Leia `svix-id`, `svix-timestamp` e `svix-signature`.
+3. Decodifique o segredo do webhook em bytes de chave.
+4. Calcule um HMAC-SHA256 sobre `${svix-id}.${svix-timestamp}.${payload}`.
+5. Codifique o digest em base64.
+6. Compare a assinatura recebida com a calculada usando comparacao em tempo constante.
+7. So depois disso faca parse do JSON e processe o evento.
+
+## Exemplos de funcao de verificacao
+
+As funcoes abaixo sao independentes de framework. Passe a string exata do raw body e os valores originais dos headers `svix-*` exatamente como chegaram.
+
+A aba Node segue o mesmo padrao de verificacao usado pela biblioteca Node da Rewrite.
+
+<CodeGroup>
+```ts Node
+import { createHmac, timingSafeEqual } from 'node:crypto';
+
+export function verifyRewriteWebhook({
+  svixId,
+  svixTimestamp,
+  svixSignature,
+  payload,
+  secret,
+}: {
+  svixId?: string;
+  svixTimestamp?: string;
+  svixSignature?: string;
+  payload: string;
+  secret: string;
+}) {
+  if (!secret) {
+    throw new Error('Rewrite webhook secret is missing.');
+  }
+
+  const value = secret.startsWith('whsec_')
+    ? secret.slice('whsec_'.length)
+    : secret;
+
+  const key = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}(?:==)?|[A-Za-z0-9+/]{3}=?)?$/.test(
+    value,
+  )
+    ? Buffer.from(value, 'base64')
+    : null;
+
+  const signature = svixSignature?.split(',')[1];
+
+  if (!key || !svixId || !svixTimestamp || !signature) {
+    return false;
+  }
+
+  const expected = createHmac('sha256', key)
+    .update(`${svixId}.${svixTimestamp}.${payload}`)
+    .digest('base64');
+
+  return (
+    signature.length === expected.length &&
+    timingSafeEqual(Buffer.from(signature), Buffer.from(expected))
+  );
+}
+```
+
+```go Go
+package webhook
+
+import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/base64"
+	"errors"
+	"strings"
+)
+
+func VerifyRewriteWebhook(
+	svixID string,
+	svixTimestamp string,
+	svixSignature string,
+	payload string,
+	secret string,
+) (bool, error) {
+	if secret == "" {
+		return false, errors.New("rewrite webhook secret is missing")
+	}
+
+	value := strings.TrimPrefix(secret, "whsec_")
+
+	key, err := base64.StdEncoding.DecodeString(value)
+	if err != nil {
+		return false, nil
+	}
+
+	parts := strings.Split(svixSignature, ",")
+	if svixID == "" || svixTimestamp == "" || len(parts) < 2 {
+		return false, nil
+	}
+
+	signature := parts[1]
+
+	mac := hmac.New(sha256.New, key)
+	mac.Write([]byte(svixID + "." + svixTimestamp + "." + payload))
+
+	expected := base64.StdEncoding.EncodeToString(mac.Sum(nil))
+
+	return hmac.Equal([]byte(signature), []byte(expected)), nil
+}
+```
+
+```python Python
+import base64
+import hashlib
+import hmac
+
+
+def verify_rewrite_webhook(
+    *,
+    svix_id: str | None,
+    svix_timestamp: str | None,
+    svix_signature: str | None,
+    payload: str,
+    secret: str,
+) -> bool:
+    if not secret:
+        raise ValueError("Rewrite webhook secret is missing.")
+
+    value = secret.removeprefix("whsec_")
+
+    try:
+        key = base64.b64decode(value, validate=True)
+    except Exception:
+        return False
+
+    parts = svix_signature.split(",") if svix_signature else []
+    signature = parts[1] if len(parts) > 1 else None
+
+    if not key or not svix_id or not svix_timestamp or not signature:
+        return False
+
+    signed = f"{svix_id}.{svix_timestamp}.{payload}".encode("utf-8")
+    expected = base64.b64encode(
+        hmac.new(key, signed, hashlib.sha256).digest()
+    ).decode("utf-8")
+
+    return hmac.compare_digest(signature, expected)
+```
+</CodeGroup>
+
+## Endurecimento recomendado
+
+<Accordion title="Rejeite timestamps antigos quando precisar de mais protecao contra replay">
+  A verificacao da assinatura prova integridade, mas voce tambem pode aplicar sua propria janela aceitavel de tempo com `svix-timestamp` quando o seu modelo de ameaca exigir controles mais rigidos.
+</Accordion>
+
+<Accordion title="Armazene ids de entrega processados">
+  Persista `svix-id` ou o `id` do evento de webhook e ignore duplicados com seguranca. A entrega e at-least-once e retries podem acontecer.
+</Accordion>
+
+<Accordion title="Mantenha o endpoint focado em verificar e enfileirar">
+  Retorne `2xx` rapidamente depois da verificacao e mova o trabalho lento para jobs, filas ou workers.
+</Accordion>
+
+<Accordion title="Registre falhas de verificacao com cuidado">
+  Logue contexto suficiente para depurar requests invalidas, mas evite registrar segredos ou payloads sensiveis em locais inseguros.
+</Accordion>
+
+## Erros comuns
+
+- Usar `express.json()` ou outro body parser antes da verificacao.
+- Verificar contra a API key em vez do segredo do webhook.
+- Serializar novamente um JSON ja parseado antes de calcular a assinatura.
+- Remover ou renomear os headers `svix-*` em proxies ou middleware.
+- Usar comparacao normal de string em vez de comparacao em tempo constante.
+
+## Paginas relacionadas
+
+- [Introducao](/pt-br/webhooks/introduction)
+- [Retentativas](/pt-br/webhooks/retry)
+- [Tipos de evento](/pt-br/webhooks/types)
+- [API de webhooks](/pt-br/api/introduction)

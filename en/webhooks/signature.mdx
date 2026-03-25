@@ -1,0 +1,230 @@
+---
+title: Signature
+description: Learn how Rewrite signs webhook requests and how to verify them safely with the raw body and Svix headers.
+---
+
+# Signature validation
+
+Rewrite signs every webhook delivery before it reaches your endpoint.
+
+You should verify the signature before parsing the JSON body or running any business logic.
+
+## Signed headers
+
+Every signed delivery includes these headers:
+
+- `svix-id`
+  Unique delivery id for the webhook attempt.
+- `svix-timestamp`
+  Timestamp used when the request was signed.
+- `svix-signature`
+  Signature header used for verification.
+
+## What Rewrite signs
+
+The signature is computed from this exact string:
+
+```txt
+${svix-id}.${svix-timestamp}.${payload}
+```
+
+Important details:
+
+- `payload` must be the exact raw request body.
+- Do not `JSON.parse(...)` before verification.
+- Do not re-stringify the payload before verification.
+- Do not trim whitespace or change encoding.
+
+If the body changes by even one byte, the computed signature will not match.
+
+## Which secret to use
+
+Use the webhook signing secret returned by:
+
+- `POST /webhooks`
+- `GET /webhooks/{id}`
+
+Do not use your Rewrite API key for webhook verification.
+
+The public secret format normally starts with `whsec_...`.
+
+## Verification flow
+
+1. Read the raw request body as a string.
+2. Read `svix-id`, `svix-timestamp`, and `svix-signature`.
+3. Decode the webhook secret into key bytes.
+4. Compute an HMAC-SHA256 over `${svix-id}.${svix-timestamp}.${payload}`.
+5. Base64-encode the digest.
+6. Compare the received signature and the computed signature with a constant-time check.
+7. Only after that should you parse the JSON and process the event.
+
+## Verification function examples
+
+The functions below are framework-agnostic. Pass the raw body string and the original `svix-*` header values exactly as they arrived.
+
+The Node tab follows the same verification pattern used by the Rewrite Node library.
+
+<CodeGroup>
+```ts Node
+import { createHmac, timingSafeEqual } from 'node:crypto';
+
+export function verifyRewriteWebhook({
+  svixId,
+  svixTimestamp,
+  svixSignature,
+  payload,
+  secret,
+}: {
+  svixId?: string;
+  svixTimestamp?: string;
+  svixSignature?: string;
+  payload: string;
+  secret: string;
+}) {
+  if (!secret) {
+    throw new Error('Rewrite webhook secret is missing.');
+  }
+
+  const value = secret.startsWith('whsec_')
+    ? secret.slice('whsec_'.length)
+    : secret;
+
+  const key = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}(?:==)?|[A-Za-z0-9+/]{3}=?)?$/.test(
+    value,
+  )
+    ? Buffer.from(value, 'base64')
+    : null;
+
+  const signature = svixSignature?.split(',')[1];
+
+  if (!key || !svixId || !svixTimestamp || !signature) {
+    return false;
+  }
+
+  const expected = createHmac('sha256', key)
+    .update(`${svixId}.${svixTimestamp}.${payload}`)
+    .digest('base64');
+
+  return (
+    signature.length === expected.length &&
+    timingSafeEqual(Buffer.from(signature), Buffer.from(expected))
+  );
+}
+```
+
+```go Go
+package webhook
+
+import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/base64"
+	"errors"
+	"strings"
+)
+
+func VerifyRewriteWebhook(
+	svixID string,
+	svixTimestamp string,
+	svixSignature string,
+	payload string,
+	secret string,
+) (bool, error) {
+	if secret == "" {
+		return false, errors.New("rewrite webhook secret is missing")
+	}
+
+	value := strings.TrimPrefix(secret, "whsec_")
+
+	key, err := base64.StdEncoding.DecodeString(value)
+	if err != nil {
+		return false, nil
+	}
+
+	parts := strings.Split(svixSignature, ",")
+	if svixID == "" || svixTimestamp == "" || len(parts) < 2 {
+		return false, nil
+	}
+
+	signature := parts[1]
+
+	mac := hmac.New(sha256.New, key)
+	mac.Write([]byte(svixID + "." + svixTimestamp + "." + payload))
+
+	expected := base64.StdEncoding.EncodeToString(mac.Sum(nil))
+
+	return hmac.Equal([]byte(signature), []byte(expected)), nil
+}
+```
+
+```python Python
+import base64
+import hashlib
+import hmac
+
+
+def verify_rewrite_webhook(
+    *,
+    svix_id: str | None,
+    svix_timestamp: str | None,
+    svix_signature: str | None,
+    payload: str,
+    secret: str,
+) -> bool:
+    if not secret:
+        raise ValueError("Rewrite webhook secret is missing.")
+
+    value = secret.removeprefix("whsec_")
+
+    try:
+        key = base64.b64decode(value, validate=True)
+    except Exception:
+        return False
+
+    parts = svix_signature.split(",") if svix_signature else []
+    signature = parts[1] if len(parts) > 1 else None
+
+    if not key or not svix_id or not svix_timestamp or not signature:
+        return False
+
+    signed = f"{svix_id}.{svix_timestamp}.{payload}".encode("utf-8")
+    expected = base64.b64encode(
+        hmac.new(key, signed, hashlib.sha256).digest()
+    ).decode("utf-8")
+
+    return hmac.compare_digest(signature, expected)
+```
+</CodeGroup>
+
+## Recommended hardening
+
+<Accordion title="Reject stale timestamps when you need tighter replay resistance">
+  Signature verification proves integrity, but you can also enforce your own acceptable timestamp window using `svix-timestamp` when your threat model requires stricter replay controls.
+</Accordion>
+
+<Accordion title="Store processed delivery ids">
+  Persist `svix-id` or the webhook event `id` and ignore duplicates safely. Delivery is at-least-once and retries can happen.
+</Accordion>
+
+<Accordion title="Keep the endpoint focused on verification and enqueueing">
+  Return a `2xx` quickly after verification and move slow work into background jobs, queues, or workers.
+</Accordion>
+
+<Accordion title="Log failed verification attempts carefully">
+  Log enough context to debug invalid requests, but avoid logging secrets or raw sensitive payloads in unsafe places.
+</Accordion>
+
+## Common mistakes
+
+- Using `express.json()` or another parsed body before verification.
+- Verifying against the API key instead of the webhook secret.
+- Re-stringifying parsed JSON before computing the signature.
+- Dropping or renaming the `svix-*` headers in proxies or middleware.
+- Using a normal string comparison instead of a constant-time comparison.
+
+## Related pages
+
+- [Introduction](/en/webhooks/introduction)
+- [Retries](/en/webhooks/retry)
+- [Event types](/en/webhooks/types)
+- [Webhook management API](/en/api/introduction)

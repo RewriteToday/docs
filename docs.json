@@ -222,6 +222,7 @@
 								"group": "Reference",
 								"pages": [
 									"en/webhooks/introduction",
+									"en/webhooks/signature",
 									"en/webhooks/retry",
 									"en/webhooks/types"
 								]
@@ -442,6 +443,7 @@
 								"group": "Reference",
 								"pages": [
 									"pt-br/webhooks/introduction",
+									"pt-br/webhooks/signature",
 									"pt-br/webhooks/retry",
 									"pt-br/webhooks/types"
 								]

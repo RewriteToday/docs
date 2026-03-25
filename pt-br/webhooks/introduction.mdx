@@ -92,6 +92,8 @@ Detalhes importantes:
 - Leia `svix-id`, `svix-timestamp` e `svix-signature` nos headers.
 - Verifique contra o segredo retornado por `POST /webhooks` ou `GET /webhooks/{id}`.
 
+Para o fluxo completo de verificacao, a string canonica assinada e um exemplo em Node, veja [Assinatura](/pt-br/webhooks/signature).
+
 ## Boas praticas do handler
 
 - Retorne qualquer `2xx` rapidamente.
@@ -101,6 +103,7 @@ Detalhes importantes:
 
 ## Paginas relacionadas
 
+- [Assinatura](/pt-br/webhooks/signature)
 - [Tipos de evento](/pt-br/webhooks/types)
 - [Retentativas](/pt-br/webhooks/retry)
 - [API de webhooks](/pt-br/api/introduction)
