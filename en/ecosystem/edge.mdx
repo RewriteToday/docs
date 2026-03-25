@@ -1,0 +1,105 @@
+---
+title: "Edge"
+description: "Receive Rewrite webhooks in standard edge runtimes with signature verification and typed callbacks."
+icon: cloud
+---
+
+[`@rewritetoday/edge`](https://www.npmjs.com/package/@rewritetoday/edge) is the Rewrite adapter for edge-native runtimes that expose the standard `Request` and `Response` APIs.
+
+Repository: [github.com/RewriteToday/adapters](https://github.com/RewriteToday/adapters)
+
+## When to use it
+
+- You run on workers or edge functions with the standard Web API request model.
+- You want a runtime-first webhook handler without a framework dependency.
+- You need signature verification and typed event callbacks at the route boundary.
+- You want one small integration point that works well in constrained execution environments.
+
+## Key capabilities
+
+<CardGroup cols={2}>
+  <Card title="Runtime-first" icon="cloud" color="#C9CBD1">
+    Works directly with the standard `Request` and `Response` APIs exposed by edge runtimes.
+  </Card>
+
+  <Card title="Verified payloads" icon="shield-check" color="#C9CBD1">
+    Invalid webhook signatures are rejected before your event handler runs.
+  </Card>
+
+  <Card title="Typed callbacks" icon="code" color="#C9CBD1">
+    Handle webhook payloads generically with `onPayload` or route specific event families with named hooks.
+  </Card>
+
+  <Card title="Minimal glue" icon="bolt" color="#C9CBD1">
+    Mount the handler directly in your fetch entrypoint without extra parsing middleware.
+  </Card>
+</CardGroup>
+
+## Install
+
+<CodeGroup>
+```bash npm
+npm install @rewritetoday/edge
+```
+
+```bash pnpm
+pnpm add @rewritetoday/edge
+```
+
+```bash yarn
+yarn add @rewritetoday/edge
+```
+
+```bash bun
+bun add @rewritetoday/edge
+```
+</CodeGroup>
+
+## Basic example
+
+```ts
+import { Webhooks } from '@rewritetoday/edge';
+
+export default {
+  fetch: Webhooks({
+    secret: 'whsec_...',
+    onPayload({ id, type, data }) {
+      console.log({ id, type, data });
+    },
+  }),
+};
+```
+
+## Best practices
+
+<Accordion title="Read the signing secret from bindings or env">
+  Avoid hardcoding the webhook secret. Inject it through your worker bindings, edge config, or runtime environment.
+</Accordion>
+
+<Accordion title="Return quickly and offload heavy work">
+  Webhook endpoints should acknowledge delivery fast. Push expensive work into queues, durable objects, or background jobs.
+</Accordion>
+
+<Accordion title="Deduplicate by webhook event id">
+  Persist the event id and make downstream processing idempotent so retries do not create duplicate side effects.
+</Accordion>
+
+<Accordion title="Available event callbacks">
+  The adapter supports `onSMSOTP`, `onMessageSent`, `onMessageBatch`, `onMessageQueued`, `onMessageDelivered`, `onMessageScheduled`, `onMessageFailed`, `onMessageCanceled`, and the generic `onPayload` hook.
+</Accordion>
+
+## Related docs
+
+<CardGroup cols={3}>
+  <Card title="Adapters overview" icon="plug" href="./adapters-introduction" color="#C9CBD1">
+    Compare every official adapter and decide when adapters fit better than base packages.
+  </Card>
+
+  <Card title="Webhook overview" icon="book-open" href="/en/webhooks/introduction" color="#C9CBD1">
+    Signature validation, delivery format, retries, and webhook registration basics.
+  </Card>
+
+  <Card title="Webhook event types" icon="code" href="/en/webhooks/types" color="#C9CBD1">
+    Event families and payload references for each supported Rewrite webhook.
+  </Card>
+</CardGroup>

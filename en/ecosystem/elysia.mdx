@@ -1,0 +1,109 @@
+---
+title: "Elysia"
+description: "Receive Rewrite webhooks in Elysia with signature verification and typed callbacks."
+icon: bolt
+---
+
+[`@rewritetoday/elysia`](https://www.npmjs.com/package/@rewritetoday/elysia) is the Rewrite adapter for Elysia applications that want a native webhook route with minimal ceremony.
+
+Repository: [github.com/RewriteToday/adapters](https://github.com/RewriteToday/adapters)
+
+## When to use it
+
+- Your backend already uses Elysia routing and handler patterns.
+- You want a framework-first adapter instead of wiring request verification manually.
+- You prefer typed event callbacks over custom webhook parsing code.
+- You want a clean route-level boundary for inbound Rewrite events.
+
+## Key capabilities
+
+<CardGroup cols={2}>
+  <Card title="Elysia-native route" icon="bolt" color="#C9CBD1">
+    Register a webhook endpoint with the same `app.post(...)` style you already use in Elysia.
+  </Card>
+
+  <Card title="Verified before dispatch" icon="shield-check" color="#C9CBD1">
+    Signature validation runs before the payload reaches your business logic.
+  </Card>
+
+  <Card title="Typed event hooks" icon="code" color="#C9CBD1">
+    Handle specific webhook families with named callbacks or process everything through `onPayload`.
+  </Card>
+
+  <Card title="No extra glue" icon="box" color="#C9CBD1">
+    The package is ready to use with Elysia without extra webhook-specific dependencies.
+  </Card>
+</CardGroup>
+
+## Install
+
+<CodeGroup>
+```bash npm
+npm install @rewritetoday/elysia elysia
+```
+
+```bash pnpm
+pnpm add @rewritetoday/elysia elysia
+```
+
+```bash yarn
+yarn add @rewritetoday/elysia elysia
+```
+
+```bash bun
+bun add @rewritetoday/elysia elysia
+```
+</CodeGroup>
+
+## Basic example
+
+```ts
+import { Elysia } from 'elysia';
+import { Webhooks } from '@rewritetoday/elysia';
+
+const app = new Elysia();
+
+app.post(
+  '/webhooks/rewrite',
+  Webhooks({
+    secret: process.env.REWRITE_WEBHOOK_SECRET!,
+    onPayload({ id, type, data }) {
+      console.log({ id, type, data });
+    },
+  }),
+);
+```
+
+## Best practices
+
+<Accordion title="Keep the webhook secret server-side">
+  Load the signing secret from environment variables and keep it separate from any client-exposed configuration.
+</Accordion>
+
+<Accordion title="Treat the route as an ingress boundary">
+  Keep business logic outside the route callback when possible so verification, logging, and downstream processing stay easy to reason about.
+</Accordion>
+
+<Accordion title="Deduplicate retry deliveries">
+  Rewrite webhooks can be retried. Store the event id and make side effects idempotent.
+</Accordion>
+
+<Accordion title="Available event callbacks">
+  The adapter supports `onSMSOTP`, `onMessageSent`, `onMessageBatch`, `onMessageQueued`, `onMessageDelivered`, `onMessageScheduled`, `onMessageFailed`, `onMessageCanceled`, and the generic `onPayload` hook.
+</Accordion>
+
+## Related docs
+
+<CardGroup cols={3}>
+  <Card title="Adapters overview" icon="plug" href="./adapters-introduction" color="#C9CBD1">
+    Compare the official adapters and choose the right integration point for your stack.
+  </Card>
+
+  <Card title="Webhook overview" icon="book-open" href="/en/webhooks/introduction" color="#C9CBD1">
+    Delivery format, signature validation, retry semantics, and registration guidance.
+  </Card>
+
+  <Card title="Webhook event types" icon="code" href="/en/webhooks/types" color="#C9CBD1">
+    Payload guides for `sms.otp` and message lifecycle events.
+  </Card>
+</CardGroup>

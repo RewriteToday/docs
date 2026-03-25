@@ -249,6 +249,17 @@
 								"pages": ["en/ecosystem/introduction"]
 							},
 							{
+								"group": "Adapters",
+								"pages": [
+									"en/ecosystem/adapters-introduction",
+									"en/ecosystem/edge",
+									"en/ecosystem/elysia",
+									"en/ecosystem/express",
+									"en/ecosystem/fastify",
+									"en/ecosystem/hono"
+								]
+							},
+							{
 								"group": "Packages",
 								"pages": [
 									"en/ecosystem/rest",
@@ -455,6 +466,17 @@
 							{
 								"group": "Visao geral",
 								"pages": ["pt-br/ecosystem/introduction"]
+							},
+							{
+								"group": "Adapters",
+								"pages": [
+									"pt-br/ecosystem/adapters-introduction",
+									"pt-br/ecosystem/edge",
+									"pt-br/ecosystem/elysia",
+									"pt-br/ecosystem/express",
+									"pt-br/ecosystem/fastify",
+									"pt-br/ecosystem/hono"
+								]
 							},
 							{
 								"group": "Pacotes",

@@ -1,0 +1,105 @@
+---
+title: "Edge"
+description: "Receba webhooks da Rewrite em runtimes edge padrao com verificacao de assinatura e callbacks tipados."
+icon: cloud
+---
+
+[`@rewritetoday/edge`](https://www.npmjs.com/package/@rewritetoday/edge) e o adapter da Rewrite para runtimes edge que expoem as APIs padrao de `Request` e `Response`.
+
+Repositorio: [github.com/RewriteToday/adapters](https://github.com/RewriteToday/adapters)
+
+## Quando usar
+
+- Quando voce roda em workers ou edge functions com modelo padrao da Web API.
+- Quando quer um handler de webhook orientado ao runtime, sem dependencia de framework.
+- Quando precisa de verificacao de assinatura e callbacks tipados na fronteira da rota.
+- Quando quer um ponto de integracao pequeno e adequado para ambientes com budget de execucao apertado.
+
+## Capacidades principais
+
+<CardGroup cols={2}>
+  <Card title="Orientado ao runtime" icon="cloud" color="#C9CBD1">
+    Funciona direto com as APIs padrao de `Request` e `Response` expostas por runtimes edge.
+  </Card>
+
+  <Card title="Payload validado" icon="shield-check" color="#C9CBD1">
+    Assinaturas invalidas sao rejeitadas antes do seu handler de evento rodar.
+  </Card>
+
+  <Card title="Callbacks tipados" icon="code" color="#C9CBD1">
+    Trate webhooks com `onPayload` ou roteie familias especificas com hooks nomeados.
+  </Card>
+
+  <Card title="Pouca cola manual" icon="bolt" color="#C9CBD1">
+    Monte o handler direto no entrypoint `fetch`, sem middleware extra de parsing.
+  </Card>
+</CardGroup>
+
+## Instalacao
+
+<CodeGroup>
+```bash npm
+npm install @rewritetoday/edge
+```
+
+```bash pnpm
+pnpm add @rewritetoday/edge
+```
+
+```bash yarn
+yarn add @rewritetoday/edge
+```
+
+```bash bun
+bun add @rewritetoday/edge
+```
+</CodeGroup>
+
+## Exemplo basico
+
+```ts
+import { Webhooks } from '@rewritetoday/edge';
+
+export default {
+  fetch: Webhooks({
+    secret: 'whsec_...',
+    onPayload({ id, type, data }) {
+      console.log({ id, type, data });
+    },
+  }),
+};
+```
+
+## Boas praticas
+
+<Accordion title="Leia o segredo a partir de bindings ou env">
+  Evite hardcode do segredo do webhook. Injete esse valor por bindings do worker, config de edge ou variaveis de ambiente.
+</Accordion>
+
+<Accordion title="Retorne rapido e descarregue trabalho pesado">
+  Endpoints de webhook devem confirmar a entrega rapidamente. Mova trabalho caro para filas, durable objects ou jobs em background.
+</Accordion>
+
+<Accordion title="Deduplique pelo id do evento">
+  Persista o id do evento e mantenha o processamento idempotente para que retries nao gerem efeitos duplicados.
+</Accordion>
+
+<Accordion title="Callbacks de evento disponiveis">
+  O adapter suporta `onSMSOTP`, `onMessageSent`, `onMessageBatch`, `onMessageQueued`, `onMessageDelivered`, `onMessageScheduled`, `onMessageFailed`, `onMessageCanceled` e o hook generico `onPayload`.
+</Accordion>
+
+## Documentacao relacionada
+
+<CardGroup cols={3}>
+  <Card title="Visao geral de Adapters" icon="plug" href="./adapters-introduction" color="#C9CBD1">
+    Compare todos os adapters oficiais e entenda quando eles fazem mais sentido que os pacotes base.
+  </Card>
+
+  <Card title="Visao geral de Webhooks" icon="book-open" href="/pt-br/webhooks/introduction" color="#C9CBD1">
+    Validacao de assinatura, formato da entrega, retries e registro de webhooks.
+  </Card>
+
+  <Card title="Tipos de evento" icon="code" href="/pt-br/webhooks/types" color="#C9CBD1">
+    Familias de evento e referencias de payload para cada webhook suportado pela Rewrite.
+  </Card>
+</CardGroup>

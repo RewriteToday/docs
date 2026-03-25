@@ -1,0 +1,107 @@
+---
+title: "Fastify"
+description: "Receive Rewrite webhooks in Fastify with signature verification and typed callbacks."
+icon: rocket
+---
+
+[`@rewritetoday/fastify`](https://www.npmjs.com/package/@rewritetoday/fastify) is the Rewrite adapter for Fastify services that prefer plugin-based webhook registration.
+
+Repository: [github.com/RewriteToday/adapters](https://github.com/RewriteToday/adapters)
+
+## When to use it
+
+- Your service already uses Fastify and its plugin model.
+- You want webhook registration to live inside Fastify's encapsulation boundaries.
+- You prefer typed event callbacks over manual signature verification and payload parsing.
+- You want the adapter to register the parser behavior needed for webhook verification.
+
+## Key capabilities
+
+<CardGroup cols={2}>
+  <Card title="Plugin-based registration" icon="rocket" color="#C9CBD1">
+    Register the webhook endpoint through `app.register(...)` with adapter options.
+  </Card>
+
+  <Card title="Signature verification" icon="shield-check" color="#C9CBD1">
+    Reject invalid webhook requests before application handlers run.
+  </Card>
+
+  <Card title="Typed event hooks" icon="code" color="#C9CBD1">
+    Handle named Rewrite events directly or use `onPayload` to dispatch generically.
+  </Card>
+
+  <Card title="Parser support" icon="box" color="#C9CBD1">
+    The adapter can register the JSON content parser required for verified webhook handling.
+  </Card>
+</CardGroup>
+
+## Install
+
+<CodeGroup>
+```bash npm
+npm install @rewritetoday/fastify fastify
+```
+
+```bash pnpm
+pnpm add @rewritetoday/fastify fastify
+```
+
+```bash yarn
+yarn add @rewritetoday/fastify fastify
+```
+
+```bash bun
+bun add @rewritetoday/fastify fastify
+```
+</CodeGroup>
+
+## Basic example
+
+```ts
+import Fastify from 'fastify';
+import { Webhooks } from '@rewritetoday/fastify';
+
+const app = Fastify();
+
+await app.register(Webhooks, {
+  path: '/webhooks/rewrite',
+  secret: process.env.REWRITE_WEBHOOK_SECRET!,
+  onPayload({ id, type, data }) {
+    console.log({ id, type, data });
+  },
+});
+```
+
+## Best practices
+
+<Accordion title="Keep the webhook route isolated">
+  Let the adapter own the Rewrite webhook route so request parsing and signature verification stay predictable.
+</Accordion>
+
+<Accordion title="Acknowledge fast and process asynchronously">
+  Return success quickly and hand off slow work to queues or background workers so retries stay rare.
+</Accordion>
+
+<Accordion title="Make handlers idempotent">
+  Persist the webhook event id and guard downstream writes against duplicate retry deliveries.
+</Accordion>
+
+<Accordion title="Available event callbacks">
+  The adapter supports `onSMSOTP`, `onMessageSent`, `onMessageBatch`, `onMessageQueued`, `onMessageDelivered`, `onMessageScheduled`, `onMessageFailed`, `onMessageCanceled`, and the generic `onPayload` hook.
+</Accordion>
+
+## Related docs
+
+<CardGroup cols={3}>
+  <Card title="Adapters overview" icon="plug" href="./adapters-introduction" color="#C9CBD1">
+    Compare the official adapters and understand when they fit better than base packages.
+  </Card>
+
+  <Card title="Webhook overview" icon="book-open" href="/en/webhooks/introduction" color="#C9CBD1">
+    Delivery semantics, retries, and signature verification details.
+  </Card>
+
+  <Card title="Webhook event types" icon="code" href="/en/webhooks/types" color="#C9CBD1">
+    Event families and payload references for supported Rewrite webhooks.
+  </Card>
+</CardGroup>

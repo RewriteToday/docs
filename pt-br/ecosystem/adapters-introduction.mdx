@@ -1,0 +1,109 @@
+---
+title: "Adapters"
+description: "Use adapters da Rewrite para receber e validar webhooks no seu framework ou runtime edge com menos boilerplate."
+icon: plug
+---
+
+Os adapters da Rewrite sao handlers de webhook conscientes do framework e do runtime, mantidos pela propria equipe da Rewrite.
+
+Eles verificam assinaturas, fazem o parse seguro do payload e expoem callbacks tipados que combinam com a forma como sua stack ja lida com requests de entrada.
+
+## Por que adapters?
+
+<CardGroup cols={2}>
+  <Card title="Nativos do framework" icon="plug" color="#C9CBD1">
+    Monte handlers de webhook diretamente em Express, Fastify, Elysia, Hono ou em runtimes edge padrao.
+  </Card>
+
+  <Card title="Seguranca por padrao" icon="shield-check" color="#C9CBD1">
+    A verificacao da assinatura acontece antes do payload chegar na sua logica de negocio.
+  </Card>
+
+  <Card title="Eventos tipados" icon="code" color="#C9CBD1">
+    Trate `sms.otp` e eventos do ciclo de vida de mensagens com callbacks nomeados ou com um hook generico.
+  </Card>
+
+  <Card title="Menos boilerplate" icon="bolt" color="#C9CBD1">
+    Evite parsing manual de raw body, cola de rota e codigo repetitivo de validacao de webhook.
+  </Card>
+</CardGroup>
+
+## Catalogo de adapters
+
+<CardGroup cols={2}>
+  <Card title="Edge" icon="cloud" href="./edge" color="#C9CBD1">
+    Tratamento padrao com `Request` e `Response` para workers e runtimes edge.
+  </Card>
+
+  <Card title="Elysia" icon="bolt" href="./elysia" color="#C9CBD1">
+    Rotas de webhook nativas para apps Elysia com setup minimo.
+  </Card>
+
+  <Card title="Express" icon="route" href="./express" color="#C9CBD1">
+    Integracao com middleware do Express e raw body necessario para validar assinaturas.
+  </Card>
+
+  <Card title="Fastify" icon="rocket" href="./fastify" color="#C9CBD1">
+    Registro por plugin para servicos Fastify que querem uma fronteira limpa para webhooks.
+  </Card>
+
+  <Card title="Hono" icon="globe" href="./hono" color="#C9CBD1">
+    Handlers enxutos para apps Hono rodando em edge ou runtimes compativeis com Node.
+  </Card>
+</CardGroup>
+
+## Adapter, SDK ou pacote?
+
+<Accordion title="Preciso receber webhooks da Rewrite no meu framework">
+  Comece pelo adapter que combina com sua stack HTTP. Ele oferece a menor superficie de integracao e reduz o boilerplate especifico de webhooks.
+</Accordion>
+
+<Accordion title="Preciso chamar a API, nao receber webhooks">
+  Use um SDK oficial ou `@rewritetoday/rest`. Adapters sao focados em verificacao de webhook e dispatch de eventos de entrada.
+</Accordion>
+
+<Accordion title="Ja tenho minha propria camada HTTP">
+  Use os pacotes base do ecossistema diretamente quando voce so precisa de contratos, validacao ou primitivas de transporte e prefere montar a rota por conta propria.
+</Accordion>
+
+## Fluxo comum
+
+1. Instale o adapter que combina com seu framework ou runtime.
+2. Leia o segredo do webhook a partir de variaveis de ambiente ou bindings da plataforma.
+3. Registre um handler `POST` para o endpoint de webhook da Rewrite.
+4. Trate eventos especificos com callbacks nomeados ou use `onPayload` para roteamento generico.
+5. Retorne `2xx` rapidamente e mova o trabalho pesado para filas ou tarefas em background.
+
+## Callbacks disponiveis
+
+Todos os adapters oficiais expoem a mesma superficie de callbacks:
+
+- `onSMSOTP`
+- `onMessageSent`
+- `onMessageBatch`
+- `onMessageQueued`
+- `onMessageDelivered`
+- `onMessageScheduled`
+- `onMessageFailed`
+- `onMessageCanceled`
+- `onPayload`
+
+<Info>
+Adapters sao para consumidores de webhook. Mantenha `REWRITE_API_KEY` fora do endpoint de webhook e armazene ali apenas o segredo de assinatura.
+</Info>
+
+## Documentacao relacionada
+
+<CardGroup cols={3}>
+  <Card title="Visao geral de Webhooks" icon="book-open" href="/pt-br/webhooks/introduction" color="#C9CBD1">
+    Formato da entrega, validacao de assinatura, retries e registro de webhooks.
+  </Card>
+
+  <Card title="Tipos de evento" icon="code" href="/pt-br/webhooks/types" color="#C9CBD1">
+    Familias de payload e paginas por evento para `sms.otp` e ciclo de vida de mensagens.
+  </Card>
+
+  <Card title="Repositorio Adapters" icon="github" href="https://github.com/RewriteToday/adapters" color="#C9CBD1">
+    Codigo-fonte, exemplos e historico de releases de todos os adapters oficiais.
+  </Card>
+</CardGroup>

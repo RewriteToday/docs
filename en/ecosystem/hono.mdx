@@ -1,0 +1,109 @@
+---
+title: "Hono"
+description: "Receive Rewrite webhooks in Hono with signature verification and typed callbacks."
+icon: globe
+---
+
+[`@rewritetoday/hono`](https://www.npmjs.com/package/@rewritetoday/hono) is the Rewrite adapter for Hono applications running on edge or Node-compatible runtimes.
+
+Repository: [github.com/RewriteToday/adapters](https://github.com/RewriteToday/adapters)
+
+## When to use it
+
+- Your application already exposes HTTP routes through Hono.
+- You want a lightweight webhook handler that fits Hono's request model.
+- You prefer typed event callbacks instead of manual signature verification code.
+- You need one webhook integration that can move between edge and server runtimes with minimal changes.
+
+## Key capabilities
+
+<CardGroup cols={2}>
+  <Card title="Hono-native route" icon="globe" color="#C9CBD1">
+    Register the Rewrite webhook endpoint with the same `app.post(...)` style you already use in Hono.
+  </Card>
+
+  <Card title="Signature verification" icon="shield-check" color="#C9CBD1">
+    Invalid webhook signatures are rejected before your callback runs.
+  </Card>
+
+  <Card title="Typed callbacks" icon="code" color="#C9CBD1">
+    Use named handlers for specific Rewrite events or `onPayload` for generic processing.
+  </Card>
+
+  <Card title="Cross-runtime friendly" icon="cloud" color="#C9CBD1">
+    The same integration style works well across edge and Node-compatible Hono deployments.
+  </Card>
+</CardGroup>
+
+## Install
+
+<CodeGroup>
+```bash npm
+npm install @rewritetoday/hono hono
+```
+
+```bash pnpm
+pnpm add @rewritetoday/hono hono
+```
+
+```bash yarn
+yarn add @rewritetoday/hono hono
+```
+
+```bash bun
+bun add @rewritetoday/hono hono
+```
+</CodeGroup>
+
+## Basic example
+
+```ts
+import { Hono } from 'hono';
+import { Webhooks } from '@rewritetoday/hono';
+
+const app = new Hono();
+
+app.post(
+  '/webhooks/rewrite',
+  Webhooks({
+    secret: process.env.REWRITE_WEBHOOK_SECRET!,
+    onPayload({ id, type, data }) {
+      console.log({ id, type, data });
+    },
+  }),
+);
+```
+
+## Best practices
+
+<Accordion title="Keep secrets in runtime config">
+  Load the webhook signing secret from environment variables or bindings rather than hardcoding it in your app.
+</Accordion>
+
+<Accordion title="Respond quickly to deliveries">
+  Keep the route focused on verification and dispatch. Push longer work into queues or background tasks.
+</Accordion>
+
+<Accordion title="Deduplicate retry deliveries">
+  Rewrite can retry webhook deliveries, so persist the event id and make side effects idempotent.
+</Accordion>
+
+<Accordion title="Available event callbacks">
+  The adapter supports `onSMSOTP`, `onMessageSent`, `onMessageBatch`, `onMessageQueued`, `onMessageDelivered`, `onMessageScheduled`, `onMessageFailed`, `onMessageCanceled`, and the generic `onPayload` hook.
+</Accordion>
+
+## Related docs
+
+<CardGroup cols={3}>
+  <Card title="Adapters overview" icon="plug" href="./adapters-introduction" color="#C9CBD1">
+    Compare all official adapters and understand where each one fits.
+  </Card>
+
+  <Card title="Webhook overview" icon="book-open" href="/en/webhooks/introduction" color="#C9CBD1">
+    Delivery format, retries, signature validation, and operational guidance.
+  </Card>
+
+  <Card title="Webhook event types" icon="code" href="/en/webhooks/types" color="#C9CBD1">
+    Event-specific payload pages for supported Rewrite webhook families.
+  </Card>
+</CardGroup>

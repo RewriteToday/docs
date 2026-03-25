@@ -1,0 +1,109 @@
+---
+title: "Express"
+description: "Receba webhooks da Rewrite no Express com verificacao de assinatura e callbacks tipados."
+icon: route
+---
+
+[`@rewritetoday/express`](https://www.npmjs.com/package/@rewritetoday/express) e o adapter da Rewrite para apps Express que precisam de um endpoint de webhook nativo do framework com setup minimo.
+
+Repositorio: [github.com/RewriteToday/adapters](https://github.com/RewriteToday/adapters)
+
+## Quando usar
+
+- Quando sua aplicacao ja usa roteamento e middleware do Express.
+- Quando quer que o adapter cuide do raw body necessario para validar assinaturas.
+- Quando prefere callbacks nomeados a parse manual de request.
+- Quando precisa de uma rota de entrada dedicada e validada para webhooks da Rewrite.
+
+## Capacidades principais
+
+<CardGroup cols={2}>
+  <Card title="Middleware nativo do Express" icon="route" color="#C9CBD1">
+    Monte o handler de webhook direto em `app.post(...)` com o formato de middleware esperado pelo Express.
+  </Card>
+
+  <Card title="Tratamento de raw body" icon="box" color="#C9CBD1">
+    O adapter ja gerencia o corpo bruto da request exigido para a verificacao da assinatura.
+  </Card>
+
+  <Card title="Callbacks tipados" icon="code" color="#C9CBD1">
+    Trate eventos suportados da Rewrite com hooks nomeados ou use `onPayload` para roteamento generico.
+  </Card>
+
+  <Card title="Validado antes da logica de negocio" icon="shield-check" color="#C9CBD1">
+    A verificacao da assinatura roda antes da sua aplicacao acessar o payload.
+  </Card>
+</CardGroup>
+
+## Instalacao
+
+<CodeGroup>
+```bash npm
+npm install @rewritetoday/express express
+```
+
+```bash pnpm
+pnpm add @rewritetoday/express express
+```
+
+```bash yarn
+yarn add @rewritetoday/express express
+```
+
+```bash bun
+bun add @rewritetoday/express express
+```
+</CodeGroup>
+
+## Exemplo basico
+
+```ts
+import express from 'express';
+import { Webhooks } from '@rewritetoday/express';
+
+const app = express();
+
+app.post(
+  '/webhooks/rewrite',
+  ...Webhooks({
+    secret: process.env.REWRITE_WEBHOOK_SECRET!,
+    onPayload({ id, type, data }) {
+      console.log({ id, type, data });
+    },
+  }),
+);
+```
+
+## Boas praticas
+
+<Accordion title="Use uma rota dedicada para o webhook">
+  Mantenha o endpoint da Rewrite isolado de middlewares JSON genericos para que o tratamento de raw body continue previsivel.
+</Accordion>
+
+<Accordion title="Retorne 2xx rapidamente">
+  Confirme a entrega assim que possivel e mova trabalho demorado para filas, jobs ou processadores em background.
+</Accordion>
+
+<Accordion title="Deduplique pelo id do evento">
+  Armazene o id do webhook e torne efeitos colaterais idempotentes para que retries sejam seguros.
+</Accordion>
+
+<Accordion title="Callbacks de evento disponiveis">
+  O adapter suporta `onSMSOTP`, `onMessageSent`, `onMessageBatch`, `onMessageQueued`, `onMessageDelivered`, `onMessageScheduled`, `onMessageFailed`, `onMessageCanceled` e o hook generico `onPayload`.
+</Accordion>
+
+## Documentacao relacionada
+
+<CardGroup cols={3}>
+  <Card title="Visao geral de Adapters" icon="plug" href="./adapters-introduction" color="#C9CBD1">
+    Compare os adapters oficiais e escolha a superficie de integracao certa.
+  </Card>
+
+  <Card title="Visao geral de Webhooks" icon="book-open" href="/pt-br/webhooks/introduction" color="#C9CBD1">
+    Formato da entrega, validacao de assinatura, retries e orientacoes operacionais.
+  </Card>
+
+  <Card title="Tipos de evento" icon="code" href="/pt-br/webhooks/types" color="#C9CBD1">
+    Guias de payload para todos os eventos de webhook suportados pela Rewrite.
+  </Card>
+</CardGroup>

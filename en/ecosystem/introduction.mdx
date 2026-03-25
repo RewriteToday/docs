@@ -10,6 +10,10 @@ Use them independently or combine them for a typed, resilient integration stack.
 ## Ecosystem architecture
 
 <CardGroup cols={2}>
+  <Card title="Adapters" icon="plug" color="#C9CBD1">
+    Framework-native and runtime-native webhook entrypoints with signature verification and typed events.
+  </Card>
+
   <Card title="Contracts" icon="code" color="#C9CBD1">
     Shared enums, route builders, and payload contracts for consistent integrations.
   </Card>
@@ -24,6 +28,34 @@ Use them independently or combine them for a typed, resilient integration stack.
 
   <Card title="Product layer" icon="box" href="/en/sdks/introduction" color="#C9CBD1">
     SDKs build on top for higher-level, language-native workflows.
+  </Card>
+</CardGroup>
+
+## Adapter catalog
+
+<CardGroup cols={2}>
+  <Card title="Adapters overview" icon="plug" href="./adapters-introduction" color="#C9CBD1">
+    Start here to compare framework-aware adapters for webhook consumers.
+  </Card>
+
+  <Card title="@rewritetoday/edge" icon="cloud" href="./edge" color="#C9CBD1">
+    For standard `Request` and `Response` runtimes such as workers and edge functions.
+  </Card>
+
+  <Card title="@rewritetoday/elysia" icon="bolt" href="./elysia" color="#C9CBD1">
+    For Elysia applications that want a native webhook route with typed callbacks.
+  </Card>
+
+  <Card title="@rewritetoday/express" icon="route" href="./express" color="#C9CBD1">
+    For Express apps that need raw-body handling and signature verification out of the box.
+  </Card>
+
+  <Card title="@rewritetoday/fastify" icon="rocket" href="./fastify" color="#C9CBD1">
+    For Fastify services that prefer plugin-based webhook registration.
+  </Card>
+
+  <Card title="@rewritetoday/hono" icon="globe" href="./hono" color="#C9CBD1">
+    For Hono apps running on edge or Node-compatible runtimes with minimal glue code.
   </Card>
 </CardGroup>
 
@@ -43,7 +75,11 @@ Use them independently or combine them for a typed, resilient integration stack.
   </Card>
 </CardGroup>
 
-## Which package should I use?
+## Which piece should I use?
+
+<Accordion title="I need to receive Rewrite webhooks in my framework">
+  Start with an adapter. Adapters are the fastest way to mount a verified, typed webhook endpoint inside Express, Fastify, Elysia, Hono, or a standard edge runtime.
+</Accordion>
 
 <Accordion title="I want fast integration with less boilerplate">
   Start with the official SDKs. They provide higher-level APIs and are usually the fastest path for product teams.
@@ -59,6 +95,10 @@ Use them independently or combine them for a typed, resilient integration stack.
 
 <Accordion title="I need runtime validation for external input or webhooks">
   Use `@rewritetoday/zod` to parse payloads at the boundary before your business logic runs.
+</Accordion>
+
+<Accordion title="I need webhook docs and event semantics">
+  Use the Webhooks docs together with an adapter page. The Webhooks section explains delivery format, signatures, retry behavior, and event families.
 </Accordion>
 
 ## Design principles
@@ -79,6 +119,16 @@ Use them independently or combine them for a typed, resilient integration stack.
 </CardGroup>
 
 ## Repositories and references
+
+<CardGroup cols={2}>
+  <Card title="Adapters repository" icon="github" href="https://github.com/RewriteToday/adapters" color="#C9CBD1">
+    Source code, package directories, examples, and release history for Rewrite adapters.
+  </Card>
+
+  <Card title="Webhook docs" icon="book-open" href="/en/webhooks/introduction" color="#C9CBD1">
+    Delivery format, signature validation, retries, and event-specific payload guides.
+  </Card>
+</CardGroup>
 
 <CardGroup cols={3}>
   <Card title="REST repository" icon="github" href="https://github.com/RewriteToday/rest" color="#C9CBD1">

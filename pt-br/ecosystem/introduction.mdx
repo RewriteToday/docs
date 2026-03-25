@@ -10,6 +10,10 @@ Voce pode usar cada pacote isoladamente ou combinar tudo para ter integracoes ti
 ## Arquitetura do ecossistema
 
 <CardGroup cols={2}>
+  <Card title="Adapters" icon="plug" color="#C9CBD1">
+    Entradas de webhook nativas do framework ou runtime, com verificacao de assinatura e eventos tipados.
+  </Card>
+
   <Card title="Contratos" icon="code" color="#C9CBD1">
     Enums, builders de rota e contratos de payload compartilhados para integracoes consistentes.
   </Card>
@@ -24,6 +28,34 @@ Voce pode usar cada pacote isoladamente ou combinar tudo para ter integracoes ti
 
   <Card title="Camada de produto" icon="box" href="/pt-br/sdks/introduction" color="#C9CBD1">
     Os SDKs constroem acima disso para fluxos de alto nivel e nativos de cada linguagem.
+  </Card>
+</CardGroup>
+
+## Catalogo de adapters
+
+<CardGroup cols={2}>
+  <Card title="Visao geral de adapters" icon="cloud" href="./adapters-introduction" color="#C9CBD1">
+    Comece aqui para comparar os adapters oficiais para consumidores de webhook.
+  </Card>
+
+  <Card title="@rewritetoday/edge" icon="cloud" href="./edge" color="#C9CBD1">
+    Para runtimes com `Request` e `Response` padrao, como workers e edge functions.
+  </Card>
+
+  <Card title="@rewritetoday/elysia" icon="bolt" href="./elysia" color="#C9CBD1">
+    Para apps Elysia que querem uma rota de webhook nativa com callbacks tipados.
+  </Card>
+
+  <Card title="@rewritetoday/express" icon="route" href="./express" color="#C9CBD1">
+    Para apps Express que precisam de raw body e verificacao de assinatura sem boilerplate.
+  </Card>
+
+  <Card title="@rewritetoday/fastify" icon="rocket" href="./fastify" color="#C9CBD1">
+    Para servicos Fastify que preferem registrar webhooks no formato de plugin.
+  </Card>
+
+  <Card title="@rewritetoday/hono" icon="globe" href="./hono" color="#C9CBD1">
+    Para apps Hono em edge ou runtimes compativeis com Node, com pouca cola manual.
   </Card>
 </CardGroup>
 
@@ -43,7 +75,11 @@ Voce pode usar cada pacote isoladamente ou combinar tudo para ter integracoes ti
   </Card>
 </CardGroup>
 
-## Qual pacote devo usar?
+## Qual peca devo usar?
+
+<Accordion title="Quero receber webhooks da Rewrite no meu framework">
+  Comece por um adapter. Eles sao a forma mais rapida de expor um endpoint de webhook validado e tipado em Express, Fastify, Elysia, Hono ou em um runtime edge padrao.
+</Accordion>
 
 <Accordion title="Quero integrar rapido com menos boilerplate">
   Comece pelos SDKs oficiais. Eles oferecem APIs de mais alto nivel e costumam ser o caminho mais rapido para times de produto.
@@ -59,6 +95,10 @@ Voce pode usar cada pacote isoladamente ou combinar tudo para ter integracoes ti
 
 <Accordion title="Preciso validar input externo ou webhooks em runtime">
   Use `@rewritetoday/zod` para fazer parse dos payloads na borda antes da sua logica de negocio rodar.
+</Accordion>
+
+<Accordion title="Preciso entender entrega de webhook e semantica dos eventos">
+  Combine a documentacao de Webhooks com a pagina do adapter. A secao de Webhooks explica formato da entrega, assinatura, retries e familias de evento.
 </Accordion>
 
 ## Principios de design
@@ -79,6 +119,16 @@ Voce pode usar cada pacote isoladamente ou combinar tudo para ter integracoes ti
 </CardGroup>
 
 ## Repositorios e referencias
+
+<CardGroup cols={2}>
+  <Card title="Repositorio Adapters" icon="github" href="https://github.com/RewriteToday/adapters" color="#C9CBD1">
+    Codigo-fonte, diretorios dos pacotes, exemplos e historico de releases dos adapters oficiais.
+  </Card>
+
+  <Card title="Documentacao de Webhooks" icon="book-open" href="/pt-br/webhooks/introduction" color="#C9CBD1">
+    Formato da entrega, validacao de assinatura, retries e guias de payload por evento.
+  </Card>
+</CardGroup>
 
 <CardGroup cols={3}>
   <Card title="Repositorio REST" icon="github" href="https://github.com/RewriteToday/rest" color="#C9CBD1">

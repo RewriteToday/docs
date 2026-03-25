@@ -1,0 +1,109 @@
+---
+title: "Adapters"
+description: "Use Rewrite adapters to receive and validate webhooks in your framework or edge runtime with less boilerplate."
+icon: plug
+---
+
+Rewrite adapters are framework-aware and runtime-aware webhook handlers maintained by the Rewrite team.
+
+They verify webhook signatures, parse the payload safely, and expose typed callbacks that match the way your stack already handles inbound requests.
+
+## Why adapters?
+
+<CardGroup cols={2}>
+  <Card title="Framework-native" icon="plug" color="#C9CBD1">
+    Mount webhook handlers directly in Express, Fastify, Elysia, Hono, or standard edge runtimes.
+  </Card>
+
+  <Card title="Secure by default" icon="shield-check" color="#C9CBD1">
+    Signature verification happens before the payload reaches your business logic.
+  </Card>
+
+  <Card title="Typed events" icon="code" color="#C9CBD1">
+    Handle `sms.otp` and message lifecycle events with named callbacks or a generic payload hook.
+  </Card>
+
+  <Card title="Less boilerplate" icon="bolt" color="#C9CBD1">
+    Skip raw-body parsing, route glue, and repetitive webhook validation code.
+  </Card>
+</CardGroup>
+
+## Adapter catalog
+
+<CardGroup cols={2}>
+  <Card title="Edge" icon="cloud" href="./edge" color="#C9CBD1">
+    Standard `Request` and `Response` handling for workers and edge-native runtimes.
+  </Card>
+
+  <Card title="Elysia" icon="bolt" href="./elysia" color="#C9CBD1">
+    Native webhook routes for Elysia applications with minimal setup.
+  </Card>
+
+  <Card title="Express" icon="route" href="./express" color="#C9CBD1">
+    Express middleware wiring with the raw-body handling required for signature validation.
+  </Card>
+
+  <Card title="Fastify" icon="rocket" href="./fastify" color="#C9CBD1">
+    Plugin-based registration for Fastify services that want a clean webhook boundary.
+  </Card>
+
+  <Card title="Hono" icon="globe" href="./hono" color="#C9CBD1">
+    Lightweight webhook handlers for Hono apps running on edge or Node-compatible runtimes.
+  </Card>
+</CardGroup>
+
+## Adapter, SDK, or package?
+
+<Accordion title="I need to receive Rewrite webhooks in my framework">
+  Start with the adapter that matches your HTTP stack. It gives you the smallest integration surface and the least webhook-specific boilerplate.
+</Accordion>
+
+<Accordion title="I need to send API requests, not receive webhooks">
+  Use an official SDK or `@rewritetoday/rest` instead. Adapters focus on inbound webhook verification and event dispatch.
+</Accordion>
+
+<Accordion title="I already have my own HTTP layer">
+  Use the base ecosystem packages directly when you only need contracts, validation, or transport primitives and prefer to build the route integration yourself.
+</Accordion>
+
+## Common flow
+
+1. Install the adapter that matches your framework or runtime.
+2. Read the webhook secret from environment variables or platform bindings.
+3. Register a `POST` handler for your Rewrite webhook endpoint.
+4. Handle specific events with named callbacks or use `onPayload` for generic routing.
+5. Return `2xx` quickly and offload long-running work to a queue or background task.
+
+## Available callbacks
+
+All official adapters expose the same event callback surface:
+
+- `onSMSOTP`
+- `onMessageSent`
+- `onMessageBatch`
+- `onMessageQueued`
+- `onMessageDelivered`
+- `onMessageScheduled`
+- `onMessageFailed`
+- `onMessageCanceled`
+- `onPayload`
+
+<Info>
+Adapters are for webhook consumers. Keep `REWRITE_API_KEY` out of your webhook endpoint and store only the webhook signing secret there.
+</Info>
+
+## Related docs
+
+<CardGroup cols={3}>
+  <Card title="Webhook overview" icon="book-open" href="/en/webhooks/introduction" color="#C9CBD1">
+    Delivery format, signature validation, retries, and webhook registration basics.
+  </Card>
+
+  <Card title="Webhook event types" icon="code" href="/en/webhooks/types" color="#C9CBD1">
+    Payload families and event-specific pages for `sms.otp` and message lifecycle events.
+  </Card>
+
+  <Card title="Adapters repository" icon="github" href="https://github.com/RewriteToday/adapters" color="#C9CBD1">
+    Package source code, examples, and release history for every official adapter.
+  </Card>
+</CardGroup>
