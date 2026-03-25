@@ -1,0 +1,106 @@
+---
+title: "Neovim"
+description: "Instale o tema oficial da Rewrite para Neovim com variantes automaticas, dark e light, alem de suporte ao lualine."
+icon: terminal
+---
+
+Rewrite Theme for Neovim e o tema oficial da Rewrite para Neovim.
+
+Repositorio: [github.com/RewriteToday/theme](https://github.com/RewriteToday/theme)
+
+## Quando usar
+
+- Quando voce quer a paleta da Rewrite dentro do Neovim.
+- Quando prefere instalar temas via plugin manager apontando para o GitHub.
+- Quando quer uma variante automatica que segue `vim.o.background`.
+- Quando quer suporte combinado para `lualine`.
+
+## O que voce recebe
+
+<CardGroup cols={2}>
+  <Card title="Modo automatico" icon="circle-half-stroke" color="#C9CBD1">
+    `rewrite` segue `vim.o.background` e ajusta o comportamento da paleta automaticamente.
+  </Card>
+
+  <Card title="Variantes forcadas" icon="sun" color="#C9CBD1">
+    `rewrite-night` e `rewrite-day` permitem travar o Neovim em uma variante especifica.
+  </Card>
+
+  <Card title="Instalacao via GitHub" icon="github" color="#C9CBD1">
+    O runtime do Neovim fica exposto na raiz do repositorio de proposito para plugin managers.
+  </Card>
+
+  <Card title="Suporte a lualine" icon="box" color="#C9CBD1">
+    O repositorio inclui um tema de `lualine` alinhado para manter a UI consistente.
+  </Card>
+</CardGroup>
+
+## Instalacao
+
+Use seu plugin manager para instalar a raiz do repositorio:
+
+```lua
+{
+  "RewriteToday/theme",
+  name = "rewrite.nvim",
+  lazy = false,
+  priority = 1000,
+  config = function()
+    require("rewrite").setup({ style = "auto" })
+    vim.cmd.colorscheme("rewrite")
+  end,
+}
+```
+
+## Ativar uma variante
+
+Use o modo automatico:
+
+```lua
+vim.cmd.colorscheme("rewrite")
+```
+
+Force dark ou light explicitamente:
+
+```lua
+vim.cmd.colorscheme("rewrite-night")
+vim.cmd.colorscheme("rewrite-day")
+```
+
+Ative o tema correspondente no `lualine`:
+
+```lua
+require("lualine").setup({
+  options = {
+    theme = "rewrite",
+  },
+})
+```
+
+## Conteudo do pacote
+
+```text
+colors/
+├─ rewrite.lua
+├─ rewrite-night.lua
+└─ rewrite-day.lua
+lua/rewrite/
+├─ init.lua
+├─ base.lua
+├─ night.lua
+└─ day.lua
+lua/lualine/themes/
+└─ rewrite.lua
+```
+
+## Documentacao relacionada
+
+<CardGroup cols={2}>
+  <Card title="Visao geral de Themes" icon="palette" href="./themes-introduction" color="#C9CBD1">
+    Compare os editores suportados e entenda onde cada fluxo de instalacao faz mais sentido.
+  </Card>
+
+  <Card title="Repositorio Themes" icon="github" href="https://github.com/RewriteToday/theme" color="#C9CBD1">
+    Codigo-fonte, runtime do Neovim e historico de releases dos themes da Rewrite.
+  </Card>
+</CardGroup>

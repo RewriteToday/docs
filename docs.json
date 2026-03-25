@@ -261,6 +261,15 @@
 								]
 							},
 							{
+								"group": "Themes",
+								"pages": [
+									"en/ecosystem/themes-introduction",
+									"en/ecosystem/zed",
+									"en/ecosystem/vscode",
+									"en/ecosystem/neovim"
+								]
+							},
+							{
 								"group": "Packages",
 								"pages": [
 									"en/ecosystem/rest",
@@ -479,6 +488,15 @@
 									"pt-br/ecosystem/express",
 									"pt-br/ecosystem/fastify",
 									"pt-br/ecosystem/hono"
+								]
+							},
+							{
+								"group": "Themes",
+								"pages": [
+									"pt-br/ecosystem/themes-introduction",
+									"pt-br/ecosystem/zed",
+									"pt-br/ecosystem/vscode",
+									"pt-br/ecosystem/neovim"
 								]
 							},
 							{

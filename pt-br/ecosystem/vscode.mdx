@@ -1,0 +1,81 @@
+---
+title: "VS Code"
+description: "Instale a extensao oficial de tema da Rewrite para Visual Studio Code e alterne entre Rewrite Night e Rewrite Day."
+icon: code
+---
+
+Rewrite Theme for Visual Studio Code e a extensao oficial de tema da Rewrite para VS Code.
+
+Repositorio: [github.com/RewriteToday/theme](https://github.com/RewriteToday/theme)
+
+## Quando usar
+
+- Quando voce usa Visual Studio Code ou fluxos compativeis com temas do VS Code.
+- Quando quer instalacao direta via marketplace.
+- Quando quer uma variante dark focada e uma variante light mais quente, com a mesma linguagem visual.
+- Quando precisa de um extension id conhecido para setups gerenciados.
+
+## O que voce recebe
+
+<CardGroup cols={2}>
+  <Card title="Rewrite Night" icon="moon" color="#C9CBD1">
+    Modo dark ajustado para sessoes focadas de codigo e para a atmosfera mais escura da Rewrite.
+  </Card>
+
+  <Card title="Rewrite Day" icon="sun" color="#C9CBD1">
+    Modo light que preserva o mesmo acento amber e a mesma hierarquia visual.
+  </Card>
+
+  <Card title="Instalacao via marketplace" icon="download" color="#C9CBD1">
+    Instale a extensao direto do Visual Studio Code Marketplace.
+  </Card>
+
+  <Card title="Extension id conhecido" icon="tag" color="#C9CBD1">
+    Use `rewritetoday.rewrite` quando precisar buscar ou automatizar a instalacao pelo id.
+  </Card>
+</CardGroup>
+
+## Instalacao
+
+Abra a view de Extensions dentro do Visual Studio Code, procure por `Rewrite Theme` e instale direto do Marketplace.
+
+```text
+Extensions -> Search: Rewrite Theme -> Install
+```
+
+Se preferir buscar pelo identificador, use:
+
+```text
+rewritetoday.rewrite
+```
+
+## Ativar uma variante
+
+Abra `Preferences: Color Theme` e escolha:
+
+```text
+Rewrite Night
+Rewrite Day
+```
+
+## Conteudo do pacote
+
+```text
+vscode/
+├─ package.json
+├─ themes/rewrite-night-color-theme.json
+├─ themes/rewrite-day-color-theme.json
+└─ scripts/package.sh
+```
+
+## Documentacao relacionada
+
+<CardGroup cols={2}>
+  <Card title="Visao geral de Themes" icon="palette" href="./themes-introduction" color="#C9CBD1">
+    Compare os editores suportados e veja como Rewrite Night e Rewrite Day aparecem em cada um.
+  </Card>
+
+  <Card title="Repositorio Themes" icon="github" href="https://github.com/RewriteToday/theme" color="#C9CBD1">
+    Codigo-fonte, manifests e fluxo de release dos themes da Rewrite.
+  </Card>
+</CardGroup>

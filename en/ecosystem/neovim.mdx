@@ -1,0 +1,106 @@
+---
+title: "Neovim"
+description: "Install the official Rewrite theme for Neovim with automatic, dark, and light variants plus matching lualine support."
+icon: terminal
+---
+
+Rewrite Theme for Neovim is the official Rewrite theme for Neovim.
+
+Repository: [github.com/RewriteToday/theme](https://github.com/RewriteToday/theme)
+
+## When to use it
+
+- You want the Rewrite palette in Neovim.
+- You prefer installing editor themes through your plugin manager from GitHub.
+- You want an automatic variant that follows `vim.o.background`.
+- You want matching `lualine` support.
+
+## What you get
+
+<CardGroup cols={2}>
+  <Card title="Auto mode" icon="circle-half-stroke" color="#C9CBD1">
+    `rewrite` follows `vim.o.background` and switches palette behavior automatically.
+  </Card>
+
+  <Card title="Forced variants" icon="sun" color="#C9CBD1">
+    `rewrite-night` and `rewrite-day` let you lock Neovim to one variant.
+  </Card>
+
+  <Card title="GitHub-first install" icon="github" color="#C9CBD1">
+    The Neovim runtime is exposed at the repository root on purpose for plugin-manager installs.
+  </Card>
+
+  <Card title="lualine support" icon="box" color="#C9CBD1">
+    The repository ships a matching `lualine` theme to keep the UI consistent.
+  </Card>
+</CardGroup>
+
+## Install
+
+Use your plugin manager to install the repository root:
+
+```lua
+{
+  "RewriteToday/theme",
+  name = "rewrite.nvim",
+  lazy = false,
+  priority = 1000,
+  config = function()
+    require("rewrite").setup({ style = "auto" })
+    vim.cmd.colorscheme("rewrite")
+  end,
+}
+```
+
+## Activate a variant
+
+Use the automatic mode:
+
+```lua
+vim.cmd.colorscheme("rewrite")
+```
+
+Force dark or light explicitly:
+
+```lua
+vim.cmd.colorscheme("rewrite-night")
+vim.cmd.colorscheme("rewrite-day")
+```
+
+Enable the matching `lualine` theme:
+
+```lua
+require("lualine").setup({
+  options = {
+    theme = "rewrite",
+  },
+})
+```
+
+## Package contents
+
+```text
+colors/
+├─ rewrite.lua
+├─ rewrite-night.lua
+└─ rewrite-day.lua
+lua/rewrite/
+├─ init.lua
+├─ base.lua
+├─ night.lua
+└─ day.lua
+lua/lualine/themes/
+└─ rewrite.lua
+```
+
+## Related docs
+
+<CardGroup cols={2}>
+  <Card title="Themes overview" icon="palette" href="./themes-introduction" color="#C9CBD1">
+    Compare the supported editors and understand where each install flow fits.
+  </Card>
+
+  <Card title="Themes repository" icon="github" href="https://github.com/RewriteToday/theme" color="#C9CBD1">
+    Source code, Neovim runtime files, and release history for Rewrite themes.
+  </Card>
+</CardGroup>
