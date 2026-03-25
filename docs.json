@@ -264,7 +264,8 @@
 								"pages": [
 									"en/ecosystem/rest",
 									"en/ecosystem/types",
-									"en/ecosystem/zod"
+									"en/ecosystem/zod",
+									"en/ecosystem/typebox"
 								]
 							}
 						]
@@ -483,7 +484,8 @@
 								"pages": [
 									"pt-br/ecosystem/rest",
 									"pt-br/ecosystem/types",
-									"pt-br/ecosystem/zod"
+									"pt-br/ecosystem/zod",
+									"pt-br/ecosystem/typebox"
 								]
 							}
 						]

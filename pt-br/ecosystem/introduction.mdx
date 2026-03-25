@@ -73,6 +73,10 @@ Voce pode usar cada pacote isoladamente ou combinar tudo para ter integracoes ti
   <Card title="@rewritetoday/zod" icon="shield-check" href="./zod" color="#C9CBD1">
     Para schemas oficiais em Zod, validacao versionada em runtime e webhooks mais seguros.
   </Card>
+
+  <Card title="@rewritetoday/typebox" icon="box" href="./typebox" color="#C9CBD1">
+    Para schemas oficiais em TypeBox, validacao versionada e parse seguro com `@sinclair/typebox`.
+  </Card>
 </CardGroup>
 
 ## Qual peca devo usar?
@@ -94,7 +98,7 @@ Voce pode usar cada pacote isoladamente ou combinar tudo para ter integracoes ti
 </Accordion>
 
 <Accordion title="Preciso validar input externo ou webhooks em runtime">
-  Use `@rewritetoday/zod` para fazer parse dos payloads na borda antes da sua logica de negocio rodar.
+  Use `@rewritetoday/zod` ou `@rewritetoday/typebox` para fazer parse dos payloads na borda antes da sua logica de negocio rodar, dependendo da sua stack de validacao.
 </Accordion>
 
 <Accordion title="Preciso entender entrega de webhook e semantica dos eventos">
@@ -141,6 +145,10 @@ Voce pode usar cada pacote isoladamente ou combinar tudo para ter integracoes ti
 
   <Card title="Repositorio Zod" icon="github" href="https://github.com/RewriteToday/zod" color="#C9CBD1">
     Codigo-fonte e schemas oficiais de runtime do `@rewritetoday/zod`.
+  </Card>
+
+  <Card title="Repositorio TypeBox" icon="github" href="https://github.com/RewriteToday/typebox" color="#C9CBD1">
+    Codigo-fonte e schemas oficiais de runtime do `@rewritetoday/typebox`.
   </Card>
 </CardGroup>
 

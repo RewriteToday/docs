@@ -73,6 +73,10 @@ Use them independently or combine them for a typed, resilient integration stack.
   <Card title="@rewritetoday/zod" icon="shield-check" href="./zod" color="#C9CBD1">
     For official Zod schemas, versioned runtime validation, and safer webhook handling.
   </Card>
+
+  <Card title="@rewritetoday/typebox" icon="box" href="./typebox" color="#C9CBD1">
+    For official TypeBox schemas, versioned validation, and runtime-safe parsing with `@sinclair/typebox`.
+  </Card>
 </CardGroup>
 
 ## Which piece should I use?
@@ -94,7 +98,7 @@ Use them independently or combine them for a typed, resilient integration stack.
 </Accordion>
 
 <Accordion title="I need runtime validation for external input or webhooks">
-  Use `@rewritetoday/zod` to parse payloads at the boundary before your business logic runs.
+  Use `@rewritetoday/zod` or `@rewritetoday/typebox` to parse payloads at the boundary before your business logic runs, depending on your validation stack.
 </Accordion>
 
 <Accordion title="I need webhook docs and event semantics">
@@ -141,6 +145,10 @@ Use them independently or combine them for a typed, resilient integration stack.
 
   <Card title="Zod repository" icon="github" href="https://github.com/RewriteToday/zod" color="#C9CBD1">
     Source code and official runtime schemas for `@rewritetoday/zod`.
+  </Card>
+
+  <Card title="TypeBox repository" icon="github" href="https://github.com/RewriteToday/typebox" color="#C9CBD1">
+    Source code and official runtime schemas for `@rewritetoday/typebox`.
   </Card>
 </CardGroup>
 

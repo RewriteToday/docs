@@ -1,0 +1,117 @@
+---
+title: "Biblioteca TypeBox"
+description: "Use @rewritetoday/typebox para schemas TypeBox oficiais e versionados com validacao em runtime nas integracoes Rewrite."
+icon: box
+---
+
+[`@rewritetoday/typebox`](https://www.npmjs.com/package/@rewritetoday/typebox) fornece schemas oficiais em TypeBox para a API da Rewrite, permitindo validar requests, responses, recursos reutilizaveis e payloads de webhook em runtime.
+
+Repositorio: [github.com/RewriteToday/typebox](https://github.com/RewriteToday/typebox)
+
+## Quando usar
+
+- Quando voce prefere TypeBox como camada de validacao em runtime.
+- Quando quer validacao em runtime alem dos tipos TypeScript.
+- Quando recebe input externo antes de chamar endpoints da Rewrite.
+- Quando precisa de schemas versionados alinhados aos modelos da API Rewrite.
+
+## Capacidades principais
+
+<CardGroup cols={2}>
+  <Card title="Schemas versionados" icon="tag" color="#C9CBD1">
+    Importe schemas de namespaces como `@rewritetoday/typebox/v1`.
+  </Card>
+  <Card title="Contratos REST" icon="route" color="#C9CBD1">
+    Valide bodies e responses especificos de endpoint com schemas `REST<Method>*`.
+  </Card>
+  <Card title="Modelos reutilizaveis" icon="boxes-stacked" color="#C9CBD1">
+    Faca parse de recursos `API*` compartilhados sem depender de um unico endpoint.
+  </Card>
+  <Card title="Seguranca para webhooks" icon="shield-check" color="#C9CBD1">
+    Valide payloads `WebhookEvent` antes de desviar pela familia de evento da Rewrite.
+  </Card>
+</CardGroup>
+
+## Instalacao
+
+<CodeGroup>
+```bash npm
+npm install @rewritetoday/typebox @sinclair/typebox
+```
+
+```bash pnpm
+pnpm add @rewritetoday/typebox @sinclair/typebox
+```
+
+```bash yarn
+yarn add @rewritetoday/typebox @sinclair/typebox
+```
+
+```bash bun
+bun add @rewritetoday/typebox @sinclair/typebox
+```
+</CodeGroup>
+
+## Exemplo de validacao de request
+
+```ts
+import { RESTPostCreateTemplateBody } from '@rewritetoday/typebox/v1';
+import { Parse } from '@sinclair/typebox/value';
+
+const data = Parse(RESTPostCreateTemplateBody, {
+  name: 'order_shipped',
+  content: 'Hi {{first_name}}, your order {{order_id}} is on the way.',
+  variables: [
+    { name: 'first_name', fallback: 'customer' },
+    { name: 'order_id', fallback: '0000' },
+  ],
+});
+
+console.log(data);
+```
+
+## Exemplo de validacao de webhook
+
+```ts
+import { WebhookEvent } from '@rewritetoday/typebox/v1';
+import { Parse } from '@sinclair/typebox/value';
+
+let event;
+
+try {
+  event = Parse(WebhookEvent, payload);
+} catch (error) {
+  console.error({ error });
+  throw new Error('Payload de webhook Rewrite invalido');
+}
+
+console.log({ data: event });
+```
+
+## Boas praticas
+
+<Accordion title="Mantenha versoes explicitas">
+  Importe de um namespace especifico, como `@rewritetoday/typebox/v1`, para manter upgrades intencionais.
+</Accordion>
+
+<Accordion title="Valide nas bordas">
+  Faca parse do input externo antes de ele chegar na logica de negocio para falhar cedo e com previsibilidade.
+</Accordion>
+
+<Accordion title="Combine validacao e transporte">
+  Use `@rewritetoday/typebox` junto com `@rewritetoday/rest` e `@rewritetoday/types` para fechar validacao, rotas e transporte na mesma stack.
+</Accordion>
+
+## Documentacao relacionada
+
+<CardGroup cols={3}>
+  <Card title="Biblioteca Zod" icon="shield-check" href="./zod" color="#C9CBD1">
+    Schemas oficiais em Zod para times que preferem o modelo de validacao do Zod.
+  </Card>
+  <Card title="Biblioteca Types" icon="code" href="./types" color="#C9CBD1">
+    Contratos compartilhados e builders de rota que complementam a validacao em runtime.
+  </Card>
+  <Card title="Biblioteca REST" icon="route" href="./rest" color="#C9CBD1">
+    Cliente de transporte de baixo nivel para enviar os payloads validados com TypeBox.
+  </Card>
+</CardGroup>
