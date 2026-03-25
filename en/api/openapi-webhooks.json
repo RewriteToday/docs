@@ -1480,7 +1480,7 @@
 			},
 			"TemplateVariable": {
 				"type": "object",
-				"required": ["name", "fallback"],
+				"required": ["name"],
 				"additionalProperties": false,
 				"properties": {
 					"name": {
@@ -1494,7 +1494,7 @@
 						"type": "string",
 						"minLength": 1,
 						"maxLength": 64,
-						"description": "Fallback value used when the variable is omitted at send time.",
+						"description": "Optional fallback value used when the variable is omitted at send time.",
 						"example": "478201"
 					}
 				}

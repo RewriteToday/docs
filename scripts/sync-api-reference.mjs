@@ -1353,7 +1353,7 @@ const baseComponents = {
 		},
 		TemplateVariable: {
 			type: 'object',
-			required: ['name', 'fallback'],
+			required: ['name'],
 			additionalProperties: false,
 			properties: {
 				name: {
@@ -1369,7 +1369,7 @@ const baseComponents = {
 					minLength: 1,
 					maxLength: 64,
 					description:
-						'Fallback value used when the variable is omitted at send time.',
+						'Optional fallback value used when the variable is omitted at send time.',
 					example: exampleTemplateVariable.fallback,
 				},
 			},
