@@ -81,30 +81,35 @@ description: "Historico oficial de releases da Rewrite, organizado por pacote e 
     <Tab title="Todas">
       <div style={{ marginBottom: 14, color: "rgba(255,255,255,0.72)" }}>Visao consolidada por pacote.</div>
       <ul>
-        <li><strong>v1.0.0 API:</strong> Estrutura inicial de changelog publicada para acompanhar releases com consistencia.</li>
-        <li><strong>v1.0.0 CLI:</strong> Trilha dedicada para evolucoes de comandos, auth e configuracao.</li>
-        <li><strong>v1.0.0 SDKs:</strong> Espaco reservado para mudancas por linguagem e melhorias de DX.</li>
-        <li><strong>v1.0.0 Webhooks:</strong> Area dedicada para eventos, entrega e comportamento de retentativas.</li>
+        <li><strong>2026-04-01 API:</strong> Documentado o ajuste do callback do Discord, que agora le os dados de OAuth em query params em vez do body.</li>
+        <li><strong>2026-03-31 API:</strong> Adicionadas flags de projeto para suporte a numeros internacionais em rotas selecionadas e documentada a configuracao de `delivery.timeout` e `delivery.retries` em webhooks.</li>
+        <li><strong>2026-03-30 API:</strong> Entraram contatos e segmentos, alem do envio por `contact` em mensagens e OTP com propagacao de `contact` e `contactId` nos payloads de webhook.</li>
       </ul>
     </Tab>
     <Tab title="API">
       <ul>
-        <li><strong>v1.0.0:</strong> Estrutura inicial de changelog publicada para acompanhar releases com consistencia.</li>
+        <li><strong>2026-04-01:</strong> `GET /webhooks/discord` agora espera os valores do callback OAuth em query params. Os exemplos e notas da documentacao foram atualizados para refletir o comportamento real.</li>
+        <li><strong>2026-03-31:</strong> Fluxos publicos de envio, OTP e contatos agora documentam a flag de projeto que pode habilitar numeros internacionais alem do perfil padrao `+55`.</li>
+        <li><strong>2026-03-31:</strong> Rotas de create/update de webhook agora aceitam `delivery.timeout` e `delivery.retries`, enquanto leituras de webhook expõem `timeout` e `retries` no topo da resposta.</li>
+        <li><strong>2026-03-30:</strong> Cobertura completa da referencia para `GET/POST/PATCH/DELETE /contacts` e `GET/POST/PATCH/DELETE /segments`, incluindo attach/detach/list de contatos por segmento.</li>
+        <li><strong>2026-03-30:</strong> `POST /messages`, `POST /messages/batch` e `POST /otp` agora aceitam contatos salvos via campo `contact`, alem de numeros diretos em `to`.</li>
+        <li><strong>2026-03-30:</strong> A referencia da API agora cobre as rotas faltantes de list/get/create/update para API keys.</li>
       </ul>
     </Tab>
     <Tab title="CLI">
       <ul>
-        <li><strong>v1.0.0:</strong> Trilha dedicada para evolucoes de comandos, auth e configuracao.</li>
+        <li><strong>2026-04-01:</strong> Nenhuma mudanca publica especifica de CLI foi documentada nesta janela.</li>
       </ul>
     </Tab>
     <Tab title="SDKs">
       <ul>
-        <li><strong>v1.0.0:</strong> Espaco reservado para mudancas por linguagem e melhorias de DX.</li>
+        <li><strong>2026-04-01:</strong> Nenhuma mudanca publica especifica de SDK foi documentada nesta janela.</li>
       </ul>
     </Tab>
     <Tab title="Webhooks">
       <ul>
-        <li><strong>v1.0.0:</strong> Area dedicada para eventos, entrega e comportamento de retentativas.</li>
+        <li><strong>2026-03-31:</strong> Recursos de webhook passaram a ter configuracao de retentativas e timeout de entrega.</li>
+        <li><strong>2026-03-30:</strong> Payloads de webhook do tipo mensagem agora incluem `contact` e `contactId` quando o envio original partiu de um contato salvo, e os exemplos da doc foram atualizados.</li>
       </ul>
     </Tab>
   </Tabs>

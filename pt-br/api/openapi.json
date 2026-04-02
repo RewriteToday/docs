@@ -18,12 +18,20 @@
 			"description": "Manage API keys exposed through the public API."
 		},
 		{
+			"name": "Contacts",
+			"description": "Store reusable contacts and target them in message and OTP flows."
+		},
+		{
 			"name": "Messages",
 			"description": "Send, read and manage SMS messages."
 		},
 		{
 			"name": "OTP",
 			"description": "Send and verify one-time-password codes."
+		},
+		{
+			"name": "Segments",
+			"description": "Group contacts into reusable segments for project-level audience management."
 		},
 		{
 			"name": "Templates",
@@ -39,7 +47,256 @@
 		}
 	],
 	"paths": {
+		"/api-keys": {
+			"get": {
+				"tags": ["API Keys"],
+				"operationId": "listProjectApiKeys",
+				"summary": "List API keys",
+				"description": "List API keys configured for the current project. Results are returned in reverse chronological order with a top-level cursor.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error, cursor } = await rewrite.apiKeys.list({\n  limit: 20,\n});\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"apiKey.project.api_keys.read": []
+					}
+				],
+				"parameters": [
+					{
+						"$ref": "#/components/parameters/After"
+					},
+					{
+						"$ref": "#/components/parameters/Before"
+					},
+					{
+						"$ref": "#/components/parameters/Limit"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/APIKeyListResponse"
+								},
+								"examples": {
+									"success": {
+										"summary": "Success",
+										"value": {
+											"ok": true,
+											"data": [
+												{
+													"id": "748395130237498990",
+													"name": "production",
+													"prefix": "rw_d5f3ce",
+													"scopes": ["message:write", "message:read"],
+													"description": "Primary production key",
+													"lastUsedAt": "2026-03-20T14:22:39.914Z",
+													"createdAt": "2026-03-20T14:22:31.562Z"
+												}
+											],
+											"cursor": {
+												"persist": false
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["project:api_keys:read"]
+			},
+			"post": {
+				"tags": ["API Keys"],
+				"operationId": "createProjectApiKey",
+				"summary": "Create an API key",
+				"description": "Create a new project API key with optional description and explicit scopes. The full secret is returned only once.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.apiKeys.create({\n  name: 'production',\n  description: 'Primary production key',\n  scopes: ['message:write', 'message:read'],\n});\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"apiKey.project.write": []
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/APIKeyCreateBody"
+							},
+							"example": {
+								"name": "production",
+								"description": "Primary production key",
+								"scopes": ["message:write", "message:read"]
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/APIKeyCreateResponse"
+								},
+								"examples": {
+									"success": {
+										"summary": "Success",
+										"value": {
+											"ok": true,
+											"data": {
+												"id": "748395130237498990",
+												"key": "rw_d5f3ce.4pbbWQrluH4SOD5xvR9p9C2x",
+												"createdAt": "2026-03-20T14:22:31.562Z"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["project:write"]
+			}
+		},
 		"/api-keys/{key}": {
+			"get": {
+				"tags": ["API Keys"],
+				"operationId": "getProjectApiKey",
+				"summary": "Get an API key",
+				"description": "Fetch one API key by identifier together with its scoped permissions and last usage timestamp.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.apiKeys.get(\n  '748395130237498990',\n);\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"apiKey.project.api_keys.read": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "key",
+						"in": "path",
+						"required": true,
+						"description": "API key identifier returned by Rewrite.",
+						"schema": {
+							"$ref": "#/components/schemas/Snowflake"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/APIKeyResponse"
+								},
+								"examples": {
+									"success": {
+										"summary": "Success",
+										"value": {
+											"ok": true,
+											"data": {
+												"id": "748395130237498990",
+												"name": "production",
+												"prefix": "rw_d5f3ce",
+												"scopes": ["message:write", "message:read"],
+												"description": "Primary production key",
+												"lastUsedAt": "2026-03-20T14:22:39.914Z",
+												"createdAt": "2026-03-20T14:22:31.562Z"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["project:api_keys:read"]
+			},
+			"patch": {
+				"tags": ["API Keys"],
+				"operationId": "updateProjectApiKey",
+				"summary": "Update an API key",
+				"description": "Update API key metadata or replace its allowed scope set.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { error } = await rewrite.apiKeys.update(\n  '748395130237498990',\n  {\n    description: 'Secondary staging key',\n    scopes: ['message:write'],\n  },\n);\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"apiKey.project.write": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "key",
+						"in": "path",
+						"required": true,
+						"description": "API key identifier returned by Rewrite.",
+						"schema": {
+							"$ref": "#/components/schemas/Snowflake"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/APIKeyUpdateBody"
+							},
+							"example": {
+								"description": "Secondary staging key",
+								"scopes": ["message:write"]
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OkEmptyResponse"
+								},
+								"examples": {
+									"success": {
+										"summary": "Success",
+										"value": {
+											"ok": true,
+											"data": null
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["project:write"]
+			},
 			"delete": {
 				"tags": ["API Keys"],
 				"operationId": "deleteProjectApiKey",
@@ -92,12 +349,346 @@
 				"x-required-scopes": ["project:write"]
 			}
 		},
+		"/contacts": {
+			"get": {
+				"tags": ["Contacts"],
+				"operationId": "listContacts",
+				"summary": "List contacts",
+				"description": "List contacts stored for the current project. Results are returned in reverse chronological order with a top-level cursor.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error, cursor } = await rewrite.contacts.list({\n  limit: 25,\n});\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"apiKey.project.read": []
+					}
+				],
+				"parameters": [
+					{
+						"$ref": "#/components/parameters/After"
+					},
+					{
+						"$ref": "#/components/parameters/Before"
+					},
+					{
+						"$ref": "#/components/parameters/Limit"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ContactListResponse"
+								},
+								"examples": {
+									"success": {
+										"summary": "Success",
+										"value": {
+											"ok": true,
+											"data": [
+												{
+													"id": "748395130237498515",
+													"createdAt": "2026-03-20T14:22:31.562Z",
+													"name": "Fernanda",
+													"phone": "+5511999999999",
+													"country": "br",
+													"channel": "SMS",
+													"tags": {
+														"flow": "checkout",
+														"origin": "import"
+													},
+													"updatedAt": "2026-03-20T14:22:31.562Z"
+												},
+												{
+													"id": "748395130237498516",
+													"createdAt": "2026-03-20T14:22:31.562Z",
+													"name": "Ada",
+													"phone": "+5511888888888",
+													"country": "br",
+													"channel": null,
+													"tags": {
+														"flow": "checkout",
+														"origin": "import"
+													},
+													"updatedAt": "2026-03-20T14:22:31.562Z"
+												}
+											],
+											"cursor": {
+												"persist": true,
+												"after": "748395130237498414"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["project:read"]
+			},
+			"post": {
+				"tags": ["Contacts"],
+				"operationId": "createContact",
+				"summary": "Create a contact",
+				"description": "Create a reusable project contact. Rewrite normalizes the provided phone number and enforces unique phone and name values per project.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.contacts.create({\n  phone: '+5511999999999',\n  name: 'Fernanda',\n  channel: 'SMS',\n  tags: { flow: 'checkout', origin: 'import' },\n});\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"apiKey.project.write": []
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ContactCreateBody"
+							},
+							"example": {
+								"phone": "+5511999999999",
+								"name": "Fernanda",
+								"channel": "SMS",
+								"tags": {
+									"flow": "checkout",
+									"origin": "import"
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ContactCreateResponse"
+								},
+								"examples": {
+									"success": {
+										"summary": "Success",
+										"value": {
+											"ok": true,
+											"data": {
+												"id": "748395130237498515",
+												"phone": "+5511999999999",
+												"country": "br",
+												"createdAt": "2026-03-20T14:22:31.562Z"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["project:write"]
+			}
+		},
+		"/contacts/{identifier}": {
+			"get": {
+				"tags": ["Contacts"],
+				"operationId": "getContact",
+				"summary": "Get a contact",
+				"description": "Fetch a single contact by its identifier or by its saved name.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.contacts.get(\n  'Fernanda',\n);\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"apiKey.project.read": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "identifier",
+						"in": "path",
+						"required": true,
+						"description": "Contact identifier or saved contact name.",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ContactResponse"
+								},
+								"examples": {
+									"success": {
+										"summary": "Success",
+										"value": {
+											"ok": true,
+											"data": {
+												"id": "748395130237498515",
+												"createdAt": "2026-03-20T14:22:31.562Z",
+												"name": "Fernanda",
+												"phone": "+5511999999999",
+												"country": "br",
+												"channel": "SMS",
+												"tags": {
+													"flow": "checkout",
+													"origin": "import"
+												},
+												"updatedAt": "2026-03-20T14:22:31.562Z"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["project:read"]
+			}
+		},
+		"/contacts/{id}": {
+			"patch": {
+				"tags": ["Contacts"],
+				"operationId": "updateContact",
+				"summary": "Update a contact",
+				"description": "Update a stored contact. Rewrite normalizes phone changes before persisting them.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { error } = await rewrite.contacts.update(\n  '748395130237498515',\n  {\n    name: 'Fernanda Silva',\n    tags: { flow: 'otp-login', origin: 'signup' },\n  },\n);\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"apiKey.project.write": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "Contact identifier returned by Rewrite.",
+						"schema": {
+							"$ref": "#/components/schemas/Snowflake"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ContactUpdateBody"
+							},
+							"example": {
+								"name": "Fernanda Silva",
+								"tags": {
+									"flow": "otp-login",
+									"origin": "signup"
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OkEmptyResponse"
+								},
+								"examples": {
+									"success": {
+										"summary": "Success",
+										"value": {
+											"ok": true,
+											"data": null
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["project:write"]
+			},
+			"delete": {
+				"tags": ["Contacts"],
+				"operationId": "deleteContact",
+				"summary": "Delete a contact",
+				"description": "Permanently delete a project contact and stop resolving it in future sends.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { error } = await rewrite.contacts.delete(\n  '748395130237498515',\n);\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"apiKey.project.write": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "Contact identifier returned by Rewrite.",
+						"schema": {
+							"$ref": "#/components/schemas/Snowflake"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OkEmptyResponse"
+								},
+								"examples": {
+									"success": {
+										"summary": "Success",
+										"value": {
+											"ok": true,
+											"data": null
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["project:write"]
+			}
+		},
 		"/messages": {
 			"post": {
 				"tags": ["Messages"],
 				"operationId": "createMessage",
 				"summary": "Send a message",
-				"description": "Send one SMS with inline content or by rendering a saved template. This route accepts Brazilian destination numbers in `+55` format and returns the accepted message ID immediately.",
+				"description": "Send one SMS with inline content or by rendering a saved template. You can target either a direct E.164 number in `to` or a saved project contact in `contact`. Projects with international numbers enabled can send beyond the default `+55` traffic profile.",
 				"x-codeSamples": [
 					{
 						"lang": "typescript",
@@ -142,10 +733,40 @@
 										}
 									}
 								},
+								"withSavedContact": {
+									"summary": "With saved contact",
+									"value": {
+										"contact": "Fernanda",
+										"content": "Rewrite: seu codigo e 478201",
+										"tags": [
+											{
+												"name": "flow",
+												"value": "login"
+											}
+										]
+									}
+								},
 								"usingTemplate": {
 									"summary": "Using templates",
 									"value": {
 										"to": "+5511888888888",
+										"templateId": "748395130237498620",
+										"variables": {
+											"code": "941205",
+											"name": "Fernanda"
+										},
+										"tags": [
+											{
+												"name": "flow",
+												"value": "login"
+											}
+										]
+									}
+								},
+								"usingTemplateAndContact": {
+									"summary": "Using template and saved contact",
+									"value": {
+										"contact": "748395130237498515",
 										"templateId": "748395130237498620",
 										"variables": {
 											"code": "941205",
@@ -250,6 +871,8 @@
 												{
 													"id": "748395130237498412",
 													"createdAt": "2026-03-20T14:22:31.562Z",
+													"contact": "Fernanda",
+													"contactId": "748395130237498515",
 													"to": "+5511999999999",
 													"from": "Rewrite",
 													"type": "SMS",
@@ -271,6 +894,8 @@
 												{
 													"id": "748395130237498413",
 													"createdAt": "2026-03-20T14:22:31.562Z",
+													"contact": "Fernanda",
+													"contactId": "748395130237498515",
 													"to": "+5511888888888",
 													"from": "Rewrite",
 													"type": "SMS",
@@ -309,7 +934,7 @@
 				"tags": ["Messages"],
 				"operationId": "createMessageBatch",
 				"summary": "Send batch messages",
-				"description": "Send between 1 and 100 SMS messages in one request. This route accepts Brazilian destination numbers in `+55` format and returns only the accepted message IDs.",
+				"description": "Send between 1 and 100 SMS messages in one request. Each entry can target either a direct E.164 number or a saved project contact, and Rewrite returns only the accepted message IDs.",
 				"x-codeSamples": [
 					{
 						"lang": "typescript",
@@ -345,7 +970,18 @@
 									"content": "Rewrite: seu codigo e 478201"
 								},
 								{
+									"contact": "Fernanda",
+									"content": "Rewrite: seu codigo e 478201"
+								},
+								{
 									"to": "+5511888888888",
+									"templateId": "748395130237498620",
+									"variables": {
+										"code": "941205"
+									}
+								},
+								{
+									"contact": "748395130237498515",
 									"templateId": "748395130237498620",
 									"variables": {
 										"code": "941205"
@@ -484,6 +1120,8 @@
 											"data": {
 												"id": "748395130237498412",
 												"createdAt": "2026-03-20T14:22:31.562Z",
+												"contact": "Fernanda",
+												"contactId": "748395130237498515",
 												"to": "+5511999999999",
 												"from": "Rewrite",
 												"type": "SMS",
@@ -517,7 +1155,7 @@
 				"tags": ["OTP"],
 				"operationId": "createOtp",
 				"summary": "Send an OTP code",
-				"description": "Create and send an OTP SMS to a Brazilian destination number in `+55` format.",
+				"description": "Create and send an OTP SMS to either a direct destination number or a saved project contact. Projects with international numbers enabled can send beyond the default `+55` traffic profile.",
 				"x-codeSamples": [
 					{
 						"lang": "typescript",
@@ -542,10 +1180,23 @@
 							"schema": {
 								"$ref": "#/components/schemas/OTPCreateBody"
 							},
-							"example": {
-								"to": "+5511999999999",
-								"prefix": "Rewrite",
-								"expiresIn": 5
+							"examples": {
+								"withDirectNumber": {
+									"summary": "With direct number",
+									"value": {
+										"to": "+5511999999999",
+										"prefix": "Rewrite",
+										"expiresIn": 5
+									}
+								},
+								"withSavedContact": {
+									"summary": "With saved contact",
+									"value": {
+										"contact": "Fernanda",
+										"prefix": "Rewrite",
+										"expiresIn": 5
+									}
+								}
 							}
 						}
 					}
@@ -649,6 +1300,516 @@
 					}
 				},
 				"x-required-scopes": ["message:write"]
+			}
+		},
+		"/segments": {
+			"get": {
+				"tags": ["Segments"],
+				"operationId": "listSegments",
+				"summary": "List segments",
+				"description": "List segments configured for the current project. Results are returned in reverse chronological order with a top-level cursor.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error, cursor } = await rewrite.segments.list({\n  limit: 25,\n});\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"apiKey.project.read": []
+					}
+				],
+				"parameters": [
+					{
+						"$ref": "#/components/parameters/After"
+					},
+					{
+						"$ref": "#/components/parameters/Before"
+					},
+					{
+						"$ref": "#/components/parameters/Limit"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SegmentListResponse"
+								},
+								"examples": {
+									"success": {
+										"summary": "Success",
+										"value": {
+											"ok": true,
+											"data": [
+												{
+													"id": "748395130237498560",
+													"createdAt": "2026-03-20T14:22:31.562Z",
+													"name": "vip-customers",
+													"description": "Customers with priority transactional flows.",
+													"color": "#0EA5E9",
+													"contactsCount": 12,
+													"updatedAt": "2026-03-20T14:22:31.562Z"
+												}
+											],
+											"cursor": {
+												"persist": false
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["project:read"]
+			},
+			"post": {
+				"tags": ["Segments"],
+				"operationId": "createSegment",
+				"summary": "Create a segment",
+				"description": "Create a reusable segment for grouping project contacts.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.segments.create({\n  name: 'vip-customers',\n  description: 'Customers with priority transactional flows.',\n  color: '#0EA5E9',\n});\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"apiKey.project.write": []
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/SegmentCreateBody"
+							},
+							"example": {
+								"name": "vip-customers",
+								"description": "Customers with priority transactional flows.",
+								"color": "#0EA5E9"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SegmentCreateResponse"
+								},
+								"examples": {
+									"success": {
+										"summary": "Success",
+										"value": {
+											"ok": true,
+											"data": {
+												"id": "748395130237498560",
+												"name": "vip-customers",
+												"description": "Customers with priority transactional flows.",
+												"contactsCount": 0,
+												"updatedAt": "2026-03-20T14:22:31.562Z",
+												"createdAt": "2026-03-20T14:22:31.562Z"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["project:write"]
+			}
+		},
+		"/segments/{id}": {
+			"get": {
+				"tags": ["Segments"],
+				"operationId": "getSegment",
+				"summary": "Get a segment",
+				"description": "Fetch one segment by identifier.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.segments.get(\n  '748395130237498560',\n);\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"apiKey.project.read": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "Segment identifier returned by Rewrite.",
+						"schema": {
+							"$ref": "#/components/schemas/Snowflake"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SegmentResponse"
+								},
+								"examples": {
+									"success": {
+										"summary": "Success",
+										"value": {
+											"ok": true,
+											"data": {
+												"id": "748395130237498560",
+												"createdAt": "2026-03-20T14:22:31.562Z",
+												"name": "vip-customers",
+												"description": "Customers with priority transactional flows.",
+												"color": "#0EA5E9",
+												"contactsCount": 12,
+												"updatedAt": "2026-03-20T14:22:31.562Z"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["project:read"]
+			},
+			"patch": {
+				"tags": ["Segments"],
+				"operationId": "updateSegment",
+				"summary": "Update a segment",
+				"description": "Update a segment name, description or color.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { error } = await rewrite.segments.update(\n  '748395130237498560',\n  {\n    description: 'Customers that must always receive high-priority messaging.',\n    color: '#2563EB',\n  },\n);\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"apiKey.project.write": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "Segment identifier returned by Rewrite.",
+						"schema": {
+							"$ref": "#/components/schemas/Snowflake"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/SegmentUpdateBody"
+							},
+							"example": {
+								"description": "Customers that must always receive high-priority messaging.",
+								"color": "#2563EB"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OkEmptyResponse"
+								},
+								"examples": {
+									"success": {
+										"summary": "Success",
+										"value": {
+											"ok": true,
+											"data": null
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["project:write"]
+			},
+			"delete": {
+				"tags": ["Segments"],
+				"operationId": "deleteSegment",
+				"summary": "Delete a segment",
+				"description": "Permanently delete a segment and remove its contact associations.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { error } = await rewrite.segments.delete(\n  '748395130237498560',\n);\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"apiKey.project.write": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "Segment identifier returned by Rewrite.",
+						"schema": {
+							"$ref": "#/components/schemas/Snowflake"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OkEmptyResponse"
+								},
+								"examples": {
+									"success": {
+										"summary": "Success",
+										"value": {
+											"ok": true,
+											"data": null
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["project:write"]
+			}
+		},
+		"/segments/{id}/contacts": {
+			"get": {
+				"tags": ["Segments"],
+				"operationId": "listSegmentContacts",
+				"summary": "List contacts in a segment",
+				"description": "List contacts currently attached to one segment. Results are returned in reverse chronological order with a top-level cursor.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error, cursor } = await rewrite.segments.contacts(\n  '748395130237498560',\n  { limit: 25 },\n);\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"apiKey.project.read": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "Segment identifier returned by Rewrite.",
+						"schema": {
+							"$ref": "#/components/schemas/Snowflake"
+						}
+					},
+					{
+						"$ref": "#/components/parameters/After"
+					},
+					{
+						"$ref": "#/components/parameters/Before"
+					},
+					{
+						"$ref": "#/components/parameters/Limit"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ContactListResponse"
+								},
+								"examples": {
+									"success": {
+										"summary": "Success",
+										"value": {
+											"ok": true,
+											"data": [
+												{
+													"id": "748395130237498515",
+													"createdAt": "2026-03-20T14:22:31.562Z",
+													"name": "Fernanda",
+													"phone": "+5511999999999",
+													"country": "br",
+													"channel": "SMS",
+													"tags": {
+														"flow": "checkout",
+														"origin": "import"
+													},
+													"updatedAt": "2026-03-20T14:22:31.562Z"
+												}
+											],
+											"cursor": {
+												"persist": false
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["project:read"]
+			},
+			"post": {
+				"tags": ["Segments"],
+				"operationId": "attachContactToSegment",
+				"summary": "Attach a contact to a segment",
+				"description": "Attach one saved contact to a segment.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { error } = await rewrite.segments.attach(\n  '748395130237498560',\n  { contactId: '748395130237498515' },\n);\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"apiKey.project.write": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "Segment identifier returned by Rewrite.",
+						"schema": {
+							"$ref": "#/components/schemas/Snowflake"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/SegmentAttachContactBody"
+							},
+							"example": {
+								"contactId": "748395130237498515"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OkEmptyResponse"
+								},
+								"examples": {
+									"success": {
+										"summary": "Success",
+										"value": {
+											"ok": true,
+											"data": null
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["project:write"]
+			}
+		},
+		"/segments/{id}/contacts/{contact}": {
+			"delete": {
+				"tags": ["Segments"],
+				"operationId": "detachContactFromSegment",
+				"summary": "Detach a contact from a segment",
+				"description": "Remove one saved contact from a segment.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { error } = await rewrite.segments.detach(\n  '748395130237498560',\n  '748395130237498515',\n);\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"apiKey.project.write": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "Segment identifier returned by Rewrite.",
+						"schema": {
+							"$ref": "#/components/schemas/Snowflake"
+						}
+					},
+					{
+						"name": "contact",
+						"in": "path",
+						"required": true,
+						"description": "Contact identifier that should be detached from the segment.",
+						"schema": {
+							"$ref": "#/components/schemas/Snowflake"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OkEmptyResponse"
+								},
+								"examples": {
+									"success": {
+										"summary": "Success",
+										"value": {
+											"ok": true,
+											"data": null
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["project:write"]
 			}
 		},
 		"/templates": {
@@ -1035,6 +2196,8 @@
 													],
 													"status": "ACTIVE",
 													"endpoint": "https://example.com/rewrite/webhooks",
+													"retries": 2,
+													"timeout": 3000,
 													"createdAt": "2026-03-20T14:22:31.562Z"
 												}
 											],
@@ -1159,6 +2322,8 @@
 												"events": ["message.sent", "message.failed", "sms.otp"],
 												"status": "ACTIVE",
 												"endpoint": "https://example.com/rewrite/webhooks",
+												"retries": 2,
+												"timeout": 3000,
 												"createdAt": "2026-03-20T14:22:31.562Z",
 												"secret": "whsec_dGVzdF9zZWNyZXRfdmFsdWU="
 											}
@@ -1446,6 +2611,8 @@
 													"data": {
 														"id": "748395130237498412",
 														"projectId": "748395130237499220",
+														"contact": "Fernanda",
+														"contactId": "748395130237498515",
 														"to": "+5511999999999",
 														"tags": [
 															{
@@ -1488,6 +2655,18 @@
 	},
 	"components": {
 		"securitySchemes": {
+			"apiKey.project.read": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "API key",
+				"description": "Send your API key as `Authorization: Bearer rw_...`.\n\nRequired scope: `project:read`."
+			},
+			"apiKey.project.api_keys.read": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "API key",
+				"description": "Send your API key as `Authorization: Bearer rw_...`.\n\nRequired scope: `project:api_keys:read`."
+			},
 			"apiKey.project.write": {
 				"type": "http",
 				"scheme": "bearer",
@@ -1775,39 +2954,6 @@
 					}
 				}
 			},
-			"StringArrayDeleteBody": {
-				"type": "object",
-				"required": ["ids"],
-				"additionalProperties": false,
-				"properties": {
-					"ids": {
-						"type": "array",
-						"minItems": 1,
-						"maxItems": 20,
-						"uniqueItems": true,
-						"items": {
-							"$ref": "#/components/schemas/Snowflake"
-						}
-					}
-				}
-			},
-			"DeletedIdsResponse": {
-				"type": "object",
-				"required": ["ok", "data"],
-				"additionalProperties": false,
-				"properties": {
-					"ok": {
-						"type": "boolean",
-						"const": true
-					},
-					"data": {
-						"type": "array",
-						"items": {
-							"$ref": "#/components/schemas/Snowflake"
-						}
-					}
-				}
-			},
 			"Project": {
 				"type": "object",
 				"required": [
@@ -1959,6 +3105,20 @@
 					}
 				}
 			},
+			"APIKeyResponse": {
+				"type": "object",
+				"required": ["ok", "data"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"$ref": "#/components/schemas/APIKey"
+					}
+				}
+			},
 			"APIKeyCreateBody": {
 				"type": "object",
 				"required": ["name"],
@@ -2036,6 +3196,401 @@
 					},
 					"data": {
 						"$ref": "#/components/schemas/APIKeyCreateResult"
+					}
+				}
+			},
+			"ContactCreateBody": {
+				"type": "object",
+				"required": ["phone"],
+				"additionalProperties": false,
+				"properties": {
+					"phone": {
+						"type": "string",
+						"minLength": 8,
+						"description": "Destination number stored in E.164 format after normalization.",
+						"example": "+5511999999999"
+					},
+					"name": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 80,
+						"description": "Optional human-readable label used to look up the contact later.",
+						"example": "Fernanda"
+					},
+					"channel": {
+						"type": "string",
+						"enum": ["SMS", "OTP"],
+						"description": "Optional preferred channel for future contact-based sends.",
+						"example": "SMS"
+					},
+					"tags": {
+						"type": "object",
+						"additionalProperties": true,
+						"description": "Arbitrary metadata stored with the contact."
+					}
+				}
+			},
+			"ContactUpdateBody": {
+				"type": "object",
+				"additionalProperties": false,
+				"properties": {
+					"phone": {
+						"type": "string",
+						"minLength": 8,
+						"description": "Updated destination number. Rewrite normalizes it before persisting.",
+						"example": "+5511888888888"
+					},
+					"name": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 80,
+						"description": "Updated contact label.",
+						"example": "Fernanda Silva"
+					},
+					"channel": {
+						"type": "string",
+						"enum": ["SMS", "OTP"],
+						"description": "Updated preferred channel.",
+						"example": "OTP"
+					},
+					"tags": {
+						"type": "object",
+						"additionalProperties": true,
+						"description": "Replacement metadata stored with the contact."
+					}
+				}
+			},
+			"ContactCreateResult": {
+				"type": "object",
+				"required": ["id", "phone", "country", "createdAt"],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Snowflake",
+						"description": "Contact identifier returned by Rewrite."
+					},
+					"phone": {
+						"type": "string",
+						"description": "Normalized destination number stored for the contact.",
+						"example": "+5511999999999"
+					},
+					"country": {
+						"type": "string",
+						"description": "Country inferred from the normalized number.",
+						"example": "br"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Timestamp when the contact was created.",
+						"example": "2026-03-20T14:22:31.562Z"
+					}
+				}
+			},
+			"Contact": {
+				"type": "object",
+				"required": [
+					"id",
+					"createdAt",
+					"name",
+					"phone",
+					"country",
+					"channel",
+					"tags",
+					"updatedAt"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Snowflake"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Timestamp when the contact was created.",
+						"example": "2026-03-20T14:22:31.562Z"
+					},
+					"name": {
+						"type": ["string", "null"],
+						"description": "Stored contact label.",
+						"example": "Fernanda"
+					},
+					"phone": {
+						"type": "string",
+						"description": "Normalized destination number stored for the contact.",
+						"example": "+5511999999999"
+					},
+					"country": {
+						"type": "string",
+						"description": "Country inferred from the normalized number.",
+						"example": "br"
+					},
+					"channel": {
+						"type": ["string", "null"],
+						"enum": ["SMS", "OTP", null],
+						"description": "Preferred channel saved with the contact, when configured.",
+						"example": "SMS"
+					},
+					"tags": {
+						"type": "object",
+						"additionalProperties": true,
+						"description": "Arbitrary metadata stored with the contact."
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Timestamp when the contact was last updated.",
+						"example": "2026-03-20T14:22:31.562Z"
+					}
+				}
+			},
+			"ContactResponse": {
+				"type": "object",
+				"required": ["ok", "data"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"$ref": "#/components/schemas/Contact"
+					}
+				}
+			},
+			"ContactCreateResponse": {
+				"type": "object",
+				"required": ["ok", "data"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"$ref": "#/components/schemas/ContactCreateResult"
+					}
+				}
+			},
+			"ContactListResponse": {
+				"type": "object",
+				"required": ["ok", "data", "cursor"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/Contact"
+						}
+					},
+					"cursor": {
+						"$ref": "#/components/schemas/Cursor"
+					}
+				}
+			},
+			"SegmentCreateBody": {
+				"type": "object",
+				"required": ["name"],
+				"additionalProperties": false,
+				"properties": {
+					"name": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 80,
+						"description": "Unique segment name inside the current project.",
+						"example": "vip-customers"
+					},
+					"description": {
+						"type": ["string", "null"],
+						"minLength": 1,
+						"maxLength": 280,
+						"description": "Optional description for operators and dashboards.",
+						"example": "Customers with priority transactional flows."
+					},
+					"color": {
+						"type": ["string", "null"],
+						"pattern": "^#[0-9A-Fa-f]{6}$",
+						"description": "Optional hexadecimal accent color stored with the segment.",
+						"example": "#0EA5E9"
+					}
+				}
+			},
+			"SegmentUpdateBody": {
+				"type": "object",
+				"additionalProperties": false,
+				"properties": {
+					"name": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 80,
+						"description": "Updated segment name.",
+						"example": "priority-customers"
+					},
+					"description": {
+						"type": ["string", "null"],
+						"minLength": 1,
+						"maxLength": 280,
+						"description": "Updated description.",
+						"example": "Customers that must always receive high-priority messaging."
+					},
+					"color": {
+						"type": ["string", "null"],
+						"pattern": "^#[0-9A-Fa-f]{6}$",
+						"description": "Updated hexadecimal accent color.",
+						"example": "#2563EB"
+					}
+				}
+			},
+			"SegmentAttachContactBody": {
+				"type": "object",
+				"required": ["contactId"],
+				"additionalProperties": false,
+				"properties": {
+					"contactId": {
+						"$ref": "#/components/schemas/Snowflake",
+						"description": "Contact identifier that should be attached to the segment.",
+						"example": "748395130237498515"
+					}
+				}
+			},
+			"SegmentCreateResult": {
+				"type": "object",
+				"required": [
+					"id",
+					"name",
+					"description",
+					"contactsCount",
+					"updatedAt",
+					"createdAt"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Snowflake"
+					},
+					"name": {
+						"type": "string",
+						"example": "vip-customers"
+					},
+					"description": {
+						"type": ["string", "null"],
+						"example": "Customers with priority transactional flows."
+					},
+					"contactsCount": {
+						"type": "integer",
+						"description": "Current number of contacts attached to the segment.",
+						"example": 0
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2026-03-20T14:22:31.562Z"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2026-03-20T14:22:31.562Z"
+					}
+				}
+			},
+			"Segment": {
+				"type": "object",
+				"required": [
+					"id",
+					"createdAt",
+					"name",
+					"description",
+					"color",
+					"contactsCount",
+					"updatedAt"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Snowflake"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2026-03-20T14:22:31.562Z"
+					},
+					"name": {
+						"type": "string",
+						"description": "Segment name unique inside the project.",
+						"example": "vip-customers"
+					},
+					"description": {
+						"type": ["string", "null"],
+						"description": "Optional description stored with the segment.",
+						"example": "Customers with priority transactional flows."
+					},
+					"color": {
+						"type": ["string", "null"],
+						"description": "Optional hexadecimal accent color.",
+						"example": "#0EA5E9"
+					},
+					"contactsCount": {
+						"type": "integer",
+						"description": "Current number of contacts attached to the segment.",
+						"example": 12
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "Timestamp when the segment was last updated.",
+						"example": "2026-03-20T14:22:31.562Z"
+					}
+				}
+			},
+			"SegmentResponse": {
+				"type": "object",
+				"required": ["ok", "data"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"$ref": "#/components/schemas/Segment"
+					}
+				}
+			},
+			"SegmentCreateResponse": {
+				"type": "object",
+				"required": ["ok", "data"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"$ref": "#/components/schemas/SegmentCreateResult"
+					}
+				}
+			},
+			"SegmentListResponse": {
+				"type": "object",
+				"required": ["ok", "data", "cursor"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/Segment"
+						}
+					},
+					"cursor": {
+						"$ref": "#/components/schemas/Cursor"
 					}
 				}
 			},
@@ -2132,7 +3687,7 @@
 				}
 			},
 			"MessageInlineBody": {
-				"title": "With content",
+				"title": "With content and direct number",
 				"type": "object",
 				"required": ["to", "content"],
 				"additionalProperties": false,
@@ -2175,8 +3730,53 @@
 					}
 				}
 			},
+			"MessageInlineContactBody": {
+				"title": "With content and saved contact",
+				"type": "object",
+				"required": ["contact", "content"],
+				"additionalProperties": false,
+				"properties": {
+					"contact": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 80,
+						"description": "Contact identifier or saved contact name resolved inside the current project.",
+						"example": "Fernanda"
+					},
+					"content": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 1600,
+						"description": "Rendered SMS content to send.",
+						"example": "Rewrite: seu codigo e 478201"
+					},
+					"tags": {
+						"type": "array",
+						"maxItems": 20,
+						"description": "Optional metadata stored with the message.",
+						"items": {
+							"$ref": "#/components/schemas/MessageTag"
+						},
+						"example": [
+							{
+								"name": "flow",
+								"value": "login"
+							}
+						]
+					},
+					"scheduledAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "When provided, Rewrite schedules the message for later delivery."
+					},
+					"segmentation": {
+						"$ref": "#/components/schemas/MessageSegmentation",
+						"description": "Optional segmentation rules for long SMS bodies."
+					}
+				}
+			},
 			"MessageTemplateBody": {
-				"title": "Using templates",
+				"title": "Using templates and direct number",
 				"type": "object",
 				"required": ["to", "templateId"],
 				"additionalProperties": false,
@@ -2224,13 +3824,70 @@
 					}
 				}
 			},
+			"MessageTemplateContactBody": {
+				"title": "Using templates and saved contact",
+				"type": "object",
+				"required": ["contact", "templateId"],
+				"additionalProperties": false,
+				"properties": {
+					"contact": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 80,
+						"description": "Contact identifier or saved contact name resolved inside the current project.",
+						"example": "748395130237498515"
+					},
+					"templateId": {
+						"$ref": "#/components/schemas/Snowflake",
+						"description": "Template identifier to render before sending.",
+						"example": "748395130237498620"
+					},
+					"variables": {
+						"type": "object",
+						"additionalProperties": {
+							"type": "string"
+						},
+						"default": {},
+						"description": "Variable values used when rendering the selected template."
+					},
+					"tags": {
+						"type": "array",
+						"maxItems": 20,
+						"description": "Optional metadata stored with the message.",
+						"items": {
+							"$ref": "#/components/schemas/MessageTag"
+						},
+						"example": [
+							{
+								"name": "flow",
+								"value": "login"
+							}
+						]
+					},
+					"scheduledAt": {
+						"type": "string",
+						"format": "date-time",
+						"description": "When provided, Rewrite schedules the message for later delivery."
+					},
+					"segmentation": {
+						"$ref": "#/components/schemas/MessageSegmentation",
+						"description": "Optional segmentation rules for the rendered template output."
+					}
+				}
+			},
 			"MessageCreateBody": {
 				"oneOf": [
 					{
 						"$ref": "#/components/schemas/MessageInlineBody"
 					},
 					{
+						"$ref": "#/components/schemas/MessageInlineContactBody"
+					},
+					{
 						"$ref": "#/components/schemas/MessageTemplateBody"
+					},
+					{
+						"$ref": "#/components/schemas/MessageTemplateContactBody"
 					}
 				]
 			},
@@ -2322,6 +3979,8 @@
 				"required": [
 					"id",
 					"createdAt",
+					"contact",
+					"contactId",
 					"to",
 					"from",
 					"type",
@@ -2347,6 +4006,16 @@
 						"format": "date-time",
 						"description": "Timestamp when Rewrite accepted the message.",
 						"example": "2026-03-20T14:22:31.562Z"
+					},
+					"contact": {
+						"type": ["string", "null"],
+						"description": "Resolved contact label used for this message, when the request targeted a saved contact.",
+						"example": "Fernanda"
+					},
+					"contactId": {
+						"type": ["string", "null"],
+						"description": "Contact identifier associated with the message, when available.",
+						"example": "748395130237498515"
 					},
 					"to": {
 						"type": "string",
@@ -2462,6 +4131,8 @@
 							{
 								"id": "748395130237498412",
 								"createdAt": "2026-03-20T14:22:31.562Z",
+								"contact": "Fernanda",
+								"contactId": "748395130237498515",
 								"to": "+5511999999999",
 								"from": "Rewrite",
 								"type": "SMS",
@@ -2483,6 +4154,8 @@
 							{
 								"id": "748395130237498413",
 								"createdAt": "2026-03-20T14:22:31.562Z",
+								"contact": "Fernanda",
+								"contactId": "748395130237498515",
 								"to": "+5511888888888",
 								"from": "Rewrite",
 								"type": "SMS",
@@ -2508,7 +4181,8 @@
 					}
 				}
 			},
-			"OTPCreateBody": {
+			"OTPPhoneCreateBody": {
+				"title": "With direct number",
 				"type": "object",
 				"required": ["to"],
 				"additionalProperties": false,
@@ -2533,6 +4207,45 @@
 						"example": 5
 					}
 				}
+			},
+			"OTPContactCreateBody": {
+				"title": "With saved contact",
+				"type": "object",
+				"required": ["contact"],
+				"additionalProperties": false,
+				"properties": {
+					"contact": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 80,
+						"description": "Contact identifier or saved contact name resolved inside the current project.",
+						"example": "Fernanda"
+					},
+					"prefix": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 32,
+						"description": "Short brand prefix included in the OTP SMS.",
+						"example": "Rewrite"
+					},
+					"expiresIn": {
+						"type": "integer",
+						"minimum": 1,
+						"maximum": 15,
+						"description": "Minutes until the OTP expires.",
+						"example": 5
+					}
+				}
+			},
+			"OTPCreateBody": {
+				"oneOf": [
+					{
+						"$ref": "#/components/schemas/OTPPhoneCreateBody"
+					},
+					{
+						"$ref": "#/components/schemas/OTPContactCreateBody"
+					}
+				]
 			},
 			"OTPCreateResult": {
 				"type": "object",
@@ -2876,6 +4589,26 @@
 					}
 				}
 			},
+			"WebhookDeliveryConfig": {
+				"type": "object",
+				"additionalProperties": false,
+				"properties": {
+					"timeout": {
+						"type": "integer",
+						"minimum": 1000,
+						"maximum": 5000,
+						"description": "Maximum time in milliseconds Rewrite waits for each delivery attempt before timing out.",
+						"example": 3000
+					},
+					"retries": {
+						"type": "integer",
+						"minimum": 0,
+						"maximum": 5,
+						"description": "Number of retry attempts Rewrite schedules after the first failed delivery.",
+						"example": 2
+					}
+				}
+			},
 			"WebhookCreateBody": {
 				"type": "object",
 				"required": ["events", "endpoint"],
@@ -2921,6 +4654,10 @@
 						"maxLength": 255,
 						"description": "Must be HTTPS in production. `http://localhost/...` is also accepted. Query strings and fragments are rejected.",
 						"example": "https://example.com/rewrite/webhooks"
+					},
+					"delivery": {
+						"$ref": "#/components/schemas/WebhookDeliveryConfig",
+						"description": "Optional delivery tuning for timeout and retry behavior."
 					}
 				}
 			},
@@ -2974,12 +4711,25 @@
 						"enum": ["ACTIVE", "INACTIVE"],
 						"description": "Whether Rewrite should actively deliver events to this webhook.",
 						"example": "INACTIVE"
+					},
+					"delivery": {
+						"$ref": "#/components/schemas/WebhookDeliveryConfig",
+						"description": "Updated delivery tuning for timeout and retry behavior."
 					}
 				}
 			},
 			"Webhook": {
 				"type": "object",
-				"required": ["id", "name", "events", "status", "endpoint", "createdAt"],
+				"required": [
+					"id",
+					"name",
+					"events",
+					"status",
+					"endpoint",
+					"retries",
+					"timeout",
+					"createdAt"
+				],
 				"additionalProperties": false,
 				"properties": {
 					"id": {
@@ -3020,6 +4770,16 @@
 						"type": "string",
 						"description": "Destination URL that receives Rewrite webhook events.",
 						"example": "https://example.com/rewrite/webhooks"
+					},
+					"retries": {
+						"type": "integer",
+						"description": "Number of retry attempts Rewrite schedules after the first failed delivery.",
+						"example": 2
+					},
+					"timeout": {
+						"type": "integer",
+						"description": "Maximum time in milliseconds Rewrite waits for each delivery attempt before timing out.",
+						"example": 3000
 					},
 					"createdAt": {
 						"type": "string",
@@ -3147,6 +4907,8 @@
 				"required": [
 					"id",
 					"projectId",
+					"contact",
+					"contactId",
 					"to",
 					"tags",
 					"type",
@@ -3170,6 +4932,16 @@
 						"$ref": "#/components/schemas/Snowflake",
 						"description": "Project identifier associated with the event.",
 						"example": "748395130237499220"
+					},
+					"contact": {
+						"type": ["string", "null"],
+						"description": "Resolved contact label used to create the message, when available.",
+						"example": "Fernanda"
+					},
+					"contactId": {
+						"type": ["string", "null"],
+						"description": "Contact identifier associated with the message, when available.",
+						"example": "748395130237498515"
 					},
 					"to": {
 						"type": "string",

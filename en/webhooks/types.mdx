@@ -39,3 +39,5 @@ Every webhook event uses:
 - `createdAt`: event creation timestamp
 - `type`: event name
 - `data`: event-specific payload
+
+For message-like payloads, Rewrite also includes `data.contact` and `data.contactId`. These fields are `null` when the send did not originate from a saved contact.

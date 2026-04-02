@@ -5,7 +5,7 @@ description: Base URL, auth, envelopes e convencoes publicas da Rewrite API v1.
 
 # Visao geral
 
-A Rewrite API v1 expoe endpoints publicos de projeto para enviar SMS, verificar OTP, gerenciar templates e webhooks e consultar logs de entrega.
+A Rewrite API v1 expoe endpoints publicos de projeto para enviar SMS, verificar OTP, gerenciar contatos, segmentos, templates e webhooks e consultar logs de entrega.
 
 ## Base URL
 
@@ -26,7 +26,8 @@ Authorization: Bearer rw_...
 ## Convencoes de request
 
 - Use `Content-Type: application/json` em requests que nao sao `GET`.
-- Os fluxos publicos de envio e OTP aceitam hoje apenas numeros brasileiros com prefixo `+55`.
+- Os fluxos publicos de envio e OTP aceitam um numero E.164 direto em `to` ou um contato salvo do projeto em `contact`.
+- A maior parte dos projetos comeca com trafego brasileiro `+55`, mas projetos com numeros internacionais habilitados tambem podem enviar para outros DDI.
 - Criacao de mensagem inline usa `content`.
 - Envios por template usam `templateId` com `variables`.
 - Rotas de create/send aceitam `Idempotency-Key`.

@@ -5,7 +5,7 @@ description: Guia pratico de entrega com base no comportamento atual de SMS e we
 
 # Visao geral
 
-Os envios publicos da Rewrite hoje atendem trafego SMS brasileiro. Boa entregabilidade depende de numeros validos, conteudo curto, retries controlados e tratamento rapido de webhook.
+Os envios publicos da Rewrite sao otimizados para trafego SMS transacional, com foco inicial em entrega brasileira `+55`. Boa entregabilidade depende de numeros validos, conteudo curto, retries controlados e tratamento rapido de webhook.
 
 ## Sinais do ciclo de entrega
 
@@ -23,7 +23,7 @@ Use estes eventos no seu monitoramento:
 
 ## Praticas de maior impacto
 
-- Envie apenas para numeros `+55` validos em E.164.
+- Envie apenas para numeros E.164 validos que o seu projeto pode usar.
 - Mantenha OTP e mensagens transacionais curtas.
 - Use `Idempotency-Key` nas operacoes de create/send.
 - Persista payloads de webhook e deduplique por id de evento.
@@ -34,6 +34,7 @@ Use estes eventos no seu monitoramento:
 - Prefira templates quando o mesmo fluxo se repete.
 - Mantenha nomes de placeholders estaveis em todas as variantes.
 - Coloque contexto de marca no inicio da mensagem.
+- Mantenha a cobertura de locale alinhada com os paises para os quais voce realmente envia.
 - Use `tags` para segmentar por caso de uso ou campanha.
 
 Exemplo de body:

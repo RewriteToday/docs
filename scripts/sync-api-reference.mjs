@@ -18,6 +18,8 @@ const authScopes = [
 ];
 
 const publicOperationScopes = [
+	'project:read',
+	'project:api_keys:read',
 	'project:write',
 	'project:webhooks:read',
 	'project:templates:write',
@@ -59,6 +61,9 @@ const exampleSnowflakes = {
 	message: '748395130237498412',
 	messageNext: '748395130237498413',
 	messageThird: '748395130237498414',
+	contact: '748395130237498515',
+	contactNext: '748395130237498516',
+	segment: '748395130237498560',
 	template: '748395130237498620',
 	webhook: '748395130237498750',
 	log: '748395130237498880',
@@ -110,6 +115,12 @@ const exampleMessageInlineBody = {
 	},
 };
 
+const exampleMessageInlineContactBody = {
+	contact: 'Fernanda',
+	content: 'Rewrite: seu codigo e 478201',
+	tags: [exampleMessageTag],
+};
+
 const exampleMessageTemplateBody = {
 	to: '+5511888888888',
 	templateId: exampleSnowflakes.template,
@@ -118,6 +129,28 @@ const exampleMessageTemplateBody = {
 		name: 'Fernanda',
 	},
 	tags: [exampleMessageTag],
+};
+
+const exampleMessageTemplateContactBody = {
+	contact: exampleSnowflakes.contact,
+	templateId: exampleSnowflakes.template,
+	variables: {
+		code: '941205',
+		name: 'Fernanda',
+	},
+	tags: [exampleMessageTag],
+};
+
+const exampleOTPPhoneBody = {
+	to: '+5511999999999',
+	prefix: 'Rewrite',
+	expiresIn: 5,
+};
+
+const exampleOTPContactBody = {
+	contact: 'Fernanda',
+	prefix: 'Rewrite',
+	expiresIn: 5,
 };
 
 const exampleMessageCreateResult = {
@@ -129,6 +162,8 @@ const exampleMessageCreateResult = {
 const exampleMessageRecord = {
 	id: exampleSnowflakes.message,
 	createdAt: exampleTimestamps.createdAt,
+	contact: 'Fernanda',
+	contactId: exampleSnowflakes.contact,
 	to: '+5511999999999',
 	from: 'Rewrite',
 	type: 'SMS',
@@ -141,6 +176,30 @@ const exampleMessageRecord = {
 	deliveredAt: exampleTimestamps.deliveredAt,
 	scheduledAt: null,
 	isPayAsYouGo: false,
+};
+
+const exampleContactRecord = {
+	id: exampleSnowflakes.contact,
+	createdAt: exampleTimestamps.createdAt,
+	name: 'Fernanda',
+	phone: '+5511999999999',
+	country: 'br',
+	channel: 'SMS',
+	tags: {
+		flow: 'checkout',
+		origin: 'import',
+	},
+	updatedAt: exampleTimestamps.createdAt,
+};
+
+const exampleSegmentRecord = {
+	id: exampleSnowflakes.segment,
+	createdAt: exampleTimestamps.createdAt,
+	name: 'vip-customers',
+	description: 'Customers with priority transactional flows.',
+	color: '#0EA5E9',
+	contactsCount: 12,
+	updatedAt: exampleTimestamps.createdAt,
 };
 
 const exampleTemplateVariable = {
@@ -166,6 +225,8 @@ const exampleWebhookRecord = {
 	events: ['message.sent', 'message.failed', 'sms.otp'],
 	status: 'ACTIVE',
 	endpoint: 'https://example.com/rewrite/webhooks',
+	retries: 2,
+	timeout: 3000,
 	createdAt: exampleTimestamps.createdAt,
 };
 
@@ -176,6 +237,8 @@ const exampleWebhookEvent = {
 	data: {
 		id: exampleSnowflakes.message,
 		projectId: exampleSnowflakes.project,
+		contact: 'Fernanda',
+		contactId: exampleSnowflakes.contact,
 		to: '+5511999999999',
 		tags: [exampleMessageTag],
 		type: 'SMS',
@@ -473,39 +536,6 @@ const baseComponents = {
 				},
 			},
 		},
-		StringArrayDeleteBody: {
-			type: 'object',
-			required: ['ids'],
-			additionalProperties: false,
-			properties: {
-				ids: {
-					type: 'array',
-					minItems: 1,
-					maxItems: 20,
-					uniqueItems: true,
-					items: {
-						$ref: '#/components/schemas/Snowflake',
-					},
-				},
-			},
-		},
-		DeletedIdsResponse: {
-			type: 'object',
-			required: ['ok', 'data'],
-			additionalProperties: false,
-			properties: {
-				ok: {
-					type: 'boolean',
-					const: true,
-				},
-				data: {
-					type: 'array',
-					items: {
-						$ref: '#/components/schemas/Snowflake',
-					},
-				},
-			},
-		},
 		Project: {
 			type: 'object',
 			required: ['id', 'name', 'icon', 'ownerId', 'apiKeysCount', 'createdAt'],
@@ -638,6 +668,20 @@ const baseComponents = {
 				},
 			},
 		},
+		APIKeyResponse: {
+			type: 'object',
+			required: ['ok', 'data'],
+			additionalProperties: false,
+			properties: {
+				ok: {
+					type: 'boolean',
+					const: true,
+				},
+				data: {
+					$ref: '#/components/schemas/APIKey',
+				},
+			},
+		},
 		APIKeyCreateBody: {
 			type: 'object',
 			required: ['name'],
@@ -715,6 +759,457 @@ const baseComponents = {
 				},
 				data: {
 					$ref: '#/components/schemas/APIKeyCreateResult',
+				},
+			},
+		},
+		ContactCreateBody: {
+			type: 'object',
+			required: ['phone'],
+			additionalProperties: false,
+			properties: {
+				phone: {
+					type: 'string',
+					minLength: 8,
+					description:
+						'Destination number stored in E.164 format after normalization.',
+					example: exampleContactRecord.phone,
+				},
+				name: {
+					type: 'string',
+					minLength: 1,
+					maxLength: 80,
+					description:
+						'Optional human-readable label used to look up the contact later.',
+					example: exampleContactRecord.name,
+				},
+				channel: {
+					type: 'string',
+					enum: messageTypes,
+					description:
+						'Optional preferred channel for future contact-based sends.',
+					example: exampleContactRecord.channel,
+				},
+				tags: {
+					type: 'object',
+					additionalProperties: true,
+					description: 'Arbitrary metadata stored with the contact.',
+					example: exampleContactRecord.tags,
+				},
+			},
+			example: {
+				phone: exampleContactRecord.phone,
+				name: exampleContactRecord.name,
+				channel: exampleContactRecord.channel,
+				tags: exampleContactRecord.tags,
+			},
+		},
+		ContactUpdateBody: {
+			type: 'object',
+			additionalProperties: false,
+			properties: {
+				phone: {
+					type: 'string',
+					minLength: 8,
+					description:
+						'Updated destination number. Rewrite normalizes it before persisting.',
+					example: '+5511888888888',
+				},
+				name: {
+					type: 'string',
+					minLength: 1,
+					maxLength: 80,
+					description: 'Updated contact label.',
+					example: 'Fernanda Silva',
+				},
+				channel: {
+					type: 'string',
+					enum: messageTypes,
+					description: 'Updated preferred channel.',
+					example: 'OTP',
+				},
+				tags: {
+					type: 'object',
+					additionalProperties: true,
+					description: 'Replacement metadata stored with the contact.',
+					example: {
+						flow: 'otp-login',
+						origin: 'signup',
+					},
+				},
+			},
+			example: {
+				name: 'Fernanda Silva',
+				tags: {
+					flow: 'otp-login',
+					origin: 'signup',
+				},
+			},
+		},
+		ContactCreateResult: {
+			type: 'object',
+			required: ['id', 'phone', 'country', 'createdAt'],
+			additionalProperties: false,
+			properties: {
+				id: {
+					$ref: '#/components/schemas/Snowflake',
+					description: 'Contact identifier returned by Rewrite.',
+				},
+				phone: {
+					type: 'string',
+					description: 'Normalized destination number stored for the contact.',
+					example: exampleContactRecord.phone,
+				},
+				country: {
+					type: 'string',
+					description: 'Country inferred from the normalized number.',
+					example: exampleContactRecord.country,
+				},
+				createdAt: {
+					type: 'string',
+					format: 'date-time',
+					description: 'Timestamp when the contact was created.',
+					example: exampleContactRecord.createdAt,
+				},
+			},
+			example: {
+				id: exampleContactRecord.id,
+				phone: exampleContactRecord.phone,
+				country: exampleContactRecord.country,
+				createdAt: exampleContactRecord.createdAt,
+			},
+		},
+		Contact: {
+			type: 'object',
+			required: [
+				'id',
+				'createdAt',
+				'name',
+				'phone',
+				'country',
+				'channel',
+				'tags',
+				'updatedAt',
+			],
+			additionalProperties: false,
+			properties: {
+				id: {
+					$ref: '#/components/schemas/Snowflake',
+				},
+				createdAt: {
+					type: 'string',
+					format: 'date-time',
+					description: 'Timestamp when the contact was created.',
+					example: exampleContactRecord.createdAt,
+				},
+				name: {
+					type: ['string', 'null'],
+					description: 'Stored contact label.',
+					example: exampleContactRecord.name,
+				},
+				phone: {
+					type: 'string',
+					description: 'Normalized destination number stored for the contact.',
+					example: exampleContactRecord.phone,
+				},
+				country: {
+					type: 'string',
+					description: 'Country inferred from the normalized number.',
+					example: exampleContactRecord.country,
+				},
+				channel: {
+					type: ['string', 'null'],
+					enum: [...messageTypes, null],
+					description:
+						'Preferred channel saved with the contact, when configured.',
+					example: exampleContactRecord.channel,
+				},
+				tags: {
+					type: 'object',
+					additionalProperties: true,
+					description: 'Arbitrary metadata stored with the contact.',
+					example: exampleContactRecord.tags,
+				},
+				updatedAt: {
+					type: 'string',
+					format: 'date-time',
+					description: 'Timestamp when the contact was last updated.',
+					example: exampleContactRecord.updatedAt,
+				},
+			},
+			example: exampleContactRecord,
+		},
+		ContactResponse: {
+			type: 'object',
+			required: ['ok', 'data'],
+			additionalProperties: false,
+			properties: {
+				ok: {
+					type: 'boolean',
+					const: true,
+				},
+				data: {
+					$ref: '#/components/schemas/Contact',
+				},
+			},
+		},
+		ContactCreateResponse: {
+			type: 'object',
+			required: ['ok', 'data'],
+			additionalProperties: false,
+			properties: {
+				ok: {
+					type: 'boolean',
+					const: true,
+				},
+				data: {
+					$ref: '#/components/schemas/ContactCreateResult',
+				},
+			},
+		},
+		ContactListResponse: {
+			type: 'object',
+			required: ['ok', 'data', 'cursor'],
+			additionalProperties: false,
+			properties: {
+				ok: {
+					type: 'boolean',
+					const: true,
+				},
+				data: {
+					type: 'array',
+					items: {
+						$ref: '#/components/schemas/Contact',
+					},
+				},
+				cursor: {
+					$ref: '#/components/schemas/Cursor',
+				},
+			},
+		},
+		SegmentCreateBody: {
+			type: 'object',
+			required: ['name'],
+			additionalProperties: false,
+			properties: {
+				name: {
+					type: 'string',
+					minLength: 1,
+					maxLength: 80,
+					description: 'Unique segment name inside the current project.',
+					example: exampleSegmentRecord.name,
+				},
+				description: {
+					type: ['string', 'null'],
+					minLength: 1,
+					maxLength: 280,
+					description: 'Optional description for operators and dashboards.',
+					example: exampleSegmentRecord.description,
+				},
+				color: {
+					type: ['string', 'null'],
+					pattern: '^#[0-9A-Fa-f]{6}$',
+					description:
+						'Optional hexadecimal accent color stored with the segment.',
+					example: exampleSegmentRecord.color,
+				},
+			},
+			example: {
+				name: exampleSegmentRecord.name,
+				description: exampleSegmentRecord.description,
+				color: exampleSegmentRecord.color,
+			},
+		},
+		SegmentUpdateBody: {
+			type: 'object',
+			additionalProperties: false,
+			properties: {
+				name: {
+					type: 'string',
+					minLength: 1,
+					maxLength: 80,
+					description: 'Updated segment name.',
+					example: 'priority-customers',
+				},
+				description: {
+					type: ['string', 'null'],
+					minLength: 1,
+					maxLength: 280,
+					description: 'Updated description.',
+					example:
+						'Customers that must always receive high-priority messaging.',
+				},
+				color: {
+					type: ['string', 'null'],
+					pattern: '^#[0-9A-Fa-f]{6}$',
+					description: 'Updated hexadecimal accent color.',
+					example: '#2563EB',
+				},
+			},
+			example: {
+				description:
+					'Customers that must always receive high-priority messaging.',
+				color: '#2563EB',
+			},
+		},
+		SegmentAttachContactBody: {
+			type: 'object',
+			required: ['contactId'],
+			additionalProperties: false,
+			properties: {
+				contactId: {
+					$ref: '#/components/schemas/Snowflake',
+					description:
+						'Contact identifier that should be attached to the segment.',
+					example: exampleContactRecord.id,
+				},
+			},
+			example: {
+				contactId: exampleContactRecord.id,
+			},
+		},
+		SegmentCreateResult: {
+			type: 'object',
+			required: [
+				'id',
+				'name',
+				'description',
+				'contactsCount',
+				'updatedAt',
+				'createdAt',
+			],
+			additionalProperties: false,
+			properties: {
+				id: {
+					$ref: '#/components/schemas/Snowflake',
+				},
+				name: {
+					type: 'string',
+					example: exampleSegmentRecord.name,
+				},
+				description: {
+					type: ['string', 'null'],
+					example: exampleSegmentRecord.description,
+				},
+				contactsCount: {
+					type: 'integer',
+					description: 'Current number of contacts attached to the segment.',
+					example: 0,
+				},
+				updatedAt: {
+					type: 'string',
+					format: 'date-time',
+					example: exampleSegmentRecord.updatedAt,
+				},
+				createdAt: {
+					type: 'string',
+					format: 'date-time',
+					example: exampleSegmentRecord.createdAt,
+				},
+			},
+			example: {
+				id: exampleSegmentRecord.id,
+				name: exampleSegmentRecord.name,
+				description: exampleSegmentRecord.description,
+				contactsCount: 0,
+				updatedAt: exampleSegmentRecord.updatedAt,
+				createdAt: exampleSegmentRecord.createdAt,
+			},
+		},
+		Segment: {
+			type: 'object',
+			required: [
+				'id',
+				'createdAt',
+				'name',
+				'description',
+				'color',
+				'contactsCount',
+				'updatedAt',
+			],
+			additionalProperties: false,
+			properties: {
+				id: {
+					$ref: '#/components/schemas/Snowflake',
+				},
+				createdAt: {
+					type: 'string',
+					format: 'date-time',
+					example: exampleSegmentRecord.createdAt,
+				},
+				name: {
+					type: 'string',
+					description: 'Segment name unique inside the project.',
+					example: exampleSegmentRecord.name,
+				},
+				description: {
+					type: ['string', 'null'],
+					description: 'Optional description stored with the segment.',
+					example: exampleSegmentRecord.description,
+				},
+				color: {
+					type: ['string', 'null'],
+					description: 'Optional hexadecimal accent color.',
+					example: exampleSegmentRecord.color,
+				},
+				contactsCount: {
+					type: 'integer',
+					description: 'Current number of contacts attached to the segment.',
+					example: exampleSegmentRecord.contactsCount,
+				},
+				updatedAt: {
+					type: 'string',
+					format: 'date-time',
+					description: 'Timestamp when the segment was last updated.',
+					example: exampleSegmentRecord.updatedAt,
+				},
+			},
+			example: exampleSegmentRecord,
+		},
+		SegmentResponse: {
+			type: 'object',
+			required: ['ok', 'data'],
+			additionalProperties: false,
+			properties: {
+				ok: {
+					type: 'boolean',
+					const: true,
+				},
+				data: {
+					$ref: '#/components/schemas/Segment',
+				},
+			},
+		},
+		SegmentCreateResponse: {
+			type: 'object',
+			required: ['ok', 'data'],
+			additionalProperties: false,
+			properties: {
+				ok: {
+					type: 'boolean',
+					const: true,
+				},
+				data: {
+					$ref: '#/components/schemas/SegmentCreateResult',
+				},
+			},
+		},
+		SegmentListResponse: {
+			type: 'object',
+			required: ['ok', 'data', 'cursor'],
+			additionalProperties: false,
+			properties: {
+				ok: {
+					type: 'boolean',
+					const: true,
+				},
+				data: {
+					type: 'array',
+					items: {
+						$ref: '#/components/schemas/Segment',
+					},
+				},
+				cursor: {
+					$ref: '#/components/schemas/Cursor',
 				},
 			},
 		},
@@ -822,7 +1317,7 @@ const baseComponents = {
 			example: exampleMessageInlineBody.segmentation,
 		},
 		MessageInlineBody: {
-			title: 'With content',
+			title: 'With content and direct number',
 			type: 'object',
 			required: ['to', 'content'],
 			additionalProperties: false,
@@ -862,8 +1357,51 @@ const baseComponents = {
 			},
 			example: exampleMessageInlineBody,
 		},
+		MessageInlineContactBody: {
+			title: 'With content and saved contact',
+			type: 'object',
+			required: ['contact', 'content'],
+			additionalProperties: false,
+			properties: {
+				contact: {
+					type: 'string',
+					minLength: 1,
+					maxLength: 80,
+					description:
+						'Contact identifier or saved contact name resolved inside the current project.',
+					example: exampleMessageInlineContactBody.contact,
+				},
+				content: {
+					type: 'string',
+					minLength: 1,
+					maxLength: 1600,
+					description: 'Rendered SMS content to send.',
+					example: exampleMessageInlineContactBody.content,
+				},
+				tags: {
+					type: 'array',
+					maxItems: 20,
+					description: 'Optional metadata stored with the message.',
+					items: {
+						$ref: '#/components/schemas/MessageTag',
+					},
+					example: exampleMessageInlineContactBody.tags,
+				},
+				scheduledAt: {
+					type: 'string',
+					format: 'date-time',
+					description:
+						'When provided, Rewrite schedules the message for later delivery.',
+				},
+				segmentation: {
+					$ref: '#/components/schemas/MessageSegmentation',
+					description: 'Optional segmentation rules for long SMS bodies.',
+				},
+			},
+			example: exampleMessageInlineContactBody,
+		},
 		MessageTemplateBody: {
-			title: 'Using templates',
+			title: 'Using templates and direct number',
 			type: 'object',
 			required: ['to', 'templateId'],
 			additionalProperties: false,
@@ -911,13 +1449,71 @@ const baseComponents = {
 			},
 			example: exampleMessageTemplateBody,
 		},
+		MessageTemplateContactBody: {
+			title: 'Using templates and saved contact',
+			type: 'object',
+			required: ['contact', 'templateId'],
+			additionalProperties: false,
+			properties: {
+				contact: {
+					type: 'string',
+					minLength: 1,
+					maxLength: 80,
+					description:
+						'Contact identifier or saved contact name resolved inside the current project.',
+					example: exampleMessageTemplateContactBody.contact,
+				},
+				templateId: {
+					$ref: '#/components/schemas/Snowflake',
+					description: 'Template identifier to render before sending.',
+					example: exampleMessageTemplateContactBody.templateId,
+				},
+				variables: {
+					type: 'object',
+					additionalProperties: {
+						type: 'string',
+					},
+					default: {},
+					description:
+						'Variable values used when rendering the selected template.',
+					example: exampleMessageTemplateContactBody.variables,
+				},
+				tags: {
+					type: 'array',
+					maxItems: 20,
+					description: 'Optional metadata stored with the message.',
+					items: {
+						$ref: '#/components/schemas/MessageTag',
+					},
+					example: exampleMessageTemplateContactBody.tags,
+				},
+				scheduledAt: {
+					type: 'string',
+					format: 'date-time',
+					description:
+						'When provided, Rewrite schedules the message for later delivery.',
+				},
+				segmentation: {
+					$ref: '#/components/schemas/MessageSegmentation',
+					description:
+						'Optional segmentation rules for the rendered template output.',
+				},
+			},
+			example: exampleMessageTemplateContactBody,
+		},
 		MessageCreateBody: {
 			oneOf: [
 				{
 					$ref: '#/components/schemas/MessageInlineBody',
 				},
 				{
+					$ref: '#/components/schemas/MessageInlineContactBody',
+				},
+				{
 					$ref: '#/components/schemas/MessageTemplateBody',
+				},
+				{
+					$ref: '#/components/schemas/MessageTemplateContactBody',
 				},
 			],
 		},
@@ -1037,6 +1633,8 @@ const baseComponents = {
 			required: [
 				'id',
 				'createdAt',
+				'contact',
+				'contactId',
 				'to',
 				'from',
 				'type',
@@ -1062,6 +1660,18 @@ const baseComponents = {
 					format: 'date-time',
 					description: 'Timestamp when Rewrite accepted the message.',
 					example: exampleMessageRecord.createdAt,
+				},
+				contact: {
+					type: ['string', 'null'],
+					description:
+						'Resolved contact label used for this message, when the request targeted a saved contact.',
+					example: exampleMessageRecord.contact,
+				},
+				contactId: {
+					type: ['string', 'null'],
+					description:
+						'Contact identifier associated with the message, when available.',
+					example: exampleMessageRecord.contactId,
 				},
 				to: {
 					type: 'string',
@@ -1199,7 +1809,8 @@ const baseComponents = {
 				cursor: exampleCursor,
 			},
 		},
-		OTPCreateBody: {
+		OTPPhoneCreateBody: {
+			title: 'With direct number',
 			type: 'object',
 			required: ['to'],
 			additionalProperties: false,
@@ -1207,28 +1818,65 @@ const baseComponents = {
 				to: {
 					type: 'string',
 					description: 'Destination number that should receive the OTP.',
-					example: '+5511999999999',
+					example: exampleOTPPhoneBody.to,
 				},
 				prefix: {
 					type: 'string',
 					minLength: 1,
 					maxLength: 32,
 					description: 'Short brand prefix included in the OTP SMS.',
-					example: 'Rewrite',
+					example: exampleOTPPhoneBody.prefix,
 				},
 				expiresIn: {
 					type: 'integer',
 					minimum: 1,
 					maximum: 15,
 					description: 'Minutes until the OTP expires.',
-					example: 5,
+					example: exampleOTPPhoneBody.expiresIn,
 				},
 			},
-			example: {
-				to: '+5511999999999',
-				prefix: 'Rewrite',
-				expiresIn: 5,
+			example: exampleOTPPhoneBody,
+		},
+		OTPContactCreateBody: {
+			title: 'With saved contact',
+			type: 'object',
+			required: ['contact'],
+			additionalProperties: false,
+			properties: {
+				contact: {
+					type: 'string',
+					minLength: 1,
+					maxLength: 80,
+					description:
+						'Contact identifier or saved contact name resolved inside the current project.',
+					example: exampleOTPContactBody.contact,
+				},
+				prefix: {
+					type: 'string',
+					minLength: 1,
+					maxLength: 32,
+					description: 'Short brand prefix included in the OTP SMS.',
+					example: exampleOTPContactBody.prefix,
+				},
+				expiresIn: {
+					type: 'integer',
+					minimum: 1,
+					maximum: 15,
+					description: 'Minutes until the OTP expires.',
+					example: exampleOTPContactBody.expiresIn,
+				},
 			},
+			example: exampleOTPContactBody,
+		},
+		OTPCreateBody: {
+			oneOf: [
+				{
+					$ref: '#/components/schemas/OTPPhoneCreateBody',
+				},
+				{
+					$ref: '#/components/schemas/OTPContactCreateBody',
+				},
+			],
 		},
 		OTPCreateResult: {
 			type: 'object',
@@ -1596,6 +2244,32 @@ const baseComponents = {
 				},
 			},
 		},
+		WebhookDeliveryConfig: {
+			type: 'object',
+			additionalProperties: false,
+			properties: {
+				timeout: {
+					type: 'integer',
+					minimum: 1000,
+					maximum: 5000,
+					description:
+						'Maximum time in milliseconds Rewrite waits for each delivery attempt before timing out.',
+					example: exampleWebhookRecord.timeout,
+				},
+				retries: {
+					type: 'integer',
+					minimum: 0,
+					maximum: 5,
+					description:
+						'Number of retry attempts Rewrite schedules after the first failed delivery.',
+					example: exampleWebhookRecord.retries,
+				},
+			},
+			example: {
+				timeout: exampleWebhookRecord.timeout,
+				retries: exampleWebhookRecord.retries,
+			},
+		},
 		WebhookCreateBody: {
 			type: 'object',
 			required: ['events', 'endpoint'],
@@ -1635,12 +2309,21 @@ const baseComponents = {
 						'Must be HTTPS in production. `http://localhost/...` is also accepted. Query strings and fragments are rejected.',
 					example: exampleWebhookRecord.endpoint,
 				},
+				delivery: {
+					$ref: '#/components/schemas/WebhookDeliveryConfig',
+					description:
+						'Optional delivery tuning for timeout and retry behavior.',
+				},
 			},
 			example: {
 				name: exampleWebhookRecord.name,
 				events: exampleWebhookRecord.events,
 				secret: 'whsec_dGVzdF9zZWNyZXRfdmFsdWU=',
 				endpoint: exampleWebhookRecord.endpoint,
+				delivery: {
+					timeout: exampleWebhookRecord.timeout,
+					retries: exampleWebhookRecord.retries,
+				},
 			},
 		},
 		WebhookUpdateBody: {
@@ -1687,14 +2370,32 @@ const baseComponents = {
 						'Whether Rewrite should actively deliver events to this webhook.',
 					example: 'INACTIVE',
 				},
+				delivery: {
+					$ref: '#/components/schemas/WebhookDeliveryConfig',
+					description:
+						'Updated delivery tuning for timeout and retry behavior.',
+				},
 			},
 			example: {
 				status: 'INACTIVE',
+				delivery: {
+					timeout: 2000,
+					retries: 1,
+				},
 			},
 		},
 		Webhook: {
 			type: 'object',
-			required: ['id', 'name', 'events', 'status', 'endpoint', 'createdAt'],
+			required: [
+				'id',
+				'name',
+				'events',
+				'status',
+				'endpoint',
+				'retries',
+				'timeout',
+				'createdAt',
+			],
 			additionalProperties: false,
 			properties: {
 				id: {
@@ -1726,6 +2427,18 @@ const baseComponents = {
 					type: 'string',
 					description: 'Destination URL that receives Rewrite webhook events.',
 					example: exampleWebhookRecord.endpoint,
+				},
+				retries: {
+					type: 'integer',
+					description:
+						'Number of retry attempts Rewrite schedules after the first failed delivery.',
+					example: exampleWebhookRecord.retries,
+				},
+				timeout: {
+					type: 'integer',
+					description:
+						'Maximum time in milliseconds Rewrite waits for each delivery attempt before timing out.',
+					example: exampleWebhookRecord.timeout,
 				},
 				createdAt: {
 					type: 'string',
@@ -1868,6 +2581,8 @@ const baseComponents = {
 			required: [
 				'id',
 				'projectId',
+				'contact',
+				'contactId',
 				'to',
 				'tags',
 				'type',
@@ -1891,6 +2606,18 @@ const baseComponents = {
 					$ref: '#/components/schemas/Snowflake',
 					description: 'Project identifier associated with the event.',
 					example: exampleSnowflakes.project,
+				},
+				contact: {
+					type: ['string', 'null'],
+					description:
+						'Resolved contact label used to create the message, when available.',
+					example: exampleWebhookEvent.data.contact,
+				},
+				contactId: {
+					type: ['string', 'null'],
+					description:
+						'Contact identifier associated with the message, when available.',
+					example: exampleWebhookEvent.data.contactId,
 				},
 				to: {
 					type: 'string',
@@ -2292,6 +3019,11 @@ const tags = {
 		name: 'API Keys',
 		description: 'Manage API keys exposed through the public API.',
 	},
+	contacts: {
+		name: 'Contacts',
+		description:
+			'Store reusable contacts and target them in message and OTP flows.',
+	},
 	messages: {
 		name: 'Messages',
 		description: 'Send, read and manage SMS messages.',
@@ -2305,6 +3037,11 @@ const tags = {
 		description:
 			'Reusable SMS templates with locale-aware content and variables.',
 	},
+	segments: {
+		name: 'Segments',
+		description:
+			'Group contacts into reusable segments for project-level audience management.',
+	},
 	webhooks: {
 		name: 'Webhooks',
 		description: 'Create and manage webhooks for Rewrite events.',
@@ -2316,7 +3053,181 @@ const tags = {
 };
 
 const apiKeysPaths = {
+	'/api-keys': {
+		get: {
+			tags: [tags.apiKeys.name],
+			operationId: 'listProjectApiKeys',
+			summary: 'List API keys',
+			description: operationDescription({
+				details:
+					'List API keys configured for the current project. Results are returned in reverse chronological order with a top-level cursor.',
+			}),
+			'x-codeSamples':
+				codeSamples(`const { data, error, cursor } = await rewrite.apiKeys.list({
+  limit: 20,
+});
+
+if (error) throw error;`),
+			security: securityRequirement('project:api_keys:read'),
+			parameters: [
+				{ $ref: '#/components/parameters/After' },
+				{ $ref: '#/components/parameters/Before' },
+				{ $ref: '#/components/parameters/Limit' },
+			],
+			responses: okResponse({
+				schemaRef: '#/components/schemas/APIKeyListResponse',
+				example: {
+					ok: true,
+					data: [
+						{
+							id: exampleSnowflakes.apiKey,
+							name: 'production',
+							prefix: 'rw_d5f3ce',
+							scopes: ['message:write', 'message:read'],
+							description: 'Primary production key',
+							lastUsedAt: exampleTimestamps.deliveredAt,
+							createdAt: exampleTimestamps.createdAt,
+						},
+					],
+					cursor: {
+						persist: false,
+					},
+				},
+			}),
+			'x-required-scopes': ['project:api_keys:read'],
+		},
+		post: {
+			tags: [tags.apiKeys.name],
+			operationId: 'createProjectApiKey',
+			summary: 'Create an API key',
+			description: operationDescription({
+				details:
+					'Create a new project API key with optional description and explicit scopes. The full secret is returned only once.',
+			}),
+			'x-codeSamples':
+				codeSamples(`const { data, error } = await rewrite.apiKeys.create({
+  name: 'production',
+  description: 'Primary production key',
+  scopes: ['message:write', 'message:read'],
+});
+
+if (error) throw error;`),
+			security: securityRequirement('project:write'),
+			requestBody: jsonBody({
+				schema: {
+					$ref: '#/components/schemas/APIKeyCreateBody',
+				},
+				example: {
+					name: 'production',
+					description: 'Primary production key',
+					scopes: ['message:write', 'message:read'],
+				},
+			}),
+			responses: okResponse({
+				schemaRef: '#/components/schemas/APIKeyCreateResponse',
+				example: {
+					ok: true,
+					data: {
+						id: exampleSnowflakes.apiKey,
+						key: 'rw_d5f3ce.4pbbWQrluH4SOD5xvR9p9C2x',
+						createdAt: exampleTimestamps.createdAt,
+					},
+				},
+			}),
+			'x-required-scopes': ['project:write'],
+		},
+	},
 	'/api-keys/{key}': {
+		get: {
+			tags: [tags.apiKeys.name],
+			operationId: 'getProjectApiKey',
+			summary: 'Get an API key',
+			description: operationDescription({
+				details:
+					'Fetch one API key by identifier together with its scoped permissions and last usage timestamp.',
+			}),
+			'x-codeSamples':
+				codeSamples(`const { data, error } = await rewrite.apiKeys.get(
+  '${exampleSnowflakes.apiKey}',
+);
+
+if (error) throw error;`),
+			security: securityRequirement('project:api_keys:read'),
+			parameters: [
+				{
+					name: 'key',
+					in: 'path',
+					required: true,
+					description: 'API key identifier returned by Rewrite.',
+					schema: {
+						$ref: '#/components/schemas/Snowflake',
+					},
+				},
+			],
+			responses: okResponse({
+				schemaRef: '#/components/schemas/APIKeyResponse',
+				example: {
+					ok: true,
+					data: {
+						id: exampleSnowflakes.apiKey,
+						name: 'production',
+						prefix: 'rw_d5f3ce',
+						scopes: ['message:write', 'message:read'],
+						description: 'Primary production key',
+						lastUsedAt: exampleTimestamps.deliveredAt,
+						createdAt: exampleTimestamps.createdAt,
+					},
+				},
+			}),
+			'x-required-scopes': ['project:api_keys:read'],
+		},
+		patch: {
+			tags: [tags.apiKeys.name],
+			operationId: 'updateProjectApiKey',
+			summary: 'Update an API key',
+			description: operationDescription({
+				details: 'Update API key metadata or replace its allowed scope set.',
+			}),
+			'x-codeSamples':
+				codeSamples(`const { error } = await rewrite.apiKeys.update(
+  '${exampleSnowflakes.apiKey}',
+  {
+    description: 'Secondary staging key',
+    scopes: ['message:write'],
+  },
+);
+
+if (error) throw error;`),
+			security: securityRequirement('project:write'),
+			parameters: [
+				{
+					name: 'key',
+					in: 'path',
+					required: true,
+					description: 'API key identifier returned by Rewrite.',
+					schema: {
+						$ref: '#/components/schemas/Snowflake',
+					},
+				},
+			],
+			requestBody: jsonBody({
+				schema: {
+					$ref: '#/components/schemas/APIKeyUpdateBody',
+				},
+				example: {
+					description: 'Secondary staging key',
+					scopes: ['message:write'],
+				},
+			}),
+			responses: okResponse({
+				schemaRef: '#/components/schemas/OkEmptyResponse',
+				example: {
+					ok: true,
+					data: null,
+				},
+			}),
+			'x-required-scopes': ['project:write'],
+		},
 		delete: {
 			tags: [tags.apiKeys.name],
 			operationId: 'deleteProjectApiKey',
@@ -2363,7 +3274,7 @@ const messagesPaths = {
 			summary: 'Send a message',
 			description: operationDescription({
 				details:
-					'Send one SMS with inline content or by rendering a saved template. This route accepts Brazilian destination numbers in `+55` format and returns the accepted message ID immediately.',
+					'Send one SMS with inline content or by rendering a saved template. You can target either a direct E.164 number in `to` or a saved project contact in `contact`. Projects with international numbers enabled can send beyond the default `+55` traffic profile.',
 			}),
 			'x-codeSamples':
 				codeSamples(`const { data, error } = await rewrite.messages.send({
@@ -2384,9 +3295,17 @@ if (error) throw error;`),
 						summary: 'With content',
 						value: exampleMessageInlineBody,
 					},
+					withSavedContact: {
+						summary: 'With saved contact',
+						value: exampleMessageInlineContactBody,
+					},
 					usingTemplate: {
 						summary: 'Using templates',
 						value: exampleMessageTemplateBody,
+					},
+					usingTemplateAndContact: {
+						summary: 'Using template and saved contact',
+						value: exampleMessageTemplateContactBody,
 					},
 				},
 			}),
@@ -2449,7 +3368,7 @@ if (error) throw error;`),
 			summary: 'Send batch messages',
 			description: operationDescription({
 				details:
-					'Send between 1 and 100 SMS messages in one request. This route accepts Brazilian destination numbers in `+55` format and returns only the accepted message IDs.',
+					'Send between 1 and 100 SMS messages in one request. Each entry can target either a direct E.164 number or a saved project contact, and Rewrite returns only the accepted message IDs.',
 			}),
 			'x-codeSamples':
 				codeSamples(`const { data, error } = await rewrite.messages.batch(
@@ -2487,7 +3406,18 @@ if (error) throw error;`),
 						content: 'Rewrite: seu codigo e 478201',
 					},
 					{
+						contact: 'Fernanda',
+						content: 'Rewrite: seu codigo e 478201',
+					},
+					{
 						to: '+5511888888888',
+						templateId: exampleSnowflakes.template,
+						variables: {
+							code: '941205',
+						},
+					},
+					{
+						contact: exampleSnowflakes.contact,
 						templateId: exampleSnowflakes.template,
 						variables: {
 							code: '941205',
@@ -2593,7 +3523,7 @@ if (error) throw error;`),
 			summary: 'Send an OTP code',
 			description: operationDescription({
 				details:
-					'Create and send an OTP SMS to a Brazilian destination number in `+55` format.',
+					'Create and send an OTP SMS to either a direct destination number or a saved project contact. Projects with international numbers enabled can send beyond the default `+55` traffic profile.',
 			}),
 			'x-codeSamples':
 				codeSamples(`const { data, error } = await rewrite.otp.send({
@@ -2610,10 +3540,15 @@ if (error) throw error;`),
 				schema: {
 					$ref: '#/components/schemas/OTPCreateBody',
 				},
-				example: {
-					to: '+5511999999999',
-					prefix: 'Rewrite',
-					expiresIn: 5,
+				examples: {
+					withDirectNumber: {
+						summary: 'With direct number',
+						value: exampleOTPPhoneBody,
+					},
+					withSavedContact: {
+						summary: 'With saved contact',
+						value: exampleOTPContactBody,
+					},
 				},
 			}),
 			responses: okResponse({
@@ -2696,6 +3631,550 @@ const messagesOnlyPaths = {
 const otpPaths = {
 	'/otp': messagesPaths['/otp'],
 	'/otp/{id}/verify': messagesPaths['/otp/{id}/verify'],
+};
+
+const contactsPaths = {
+	'/contacts': {
+		get: {
+			tags: [tags.contacts.name],
+			operationId: 'listContacts',
+			summary: 'List contacts',
+			description: operationDescription({
+				details:
+					'List contacts stored for the current project. Results are returned in reverse chronological order with a top-level cursor.',
+			}),
+			'x-codeSamples':
+				codeSamples(`const { data, error, cursor } = await rewrite.contacts.list({
+  limit: 25,
+});
+
+if (error) throw error;`),
+			security: securityRequirement('project:read'),
+			parameters: [
+				{ $ref: '#/components/parameters/After' },
+				{ $ref: '#/components/parameters/Before' },
+				{ $ref: '#/components/parameters/Limit' },
+			],
+			responses: okResponse({
+				schemaRef: '#/components/schemas/ContactListResponse',
+				example: {
+					ok: true,
+					data: [
+						exampleContactRecord,
+						{
+							...exampleContactRecord,
+							id: exampleSnowflakes.contactNext,
+							name: 'Ada',
+							phone: '+5511888888888',
+							channel: null,
+						},
+					],
+					cursor: exampleCursor,
+				},
+			}),
+			'x-required-scopes': ['project:read'],
+		},
+		post: {
+			tags: [tags.contacts.name],
+			operationId: 'createContact',
+			summary: 'Create a contact',
+			description: operationDescription({
+				details:
+					'Create a reusable project contact. Rewrite normalizes the provided phone number and enforces unique phone and name values per project.',
+			}),
+			'x-codeSamples':
+				codeSamples(`const { data, error } = await rewrite.contacts.create({
+  phone: '${exampleContactRecord.phone}',
+  name: '${exampleContactRecord.name}',
+  channel: 'SMS',
+  tags: { flow: 'checkout', origin: 'import' },
+});
+
+if (error) throw error;`),
+			security: securityRequirement('project:write'),
+			requestBody: jsonBody({
+				schema: {
+					$ref: '#/components/schemas/ContactCreateBody',
+				},
+				example: {
+					phone: exampleContactRecord.phone,
+					name: exampleContactRecord.name,
+					channel: exampleContactRecord.channel,
+					tags: exampleContactRecord.tags,
+				},
+			}),
+			responses: okResponse({
+				schemaRef: '#/components/schemas/ContactCreateResponse',
+				example: {
+					ok: true,
+					data: {
+						id: exampleContactRecord.id,
+						phone: exampleContactRecord.phone,
+						country: exampleContactRecord.country,
+						createdAt: exampleContactRecord.createdAt,
+					},
+				},
+			}),
+			'x-required-scopes': ['project:write'],
+		},
+	},
+	'/contacts/{identifier}': {
+		get: {
+			tags: [tags.contacts.name],
+			operationId: 'getContact',
+			summary: 'Get a contact',
+			description: operationDescription({
+				details:
+					'Fetch a single contact by its identifier or by its saved name.',
+			}),
+			'x-codeSamples':
+				codeSamples(`const { data, error } = await rewrite.contacts.get(
+  '${exampleContactRecord.name}',
+);
+
+if (error) throw error;`),
+			security: securityRequirement('project:read'),
+			parameters: [
+				{
+					name: 'identifier',
+					in: 'path',
+					required: true,
+					description: 'Contact identifier or saved contact name.',
+					schema: {
+						type: 'string',
+					},
+				},
+			],
+			responses: okResponse({
+				schemaRef: '#/components/schemas/ContactResponse',
+				example: {
+					ok: true,
+					data: exampleContactRecord,
+				},
+			}),
+			'x-required-scopes': ['project:read'],
+		},
+	},
+	'/contacts/{id}': {
+		patch: {
+			tags: [tags.contacts.name],
+			operationId: 'updateContact',
+			summary: 'Update a contact',
+			description: operationDescription({
+				details:
+					'Update a stored contact. Rewrite normalizes phone changes before persisting them.',
+			}),
+			'x-codeSamples':
+				codeSamples(`const { error } = await rewrite.contacts.update(
+  '${exampleContactRecord.id}',
+  {
+    name: 'Fernanda Silva',
+    tags: { flow: 'otp-login', origin: 'signup' },
+  },
+);
+
+if (error) throw error;`),
+			security: securityRequirement('project:write'),
+			parameters: [
+				{
+					name: 'id',
+					in: 'path',
+					required: true,
+					description: 'Contact identifier returned by Rewrite.',
+					schema: {
+						$ref: '#/components/schemas/Snowflake',
+					},
+				},
+			],
+			requestBody: jsonBody({
+				schema: {
+					$ref: '#/components/schemas/ContactUpdateBody',
+				},
+				example: {
+					name: 'Fernanda Silva',
+					tags: {
+						flow: 'otp-login',
+						origin: 'signup',
+					},
+				},
+			}),
+			responses: okResponse({
+				schemaRef: '#/components/schemas/OkEmptyResponse',
+				example: {
+					ok: true,
+					data: null,
+				},
+			}),
+			'x-required-scopes': ['project:write'],
+		},
+		delete: {
+			tags: [tags.contacts.name],
+			operationId: 'deleteContact',
+			summary: 'Delete a contact',
+			description: operationDescription({
+				details:
+					'Permanently delete a project contact and stop resolving it in future sends.',
+			}),
+			'x-codeSamples':
+				codeSamples(`const { error } = await rewrite.contacts.delete(
+  '${exampleContactRecord.id}',
+);
+
+if (error) throw error;`),
+			security: securityRequirement('project:write'),
+			parameters: [
+				{
+					name: 'id',
+					in: 'path',
+					required: true,
+					description: 'Contact identifier returned by Rewrite.',
+					schema: {
+						$ref: '#/components/schemas/Snowflake',
+					},
+				},
+			],
+			responses: okResponse({
+				schemaRef: '#/components/schemas/OkEmptyResponse',
+				example: {
+					ok: true,
+					data: null,
+				},
+			}),
+			'x-required-scopes': ['project:write'],
+		},
+	},
+};
+
+const segmentsPaths = {
+	'/segments': {
+		get: {
+			tags: [tags.segments.name],
+			operationId: 'listSegments',
+			summary: 'List segments',
+			description: operationDescription({
+				details:
+					'List segments configured for the current project. Results are returned in reverse chronological order with a top-level cursor.',
+			}),
+			'x-codeSamples':
+				codeSamples(`const { data, error, cursor } = await rewrite.segments.list({
+  limit: 25,
+});
+
+if (error) throw error;`),
+			security: securityRequirement('project:read'),
+			parameters: [
+				{ $ref: '#/components/parameters/After' },
+				{ $ref: '#/components/parameters/Before' },
+				{ $ref: '#/components/parameters/Limit' },
+			],
+			responses: okResponse({
+				schemaRef: '#/components/schemas/SegmentListResponse',
+				example: {
+					ok: true,
+					data: [exampleSegmentRecord],
+					cursor: {
+						persist: false,
+					},
+				},
+			}),
+			'x-required-scopes': ['project:read'],
+		},
+		post: {
+			tags: [tags.segments.name],
+			operationId: 'createSegment',
+			summary: 'Create a segment',
+			description: operationDescription({
+				details: 'Create a reusable segment for grouping project contacts.',
+			}),
+			'x-codeSamples':
+				codeSamples(`const { data, error } = await rewrite.segments.create({
+  name: '${exampleSegmentRecord.name}',
+  description: '${exampleSegmentRecord.description}',
+  color: '${exampleSegmentRecord.color}',
+});
+
+if (error) throw error;`),
+			security: securityRequirement('project:write'),
+			requestBody: jsonBody({
+				schema: {
+					$ref: '#/components/schemas/SegmentCreateBody',
+				},
+				example: {
+					name: exampleSegmentRecord.name,
+					description: exampleSegmentRecord.description,
+					color: exampleSegmentRecord.color,
+				},
+			}),
+			responses: okResponse({
+				schemaRef: '#/components/schemas/SegmentCreateResponse',
+				example: {
+					ok: true,
+					data: {
+						id: exampleSegmentRecord.id,
+						name: exampleSegmentRecord.name,
+						description: exampleSegmentRecord.description,
+						contactsCount: 0,
+						updatedAt: exampleSegmentRecord.updatedAt,
+						createdAt: exampleSegmentRecord.createdAt,
+					},
+				},
+			}),
+			'x-required-scopes': ['project:write'],
+		},
+	},
+	'/segments/{id}': {
+		get: {
+			tags: [tags.segments.name],
+			operationId: 'getSegment',
+			summary: 'Get a segment',
+			description: operationDescription({
+				details: 'Fetch one segment by identifier.',
+			}),
+			'x-codeSamples':
+				codeSamples(`const { data, error } = await rewrite.segments.get(
+  '${exampleSegmentRecord.id}',
+);
+
+if (error) throw error;`),
+			security: securityRequirement('project:read'),
+			parameters: [
+				{
+					name: 'id',
+					in: 'path',
+					required: true,
+					description: 'Segment identifier returned by Rewrite.',
+					schema: {
+						$ref: '#/components/schemas/Snowflake',
+					},
+				},
+			],
+			responses: okResponse({
+				schemaRef: '#/components/schemas/SegmentResponse',
+				example: {
+					ok: true,
+					data: exampleSegmentRecord,
+				},
+			}),
+			'x-required-scopes': ['project:read'],
+		},
+		patch: {
+			tags: [tags.segments.name],
+			operationId: 'updateSegment',
+			summary: 'Update a segment',
+			description: operationDescription({
+				details: 'Update a segment name, description or color.',
+			}),
+			'x-codeSamples':
+				codeSamples(`const { error } = await rewrite.segments.update(
+  '${exampleSegmentRecord.id}',
+  {
+    description: 'Customers that must always receive high-priority messaging.',
+    color: '#2563EB',
+  },
+);
+
+if (error) throw error;`),
+			security: securityRequirement('project:write'),
+			parameters: [
+				{
+					name: 'id',
+					in: 'path',
+					required: true,
+					description: 'Segment identifier returned by Rewrite.',
+					schema: {
+						$ref: '#/components/schemas/Snowflake',
+					},
+				},
+			],
+			requestBody: jsonBody({
+				schema: {
+					$ref: '#/components/schemas/SegmentUpdateBody',
+				},
+				example: {
+					description:
+						'Customers that must always receive high-priority messaging.',
+					color: '#2563EB',
+				},
+			}),
+			responses: okResponse({
+				schemaRef: '#/components/schemas/OkEmptyResponse',
+				example: {
+					ok: true,
+					data: null,
+				},
+			}),
+			'x-required-scopes': ['project:write'],
+		},
+		delete: {
+			tags: [tags.segments.name],
+			operationId: 'deleteSegment',
+			summary: 'Delete a segment',
+			description: operationDescription({
+				details:
+					'Permanently delete a segment and remove its contact associations.',
+			}),
+			'x-codeSamples':
+				codeSamples(`const { error } = await rewrite.segments.delete(
+  '${exampleSegmentRecord.id}',
+);
+
+if (error) throw error;`),
+			security: securityRequirement('project:write'),
+			parameters: [
+				{
+					name: 'id',
+					in: 'path',
+					required: true,
+					description: 'Segment identifier returned by Rewrite.',
+					schema: {
+						$ref: '#/components/schemas/Snowflake',
+					},
+				},
+			],
+			responses: okResponse({
+				schemaRef: '#/components/schemas/OkEmptyResponse',
+				example: {
+					ok: true,
+					data: null,
+				},
+			}),
+			'x-required-scopes': ['project:write'],
+		},
+	},
+	'/segments/{id}/contacts': {
+		get: {
+			tags: [tags.segments.name],
+			operationId: 'listSegmentContacts',
+			summary: 'List contacts in a segment',
+			description: operationDescription({
+				details:
+					'List contacts currently attached to one segment. Results are returned in reverse chronological order with a top-level cursor.',
+			}),
+			'x-codeSamples':
+				codeSamples(`const { data, error, cursor } = await rewrite.segments.contacts(
+  '${exampleSegmentRecord.id}',
+  { limit: 25 },
+);
+
+if (error) throw error;`),
+			security: securityRequirement('project:read'),
+			parameters: [
+				{
+					name: 'id',
+					in: 'path',
+					required: true,
+					description: 'Segment identifier returned by Rewrite.',
+					schema: {
+						$ref: '#/components/schemas/Snowflake',
+					},
+				},
+				{ $ref: '#/components/parameters/After' },
+				{ $ref: '#/components/parameters/Before' },
+				{ $ref: '#/components/parameters/Limit' },
+			],
+			responses: okResponse({
+				schemaRef: '#/components/schemas/ContactListResponse',
+				example: {
+					ok: true,
+					data: [exampleContactRecord],
+					cursor: {
+						persist: false,
+					},
+				},
+			}),
+			'x-required-scopes': ['project:read'],
+		},
+		post: {
+			tags: [tags.segments.name],
+			operationId: 'attachContactToSegment',
+			summary: 'Attach a contact to a segment',
+			description: operationDescription({
+				details: 'Attach one saved contact to a segment.',
+			}),
+			'x-codeSamples':
+				codeSamples(`const { error } = await rewrite.segments.attach(
+  '${exampleSegmentRecord.id}',
+  { contactId: '${exampleContactRecord.id}' },
+);
+
+if (error) throw error;`),
+			security: securityRequirement('project:write'),
+			parameters: [
+				{
+					name: 'id',
+					in: 'path',
+					required: true,
+					description: 'Segment identifier returned by Rewrite.',
+					schema: {
+						$ref: '#/components/schemas/Snowflake',
+					},
+				},
+			],
+			requestBody: jsonBody({
+				schema: {
+					$ref: '#/components/schemas/SegmentAttachContactBody',
+				},
+				example: {
+					contactId: exampleContactRecord.id,
+				},
+			}),
+			responses: okResponse({
+				schemaRef: '#/components/schemas/OkEmptyResponse',
+				example: {
+					ok: true,
+					data: null,
+				},
+			}),
+			'x-required-scopes': ['project:write'],
+		},
+	},
+	'/segments/{id}/contacts/{contact}': {
+		delete: {
+			tags: [tags.segments.name],
+			operationId: 'detachContactFromSegment',
+			summary: 'Detach a contact from a segment',
+			description: operationDescription({
+				details: 'Remove one saved contact from a segment.',
+			}),
+			'x-codeSamples':
+				codeSamples(`const { error } = await rewrite.segments.detach(
+  '${exampleSegmentRecord.id}',
+  '${exampleContactRecord.id}',
+);
+
+if (error) throw error;`),
+			security: securityRequirement('project:write'),
+			parameters: [
+				{
+					name: 'id',
+					in: 'path',
+					required: true,
+					description: 'Segment identifier returned by Rewrite.',
+					schema: {
+						$ref: '#/components/schemas/Snowflake',
+					},
+				},
+				{
+					name: 'contact',
+					in: 'path',
+					required: true,
+					description:
+						'Contact identifier that should be detached from the segment.',
+					schema: {
+						$ref: '#/components/schemas/Snowflake',
+					},
+				},
+			],
+			responses: okResponse({
+				schemaRef: '#/components/schemas/OkEmptyResponse',
+				example: {
+					ok: true,
+					data: null,
+				},
+			}),
+			'x-required-scopes': ['project:write'],
+		},
+	},
 };
 
 const templatesPaths = {
@@ -3216,6 +4695,10 @@ const specs = {
 		pathMap: apiKeysPaths,
 		tagList: [tags.apiKeys],
 	}),
+	'en/api/openapi-contacts.json': makeSpec({
+		pathMap: contactsPaths,
+		tagList: [tags.contacts],
+	}),
 	'en/api/openapi-messages.json': makeSpec({
 		pathMap: messagesOnlyPaths,
 		tagList: [tags.messages],
@@ -3223,6 +4706,10 @@ const specs = {
 	'en/api/openapi-otp.json': makeSpec({
 		pathMap: otpPaths,
 		tagList: [tags.otp],
+	}),
+	'en/api/openapi-segments.json': makeSpec({
+		pathMap: segmentsPaths,
+		tagList: [tags.segments],
 	}),
 	'en/api/openapi-templates.json': makeSpec({
 		pathMap: templatesPaths,
@@ -3239,16 +4726,20 @@ const specs = {
 	'en/api/openapi.json': makeSpec({
 		pathMap: mergePaths(
 			apiKeysPaths,
+			contactsPaths,
 			messagesOnlyPaths,
 			otpPaths,
+			segmentsPaths,
 			templatesPaths,
 			webhooksPaths,
 			logsPaths,
 		),
 		tagList: [
 			tags.apiKeys,
+			tags.contacts,
 			tags.messages,
 			tags.otp,
+			tags.segments,
 			tags.templates,
 			tags.webhooks,
 			tags.logs,
@@ -3263,8 +4754,10 @@ for (const [rel, spec] of Object.entries(specs)) {
 for (const locale of ['pt-br']) {
 	for (const file of [
 		'openapi-api-keys.json',
+		'openapi-contacts.json',
 		'openapi-messages.json',
 		'openapi-otp.json',
+		'openapi-segments.json',
 		'openapi-templates.json',
 		'openapi-webhooks.json',
 		'openapi-logs.json',

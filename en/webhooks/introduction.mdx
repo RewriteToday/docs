@@ -32,7 +32,11 @@ curl -X POST "https://api.rewritetoday.com/v1/webhooks" \
   -d '{
     "name": "Delivery events",
     "endpoint": "https://example.com/webhooks/rewrite",
-    "events": ["message.sent", "message.failed", "sms.otp"]
+    "events": ["message.sent", "message.failed", "sms.otp"],
+    "delivery": {
+      "timeout": 3000,
+      "retries": 2
+    }
   }'
 ```
 
@@ -56,6 +60,8 @@ Example payload:
   "data": {
     "id": "748395130237498500",
     "projectId": "748395130237498412",
+    "contact": "Fernanda",
+    "contactId": "748395130237498515",
     "to": "+5511999999999",
     "tags": [
       { "name": "use_case", "value": "otp_login" }
@@ -81,6 +87,9 @@ Example payload:
   }
 }
 ```
+
+- `data.contact` and `data.contactId` are always present. They are `null` when the original send did not target a saved contact.
+- Webhook resource reads return `retries` and `timeout` at the top level, while create/update requests accept them inside `delivery`.
 
 ## Signature validation
 

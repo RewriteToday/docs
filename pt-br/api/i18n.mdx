@@ -11,7 +11,7 @@ A localizacao acontece hoje na camada de template:
 
 - `POST /templates` e `PATCH /templates/{id}` aceitam um objeto `i18n`.
 - `GET /templates` e `GET /templates/{identifier}` podem incluir `i18n` com `withi18n=true`.
-- `POST /messages` resolve o conteudo localizado a partir de `templateId` e do pais inferido no destino.
+- `POST /messages` resolve o conteudo localizado a partir de `templateId` e do pais inferido em `to` ou no telefone do contato salvo.
 
 ## Formato das chaves `i18n`
 
@@ -21,7 +21,7 @@ As chaves do mapa usam codigos ISO de pais em lowercase, por exemplo:
 - `us`
 - `mx`
 
-Os envios publicos hoje resolvem apenas numeros brasileiros, entao `br` e o locale pratico para trafego publico.
+A maior parte dos projetos hoje usa trafego `br`, mas a resolucao de locale segue o pais final do destino quando o projeto tem numeros internacionais habilitados.
 
 ## Crie um template localizado
 

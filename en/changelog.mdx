@@ -81,30 +81,35 @@ description: "Official Rewrite release history, organized by package and ready f
     <Tab title="All">
       <div style={{ marginBottom: 14, color: "rgba(255,255,255,0.72)" }}>Consolidated release view by package.</div>
       <ul>
-        <li><strong>v1.0.0 API:</strong> Published the initial changelog structure for consistent release reporting.</li>
-        <li><strong>v1.0.0 CLI:</strong> Added a dedicated lane for command, auth, and config updates.</li>
-        <li><strong>v1.0.0 SDKs:</strong> Reserved space for language-specific updates and DX improvements.</li>
-        <li><strong>v1.0.0 Webhooks:</strong> Added a focused lane for delivery events and retry behavior changes.</li>
+        <li><strong>2026-04-01 API:</strong> Documented the Discord callback fix that now reads OAuth callback data from query params instead of the request body.</li>
+        <li><strong>2026-03-31 API:</strong> Added project flags for international-number support in selected routes and documented webhook delivery tuning with `delivery.timeout` and `delivery.retries`.</li>
+        <li><strong>2026-03-30 API:</strong> Added contacts and segments, plus contact-based targeting in message and OTP create flows with propagated `contact` and `contactId` in webhook payloads.</li>
       </ul>
     </Tab>
     <Tab title="API">
       <ul>
-        <li><strong>v1.0.0:</strong> Published the initial changelog structure for consistent release reporting.</li>
+        <li><strong>2026-04-01:</strong> `GET /webhooks/discord` now expects OAuth callback values in query params. Documentation examples and callback notes were updated to match the live behavior.</li>
+        <li><strong>2026-03-31:</strong> Public send, OTP, and contact flows now document the project-level flag that can enable international numbers beyond the default `+55` traffic profile.</li>
+        <li><strong>2026-03-31:</strong> Webhook create/update routes now accept `delivery.timeout` and `delivery.retries`, while webhook reads expose top-level `timeout` and `retries` fields.</li>
+        <li><strong>2026-03-30:</strong> Added full reference coverage for `GET/POST/PATCH/DELETE /contacts` and `GET/POST/PATCH/DELETE /segments`, including segment contact attach/detach/list routes.</li>
+        <li><strong>2026-03-30:</strong> `POST /messages`, `POST /messages/batch`, and `POST /otp` now accept saved contacts through the `contact` field in addition to direct `to` numbers.</li>
+        <li><strong>2026-03-30:</strong> The API reference now covers the previously undocumented list/get/create/update API key operations.</li>
       </ul>
     </Tab>
     <Tab title="CLI">
       <ul>
-        <li><strong>v1.0.0:</strong> Added a dedicated lane for command, auth, and config updates.</li>
+        <li><strong>2026-04-01:</strong> No CLI-specific public changes were documented in this release window.</li>
       </ul>
     </Tab>
     <Tab title="SDKs">
       <ul>
-        <li><strong>v1.0.0:</strong> Reserved space for language-specific updates and DX improvements.</li>
+        <li><strong>2026-04-01:</strong> No SDK-specific public changes were documented in this release window.</li>
       </ul>
     </Tab>
     <Tab title="Webhooks">
       <ul>
-        <li><strong>v1.0.0:</strong> Added a focused lane for delivery events and retry behavior changes.</li>
+        <li><strong>2026-03-31:</strong> Webhook resources gained configurable delivery retries and timeout controls.</li>
+        <li><strong>2026-03-30:</strong> Message-like webhook payloads now include `contact` and `contactId` when a send originated from a saved contact, and the docs examples were updated accordingly.</li>
       </ul>
     </Tab>
   </Tabs>

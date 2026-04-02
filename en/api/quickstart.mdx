@@ -7,7 +7,8 @@ description: Send your first SMS with the public Rewrite API.
 
 - Create an API key in the Rewrite dashboard.
 - Keep the key server-side only.
-- Use a Brazilian destination number in E.164 format, for example `+5511999999999`.
+- Use a valid destination number in E.164 format, for example `+5511999999999`.
+- Most projects start with Brazilian `+55` traffic. If your project has international numbers enabled, other country codes are accepted too.
 
 ## Send your first SMS
 
@@ -47,6 +48,8 @@ Successful response:
 ## Common next steps
 
 - Read the created resource later with `GET /messages/{id}`.
+- If you already store reusable contacts, send with `contact` instead of `to`.
+- Manage saved recipients with the `Contacts` and `Segments` groups in the API reference.
 - Add [webhooks](/en/webhooks/introduction) to receive [`message.sent`](/en/webhooks/events/message-sent), [`message.failed`](/en/webhooks/events/message-failed), [`message.scheduled`](/en/webhooks/events/message-scheduled), [`message.canceled`](/en/webhooks/events/message-canceled), [`message.batch`](/en/webhooks/events/message-batch), and [`sms.otp`](/en/webhooks/events/sms-otp).
 - Use [templates](/en/api/i18n) when you need locale-specific content.
 

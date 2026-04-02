@@ -7,7 +7,8 @@ description: Envie seu primeiro SMS com a API publica da Rewrite.
 
 - Crie uma API key no dashboard da Rewrite.
 - Mantenha a chave apenas no backend.
-- Use um numero brasileiro em E.164, por exemplo `+5511999999999`.
+- Use um numero valido em E.164, por exemplo `+5511999999999`.
+- A maior parte dos projetos comeca com trafego brasileiro `+55`. Se o seu projeto tiver numeros internacionais habilitados, outros DDI tambem sao aceitos.
 
 ## Envie seu primeiro SMS
 
@@ -47,6 +48,8 @@ Resposta de sucesso:
 ## Proximos passos comuns
 
 - Consulte a mensagem depois com `GET /messages/{id}`.
+- Se voce ja salva contatos reutilizaveis, envie com `contact` em vez de `to`.
+- Gerencie destinatarios salvos nos grupos `Contacts` e `Segments` da referencia da API.
 - Adicione [webhooks](/pt-br/webhooks/introduction) para receber [`message.sent`](/pt-br/webhooks/events/message-sent), [`message.failed`](/pt-br/webhooks/events/message-failed), [`message.scheduled`](/pt-br/webhooks/events/message-scheduled), [`message.canceled`](/pt-br/webhooks/events/message-canceled), [`message.batch`](/pt-br/webhooks/events/message-batch) e [`sms.otp`](/pt-br/webhooks/events/sms-otp).
 - Use [templates](/pt-br/api/i18n) quando precisar de conteudo por pais.
 

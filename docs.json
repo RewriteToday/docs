@@ -115,9 +115,40 @@
 								"pages": ["en/api/otp/send", "en/api/otp/verify"]
 							},
 							{
+								"group": "Contacts",
+								"openapi": "en/api/openapi-contacts.json",
+								"pages": [
+									"GET /contacts",
+									"POST /contacts",
+									"GET /contacts/{identifier}",
+									"PATCH /contacts/{id}",
+									"DELETE /contacts/{id}"
+								]
+							},
+							{
 								"group": "API Keys",
 								"openapi": "en/api/openapi-api-keys.json",
-								"pages": ["DELETE /api-keys/{key}"]
+								"pages": [
+									"GET /api-keys",
+									"POST /api-keys",
+									"GET /api-keys/{key}",
+									"PATCH /api-keys/{key}",
+									"DELETE /api-keys/{key}"
+								]
+							},
+							{
+								"group": "Segments",
+								"openapi": "en/api/openapi-segments.json",
+								"pages": [
+									"GET /segments",
+									"POST /segments",
+									"GET /segments/{id}",
+									"PATCH /segments/{id}",
+									"DELETE /segments/{id}",
+									"GET /segments/{id}/contacts",
+									"POST /segments/{id}/contacts",
+									"DELETE /segments/{id}/contacts/{contact}"
+								]
 							},
 							{
 								"group": "Templates",
@@ -341,9 +372,40 @@
 								"pages": ["pt-br/api/otp/send", "pt-br/api/otp/verify"]
 							},
 							{
+								"group": "Contacts",
+								"openapi": "pt-br/api/openapi-contacts.json",
+								"pages": [
+									"GET /contacts",
+									"POST /contacts",
+									"GET /contacts/{identifier}",
+									"PATCH /contacts/{id}",
+									"DELETE /contacts/{id}"
+								]
+							},
+							{
 								"group": "API Keys",
 								"openapi": "pt-br/api/openapi-api-keys.json",
-								"pages": ["DELETE /api-keys/{key}"]
+								"pages": [
+									"GET /api-keys",
+									"POST /api-keys",
+									"GET /api-keys/{key}",
+									"PATCH /api-keys/{key}",
+									"DELETE /api-keys/{key}"
+								]
+							},
+							{
+								"group": "Segments",
+								"openapi": "pt-br/api/openapi-segments.json",
+								"pages": [
+									"GET /segments",
+									"POST /segments",
+									"GET /segments/{id}",
+									"PATCH /segments/{id}",
+									"DELETE /segments/{id}",
+									"GET /segments/{id}/contacts",
+									"POST /segments/{id}/contacts",
+									"DELETE /segments/{id}/contacts/{contact}"
+								]
 							},
 							{
 								"group": "Templates",

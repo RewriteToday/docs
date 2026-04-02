@@ -5,7 +5,7 @@ description: Base URL, auth model, envelopes, and public integration conventions
 
 # Overview
 
-Rewrite API v1 exposes project-level endpoints for sending SMS, verifying OTPs, managing templates and webhooks, and reading delivery logs.
+Rewrite API v1 exposes project-level endpoints for sending SMS, verifying OTPs, managing contacts, segments, templates and webhooks, and reading delivery logs.
 
 ## Base URL
 
@@ -26,7 +26,8 @@ Authorization: Bearer rw_...
 ## Request conventions
 
 - Use `Content-Type: application/json` on non-`GET` requests.
-- Public send and OTP flows currently accept only Brazilian destination numbers starting with `+55`.
+- Public send and OTP flows accept either a direct E.164 number in `to` or a saved project contact in `contact`.
+- Most projects start with Brazilian `+55` traffic. Projects with international numbers enabled can also send to other country codes.
 - Message creation uses `content` for inline SMS bodies.
 - Template-backed sends use `templateId` plus `variables`.
 - Create/send routes support `Idempotency-Key`.

@@ -11,7 +11,7 @@ Localization currently happens at the template layer:
 
 - `POST /templates` and `PATCH /templates/{id}` accept an `i18n` object.
 - `GET /templates` and `GET /templates/{identifier}` can include `i18n` when you send `withi18n=true`.
-- `POST /messages` resolves localized template content from `templateId` plus the destination country.
+- `POST /messages` resolves localized template content from `templateId` plus the destination country inferred from `to` or from the saved contact phone.
 
 ## `i18n` key format
 
@@ -21,7 +21,7 @@ Template locale keys are lowercase ISO country codes, for example:
 - `us`
 - `mx`
 
-The backend currently resolves public sends to Brazilian numbers only, so `br` is the practical locale used today for public traffic.
+Most projects start with Brazilian `br` traffic, but template locale resolution follows the final destination country whenever the project has international numbers enabled.
 
 ## Create a localized template
 

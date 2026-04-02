@@ -5,7 +5,7 @@ description: Practical delivery guidance based on the current Rewrite SMS and we
 
 # Overview
 
-Rewrite public sends currently target Brazilian SMS traffic. Good deliverability comes from valid numbers, short content, controlled retries, and fast webhook handling.
+Rewrite public sends are optimized for transactional SMS traffic, especially Brazilian `+55` delivery by default. Good deliverability comes from valid numbers, short content, controlled retries, and fast webhook handling.
 
 ## Delivery lifecycle signals
 
@@ -23,7 +23,7 @@ Use these webhook events in your monitoring:
 
 ## High-impact practices
 
-- Send only valid `+55` E.164 numbers.
+- Send only valid E.164 numbers that your project is allowed to use.
 - Keep OTP and transactional content short.
 - Use `Idempotency-Key` on send/create operations.
 - Persist webhook payloads and deduplicate by event id.
@@ -34,6 +34,7 @@ Use these webhook events in your monitoring:
 - Prefer templates when the same flow is reused.
 - Keep placeholder names stable across every locale variant.
 - Put brand context at the start of the message.
+- Keep locale coverage aligned with the countries you actually send to.
 - Use `tags` to segment traffic by use case or campaign.
 
 Example send body:
