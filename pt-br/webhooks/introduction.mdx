@@ -15,9 +15,9 @@ As familias publicas de evento hoje sao:
 - [`message.queued`](/pt-br/webhooks/events/message-queued)
 - [`message.failed`](/pt-br/webhooks/events/message-failed)
 - [`message.canceled`](/pt-br/webhooks/events/message-canceled)
+- [`message.delivered`](/pt-br/webhooks/events/message-delivered)
+- [`message.received`](/pt-br/webhooks/events/message-received)
 - [`message.scheduled`](/pt-br/webhooks/events/message-scheduled)
-
-[`message.delivered`](/pt-br/webhooks/events/message-delivered) esta em WIP.
 
 ## Registro do webhook
 
@@ -56,16 +56,18 @@ Exemplo de payload:
 {
   "id": "748395130237498900",
   "createdAt": "2026-03-19T18:42:11.000Z",
+  "sandbox": false,
   "type": "message.sent",
   "data": {
     "id": "748395130237498500",
     "projectId": "748395130237498412",
+    "sandbox": false,
     "contact": "Fernanda",
     "contactId": "748395130237498515",
     "to": "+5511999999999",
-    "tags": [
-      { "name": "use_case", "value": "otp_login" }
-    ],
+    "tags": {
+      "use_case": "otp_login"
+    },
     "type": "SMS",
     "status": "SENT",
     "content": "Rewrite: seu codigo de verificacao e 123456",
@@ -89,6 +91,8 @@ Exemplo de payload:
 ```
 
 - `data.contact` e `data.contactId` sempre existem. Eles ficam `null` quando o envio original nao usou um contato salvo.
+- `sandbox` no envelope indica o modo do projeto que originou o evento.
+- `data.sandbox` repete essa informacao nos payloads de mensagem.
 - Nas respostas de leitura do recurso de webhook, `retries` e `timeout` aparecem no topo. Nos requests de create/update, eles entram dentro de `delivery`.
 
 ## Validacao de assinatura
@@ -112,6 +116,7 @@ Para o fluxo completo de verificacao, a string canonica assinada e um exemplo em
 
 ## Paginas relacionadas
 
+- [Inbound](/pt-br/webhooks/inbound)
 - [Assinatura](/pt-br/webhooks/signature)
 - [Tipos de evento](/pt-br/webhooks/types)
 - [Retentativas](/pt-br/webhooks/retry)

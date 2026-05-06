@@ -111,8 +111,17 @@
 								]
 							},
 							{
-								"group": "OTP",
-								"pages": ["en/api/otp/send", "en/api/otp/verify"]
+								"group": "API Keys",
+								"openapi": "en/api/openapi-api-keys.json",
+								"pages": [
+									"GET /api-keys",
+									"POST /api-keys",
+									"DELETE /api-keys",
+									"GET /api-keys/{id}",
+									"PATCH /api-keys/{id}",
+									"DELETE /api-keys/{id}",
+									"GET /api-keys/{id}/logs"
+								]
 							},
 							{
 								"group": "Contacts",
@@ -120,20 +129,13 @@
 								"pages": [
 									"GET /contacts",
 									"POST /contacts",
+									"DELETE /contacts",
+									"POST /contacts/batch",
 									"GET /contacts/{identifier}",
 									"PATCH /contacts/{id}",
-									"DELETE /contacts/{id}"
-								]
-							},
-							{
-								"group": "API Keys",
-								"openapi": "en/api/openapi-api-keys.json",
-								"pages": [
-									"GET /api-keys",
-									"POST /api-keys",
-									"GET /api-keys/{key}",
-									"PATCH /api-keys/{key}",
-									"DELETE /api-keys/{key}"
+									"DELETE /contacts/{id}",
+									"POST /contacts/{id}/tags",
+									"DELETE /contacts/{id}/tags"
 								]
 							},
 							{
@@ -142,12 +144,30 @@
 								"pages": [
 									"GET /segments",
 									"POST /segments",
+									"DELETE /segments",
 									"GET /segments/{id}",
 									"PATCH /segments/{id}",
 									"DELETE /segments/{id}",
 									"GET /segments/{id}/contacts",
 									"POST /segments/{id}/contacts",
+									"POST /segments/{id}/contacts/attach",
+									"POST /segments/{id}/contacts/detach",
 									"DELETE /segments/{id}/contacts/{contact}"
+								]
+							},
+							{
+								"group": "OTP",
+								"pages": ["en/api/otp/send", "en/api/otp/verify"]
+							},
+							{
+								"group": "Tags",
+								"openapi": "en/api/openapi-tags.json",
+								"pages": [
+									"GET /tags",
+									"POST /tags",
+									"GET /tags/{id}",
+									"PATCH /tags/{id}",
+									"DELETE /tags/{id}"
 								]
 							},
 							{
@@ -156,9 +176,11 @@
 								"pages": [
 									"GET /templates",
 									"POST /templates",
+									"DELETE /templates",
 									"GET /templates/{identifier}",
 									"PATCH /templates/{id}",
-									"DELETE /templates/{id}"
+									"DELETE /templates/{id}",
+									"POST /templates/{id}/duplicate"
 								]
 							},
 							{
@@ -167,6 +189,7 @@
 								"pages": [
 									"GET /webhooks",
 									"POST /webhooks",
+									"DELETE /webhooks",
 									"GET /webhooks/{id}",
 									"PATCH /webhooks/{id}",
 									"DELETE /webhooks/{id}"
@@ -175,7 +198,16 @@
 							{
 								"group": "Logs",
 								"openapi": "en/api/openapi-logs.json",
-								"pages": ["GET /webhooks/{id}/logs", "GET /logs/{id}"]
+								"pages": ["GET /logs", "GET /logs/{id}"]
+							},
+							{
+								"group": "Deliveries",
+								"openapi": "en/api/openapi-deliveries.json",
+								"pages": [
+									"GET /deliveries",
+									"GET /deliveries/{id}",
+									"GET /webhooks/{id}/deliveries"
+								]
 							}
 						]
 					},
@@ -253,6 +285,7 @@
 								"group": "Reference",
 								"pages": [
 									"en/webhooks/introduction",
+									"en/webhooks/inbound",
 									"en/webhooks/signature",
 									"en/webhooks/retry",
 									"en/webhooks/types"
@@ -266,6 +299,7 @@
 									"en/webhooks/events/message-batch",
 									"en/webhooks/events/message-queued",
 									"en/webhooks/events/message-delivered",
+									"en/webhooks/events/message-received",
 									"en/webhooks/events/message-scheduled",
 									"en/webhooks/events/message-failed",
 									"en/webhooks/events/message-canceled"
@@ -329,6 +363,19 @@
 						]
 					},
 					{
+						"tab": "Sandbox",
+						"groups": [
+							{
+								"group": "Overview",
+								"pages": ["en/sandbox/introduction"]
+							},
+							{
+								"group": "Testing",
+								"pages": ["en/sandbox/magic-numbers"]
+							}
+						]
+					},
+					{
 						"tab": "Changelog",
 						"pages": ["en/changelog"]
 					}
@@ -368,8 +415,17 @@
 								]
 							},
 							{
-								"group": "OTP",
-								"pages": ["pt-br/api/otp/send", "pt-br/api/otp/verify"]
+								"group": "API Keys",
+								"openapi": "pt-br/api/openapi-api-keys.json",
+								"pages": [
+									"GET /api-keys",
+									"POST /api-keys",
+									"DELETE /api-keys",
+									"GET /api-keys/{id}",
+									"PATCH /api-keys/{id}",
+									"DELETE /api-keys/{id}",
+									"GET /api-keys/{id}/logs"
+								]
 							},
 							{
 								"group": "Contacts",
@@ -377,20 +433,13 @@
 								"pages": [
 									"GET /contacts",
 									"POST /contacts",
+									"DELETE /contacts",
+									"POST /contacts/batch",
 									"GET /contacts/{identifier}",
 									"PATCH /contacts/{id}",
-									"DELETE /contacts/{id}"
-								]
-							},
-							{
-								"group": "API Keys",
-								"openapi": "pt-br/api/openapi-api-keys.json",
-								"pages": [
-									"GET /api-keys",
-									"POST /api-keys",
-									"GET /api-keys/{key}",
-									"PATCH /api-keys/{key}",
-									"DELETE /api-keys/{key}"
+									"DELETE /contacts/{id}",
+									"POST /contacts/{id}/tags",
+									"DELETE /contacts/{id}/tags"
 								]
 							},
 							{
@@ -399,12 +448,30 @@
 								"pages": [
 									"GET /segments",
 									"POST /segments",
+									"DELETE /segments",
 									"GET /segments/{id}",
 									"PATCH /segments/{id}",
 									"DELETE /segments/{id}",
 									"GET /segments/{id}/contacts",
 									"POST /segments/{id}/contacts",
+									"POST /segments/{id}/contacts/attach",
+									"POST /segments/{id}/contacts/detach",
 									"DELETE /segments/{id}/contacts/{contact}"
+								]
+							},
+							{
+								"group": "OTP",
+								"pages": ["pt-br/api/otp/send", "pt-br/api/otp/verify"]
+							},
+							{
+								"group": "Tags",
+								"openapi": "pt-br/api/openapi-tags.json",
+								"pages": [
+									"GET /tags",
+									"POST /tags",
+									"GET /tags/{id}",
+									"PATCH /tags/{id}",
+									"DELETE /tags/{id}"
 								]
 							},
 							{
@@ -413,9 +480,11 @@
 								"pages": [
 									"GET /templates",
 									"POST /templates",
+									"DELETE /templates",
 									"GET /templates/{identifier}",
 									"PATCH /templates/{id}",
-									"DELETE /templates/{id}"
+									"DELETE /templates/{id}",
+									"POST /templates/{id}/duplicate"
 								]
 							},
 							{
@@ -424,6 +493,7 @@
 								"pages": [
 									"GET /webhooks",
 									"POST /webhooks",
+									"DELETE /webhooks",
 									"GET /webhooks/{id}",
 									"PATCH /webhooks/{id}",
 									"DELETE /webhooks/{id}"
@@ -432,7 +502,16 @@
 							{
 								"group": "Logs",
 								"openapi": "pt-br/api/openapi-logs.json",
-								"pages": ["GET /webhooks/{id}/logs", "GET /logs/{id}"]
+								"pages": ["GET /logs", "GET /logs/{id}"]
+							},
+							{
+								"group": "Deliveries",
+								"openapi": "pt-br/api/openapi-deliveries.json",
+								"pages": [
+									"GET /deliveries",
+									"GET /deliveries/{id}",
+									"GET /webhooks/{id}/deliveries"
+								]
 							}
 						]
 					},
@@ -514,6 +593,7 @@
 								"group": "Reference",
 								"pages": [
 									"pt-br/webhooks/introduction",
+									"pt-br/webhooks/inbound",
 									"pt-br/webhooks/signature",
 									"pt-br/webhooks/retry",
 									"pt-br/webhooks/types"
@@ -527,6 +607,7 @@
 									"pt-br/webhooks/events/message-batch",
 									"pt-br/webhooks/events/message-queued",
 									"pt-br/webhooks/events/message-delivered",
+									"pt-br/webhooks/events/message-received",
 									"pt-br/webhooks/events/message-scheduled",
 									"pt-br/webhooks/events/message-failed",
 									"pt-br/webhooks/events/message-canceled"
@@ -586,6 +667,19 @@
 									"pt-br/serveless/cloudflare-workers",
 									"pt-br/serveless/supabase-edge-functions"
 								]
+							}
+						]
+					},
+					{
+						"tab": "Sandbox",
+						"groups": [
+							{
+								"group": "Visao geral",
+								"pages": ["pt-br/sandbox/introduction"]
+							},
+							{
+								"group": "Testes",
+								"pages": ["pt-br/sandbox/magic-numbers"]
 							}
 						]
 					},

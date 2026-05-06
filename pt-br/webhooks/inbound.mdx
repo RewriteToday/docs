@@ -1,0 +1,41 @@
+---
+title: Inbound
+description: Como a Rewrite representa mensagens recebidas e como isso se conecta ao evento `message.received`.
+---
+
+# Visao geral
+
+Inbound e o fluxo de mensagens que chegam de volta para o seu projeto.
+
+Quando a Rewrite recebe uma mensagem inbound suportada pelo provider, ela a normaliza como uma mensagem do projeto e pode emitir o webhook [`message.received`](/pt-br/webhooks/events/message-received).
+
+## O que e publico nesse fluxo
+
+- O evento publico correspondente e `message.received`.
+- O payload segue o envelope padrao de eventos de mensagem.
+- O campo `data.status` vem como `RECEIVED`.
+- Eventos e logs associados continuam usando a mesma assinatura e a mesma politica de retry dos demais webhooks.
+
+## O que muda no payload
+
+No evento inbound, a mensagem representa conteudo recebido, nao um dispatch de saida.
+
+Campos que merecem atencao:
+
+- `type` continua sendo `SMS`.
+- `status` vira `RECEIVED`.
+- `sandbox` indica se a mensagem pertence a um projeto em sandbox.
+- `contact` e `contactId` podem ser preenchidos quando a Rewrite consegue associar o remetente a um contato salvo.
+
+## Limites editoriais
+
+A Rewrite pode usar callbacks e integracoes operacionais especificas de provider para receber inbound, mas essas rotas internas nao fazem parte da documentacao publica.
+
+Para integracao externa, trate `message.received` como o contrato publico estavel.
+
+## Paginas relacionadas
+
+- [Tipos de evento](/pt-br/webhooks/types)
+- [`message.received`](/pt-br/webhooks/events/message-received)
+- [Assinatura](/pt-br/webhooks/signature)
+- [Retentativas](/pt-br/webhooks/retry)

@@ -1,22 +1,24 @@
 ---
 title: "message.canceled"
-description: "Queued or scheduled message canceled before completion."
+description: "Scheduled message canceled before completion."
 ---
 
-`message.canceled` is emitted when Rewrite successfully cancels a cancelable future-delivery SMS.
+`message.canceled` is emitted when Rewrite successfully cancels a cancelable future-delivery message.
 
 ```json
 {
   "id": "748395130237498916",
   "createdAt": "2026-03-19T18:42:30.000Z",
   "type": "message.canceled",
+  "sandbox": false,
   "data": {
     "id": "748395130237498505",
     "projectId": "748395130237498412",
     "contact": "Fernanda",
     "contactId": "748395130237498515",
     "to": "+5511999999999",
-    "tags": [{ "name": "campaign", "value": "billing_reminder" }],
+    "tags": { "campaign": "billing_reminder" },
+    "sandbox": false,
     "type": "SMS",
     "status": "CANCELED",
     "content": "Rewrite: your invoice is due tomorrow",
@@ -37,5 +39,5 @@ description: "Queued or scheduled message canceled before completion."
 Notes:
 
 - This event is emitted by the public cancel flow.
-- Immediate queued messages without `scheduledAt` are not cancelable through the public API.
-- `data.scheduledAt` may remain populated when the canceled message was originally scheduled.
+- Public cancelation is meant for scheduled messages.
+- `data.scheduledAt` can remain populated after cancelation.

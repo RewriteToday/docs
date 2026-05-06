@@ -1,22 +1,24 @@
 ---
 title: "message.queued"
-description: "Immediate SMS persisted in queue before provider dispatch."
+description: "Immediate message persisted before provider dispatch."
 ---
 
-`message.queued` is emitted as soon as Rewrite persists an immediate SMS for dispatch.
+`message.queued` is emitted as soon as Rewrite persists an immediate send for dispatch.
 
 ```json
 {
   "id": "748395130237498913",
   "createdAt": "2026-03-19T18:42:11.000Z",
   "type": "message.queued",
+  "sandbox": false,
   "data": {
     "id": "748395130237498500",
     "projectId": "748395130237498412",
     "contact": "Fernanda",
     "contactId": "748395130237498515",
     "to": "+5511999999999",
-    "tags": [{ "name": "use_case", "value": "otp_login" }],
+    "tags": { "flow": "otp_login", "origin": "checkout" },
+    "sandbox": false,
     "type": "SMS",
     "status": "QUEUED",
     "content": "Rewrite: your verification code is 123456",
@@ -36,5 +38,6 @@ description: "Immediate SMS persisted in queue before provider dispatch."
 
 Notes:
 
-- `message.queued` is used for immediate sends.
+- `message.queued` is used for immediate sends only.
 - Scheduled sends use [`message.scheduled`](./message-scheduled) instead.
+- Sandbox projects can also emit this event when a magic number forces the queued outcome.

@@ -1,17 +1,43 @@
 ---
 title: "message.delivered"
-description: "Evento em work in progress para estado de mensagem entregue."
+description: "Confirmacao final de entrega pelo provider."
 ---
 
-`message.delivered` esta em WIP.
+`message.delivered` e emitido quando a Rewrite recebe confirmacao final de entrega do provider.
 
-O nome do evento ja faz parte do contrato publico e vai usar o envelope padrao de mensagem.
+```json
+{
+  "id": "748395130237498916",
+  "createdAt": "2026-03-19T18:42:39.000Z",
+  "sandbox": false,
+  "type": "message.delivered",
+  "data": {
+    "id": "748395130237498500",
+    "projectId": "748395130237498412",
+    "sandbox": false,
+    "contact": "Fernanda",
+    "contactId": "748395130237498515",
+    "to": "+5511999999999",
+    "tags": { "use_case": "otp_login" },
+    "type": "SMS",
+    "status": "DELIVERED",
+    "content": "Rewrite: seu codigo de verificacao e 123456",
+    "country": "br",
+    "analysis": {
+      "characters": 43,
+      "encoding": "gsm7",
+      "segments": { "concat": 153, "count": 1, "reason": "fits", "single": 160 }
+    },
+    "error": null,
+    "deliveredAt": "2026-03-19T18:42:39.914Z",
+    "scheduledAt": null,
+    "templateId": null
+  }
+}
+```
 
-Formato esperado do payload:
+Notas:
 
-- envelope padrao de evento de mensagem
-- `data.contact` e `data.contactId` seguindo o contrato padrao de payload de mensagem
-- `data.status = "DELIVERED"`
-- `data.deliveredAt` preenchido quando houver confirmacao de entrega
-
-Esta pagina sera atualizada quando o evento estiver disponivel de forma geral.
+- `data.status` e `DELIVERED`.
+- `data.deliveredAt` vem preenchido.
+- Em sandbox, magic numbers podem forcar esse estado sem trafego real.

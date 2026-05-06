@@ -9,6 +9,7 @@ description: "Resumo de batch emitido ao fim do dispatch."
 {
   "id": "748395130237498912",
   "createdAt": "2026-03-19T18:42:25.000Z",
+  "sandbox": false,
   "type": "message.batch",
   "data": {
     "id": "748395130237498700",
@@ -24,6 +25,7 @@ description: "Resumo de batch emitido ao fim do dispatch."
 
 Notas:
 
+- `sandbox` no envelope acompanha o modo do projeto que originou o batch.
 - `data.id` e o id do batch.
 - `data.ids` lista os ids das mensagens armazenadas que terminaram com `SENT`, em ordem crescente.
 - `data.ids` pode ter mais itens do que o numero original de entradas quando alguma foi segmentada em varios SMS.

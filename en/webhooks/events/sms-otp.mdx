@@ -10,13 +10,15 @@ description: "Successful OTP delivery event."
   "id": "748395130237498910",
   "createdAt": "2026-03-19T18:42:11.000Z",
   "type": "sms.otp",
+  "sandbox": false,
   "data": {
     "id": "748395130237498500",
     "projectId": "748395130237498412",
     "contact": "Fernanda",
     "contactId": "748395130237498515",
     "to": "+5511999999999",
-    "tags": [],
+    "tags": {},
+    "sandbox": false,
     "type": "OTP",
     "status": "SENT",
     "content": "OTP prefix=\"Rewrite\" expiresIn=5 secure=true to=\"+5511999999999\"",
@@ -42,6 +44,6 @@ description: "Successful OTP delivery event."
 Notes:
 
 - `data.type` is always `OTP`.
-- `data.content` is the stored OTP audit envelope used by the backend.
 - `data.otp` is present only on this successful OTP event.
 - Failed OTP sends use [`message.failed`](./message-failed).
+- In sandbox mode, OTP verification accepts the deterministic code `000000`.

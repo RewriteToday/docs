@@ -1,17 +1,43 @@
 ---
 title: "message.delivered"
-description: "Work in progress event for delivered message state."
+description: "Final delivery confirmation from the provider."
 ---
 
-`message.delivered` is currently WIP.
+`message.delivered` is emitted when Rewrite receives final delivery confirmation from the provider.
 
-The event name is already part of the public contract and will use the standard message webhook envelope.
+```json
+{
+  "id": "748395130237498916",
+  "createdAt": "2026-03-19T18:42:39.000Z",
+  "sandbox": false,
+  "type": "message.delivered",
+  "data": {
+    "id": "748395130237498500",
+    "projectId": "748395130237498412",
+    "sandbox": false,
+    "contact": "Fernanda",
+    "contactId": "748395130237498515",
+    "to": "+5511999999999",
+    "tags": { "use_case": "otp_login" },
+    "type": "SMS",
+    "status": "DELIVERED",
+    "content": "Rewrite: your verification code is 123456",
+    "country": "br",
+    "analysis": {
+      "characters": 41,
+      "encoding": "gsm7",
+      "segments": { "concat": 153, "count": 1, "reason": "fits", "single": 160 }
+    },
+    "error": null,
+    "deliveredAt": "2026-03-19T18:42:39.914Z",
+    "scheduledAt": null,
+    "templateId": null
+  }
+}
+```
 
-Expected payload shape:
+Notes:
 
-- standard message event envelope
-- `data.contact` and `data.contactId` following the standard message payload contract
-- `data.status = "DELIVERED"`
-- `data.deliveredAt` filled when delivery confirmation is available
-
-This page will be updated once the event is generally available.
+- `data.status` is `DELIVERED`.
+- `data.deliveredAt` is populated.
+- In sandbox, magic numbers can force this state without live carrier traffic.

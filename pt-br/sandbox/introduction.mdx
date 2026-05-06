@@ -1,0 +1,56 @@
+---
+title: "Visao geral"
+description: "Entenda como o modo sandbox da Rewrite simula envios, webhooks e OTP sem trafego real."
+icon: flask
+---
+
+Sandbox e o modo de teste da Rewrite para validar integracoes sem depender de operadora real.
+
+Quando um projeto esta em sandbox, a API continua aceitando envios e webhooks, mas o backend usa simulacao controlada em vez de dispatch real.
+
+## O que muda em sandbox
+
+<CardGroup cols={2}>
+  <Card title="Sem trafego real" icon="message" color="#C9CBD1">
+    Mensagens e OTP podem ser simulados sem custo ou entrega real para operadora.
+  </Card>
+
+  <Card title="Sinalizacao explicita" icon="badge-check" color="#C9CBD1">
+    Respostas, eventos, logs e deliveries passam a carregar `sandbox: true` quando o contrato exposto inclui esse campo.
+  </Card>
+
+  <Card title="OTP previsivel" icon="shield-halved" color="#C9CBD1">
+    Fluxos OTP em sandbox usam verificacao deterministica para testes automatizados.
+  </Card>
+
+  <Card title="Webhooks reais" icon="bell" color="#C9CBD1">
+    Os eventos continuam usando a assinatura Svix e a mesma semantica de retry da producao.
+  </Card>
+</CardGroup>
+
+## Regras importantes
+
+- Sandbox nao aceita mensagens agendadas.
+- API keys precisam combinar com o modo atual do projeto. Quando isso nao acontece, a API pode responder com `403 API_KEY_MODE_MISMATCH`.
+- O conjunto de [magic numbers](/pt-br/sandbox/magic-numbers) permite forcar cenarios como `FAILED`, `QUEUED`, `SENT` e `DELIVERED`.
+
+## Onde o modo aparece
+
+- `POST /messages` e `POST /messages/batch` retornam `sandbox` no resultado de criacao.
+- Payloads de webhook de mensagem incluem `sandbox`.
+- Events envelope de webhook inclui `sandbox`.
+- Request logs e webhook deliveries expostos pela API incluem `sandbox`.
+
+## Fluxo recomendado
+
+1. Ative o projeto em sandbox no ambiente de teste apropriado.
+2. Dispare mensagens ou OTP normalmente.
+3. Use [magic numbers](/pt-br/sandbox/magic-numbers) para forcar resultados especificos.
+4. Valide os webhooks emitidos, especialmente `message.sent`, `message.delivered`, `message.failed`, `message.queued`, `sms.otp` e `message.received`.
+5. So depois promova o fluxo para live mode.
+
+## Paginas relacionadas
+
+- [Magic Numbers](/pt-br/sandbox/magic-numbers)
+- [Webhooks](/pt-br/webhooks/introduction)
+- [Erros e retentativas](/pt-br/api/errors)

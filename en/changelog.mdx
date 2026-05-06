@@ -1,116 +1,33 @@
 ---
 title: "Changelog"
-mode: "custom"
-description: "Official Rewrite release history, organized by package and ready for future versions."
+description: "Public Rewrite API documentation changes."
 ---
 
-<div
-  style={{
-    position: "relative",
-    padding: "88px 20px 56px",
-    borderBottom: "1px solid rgba(248, 248, 248, 0.08)",
-    background:
-      "radial-gradient(1200px 600px at 15% -15%, rgba(255, 255, 255, 0.08), transparent 45%), linear-gradient(180deg, #050505 0%, #070707 55%, #050505 100%)",
-  }}
->
-  <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-    <div
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 8,
-        padding: "6px 12px",
-        borderRadius: 999,
-        border: "1px solid rgba(255,255,255,0.14)",
-        background: "rgba(255,255,255,0.03)",
-        color: "rgba(255,255,255,0.75)",
-        fontSize: 12,
-        marginBottom: 14,
-      }}
-    >
-      Official release notes
-    </div>
+# 2026-05-06
 
-    <h1
-      style={{
-        fontSize: "42px",
-        lineHeight: "1.05",
-        fontWeight: 650,
-        letterSpacing: "-0.03em",
-        margin: "0 0 12px",
-        color: "#fff",
-      }}
-    >
-      Rewrite Changelog
-    </h1>
+- Added a dedicated [Sandbox](/en/sandbox/introduction) section with overview and [magic numbers](/en/sandbox/magic-numbers).
+- Added a dedicated [Inbound](/en/webhooks/inbound) page under Webhooks.
+- Removed public reference coverage for non-public groups such as contacts, segments, and API keys.
+- Updated examples to use object metadata instead of tag pair arrays.
 
-    <p
-      style={{
-        maxWidth: 760,
-        margin: "0",
-        fontSize: 18,
-        lineHeight: 1.65,
-        color: "rgba(255,255,255,0.78)",
-        fontWeight: 350,
-      }}
-    >
-      Track each Rewrite release with clear context: what shipped, what improved,
-      and what deserves extra attention across API, CLI, SDKs, and Webhooks.
-    </p>
-  </div>
-</div>
+# 2026-04-21
 
-<div style={{ padding: "44px 20px 8px", maxWidth: "1100px", margin: "0 auto" }}>
-  <h2
-    style={{
-      fontSize: 24,
-      fontWeight: 650,
-      letterSpacing: "-0.02em",
-      margin: "0 0 14px",
-      color: "#fff",
-    }}
-  >
-    Latest versions
-  </h2>
+- Documented the live `GET /messages` filters: `status`, `country`, `encoding`, `scheduled`, and `withCounts`.
+- Added `RECEIVED` to message lifecycle coverage.
 
-  <p style={{ margin: "0 0 22px", color: "rgba(255,255,255,0.68)" }}>
-    Keep newest releases at the top for faster scanning and cleaner audit trails.
-  </p>
+# 2026-04-20
 
-  <Tabs sync={false}>
-    <Tab title="All">
-      <div style={{ marginBottom: 14, color: "rgba(255,255,255,0.72)" }}>Consolidated release view by package.</div>
-      <ul>
-        <li><strong>2026-04-01 API:</strong> Documented the Discord callback fix that now reads OAuth callback data from query params instead of the request body.</li>
-        <li><strong>2026-03-31 API:</strong> Added project flags for international-number support in selected routes and documented webhook delivery tuning with `delivery.timeout` and `delivery.retries`.</li>
-        <li><strong>2026-03-30 API:</strong> Added contacts and segments, plus contact-based targeting in message and OTP create flows with propagated `contact` and `contactId` in webhook payloads.</li>
-      </ul>
-    </Tab>
-    <Tab title="API">
-      <ul>
-        <li><strong>2026-04-01:</strong> `GET /webhooks/discord` now expects OAuth callback values in query params. Documentation examples and callback notes were updated to match the live behavior.</li>
-        <li><strong>2026-03-31:</strong> Public send, OTP, and contact flows now document the project-level flag that can enable international numbers beyond the default `+55` traffic profile.</li>
-        <li><strong>2026-03-31:</strong> Webhook create/update routes now accept `delivery.timeout` and `delivery.retries`, while webhook reads expose top-level `timeout` and `retries` fields.</li>
-        <li><strong>2026-03-30:</strong> Added full reference coverage for `GET/POST/PATCH/DELETE /contacts` and `GET/POST/PATCH/DELETE /segments`, including segment contact attach/detach/list routes.</li>
-        <li><strong>2026-03-30:</strong> `POST /messages`, `POST /messages/batch`, and `POST /otp` now accept saved contacts through the `contact` field in addition to direct `to` numbers.</li>
-        <li><strong>2026-03-30:</strong> The API reference now covers the previously undocumented list/get/create/update API key operations.</li>
-      </ul>
-    </Tab>
-    <Tab title="CLI">
-      <ul>
-        <li><strong>2026-04-01:</strong> No CLI-specific public changes were documented in this release window.</li>
-      </ul>
-    </Tab>
-    <Tab title="SDKs">
-      <ul>
-        <li><strong>2026-04-01:</strong> No SDK-specific public changes were documented in this release window.</li>
-      </ul>
-    </Tab>
-    <Tab title="Webhooks">
-      <ul>
-        <li><strong>2026-03-31:</strong> Webhook resources gained configurable delivery retries and timeout controls.</li>
-        <li><strong>2026-03-30:</strong> Message-like webhook payloads now include `contact` and `contactId` when a send originated from a saved contact, and the docs examples were updated accordingly.</li>
-      </ul>
-    </Tab>
-  </Tabs>
-</div>
+- Added webhook coverage for [`message.received`](/en/webhooks/events/message-received).
+- Documented inbound traffic as a public event contract instead of exposing provider callbacks.
+
+# 2026-04-03
+
+- Updated webhook resources to use `isEnabled` instead of `status`.
+- Added bulk delete coverage for `DELETE /webhooks`.
+- Added `POST /templates/{id}/duplicate` and `DELETE /templates` to the public reference.
+
+# 2026-04-02
+
+- Replaced legacy `/webhooks/{id}/logs` references with `/webhooks/{id}/deliveries`.
+- Added public coverage for `GET /deliveries` and `GET /deliveries/{id}`.
+- Split request logs from webhook deliveries in the public API reference.

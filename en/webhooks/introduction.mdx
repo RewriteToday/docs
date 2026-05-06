@@ -15,9 +15,9 @@ Current public event families are:
 - [`message.queued`](/en/webhooks/events/message-queued)
 - [`message.failed`](/en/webhooks/events/message-failed)
 - [`message.canceled`](/en/webhooks/events/message-canceled)
+- [`message.delivered`](/en/webhooks/events/message-delivered)
+- [`message.received`](/en/webhooks/events/message-received)
 - [`message.scheduled`](/en/webhooks/events/message-scheduled)
-
-[`message.delivered`](/en/webhooks/events/message-delivered) is currently WIP.
 
 ## Registering a webhook
 
@@ -56,16 +56,18 @@ Example payload:
 {
   "id": "748395130237498900",
   "createdAt": "2026-03-19T18:42:11.000Z",
+  "sandbox": false,
   "type": "message.sent",
   "data": {
     "id": "748395130237498500",
     "projectId": "748395130237498412",
+    "sandbox": false,
     "contact": "Fernanda",
     "contactId": "748395130237498515",
     "to": "+5511999999999",
-    "tags": [
-      { "name": "use_case", "value": "otp_login" }
-    ],
+    "tags": {
+      "use_case": "otp_login"
+    },
     "type": "SMS",
     "status": "SENT",
     "content": "Rewrite: your verification code is 123456",
@@ -88,7 +90,9 @@ Example payload:
 }
 ```
 
-- `data.contact` and `data.contactId` are always present. They are `null` when the original send did not target a saved contact.
+- `data.contact` and `data.contactId` are always present. They become `null` when the original send did not target a saved contact.
+- `sandbox` on the event envelope indicates the originating project mode.
+- `data.sandbox` repeats that signal inside message payloads.
 - Webhook resource reads return `retries` and `timeout` at the top level, while create/update requests accept them inside `delivery`.
 
 ## Signature validation
@@ -112,6 +116,7 @@ For the full verification flow, canonical signed string, and a Node example, see
 
 ## Related pages
 
+- [Inbound](/en/webhooks/inbound)
 - [Signature](/en/webhooks/signature)
 - [Event types](/en/webhooks/types)
 - [Retries](/en/webhooks/retry)

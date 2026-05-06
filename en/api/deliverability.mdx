@@ -14,12 +14,11 @@ Use these webhook events in your monitoring:
 - [`sms.otp`](/en/webhooks/events/sms-otp)
 - [`message.queued`](/en/webhooks/events/message-queued)
 - [`message.sent`](/en/webhooks/events/message-sent)
+- [`message.delivered`](/en/webhooks/events/message-delivered)
 - [`message.scheduled`](/en/webhooks/events/message-scheduled)
 - [`message.failed`](/en/webhooks/events/message-failed)
 - [`message.canceled`](/en/webhooks/events/message-canceled)
 - [`message.batch`](/en/webhooks/events/message-batch)
-
-[`message.delivered`](/en/webhooks/events/message-delivered) is currently WIP.
 
 ## High-impact practices
 
@@ -43,10 +42,10 @@ Example send body:
 {
   "to": "+5511999999999",
   "content": "Rewrite: your verification code is 123456",
-  "tags": [
-    { "name": "use_case", "value": "otp_login" },
-    { "name": "template_version", "value": "v3" }
-  ]
+  "tags": {
+    "use_case": "otp_login",
+    "template_version": "v3"
+  }
 }
 ```
 

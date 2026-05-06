@@ -298,9 +298,38 @@
 						"QUEUED",
 						"FAILED",
 						"CANCELED",
+						"RECEIVED",
 						"SCHEDULED",
 						"DELIVERED"
 					]
+				}
+			},
+			"MessageEncoding": {
+				"name": "encoding",
+				"in": "query",
+				"required": false,
+				"description": "Filter by message encoding.",
+				"schema": {
+					"type": "string",
+					"enum": ["GSM7", "UCS2"]
+				}
+			},
+			"MessageScheduled": {
+				"name": "scheduled",
+				"in": "query",
+				"required": false,
+				"description": "Filter by whether the message has `scheduledAt` set.",
+				"schema": {
+					"type": "boolean"
+				}
+			},
+			"MessageWithCounts": {
+				"name": "withCounts",
+				"in": "query",
+				"required": false,
+				"description": "When `true`, include a top-level `count` field with the total matching records.",
+				"schema": {
+					"type": "boolean"
 				}
 			},
 			"CountryCode": {
@@ -316,8 +345,8 @@
 			"WebhookEventTypeRequired": {
 				"name": "type",
 				"in": "query",
-				"required": true,
-				"description": "Webhook event type to include in the result set.",
+				"required": false,
+				"description": "Filter by webhook event type.",
 				"schema": {
 					"type": "string",
 					"enum": [
@@ -328,6 +357,7 @@
 						"message.failed",
 						"message.canceled",
 						"message.delivered",
+						"message.received",
 						"message.scheduled"
 					]
 				}
@@ -335,11 +365,81 @@
 			"WebhookDeliveryStatusRequired": {
 				"name": "status",
 				"in": "query",
-				"required": true,
-				"description": "Delivery status to include in the result set.",
+				"required": false,
+				"description": "Filter by webhook delivery status.",
 				"schema": {
 					"type": "string",
 					"enum": ["FAILED", "SUCCESS"]
+				}
+			},
+			"WebhookDeliveryStatus": {
+				"name": "status",
+				"in": "query",
+				"required": false,
+				"description": "Filter by webhook delivery status.",
+				"schema": {
+					"type": "string",
+					"enum": ["FAILED", "SUCCESS"]
+				}
+			},
+			"HTTPStatusCode": {
+				"name": "code",
+				"in": "query",
+				"required": false,
+				"description": "Filter by HTTP status code.",
+				"schema": {
+					"type": "integer",
+					"minimum": 100,
+					"maximum": 600
+				}
+			},
+			"WebhookAttempt": {
+				"name": "attempt",
+				"in": "query",
+				"required": false,
+				"description": "Filter by delivery attempt number.",
+				"schema": {
+					"type": "integer",
+					"minimum": 1,
+					"maximum": 5
+				}
+			},
+			"MessageId": {
+				"name": "messageId",
+				"in": "query",
+				"required": false,
+				"description": "Filter by message identifier.",
+				"schema": {
+					"$ref": "#/components/schemas/Snowflake"
+				}
+			},
+			"WebhookId": {
+				"name": "webhookId",
+				"in": "query",
+				"required": false,
+				"description": "Filter by webhook identifier.",
+				"schema": {
+					"$ref": "#/components/schemas/Snowflake"
+				}
+			},
+			"LogMethod": {
+				"name": "method",
+				"in": "query",
+				"required": false,
+				"description": "Filter by HTTP method.",
+				"schema": {
+					"type": "string",
+					"example": "POST"
+				}
+			},
+			"LogEndpoint": {
+				"name": "endpoint",
+				"in": "query",
+				"required": false,
+				"description": "Filter by request endpoint path.",
+				"schema": {
+					"type": "string",
+					"example": "/messages"
 				}
 			}
 		},
@@ -473,6 +573,23 @@
 					}
 				}
 			},
+			"OkArrayResponse": {
+				"type": "object",
+				"required": ["ok", "data"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/Snowflake"
+						}
+					}
+				}
+			},
 			"Project": {
 				"type": "object",
 				"required": [
@@ -576,10 +693,12 @@
 				"additionalProperties": false,
 				"properties": {
 					"id": {
-						"$ref": "#/components/schemas/Snowflake"
+						"$ref": "#/components/schemas/Snowflake",
+						"example": "748395130237498990"
 					},
 					"name": {
-						"type": "string"
+						"type": "string",
+						"example": "primary"
 					},
 					"prefix": {
 						"type": "string",
@@ -589,18 +708,22 @@
 						"type": "array",
 						"items": {
 							"$ref": "#/components/schemas/AuthScope"
-						}
+						},
+						"example": ["message:write", "message:read", "project:logs:read"]
 					},
 					"description": {
-						"type": ["string", "null"]
+						"type": ["string", "null"],
+						"example": "Main server key used by production messaging flows."
 					},
 					"lastUsedAt": {
 						"type": ["string", "null"],
-						"format": "date-time"
+						"format": "date-time",
+						"example": "2026-03-20T14:22:39.914Z"
 					},
 					"createdAt": {
 						"type": "string",
-						"format": "date-time"
+						"format": "date-time",
+						"example": "2026-03-20T14:22:31.562Z"
 					}
 				}
 			},
@@ -646,19 +769,22 @@
 					"name": {
 						"type": "string",
 						"minLength": 2,
-						"maxLength": 32
+						"maxLength": 32,
+						"example": "primary"
 					},
 					"description": {
 						"type": "string",
 						"minLength": 1,
-						"maxLength": 64
+						"maxLength": 64,
+						"example": "Main server key used by production messaging flows."
 					},
 					"scopes": {
 						"type": "array",
 						"uniqueItems": true,
 						"items": {
 							"$ref": "#/components/schemas/AuthScope"
-						}
+						},
+						"example": ["message:write", "message:read", "project:logs:read"]
 					}
 				}
 			},
@@ -669,19 +795,22 @@
 					"name": {
 						"type": "string",
 						"minLength": 2,
-						"maxLength": 32
+						"maxLength": 32,
+						"example": "secondary"
 					},
 					"description": {
 						"type": ["string", "null"],
 						"minLength": 1,
-						"maxLength": 64
+						"maxLength": 64,
+						"example": "Secondary key used by background jobs."
 					},
 					"scopes": {
 						"type": "array",
 						"uniqueItems": true,
 						"items": {
 							"$ref": "#/components/schemas/AuthScope"
-						}
+						},
+						"example": ["message:read", "project:logs:read"]
 					}
 				}
 			},
@@ -700,7 +829,25 @@
 					},
 					"createdAt": {
 						"type": "string",
-						"format": "date-time"
+						"format": "date-time",
+						"example": "2026-03-20T14:22:31.562Z"
+					}
+				}
+			},
+			"ContactTagIdsBody": {
+				"type": "object",
+				"required": ["ids"],
+				"additionalProperties": false,
+				"properties": {
+					"ids": {
+						"type": "array",
+						"minItems": 1,
+						"maxItems": 15,
+						"uniqueItems": true,
+						"items": {
+							"$ref": "#/components/schemas/Snowflake"
+						},
+						"example": ["748395130237498570"]
 					}
 				}
 			},
@@ -742,10 +889,29 @@
 						"description": "Optional preferred channel for future contact-based sends.",
 						"example": "SMS"
 					},
+					"tagIds": {
+						"type": "array",
+						"maxItems": 15,
+						"uniqueItems": true,
+						"items": {
+							"$ref": "#/components/schemas/Snowflake"
+						},
+						"description": "Optional tag identifiers attached to the contact on creation.",
+						"example": ["748395130237498570"]
+					},
 					"tags": {
 						"type": "object",
 						"additionalProperties": true,
 						"description": "Arbitrary metadata stored with the contact."
+					},
+					"preferredLanguages": {
+						"type": "array",
+						"uniqueItems": true,
+						"items": {
+							"type": "string"
+						},
+						"description": "Preferred locale codes used when targeting this contact with localized flows.",
+						"example": ["br", "us"]
 					}
 				}
 			},
@@ -772,16 +938,35 @@
 						"description": "Updated preferred channel.",
 						"example": "OTP"
 					},
+					"tagIds": {
+						"type": "array",
+						"maxItems": 15,
+						"uniqueItems": true,
+						"items": {
+							"$ref": "#/components/schemas/Snowflake"
+						},
+						"description": "Replacement tag set linked to the contact. Existing relations are synchronized.",
+						"example": ["748395130237498570"]
+					},
 					"tags": {
 						"type": "object",
 						"additionalProperties": true,
 						"description": "Replacement metadata stored with the contact."
+					},
+					"preferredLanguages": {
+						"type": "array",
+						"uniqueItems": true,
+						"items": {
+							"type": "string"
+						},
+						"description": "Updated locale preference list for the contact.",
+						"example": ["br"]
 					}
 				}
 			},
 			"ContactCreateResult": {
 				"type": "object",
-				"required": ["id", "phone", "country", "createdAt"],
+				"required": ["id", "phone", "country", "createdAt", "sandbox"],
 				"additionalProperties": false,
 				"properties": {
 					"id": {
@@ -803,6 +988,11 @@
 						"format": "date-time",
 						"description": "Timestamp when the contact was created.",
 						"example": "2026-03-20T14:22:31.562Z"
+					},
+					"sandbox": {
+						"type": "boolean",
+						"description": "Whether the contact was created under sandbox mode.",
+						"example": false
 					}
 				}
 			},
@@ -815,7 +1005,9 @@
 					"phone",
 					"country",
 					"channel",
+					"preferredLanguages",
 					"tags",
+					"sandbox",
 					"updatedAt"
 				],
 				"additionalProperties": false,
@@ -850,10 +1042,23 @@
 						"description": "Preferred channel saved with the contact, when configured.",
 						"example": "SMS"
 					},
+					"preferredLanguages": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"description": "Preferred locale codes stored with the contact.",
+						"example": ["br", "us"]
+					},
 					"tags": {
 						"type": "object",
 						"additionalProperties": true,
 						"description": "Arbitrary metadata stored with the contact."
+					},
+					"sandbox": {
+						"type": "boolean",
+						"description": "Whether the contact belongs to a sandbox flow.",
+						"example": false
 					},
 					"updatedAt": {
 						"type": "string",
@@ -908,6 +1113,40 @@
 					},
 					"cursor": {
 						"$ref": "#/components/schemas/Cursor"
+					}
+				}
+			},
+			"ContactBatchResponse": {
+				"type": "object",
+				"required": ["ok", "data"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"type": "object",
+						"required": ["inserted", "updated", "ignored", "total"],
+						"additionalProperties": false,
+						"properties": {
+							"inserted": {
+								"type": "integer",
+								"example": 2
+							},
+							"updated": {
+								"type": "integer",
+								"example": 0
+							},
+							"ignored": {
+								"type": "integer",
+								"example": 0
+							},
+							"total": {
+								"type": "integer",
+								"example": 2
+							}
+						}
 					}
 				}
 			},
@@ -983,6 +1222,7 @@
 					"name",
 					"description",
 					"contactsCount",
+					"sandbox",
 					"updatedAt",
 					"createdAt"
 				],
@@ -1003,6 +1243,11 @@
 						"type": "integer",
 						"description": "Current number of contacts attached to the segment.",
 						"example": 0
+					},
+					"sandbox": {
+						"type": "boolean",
+						"description": "Whether the segment was created under sandbox mode.",
+						"example": false
 					},
 					"updatedAt": {
 						"type": "string",
@@ -1025,6 +1270,7 @@
 					"description",
 					"color",
 					"contactsCount",
+					"sandbox",
 					"updatedAt"
 				],
 				"additionalProperties": false,
@@ -1056,6 +1302,11 @@
 						"type": "integer",
 						"description": "Current number of contacts attached to the segment.",
 						"example": 12
+					},
+					"sandbox": {
+						"type": "boolean",
+						"description": "Whether the segment belongs to a sandbox flow.",
+						"example": false
 					},
 					"updatedAt": {
 						"type": "string",
@@ -1113,26 +1364,161 @@
 					}
 				}
 			},
-			"MessageTag": {
+			"TagCreateBody": {
 				"type": "object",
-				"required": ["name", "value"],
+				"required": ["name"],
 				"additionalProperties": false,
 				"properties": {
 					"name": {
 						"type": "string",
 						"minLength": 1,
-						"maxLength": 128,
-						"description": "Tag key attached to the message.",
-						"example": "flow"
+						"maxLength": 64,
+						"example": "vip"
 					},
-					"value": {
+					"color": {
+						"type": "string",
+						"pattern": "^#[0-9A-Fa-f]{6}$",
+						"example": "#F97316"
+					},
+					"description": {
 						"type": "string",
 						"minLength": 1,
 						"maxLength": 128,
-						"description": "Tag value attached to the message.",
-						"example": "login"
+						"example": "Contacts prioritized for transactional messaging."
 					}
 				}
+			},
+			"TagUpdateBody": {
+				"type": "object",
+				"additionalProperties": false,
+				"properties": {
+					"name": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 64,
+						"example": "priority-vip"
+					},
+					"color": {
+						"type": "string",
+						"pattern": "^#[0-9A-Fa-f]{6}$",
+						"example": "#EA580C"
+					},
+					"description": {
+						"type": "string",
+						"minLength": 1,
+						"maxLength": 128,
+						"example": "Updated description for priority contacts."
+					}
+				}
+			},
+			"TagCreateResult": {
+				"type": "object",
+				"required": ["id", "slug", "createdAt"],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Snowflake",
+						"example": "748395130237498570"
+					},
+					"slug": {
+						"type": "string",
+						"example": "vip"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2026-03-20T14:22:31.562Z"
+					}
+				}
+			},
+			"Tag": {
+				"type": "object",
+				"required": [
+					"id",
+					"name",
+					"color",
+					"description",
+					"contactsCount",
+					"createdAt"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Snowflake",
+						"example": "748395130237498570"
+					},
+					"name": {
+						"type": "string",
+						"example": "vip"
+					},
+					"color": {
+						"type": ["string", "null"],
+						"example": "#F97316"
+					},
+					"description": {
+						"type": ["string", "null"],
+						"example": "Contacts prioritized for transactional messaging."
+					},
+					"contactsCount": {
+						"type": "integer",
+						"example": 12
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2026-03-20T14:22:31.562Z"
+					}
+				}
+			},
+			"TagResponse": {
+				"type": "object",
+				"required": ["ok", "data"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"$ref": "#/components/schemas/Tag"
+					}
+				}
+			},
+			"TagCreateResponse": {
+				"type": "object",
+				"required": ["ok", "data"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"$ref": "#/components/schemas/TagCreateResult"
+					}
+				}
+			},
+			"TagListResponse": {
+				"type": "object",
+				"required": ["ok", "data"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/Tag"
+						}
+					}
+				}
+			},
+			"Metadata": {
+				"type": "object",
+				"additionalProperties": true,
+				"description": "Arbitrary metadata object. Rewrite stores up to 20 keys with a combined maximum of 4kb."
 			},
 			"MessageAnalysis": {
 				"type": "object",
@@ -1224,18 +1610,12 @@
 						"example": "Rewrite: seu codigo e 478201"
 					},
 					"tags": {
-						"type": "array",
-						"maxItems": 20,
+						"$ref": "#/components/schemas/Metadata",
 						"description": "Optional metadata stored with the message.",
-						"items": {
-							"$ref": "#/components/schemas/MessageTag"
-						},
-						"example": [
-							{
-								"name": "flow",
-								"value": "login"
-							}
-						]
+						"example": {
+							"flow": "login",
+							"origin": "checkout"
+						}
 					},
 					"scheduledAt": {
 						"type": "string",
@@ -1270,18 +1650,12 @@
 						"example": "Rewrite: seu codigo e 478201"
 					},
 					"tags": {
-						"type": "array",
-						"maxItems": 20,
+						"$ref": "#/components/schemas/Metadata",
 						"description": "Optional metadata stored with the message.",
-						"items": {
-							"$ref": "#/components/schemas/MessageTag"
-						},
-						"example": [
-							{
-								"name": "flow",
-								"value": "login"
-							}
-						]
+						"example": {
+							"flow": "login",
+							"origin": "checkout"
+						}
 					},
 					"scheduledAt": {
 						"type": "string",
@@ -1319,18 +1693,12 @@
 						"description": "Variable values used when rendering the selected template."
 					},
 					"tags": {
-						"type": "array",
-						"maxItems": 20,
+						"$ref": "#/components/schemas/Metadata",
 						"description": "Optional metadata stored with the message.",
-						"items": {
-							"$ref": "#/components/schemas/MessageTag"
-						},
-						"example": [
-							{
-								"name": "flow",
-								"value": "login"
-							}
-						]
+						"example": {
+							"flow": "login",
+							"origin": "checkout"
+						}
 					},
 					"scheduledAt": {
 						"type": "string",
@@ -1370,18 +1738,12 @@
 						"description": "Variable values used when rendering the selected template."
 					},
 					"tags": {
-						"type": "array",
-						"maxItems": 20,
+						"$ref": "#/components/schemas/Metadata",
 						"description": "Optional metadata stored with the message.",
-						"items": {
-							"$ref": "#/components/schemas/MessageTag"
-						},
-						"example": [
-							{
-								"name": "flow",
-								"value": "login"
-							}
-						]
+						"example": {
+							"flow": "login",
+							"origin": "checkout"
+						}
 					},
 					"scheduledAt": {
 						"type": "string",
@@ -1435,12 +1797,17 @@
 					},
 					{
 						"type": "object",
-						"required": ["analysis"],
+						"required": ["analysis", "sandbox"],
 						"additionalProperties": false,
 						"properties": {
 							"analysis": {
 								"$ref": "#/components/schemas/MessageAnalysis",
 								"description": "Segmentation analysis for the SMS content accepted by Rewrite."
+							},
+							"sandbox": {
+								"type": "boolean",
+								"description": "Whether this message was created while the project was in sandbox mode.",
+								"example": false
 							}
 						}
 					}
@@ -1511,7 +1878,7 @@
 					"templateId",
 					"deliveredAt",
 					"scheduledAt",
-					"isPayAsYouGo"
+					"sandbox"
 				],
 				"additionalProperties": false,
 				"properties": {
@@ -1544,7 +1911,7 @@
 					"from": {
 						"type": ["string", "null"],
 						"description": "Resolved sender ID used for this message, when available.",
-						"example": "Rewrite"
+						"example": null
 					},
 					"type": {
 						"type": "string",
@@ -1553,17 +1920,12 @@
 						"example": "SMS"
 					},
 					"tags": {
-						"type": "array",
+						"$ref": "#/components/schemas/Metadata",
 						"description": "Metadata attached to the message.",
-						"items": {
-							"$ref": "#/components/schemas/MessageTag"
-						},
-						"example": [
-							{
-								"name": "flow",
-								"value": "login"
-							}
-						]
+						"example": {
+							"flow": "login",
+							"origin": "checkout"
+						}
 					},
 					"status": {
 						"type": "string",
@@ -1572,6 +1934,7 @@
 							"QUEUED",
 							"FAILED",
 							"CANCELED",
+							"RECEIVED",
 							"SCHEDULED",
 							"DELIVERED"
 						],
@@ -1611,9 +1974,9 @@
 						"description": "Scheduled send time, when the message was delayed intentionally.",
 						"example": null
 					},
-					"isPayAsYouGo": {
+					"sandbox": {
 						"type": "boolean",
-						"description": "Whether the message consumed pay-as-you-go balance instead of subscription quota.",
+						"description": "Whether the message belongs to a sandbox project flow.",
 						"example": false
 					}
 				}
@@ -1653,14 +2016,12 @@
 								"contact": "Fernanda",
 								"contactId": "748395130237498515",
 								"to": "+5511999999999",
-								"from": "Rewrite",
+								"from": null,
 								"type": "SMS",
-								"tags": [
-									{
-										"name": "flow",
-										"value": "login"
-									}
-								],
+								"tags": {
+									"flow": "login",
+									"origin": "checkout"
+								},
 								"status": "DELIVERED",
 								"country": "br",
 								"content": "Rewrite: seu codigo e 478201",
@@ -1668,7 +2029,7 @@
 								"templateId": null,
 								"deliveredAt": "2026-03-20T14:22:39.914Z",
 								"scheduledAt": null,
-								"isPayAsYouGo": false
+								"sandbox": false
 							},
 							{
 								"id": "748395130237498413",
@@ -1676,14 +2037,12 @@
 								"contact": "Fernanda",
 								"contactId": "748395130237498515",
 								"to": "+5511888888888",
-								"from": "Rewrite",
+								"from": null,
 								"type": "SMS",
-								"tags": [
-									{
-										"name": "flow",
-										"value": "login"
-									}
-								],
+								"tags": {
+									"flow": "login",
+									"origin": "checkout"
+								},
 								"status": "SENT",
 								"country": "br",
 								"content": "Rewrite: seu codigo e 478201",
@@ -1691,12 +2050,17 @@
 								"templateId": null,
 								"deliveredAt": null,
 								"scheduledAt": null,
-								"isPayAsYouGo": false
+								"sandbox": false
 							}
 						]
 					},
 					"cursor": {
 						"$ref": "#/components/schemas/Cursor"
+					},
+					"count": {
+						"type": "integer",
+						"description": "Only returned when `withCounts=true` is provided on the request.",
+						"example": 2
 					}
 				}
 			},
@@ -1903,7 +2267,7 @@
 			},
 			"TemplateCreateBody": {
 				"type": "object",
-				"required": ["name", "i18n", "content", "variables", "description"],
+				"required": ["name", "content", "variables"],
 				"additionalProperties": false,
 				"properties": {
 					"name": {
@@ -1912,10 +2276,6 @@
 						"maxLength": 32,
 						"description": "Template name used later in the dashboard and API responses.",
 						"example": "login_code"
-					},
-					"i18n": {
-						"$ref": "#/components/schemas/TemplateI18n",
-						"description": "Locale-specific overrides for the template content."
 					},
 					"content": {
 						"type": "string",
@@ -1939,11 +2299,19 @@
 						]
 					},
 					"description": {
-						"type": "string",
+						"type": ["string", "null"],
 						"minLength": 1,
 						"maxLength": 72,
 						"description": "Short human-readable explanation of what the template is for.",
 						"example": "Template usado no fluxo de login"
+					},
+					"tags": {
+						"$ref": "#/components/schemas/Metadata",
+						"description": "Optional metadata stored with the template.",
+						"example": {
+							"flow": "otp",
+							"channel": "login"
+						}
 					}
 				}
 			},
@@ -1951,10 +2319,6 @@
 				"type": "object",
 				"additionalProperties": false,
 				"properties": {
-					"i18n": {
-						"$ref": "#/components/schemas/TemplateI18n",
-						"description": "Locale-specific overrides to replace on the template."
-					},
 					"content": {
 						"type": "string",
 						"minLength": 1,
@@ -1977,11 +2341,19 @@
 						]
 					},
 					"description": {
-						"type": "string",
+						"type": ["string", "null"],
 						"minLength": 1,
 						"maxLength": 72,
 						"description": "Updated human-readable description for the template.",
 						"example": "Template usado no fluxo de recuperacao de conta"
+					},
+					"tags": {
+						"$ref": "#/components/schemas/Metadata",
+						"description": "Replacement metadata stored with the template.",
+						"example": {
+							"flow": "otp",
+							"channel": "login"
+						}
 					}
 				}
 			},
@@ -2033,6 +2405,14 @@
 						"type": ["string", "null"],
 						"description": "Human-readable description saved with the template.",
 						"example": "Template usado no fluxo de login"
+					},
+					"tags": {
+						"$ref": "#/components/schemas/Metadata",
+						"description": "Metadata stored with the template.",
+						"example": {
+							"flow": "otp",
+							"channel": "login"
+						}
 					},
 					"createdAt": {
 						"type": "string",
@@ -2155,10 +2535,16 @@
 								"message.failed",
 								"message.canceled",
 								"message.delivered",
+								"message.received",
 								"message.scheduled"
 							]
 						},
-						"example": ["message.sent", "message.failed", "sms.otp"]
+						"example": [
+							"message.sent",
+							"message.failed",
+							"message.received",
+							"sms.otp"
+						]
 					},
 					"secret": {
 						"type": "string",
@@ -2206,6 +2592,7 @@
 								"message.failed",
 								"message.canceled",
 								"message.delivered",
+								"message.received",
 								"message.scheduled"
 							]
 						},
@@ -2225,11 +2612,10 @@
 						"description": "Updated destination URL for future deliveries.",
 						"example": "https://example.com/rewrite/webhooks/secondary"
 					},
-					"status": {
-						"type": "string",
-						"enum": ["ACTIVE", "INACTIVE"],
+					"isEnabled": {
+						"type": "boolean",
 						"description": "Whether Rewrite should actively deliver events to this webhook.",
-						"example": "INACTIVE"
+						"example": false
 					},
 					"delivery": {
 						"$ref": "#/components/schemas/WebhookDeliveryConfig",
@@ -2243,10 +2629,12 @@
 					"id",
 					"name",
 					"events",
-					"status",
+					"isEnabled",
+					"sandbox",
 					"endpoint",
 					"retries",
 					"timeout",
+					"lastDeliveryAt",
 					"createdAt"
 				],
 				"additionalProperties": false,
@@ -2274,16 +2662,26 @@
 								"message.failed",
 								"message.canceled",
 								"message.delivered",
+								"message.received",
 								"message.scheduled"
 							]
 						},
-						"example": ["message.sent", "message.failed", "sms.otp"]
+						"example": [
+							"message.sent",
+							"message.failed",
+							"message.received",
+							"sms.otp"
+						]
 					},
-					"status": {
-						"type": "string",
-						"enum": ["ACTIVE", "INACTIVE"],
-						"description": "Current lifecycle status of the webhook.",
-						"example": "ACTIVE"
+					"isEnabled": {
+						"type": "boolean",
+						"description": "Whether Rewrite currently delivers events to this webhook.",
+						"example": true
+					},
+					"sandbox": {
+						"type": "boolean",
+						"description": "Whether the webhook belongs to a sandbox project.",
+						"example": false
 					},
 					"endpoint": {
 						"type": "string",
@@ -2299,6 +2697,12 @@
 						"type": "integer",
 						"description": "Maximum time in milliseconds Rewrite waits for each delivery attempt before timing out.",
 						"example": 3000
+					},
+					"lastDeliveryAt": {
+						"type": ["string", "null"],
+						"format": "date-time",
+						"description": "Timestamp of the last recorded delivery attempt for this webhook.",
+						"example": "2026-03-20T14:22:39.914Z"
 					},
 					"createdAt": {
 						"type": "string",
@@ -2376,6 +2780,11 @@
 						"description": "Generated signing secret to persist on your side.",
 						"example": "whsec_dGVzdF9zZWNyZXRfdmFsdWU="
 					},
+					"sandbox": {
+						"type": "boolean",
+						"description": "Whether the webhook was created under sandbox mode.",
+						"example": false
+					},
 					"createdAt": {
 						"type": "string",
 						"format": "date-time",
@@ -2430,6 +2839,7 @@
 					"contactId",
 					"to",
 					"tags",
+					"sandbox",
 					"type",
 					"status",
 					"content",
@@ -2468,17 +2878,17 @@
 						"example": "+5511999999999"
 					},
 					"tags": {
-						"type": "array",
+						"$ref": "#/components/schemas/Metadata",
 						"description": "Metadata attached to the message.",
-						"items": {
-							"$ref": "#/components/schemas/MessageTag"
-						},
-						"example": [
-							{
-								"name": "flow",
-								"value": "login"
-							}
-						]
+						"example": {
+							"flow": "login",
+							"origin": "checkout"
+						}
+					},
+					"sandbox": {
+						"type": "boolean",
+						"description": "Whether the message belongs to a sandbox flow.",
+						"example": false
 					},
 					"type": {
 						"type": "string",
@@ -2493,6 +2903,7 @@
 							"QUEUED",
 							"FAILED",
 							"CANCELED",
+							"RECEIVED",
 							"SCHEDULED",
 							"DELIVERED"
 						],
@@ -2585,7 +2996,7 @@
 			},
 			"WebhookEvent": {
 				"type": "object",
-				"required": ["id", "createdAt", "type", "data"],
+				"required": ["id", "createdAt", "type", "sandbox", "data"],
 				"additionalProperties": false,
 				"properties": {
 					"id": {
@@ -2609,10 +3020,16 @@
 							"message.failed",
 							"message.canceled",
 							"message.delivered",
+							"message.received",
 							"message.scheduled"
 						],
 						"description": "Webhook event type.",
 						"example": "message.sent"
+					},
+					"sandbox": {
+						"type": "boolean",
+						"description": "Whether Rewrite created this event while the project was in sandbox mode.",
+						"example": false
 					},
 					"data": {
 						"oneOf": [
@@ -2627,7 +3044,7 @@
 					}
 				}
 			},
-			"WebhookLogSummary": {
+			"DeliverySummary": {
 				"type": "object",
 				"required": [
 					"id",
@@ -2640,7 +3057,8 @@
 					"latency",
 					"retryAt",
 					"createdAt",
-					"messageId"
+					"messageId",
+					"sandbox"
 				],
 				"additionalProperties": false,
 				"properties": {
@@ -2664,6 +3082,7 @@
 							"message.failed",
 							"message.canceled",
 							"message.delivered",
+							"message.received",
 							"message.scheduled"
 						],
 						"description": "Webhook event type delivered in this attempt.",
@@ -2711,13 +3130,18 @@
 						"type": ["string", "null"],
 						"description": "Message identifier associated with the delivery attempt, when available.",
 						"example": "748395130237498412"
+					},
+					"sandbox": {
+						"type": "boolean",
+						"description": "Whether the delivery belongs to a sandbox flow.",
+						"example": false
 					}
 				}
 			},
-			"WebhookLogDetail": {
+			"DeliveryDetail": {
 				"allOf": [
 					{
-						"$ref": "#/components/schemas/WebhookLogSummary"
+						"$ref": "#/components/schemas/DeliverySummary"
 					},
 					{
 						"type": "object",
@@ -2737,7 +3161,7 @@
 					}
 				]
 			},
-			"WebhookLogListResponse": {
+			"DeliveryListResponse": {
 				"type": "object",
 				"required": ["ok", "data", "cursor"],
 				"additionalProperties": false,
@@ -2749,7 +3173,7 @@
 					"data": {
 						"type": "array",
 						"items": {
-							"$ref": "#/components/schemas/WebhookLogSummary"
+							"$ref": "#/components/schemas/DeliverySummary"
 						}
 					},
 					"cursor": {
@@ -2757,7 +3181,7 @@
 					}
 				}
 			},
-			"WebhookLogResponse": {
+			"DeliveryResponse": {
 				"type": "object",
 				"required": ["ok", "data"],
 				"additionalProperties": false,
@@ -2767,7 +3191,226 @@
 						"const": true
 					},
 					"data": {
-						"$ref": "#/components/schemas/WebhookLogDetail"
+						"$ref": "#/components/schemas/DeliveryDetail"
+					}
+				}
+			},
+			"CompactDelivery": {
+				"type": "object",
+				"required": [
+					"id",
+					"url",
+					"code",
+					"webhookId",
+					"messageId",
+					"sandbox",
+					"createdAt"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Snowflake",
+						"example": "748395130237498880"
+					},
+					"url": {
+						"type": "string",
+						"example": "https://example.com/rewrite/webhooks"
+					},
+					"code": {
+						"type": ["integer", "null"],
+						"example": 200
+					},
+					"webhookId": {
+						"type": ["string", "null"],
+						"example": "748395130237498750"
+					},
+					"messageId": {
+						"type": ["string", "null"],
+						"example": "748395130237498412"
+					},
+					"sandbox": {
+						"type": "boolean",
+						"example": false
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2026-03-20T14:22:31.562Z"
+					}
+				}
+			},
+			"CompactDeliveryListResponse": {
+				"type": "object",
+				"required": ["ok", "data", "cursor"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/CompactDelivery"
+						}
+					},
+					"cursor": {
+						"$ref": "#/components/schemas/Cursor"
+					}
+				}
+			},
+			"RequestLogSummary": {
+				"type": "object",
+				"required": [
+					"id",
+					"method",
+					"endpoint",
+					"status",
+					"source",
+					"sandbox",
+					"createdAt"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"id": {
+						"$ref": "#/components/schemas/Snowflake",
+						"example": "748395130237498880"
+					},
+					"method": {
+						"type": "string",
+						"example": "POST"
+					},
+					"endpoint": {
+						"type": "string",
+						"example": "/messages"
+					},
+					"status": {
+						"type": "integer",
+						"minimum": 100,
+						"maximum": 600,
+						"example": 200
+					},
+					"source": {
+						"type": "string",
+						"enum": ["API", "Dashboard"],
+						"example": "API"
+					},
+					"sandbox": {
+						"type": "boolean",
+						"example": false
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time",
+						"example": "2026-03-20T14:22:31.562Z"
+					}
+				}
+			},
+			"RequestLogDetail": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/RequestLogSummary"
+					},
+					{
+						"type": "object",
+						"required": [
+							"ip",
+							"projectId",
+							"apiKeyId",
+							"requestBody",
+							"responseBody"
+						],
+						"additionalProperties": false,
+						"properties": {
+							"ip": {
+								"type": ["string", "null"],
+								"example": "203.0.113.10"
+							},
+							"projectId": {
+								"type": ["string", "null"],
+								"example": "748395130237499220"
+							},
+							"apiKeyId": {
+								"type": ["string", "null"],
+								"example": "748395130237498990"
+							},
+							"requestBody": {
+								"type": [
+									"object",
+									"array",
+									"string",
+									"number",
+									"boolean",
+									"null"
+								],
+								"example": {
+									"to": "+5511999999999",
+									"content": "Rewrite: seu codigo e 478201"
+								}
+							},
+							"responseBody": {
+								"type": [
+									"object",
+									"array",
+									"string",
+									"number",
+									"boolean",
+									"null"
+								],
+								"example": {
+									"ok": true,
+									"data": {
+										"id": "748395130237498412",
+										"createdAt": "2026-03-20T14:22:31.562Z",
+										"analysis": {
+											"characters": 28,
+											"encoding": "gsm7",
+											"segments": {
+												"concat": 153,
+												"count": 1,
+												"reason": "fits",
+												"single": 160
+											}
+										},
+										"sandbox": false
+									}
+								}
+							}
+						}
+					}
+				]
+			},
+			"RequestLogListResponse": {
+				"type": "object",
+				"required": ["ok", "data", "cursor"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/RequestLogSummary"
+						}
+					},
+					"cursor": {
+						"$ref": "#/components/schemas/Cursor"
+					}
+				}
+			},
+			"RequestLogResponse": {
+				"type": "object",
+				"required": ["ok", "data"],
+				"additionalProperties": false,
+				"properties": {
+					"ok": {
+						"type": "boolean",
+						"const": true
+					},
+					"data": {
+						"$ref": "#/components/schemas/RequestLogDetail"
 					}
 				}
 			}

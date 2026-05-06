@@ -17,10 +17,12 @@ description: Current public Rewrite webhook event types and what each payload re
   SMS or OTP send failed. Includes `data.error`.
 - [`message.canceled`](/en/webhooks/events/message-canceled)
   Cancelable future-delivery SMS was canceled.
+- [`message.delivered`](/en/webhooks/events/message-delivered)
+  Provider confirmed the final delivery of the message.
+- [`message.received`](/en/webhooks/events/message-received)
+  Inbound message received and normalized by Rewrite.
 - [`message.scheduled`](/en/webhooks/events/message-scheduled)
   Message accepted with a future `scheduledAt`.
-- [`message.delivered`](/en/webhooks/events/message-delivered)
-  Currently WIP.
 
 ## Shared envelope
 
@@ -30,6 +32,7 @@ Every webhook event uses:
 {
   "id": "748395130237498900",
   "createdAt": "2026-03-19T18:42:11.000Z",
+  "sandbox": false,
   "type": "message.sent",
   "data": {}
 }
@@ -37,7 +40,8 @@ Every webhook event uses:
 
 - `id`: webhook event snowflake
 - `createdAt`: event creation timestamp
+- `sandbox`: whether the event originated from a sandbox project
 - `type`: event name
 - `data`: event-specific payload
 
-For message-like payloads, Rewrite also includes `data.contact` and `data.contactId`. These fields are `null` when the send did not originate from a saved contact.
+For message-like payloads, Rewrite also includes `data.contact`, `data.contactId`, and `data.sandbox`. These fields vary with the original send context.

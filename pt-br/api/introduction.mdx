@@ -5,7 +5,7 @@ description: Base URL, auth, envelopes e convencoes publicas da Rewrite API v1.
 
 # Visao geral
 
-A Rewrite API v1 expoe endpoints publicos de projeto para enviar SMS, verificar OTP, gerenciar contatos, segmentos, templates e webhooks e consultar logs de entrega.
+A Rewrite API v1 expoe endpoints publicos de projeto para enviar SMS, verificar OTP, gerenciar templates e webhooks, e consultar logs de request e entregas de webhook.
 
 ## Base URL
 
@@ -27,21 +27,25 @@ Authorization: Bearer rw_...
 
 - Use `Content-Type: application/json` em requests que nao sao `GET`.
 - Os fluxos publicos de envio e OTP aceitam um numero E.164 direto em `to` ou um contato salvo do projeto em `contact`.
-- A maior parte dos projetos comeca com trafego brasileiro `+55`, mas projetos com numeros internacionais habilitados tambem podem enviar para outros DDI.
 - Criacao de mensagem inline usa `content`.
 - Envios por template usam `templateId` com `variables`.
+- Metadata de mensagens e templates usa objeto chave/valor, nao array de pares.
 - Rotas de create/send aceitam `Idempotency-Key`.
 
-Exemplo de request publica:
+Exemplo de request:
 
 ```bash
 curl -X POST "https://api.rewritetoday.com/v1/messages" \
   -H "Authorization: Bearer rw_..." \
   -H "Content-Type: application/json" \
-  -H "Idempotency-Key: msg:login-otp:2026-03-19T18:30" \
+  -H "Idempotency-Key: msg:login-otp:2026-05-06T18:30" \
   -d '{
     "to": "+5511999999999",
-    "content": "Rewrite: seu codigo de verificacao e 123456"
+    "content": "Rewrite: seu codigo de verificacao e 123456",
+    "tags": {
+      "flow": "login",
+      "origin": "checkout"
+    }
   }'
 ```
 
@@ -54,9 +58,9 @@ Respostas bem-sucedidas usam o envelope `ok` / `data`:
   "ok": true,
   "data": {
     "id": "748395130237498500",
-    "createdAt": "2026-03-19T18:30:00.000Z",
+    "createdAt": "2026-05-06T18:30:00.000Z",
     "analysis": {
-      "characters": 39,
+      "characters": 41,
       "encoding": "gsm7",
       "segments": {
         "concat": 153,
@@ -64,12 +68,19 @@ Respostas bem-sucedidas usam o envelope `ok` / `data`:
         "reason": "fits",
         "single": 160
       }
-    }
+    },
+    "sandbox": false
   }
 }
 ```
 
 Rotas de lista paginadas retornam `cursor` no topo.
+
+## Modelo publico de eventos
+
+- O ciclo de entrega agora inclui `message.delivered`.
+- Trafego inbound aparece como [`message.received`](/pt-br/webhooks/events/message-received).
+- Entregas de webhook ficam na secao `Deliveries`, incluindo `GET /deliveries` e `GET /webhooks/{id}/deliveries`.
 
 ## Referencias
 
@@ -77,4 +88,5 @@ Rotas de lista paginadas retornam `cursor` no topo.
 - [Paginacao](/pt-br/api/pagination)
 - [Erros e retentativas](/pt-br/api/errors)
 - [i18n de templates](/pt-br/api/i18n)
+- [Sandbox](/pt-br/sandbox/introduction)
 - [Entregabilidade](/pt-br/api/deliverability)

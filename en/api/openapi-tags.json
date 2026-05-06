@@ -14,182 +14,27 @@
 	],
 	"tags": [
 		{
-			"name": "Messages",
-			"description": "Send, read and manage SMS messages."
+			"name": "Tags",
+			"description": "Create and manage reusable contact tags."
 		}
 	],
 	"paths": {
-		"/messages": {
-			"post": {
-				"tags": ["Messages"],
-				"operationId": "createMessage",
-				"summary": "Send a message",
-				"description": "Send one SMS with inline content or by rendering a saved template. You can target either a direct E.164 number in `to` or a saved project contact in `contact`. Projects with international numbers enabled can send beyond the default `+55` traffic profile.",
-				"x-codeSamples": [
-					{
-						"lang": "typescript",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.messages.send({\n  to: '+5511999999999',\n  content: 'Rewrite: seu codigo e 478201',\n  tags: { flow: 'login', origin: 'checkout' },\n});\n\nif (error) throw error;"
-					}
-				],
-				"security": [
-					{
-						"apiKey.message.write": []
-					}
-				],
-				"parameters": [
-					{
-						"$ref": "#/components/parameters/IdempotencyKey"
-					}
-				],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/MessageCreateBody"
-							},
-							"examples": {
-								"withContent": {
-									"summary": "With content",
-									"value": {
-										"to": "+5511999999999",
-										"content": "Rewrite: seu codigo e 478201",
-										"tags": {
-											"flow": "login",
-											"origin": "checkout"
-										},
-										"scheduledAt": "2026-03-20T14:30:00.000Z",
-										"segmentation": {
-											"max": 2,
-											"mode": "send",
-											"smart": true
-										}
-									}
-								},
-								"withSavedContact": {
-									"summary": "With saved contact",
-									"value": {
-										"contact": "Fernanda",
-										"content": "Rewrite: seu codigo e 478201",
-										"tags": {
-											"flow": "login",
-											"origin": "checkout"
-										}
-									}
-								},
-								"usingTemplate": {
-									"summary": "Using templates",
-									"value": {
-										"to": "+5511888888888",
-										"templateId": "748395130237498620",
-										"variables": {
-											"code": "941205",
-											"name": "Fernanda"
-										},
-										"tags": {
-											"flow": "login",
-											"origin": "checkout"
-										}
-									}
-								},
-								"usingTemplateAndContact": {
-									"summary": "Using template and saved contact",
-									"value": {
-										"contact": "748395130237498515",
-										"templateId": "748395130237498620",
-										"variables": {
-											"code": "941205",
-											"name": "Fernanda"
-										},
-										"tags": {
-											"flow": "login",
-											"origin": "checkout"
-										}
-									}
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Successful response",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/MessageCreateResponse"
-								},
-								"examples": {
-									"success": {
-										"summary": "Success",
-										"value": {
-											"ok": true,
-											"data": {
-												"id": "748395130237498412",
-												"createdAt": "2026-03-20T14:22:31.562Z",
-												"analysis": {
-													"characters": 28,
-													"encoding": "gsm7",
-													"segments": {
-														"concat": 153,
-														"count": 1,
-														"reason": "fits",
-														"single": 160
-													}
-												},
-												"sandbox": false
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				},
-				"x-required-scopes": ["message:write"]
-			},
+		"/tags": {
 			"get": {
-				"tags": ["Messages"],
-				"operationId": "listMessages",
-				"summary": "List messages",
-				"description": "List accepted messages for the current project. Results are returned in reverse chronological order with a top-level cursor for pagination.",
+				"tags": ["Tags"],
+				"operationId": "listTags",
+				"summary": "List tags",
+				"description": "List all reusable tags configured for the current project.",
 				"x-codeSamples": [
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error, cursor } = await rewrite.messages.list({\n  limit: 25,\n  status: 'DELIVERED',\n});\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.tags.list();\n\nif (error) throw error;"
 					}
 				],
 				"security": [
 					{
-						"apiKey.message.read": []
-					}
-				],
-				"parameters": [
-					{
-						"$ref": "#/components/parameters/After"
-					},
-					{
-						"$ref": "#/components/parameters/Before"
-					},
-					{
-						"$ref": "#/components/parameters/Limit"
-					},
-					{
-						"$ref": "#/components/parameters/MessageStatus"
-					},
-					{
-						"$ref": "#/components/parameters/CountryCode"
-					},
-					{
-						"$ref": "#/components/parameters/MessageEncoding"
-					},
-					{
-						"$ref": "#/components/parameters/MessageScheduled"
-					},
-					{
-						"$ref": "#/components/parameters/MessageWithCounts"
+						"apiKey.project.read": []
 					}
 				],
 				"responses": {
@@ -198,7 +43,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/MessageListResponse"
+									"$ref": "#/components/schemas/TagListResponse"
 								},
 								"examples": {
 									"success": {
@@ -207,53 +52,14 @@
 											"ok": true,
 											"data": [
 												{
-													"id": "748395130237498412",
+													"id": "748395130237498570",
 													"createdAt": "2026-03-20T14:22:31.562Z",
-													"contact": "Fernanda",
-													"contactId": "748395130237498515",
-													"to": "+5511999999999",
-													"from": null,
-													"type": "SMS",
-													"tags": {
-														"flow": "login",
-														"origin": "checkout"
-													},
-													"status": "DELIVERED",
-													"country": "br",
-													"content": "Rewrite: seu codigo e 478201",
-													"encoding": "GSM7",
-													"templateId": null,
-													"deliveredAt": "2026-03-20T14:22:39.914Z",
-													"scheduledAt": null,
-													"sandbox": false
-												},
-												{
-													"id": "748395130237498413",
-													"createdAt": "2026-03-20T14:22:31.562Z",
-													"contact": "Fernanda",
-													"contactId": "748395130237498515",
-													"to": "+5511888888888",
-													"from": null,
-													"type": "SMS",
-													"tags": {
-														"flow": "login",
-														"origin": "checkout"
-													},
-													"status": "SENT",
-													"country": "br",
-													"content": "Rewrite: seu codigo e 478201",
-													"encoding": "GSM7",
-													"templateId": null,
-													"deliveredAt": null,
-													"scheduledAt": null,
-													"sandbox": false
+													"name": "vip",
+													"description": "Contacts prioritized for transactional messaging.",
+													"color": "#F97316",
+													"contactsCount": 12
 												}
-											],
-											"count": 2,
-											"cursor": {
-												"persist": true,
-												"after": "748395130237498414"
-											}
+											]
 										}
 									}
 								}
@@ -261,30 +67,23 @@
 						}
 					}
 				},
-				"x-required-scopes": ["message:read"]
-			}
-		},
-		"/messages/batch": {
+				"x-required-scopes": ["project:read"]
+			},
 			"post": {
-				"tags": ["Messages"],
-				"operationId": "createMessageBatch",
-				"summary": "Send batch messages",
-				"description": "Send between 1 and 100 SMS messages in one request. Each entry can target either a direct E.164 number or a saved project contact, and Rewrite returns only the accepted message IDs.",
+				"tags": ["Tags"],
+				"operationId": "createTag",
+				"summary": "Create a tag",
+				"description": "Create a reusable tag that can later be attached to project contacts.",
 				"x-codeSamples": [
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.messages.batch(\n  [\n    {\n      to: '+5511999999999',\n      content: 'Rewrite: seu codigo e 478201',\n    },\n    {\n      to: '+5511888888888',\n      templateId: '748395130237498620',\n      variables: { code: '941205' },\n    },\n  ],\n  {\n    idempotencyKey: 'msg:batch:login-otp:2026-03-20T14:22',\n  },\n);\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.tags.create({\n  name: 'vip',\n  color: '#F97316',\n  description: 'Contacts prioritized for transactional messaging.',\n});\n\nif (error) throw error;"
 					}
 				],
 				"security": [
 					{
-						"apiKey.message.write": []
-					}
-				],
-				"parameters": [
-					{
-						"$ref": "#/components/parameters/IdempotencyKey"
+						"apiKey.project.write": []
 					}
 				],
 				"requestBody": {
@@ -292,37 +91,13 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"type": "array",
-								"minItems": 1,
-								"maxItems": 100,
-								"items": {
-									"$ref": "#/components/schemas/MessageCreateBody"
-								}
+								"$ref": "#/components/schemas/TagCreateBody"
 							},
-							"example": [
-								{
-									"to": "+5511999999999",
-									"content": "Rewrite: seu codigo e 478201"
-								},
-								{
-									"contact": "Fernanda",
-									"content": "Rewrite: seu codigo e 478201"
-								},
-								{
-									"to": "+5511888888888",
-									"templateId": "748395130237498620",
-									"variables": {
-										"code": "941205"
-									}
-								},
-								{
-									"contact": "748395130237498515",
-									"templateId": "748395130237498620",
-									"variables": {
-										"code": "941205"
-									}
-								}
-							]
+							"example": {
+								"name": "vip",
+								"color": "#F97316",
+								"description": "Contacts prioritized for transactional messaging."
+							}
 						}
 					}
 				},
@@ -332,7 +107,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/MessageBatchCreateResponse"
+									"$ref": "#/components/schemas/TagCreateResponse"
 								},
 								"examples": {
 									"success": {
@@ -340,11 +115,9 @@
 										"value": {
 											"ok": true,
 											"data": {
-												"ids": [
-													"748395130237498412",
-													"748395130237498413",
-													"748395130237498414"
-												]
+												"id": "748395130237498570",
+												"slug": "vip",
+												"createdAt": "2026-03-20T14:22:31.562Z"
 											}
 										}
 									}
@@ -353,25 +126,25 @@
 						}
 					}
 				},
-				"x-required-scopes": ["message:write"]
+				"x-required-scopes": ["project:write"]
 			}
 		},
-		"/messages/{id}/cancel": {
-			"post": {
-				"tags": ["Messages"],
-				"operationId": "cancelMessage",
-				"summary": "Cancel a message",
-				"description": "Cancel a queued or scheduled message before it reaches the provider.",
+		"/tags/{id}": {
+			"get": {
+				"tags": ["Tags"],
+				"operationId": "getTag",
+				"summary": "Get a tag",
+				"description": "Fetch one reusable tag by its identifier.",
 				"x-codeSamples": [
 					{
 						"lang": "typescript",
 						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { error } = await rewrite.messages.cancel(\n  '748395130237498412',\n);\n\nif (error) throw error;"
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.tags.get(\n  '748395130237498570',\n);\n\nif (error) throw error;"
 					}
 				],
 				"security": [
 					{
-						"apiKey.message.write": []
+						"apiKey.project.read": []
 					}
 				],
 				"parameters": [
@@ -379,11 +152,133 @@
 						"name": "id",
 						"in": "path",
 						"required": true,
-						"description": "Message identifier to cancel.",
+						"description": "Tag identifier returned by Rewrite.",
 						"schema": {
 							"$ref": "#/components/schemas/Snowflake"
-						},
-						"example": "748395130237498412"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TagResponse"
+								},
+								"examples": {
+									"success": {
+										"summary": "Success",
+										"value": {
+											"ok": true,
+											"data": {
+												"id": "748395130237498570",
+												"createdAt": "2026-03-20T14:22:31.562Z",
+												"name": "vip",
+												"description": "Contacts prioritized for transactional messaging.",
+												"color": "#F97316",
+												"contactsCount": 12
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["project:read"]
+			},
+			"patch": {
+				"tags": ["Tags"],
+				"operationId": "updateTag",
+				"summary": "Update a tag",
+				"description": "Update the name, description or color of an existing tag.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { error } = await rewrite.tags.update(\n  '748395130237498570',\n  {\n    color: '#EA580C',\n    description: 'Updated description for priority contacts.',\n  },\n);\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"apiKey.project.write": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "Tag identifier returned by Rewrite.",
+						"schema": {
+							"$ref": "#/components/schemas/Snowflake"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/TagUpdateBody"
+							},
+							"example": {
+								"color": "#EA580C",
+								"description": "Updated description for priority contacts."
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/OkEmptyResponse"
+								},
+								"examples": {
+									"success": {
+										"summary": "Success",
+										"value": {
+											"ok": true,
+											"data": null
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"x-required-scopes": ["project:write"]
+			},
+			"delete": {
+				"tags": ["Tags"],
+				"operationId": "deleteTag",
+				"summary": "Delete a tag",
+				"description": "Permanently delete one reusable tag from the current project.",
+				"x-codeSamples": [
+					{
+						"lang": "typescript",
+						"label": "Node.js",
+						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { error } = await rewrite.tags.delete(\n  '748395130237498570',\n);\n\nif (error) throw error;"
+					}
+				],
+				"security": [
+					{
+						"apiKey.project.write": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "Tag identifier returned by Rewrite.",
+						"schema": {
+							"$ref": "#/components/schemas/Snowflake"
+						}
 					}
 				],
 				"responses": {
@@ -407,80 +302,7 @@
 						}
 					}
 				},
-				"x-required-scopes": ["message:write"]
-			}
-		},
-		"/messages/{id}": {
-			"get": {
-				"tags": ["Messages"],
-				"operationId": "getMessage",
-				"summary": "Get a message",
-				"description": "Fetch the current state of a single message, including delivery timestamps and rendered content.",
-				"x-codeSamples": [
-					{
-						"lang": "typescript",
-						"label": "Node.js",
-						"source": "import { Rewrite } from '@rewritetoday/sdk';\n\nconst rewrite = new Rewrite(process.env.REWRITE_API_KEY!);\n\nconst { data, error } = await rewrite.messages.get(\n  '748395130237498412',\n);\n\nif (error) throw error;"
-					}
-				],
-				"security": [
-					{
-						"apiKey.message.read": []
-					}
-				],
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"description": "Message identifier returned by Rewrite.",
-						"schema": {
-							"$ref": "#/components/schemas/Snowflake"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Successful response",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/MessageResponse"
-								},
-								"examples": {
-									"success": {
-										"summary": "Success",
-										"value": {
-											"ok": true,
-											"data": {
-												"id": "748395130237498412",
-												"createdAt": "2026-03-20T14:22:31.562Z",
-												"contact": "Fernanda",
-												"contactId": "748395130237498515",
-												"to": "+5511999999999",
-												"from": null,
-												"type": "SMS",
-												"tags": {
-													"flow": "login",
-													"origin": "checkout"
-												},
-												"status": "DELIVERED",
-												"country": "br",
-												"content": "Rewrite: seu codigo e 478201",
-												"encoding": "GSM7",
-												"templateId": null,
-												"deliveredAt": "2026-03-20T14:22:39.914Z",
-												"scheduledAt": null,
-												"sandbox": false
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				},
-				"x-required-scopes": ["message:read"]
+				"x-required-scopes": ["project:write"]
 			}
 		}
 	},

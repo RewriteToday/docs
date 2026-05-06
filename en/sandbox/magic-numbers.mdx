@@ -1,0 +1,40 @@
+---
+title: Magic Numbers
+description: Sandbox-only phone numbers that force predictable message outcomes and help validate OTP flows.
+---
+
+# Supported numbers
+
+In sandbox, Rewrite recognizes a small set of magic numbers that force specific outcomes.
+
+| Number | Forced result | Primary event |
+| --- | --- | --- |
+| `+55000000001` | `FAILED` | `message.failed` |
+| `+55000000002` | `QUEUED` | `message.queued` |
+| `+55000000003` | `SENT` | `message.sent` |
+| `+55000000004` | `DELIVERED` | `message.delivered` |
+
+## Default behavior
+
+If you use another valid number in sandbox, the backend follows the default simulation path and treats the send as a simple success.
+
+## Sandbox OTP
+
+For OTP in sandbox:
+
+- creation still happens through `POST /otp`
+- verification can be tested with the fixed code `000000`
+
+That makes end-to-end tests deterministic without relying on a live provider.
+
+## Operational notes
+
+- These numbers only apply when the project is in sandbox mode.
+- Sandbox does not allow `scheduledAt`.
+- Emitted webhooks are still signed normally.
+
+## Related pages
+
+- [Sandbox](/en/sandbox/introduction)
+- [Send an OTP code](/en/api/otp/send)
+- [Verify an OTP code](/en/api/otp/verify)

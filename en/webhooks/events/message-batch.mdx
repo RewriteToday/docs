@@ -9,6 +9,7 @@ description: "Batch summary emitted after a send batch finishes dispatching."
 {
   "id": "748395130237498912",
   "createdAt": "2026-03-19T18:42:25.000Z",
+  "sandbox": false,
   "type": "message.batch",
   "data": {
     "id": "748395130237498700",
@@ -24,6 +25,7 @@ description: "Batch summary emitted after a send batch finishes dispatching."
 
 Notes:
 
+- `sandbox` on the envelope tracks the mode of the project that produced the batch.
 - `data.id` is the batch id.
 - `data.ids` are the stored message ids that finished with `SENT`, sorted ascending.
 - `data.ids` can be longer than the original number of request items when some entries were segmented into multiple SMS parts.

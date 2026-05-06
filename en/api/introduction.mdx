@@ -5,7 +5,7 @@ description: Base URL, auth model, envelopes, and public integration conventions
 
 # Overview
 
-Rewrite API v1 exposes project-level endpoints for sending SMS, verifying OTPs, managing contacts, segments, templates and webhooks, and reading delivery logs.
+Rewrite API v1 exposes public project endpoints for sending SMS, verifying OTPs, managing templates and webhooks, and reading request logs and webhook deliveries.
 
 ## Base URL
 
@@ -27,21 +27,25 @@ Authorization: Bearer rw_...
 
 - Use `Content-Type: application/json` on non-`GET` requests.
 - Public send and OTP flows accept either a direct E.164 number in `to` or a saved project contact in `contact`.
-- Most projects start with Brazilian `+55` traffic. Projects with international numbers enabled can also send to other country codes.
 - Message creation uses `content` for inline SMS bodies.
 - Template-backed sends use `templateId` plus `variables`.
+- Message and template metadata are key/value objects, not arrays of pairs.
 - Create/send routes support `Idempotency-Key`.
 
-Example public request:
+Example request:
 
 ```bash
 curl -X POST "https://api.rewritetoday.com/v1/messages" \
   -H "Authorization: Bearer rw_..." \
   -H "Content-Type: application/json" \
-  -H "Idempotency-Key: msg:login-otp:2026-03-19T18:30" \
+  -H "Idempotency-Key: msg:login-otp:2026-05-06T18:30" \
   -d '{
     "to": "+5511999999999",
-    "content": "Rewrite: your verification code is 123456"
+    "content": "Rewrite: your verification code is 123456",
+    "tags": {
+      "flow": "login",
+      "origin": "checkout"
+    }
   }'
 ```
 
@@ -54,9 +58,9 @@ Successful responses use the `ok` / `data` envelope:
   "ok": true,
   "data": {
     "id": "748395130237498500",
-    "createdAt": "2026-03-19T18:30:00.000Z",
+    "createdAt": "2026-05-06T18:30:00.000Z",
     "analysis": {
-      "characters": 37,
+      "characters": 39,
       "encoding": "gsm7",
       "segments": {
         "concat": 153,
@@ -64,12 +68,19 @@ Successful responses use the `ok` / `data` envelope:
         "reason": "fits",
         "single": 160
       }
-    }
+    },
+    "sandbox": false
   }
 }
 ```
 
-Paginated list routes return top-level `cursor`.
+Paginated list routes return a top-level `cursor`.
+
+## Public event model
+
+- Delivery lifecycle now includes `message.delivered`.
+- Inbound traffic is represented by [`message.received`](/en/webhooks/events/message-received).
+- Webhook deliveries are documented under `Deliveries`, including `GET /deliveries` and `GET /webhooks/{id}/deliveries`.
 
 ## References
 
@@ -77,4 +88,5 @@ Paginated list routes return top-level `cursor`.
 - [Pagination](/en/api/pagination)
 - [Errors & retries](/en/api/errors)
 - [Template i18n](/en/api/i18n)
+- [Sandbox](/en/sandbox/introduction)
 - [Deliverability](/en/api/deliverability)

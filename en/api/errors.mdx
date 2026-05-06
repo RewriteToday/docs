@@ -24,18 +24,17 @@ Non-2xx responses use:
 
 | Status | What the backend currently uses it for |
 | --- | --- |
-| `400` | Validation failures, invalid content type, unsupported phone numbers, and route-specific bad input |
+| `400` | Validation failures, invalid content type, unsupported phones, sandbox scheduling attempts, and idempotency payload mismatches |
 | `401` | Missing or invalid API key |
-| `403` | Missing permission, subscription required, billing block, or other auth/business guard failures |
-| `404` | Unknown route or unknown resource id |
+| `403` | Missing permission, subscription required, billing guard, webhook limits, or API key mode mismatch |
+| `404` | Unknown route or unknown resource ID |
+| `409` | Conflict-style guards such as duplicated webhook endpoints |
 | `429` | Rate limited |
-| `500` | Internal or provider-side failure surfaced by the backend |
-
-The current backend does not use `422` for request validation. Validation errors are returned as `400 INVALID_JSON_BODY`.
+| `500` | Internal failure or provider-facing backend error |
 
 ## Rate-limit headers
 
-On `429`, the backend sets:
+In `429`, the backend sends:
 
 - `X-RateLimit-Global`
 - `X-RateLimit-Limit`
@@ -47,30 +46,11 @@ Important details:
 
 - `X-RateLimit-Retry-After` is returned in milliseconds.
 - The error body also includes `error.detailed.retryAfterInSeconds`.
-- The current backend does not add the standard `Retry-After` header.
-
-Example `429` payload:
-
-```json
-{
-  "ok": false,
-  "error": {
-    "code": "RATE_LIMITED",
-    "message": "Too many requests. Try again later",
-    "detailed": {
-      "policy": "50;w=60;scope=\"project\"",
-      "scope": "project",
-      "limit": 50,
-      "route": "POST /messages",
-      "retryAfterInSeconds": 60
-    }
-  }
-}
-```
+- The backend does not currently add the standard `Retry-After` header.
 
 ## Retry guidance
 
-Retry only when failure is likely transient:
+Retry only when the failure is likely transient:
 
 - `429`
 - transient `5xx`
@@ -82,6 +62,7 @@ Do not blindly retry:
 - `403 MISSING_PERMISSION`
 - `403 PROJECT_SUBSCRIPTION_REQUIRED`
 - `403 PROJECT_BILLING_PAYMENT_REQUIRED`
+- `403 API_KEY_MODE_MISMATCH`
 
 ## Idempotency
 
@@ -89,24 +70,11 @@ Do not blindly retry:
 
 Current backend behavior:
 
-- Reusing the same key for the same logical request replays the stored result.
-- The backend does not currently surface idempotency conflicts as `409`.
-- OTP payload mismatches on a reused key return `400 INVALID_JSON_BODY`.
+- Reusing the same key for the same logical operation reuses the stored result.
+- OTP idempotency mismatches return `400 INVALID_JSON_BODY`.
+- The public API does not currently expose a dedicated idempotency conflict response.
 
-Example:
-
-```bash
-curl -X POST "https://api.rewritetoday.com/v1/messages" \
-  -H "Authorization: Bearer rw_..." \
-  -H "Content-Type: application/json" \
-  -H "Idempotency-Key: msg:login-otp:2026-03-19T18:30" \
-  -d '{
-    "to": "+5511999999999",
-    "content": "Rewrite: your verification code is 123456"
-  }'
-```
-
-## Common error codes you will actually see
+## Common real-world codes
 
 - `INVALID_CONTENT_TYPE`
 - `INVALID_JSON_BODY`
@@ -116,7 +84,9 @@ curl -X POST "https://api.rewritetoday.com/v1/messages" \
 - `PROJECT_SUBSCRIPTION_REQUIRED`
 - `PROJECT_BILLING_PAYMENT_REQUIRED`
 - `PROJECT_MESSAGE_QUOTA_REACHED`
-- `MESSAGE_SEGMENTATION_LIMIT_EXCEEDED`
+- `PROJECT_WEBHOOK_LIMIT_REACHED`
+- `WEBHOOK_ENDPOINT_ALREADY_EXISTS`
+- `TEMPLATE_NAME_ALREADY_EXISTS`
 - `UNKNOWN_MESSAGE`
 - `UNKNOWN_TEMPLATE`
 - `UNKNOWN_WEBHOOK`
@@ -124,4 +94,5 @@ curl -X POST "https://api.rewritetoday.com/v1/messages" \
 - `RATE_LIMITED`
 - `MESSAGE_PROVIDER_ERROR`
 - `OTP_PROVIDER_ERROR`
+- `API_KEY_MODE_MISMATCH`
 - `INTERNAL_SERVER_ERROR`

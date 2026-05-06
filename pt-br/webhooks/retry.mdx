@@ -49,8 +49,9 @@ A entrega de webhook e at-least-once. Seu handler deve:
 
 Use:
 
-- `GET /webhooks/{id}/logs` para listar tentativas
-- `GET /logs/{id}` para inspecionar um log especifico
+- `GET /webhooks/{id}/deliveries` para listar tentativas de um webhook especifico
+- `GET /deliveries` para navegar entregas de webhook em nivel de projeto
+- `GET /logs/{id}` para inspecionar um log especifico por id
 
 A retencao atual depende do plano do projeto:
 

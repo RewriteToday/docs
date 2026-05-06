@@ -1,6 +1,6 @@
 ---
 title: "message.failed"
-description: "Falha de envio de SMS ou OTP."
+description: "Falha no envio de SMS ou OTP."
 ---
 
 `message.failed` e emitido quando a Rewrite nao consegue concluir o envio no provider.
@@ -10,13 +10,15 @@ description: "Falha de envio de SMS ou OTP."
   "id": "748395130237498915",
   "createdAt": "2026-03-19T18:42:19.000Z",
   "type": "message.failed",
+  "sandbox": false,
   "data": {
     "id": "748395130237498504",
     "projectId": "748395130237498412",
     "contact": "Fernanda",
     "contactId": "748395130237498515",
     "to": "+5511999999999",
-    "tags": [{ "name": "use_case", "value": "otp_login" }],
+    "tags": { "flow": "otp_login", "origin": "checkout" },
+    "sandbox": false,
     "type": "SMS",
     "status": "FAILED",
     "content": "Rewrite: seu codigo de verificacao e 123456",
@@ -40,7 +42,6 @@ description: "Falha de envio de SMS ou OTP."
 Notas:
 
 - `data.type` pode ser `SMS` ou `OTP`.
-- Falhas de OTP tambem usam esse evento, nao [`sms.otp`](./sms-otp).
-- Falhas de OTP nao incluem `data.otp`.
-- Falhas de SMS agendado podem manter o `data.scheduledAt` original.
+- Falhas de OTP tambem usam este evento, nao [`sms.otp`](./sms-otp).
+- Magic numbers do sandbox podem forcar falhas deterministicas para teste.
 - Inspecione `data.error` para detalhes do provider.

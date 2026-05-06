@@ -10,17 +10,19 @@ description: Tipos publicos atuais de webhook da Rewrite e o significado de cada
 - [`message.sent`](/pt-br/webhooks/events/message-sent)
   SMS aceito pelo provider apos o dispatch.
 - [`message.batch`](/pt-br/webhooks/events/message-batch)
-  Resumo de batch emitido quando nao resta mensagem pendente e pelo menos uma linha de mensagem armazenada chegou a `SENT`.
+  Resumo de batch emitido quando nao resta mensagem pendente e pelo menos uma linha armazenada chegou a `SENT`.
 - [`message.queued`](/pt-br/webhooks/events/message-queued)
   SMS imediato persistido na fila antes do dispatch.
 - [`message.failed`](/pt-br/webhooks/events/message-failed)
   Envio de SMS ou OTP falhou. Inclui `data.error`.
 - [`message.canceled`](/pt-br/webhooks/events/message-canceled)
   SMS cancelavel de entrega futura foi cancelado.
+- [`message.delivered`](/pt-br/webhooks/events/message-delivered)
+  Provider confirmou a entrega final da mensagem.
+- [`message.received`](/pt-br/webhooks/events/message-received)
+  Mensagem inbound recebida e normalizada pela Rewrite.
 - [`message.scheduled`](/pt-br/webhooks/events/message-scheduled)
   Mensagem aceita com `scheduledAt` futuro.
-- [`message.delivered`](/pt-br/webhooks/events/message-delivered)
-  Atualmente em WIP.
 
 ## Envelope compartilhado
 
@@ -30,6 +32,7 @@ Todo evento usa:
 {
   "id": "748395130237498900",
   "createdAt": "2026-03-19T18:42:11.000Z",
+  "sandbox": false,
   "type": "message.sent",
   "data": {}
 }
@@ -37,7 +40,8 @@ Todo evento usa:
 
 - `id`: snowflake do evento
 - `createdAt`: timestamp de criacao
+- `sandbox`: indica se o evento veio de um projeto em sandbox
 - `type`: nome do evento
 - `data`: payload especifico do evento
 
-Nos payloads de mensagem, a Rewrite tambem inclui `data.contact` e `data.contactId`. Esses campos ficam `null` quando o envio nao partiu de um contato salvo.
+Nos payloads de mensagem, a Rewrite tambem inclui `data.contact`, `data.contactId` e `data.sandbox`. Esses campos variam conforme o contexto do envio original.

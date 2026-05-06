@@ -1,61 +1,24 @@
 ---
 title: i18n
-description: Localize template content with the `i18n` map used by Rewrite template sends.
+description: Read localized template variants and understand how Rewrite resolves locale-aware template sends.
 ---
 
 # Overview
 
 Public message creation does not accept an `i18n` field directly.
 
-Localization currently happens at the template layer:
+Localization currently shows up in two places:
 
-- `POST /templates` and `PATCH /templates/{id}` accept an `i18n` object.
-- `GET /templates` and `GET /templates/{identifier}` can include `i18n` when you send `withi18n=true`.
-- `POST /messages` resolves localized template content from `templateId` plus the destination country inferred from `to` or from the saved contact phone.
+- `GET /templates` and `GET /templates/{identifier}` can include stored locale variants when you pass `withi18n=true`.
+- `POST /messages` resolves template content from `templateId`, the destination country, and any stored locale variants already attached to that template.
 
 ## `i18n` key format
 
-Template locale keys are lowercase ISO country codes, for example:
+Locale keys use lowercase country codes such as:
 
 - `br`
 - `us`
 - `mx`
-
-Most projects start with Brazilian `br` traffic, but template locale resolution follows the final destination country whenever the project has international numbers enabled.
-
-## Create a localized template
-
-```bash
-curl -X POST "https://api.rewritetoday.com/v1/templates" \
-  -H "Authorization: Bearer rw_..." \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "otp_login",
-    "content": "Rewrite: seu codigo e {{code}}",
-    "i18n": {
-      "br": "Rewrite: seu codigo e {{code}}"
-    },
-    "variables": [
-      { "name": "code", "fallback": "000000" }
-    ],
-    "description": "Login OTP SMS"
-  }'
-```
-
-## Send with `templateId`
-
-```bash
-curl -X POST "https://api.rewritetoday.com/v1/messages" \
-  -H "Authorization: Bearer rw_..." \
-  -H "Content-Type: application/json" \
-  -d '{
-    "to": "+5511999999999",
-    "templateId": "748395130237498600",
-    "variables": {
-      "code": "123456"
-    }
-  }'
-```
 
 ## Inspect stored locale variants
 
@@ -64,8 +27,32 @@ curl "https://api.rewritetoday.com/v1/templates/otp_login?withi18n=true" \
   -H "Authorization: Bearer rw_..."
 ```
 
+Example response:
+
+```json
+{
+  "ok": true,
+  "data": {
+    "id": "748395130237498600",
+    "name": "otp_login",
+    "content": "Rewrite: your code is {{code}}",
+    "i18n": {
+      "br": "Rewrite: seu codigo e {{code}}"
+    },
+    "variables": [
+      { "name": "code", "fallback": "000000" }
+    ],
+    "description": "Login OTP SMS",
+    "tags": {
+      "flow": "otp"
+    },
+    "createdAt": "2026-05-06T18:30:00.000Z"
+  }
+}
+```
+
 ## Notes
 
 - `content` remains the default fallback.
-- `i18n` is stored on templates, not on the message create body.
-- Keep variable names identical across every locale variant.
+- Public template create and update routes no longer document `i18n` writes.
+- Keep variable names identical across every stored locale variant.

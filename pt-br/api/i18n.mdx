@@ -1,71 +1,58 @@
 ---
 title: i18n
-description: Localize conteudo de templates com o mapa `i18n` usado nos envios da Rewrite.
+description: Consulte variantes localizadas de templates e entenda como a Rewrite resolve envios com locale.
 ---
 
 # Visao geral
 
 A criacao publica de mensagens nao aceita um campo `i18n` direto no body.
 
-A localizacao acontece hoje na camada de template:
+Hoje a localizacao aparece em dois pontos:
 
-- `POST /templates` e `PATCH /templates/{id}` aceitam um objeto `i18n`.
-- `GET /templates` e `GET /templates/{identifier}` podem incluir `i18n` com `withi18n=true`.
-- `POST /messages` resolve o conteudo localizado a partir de `templateId` e do pais inferido em `to` ou no telefone do contato salvo.
+- `GET /templates` e `GET /templates/{identifier}` podem incluir variantes salvas quando voce envia `withi18n=true`.
+- `POST /messages` resolve o conteudo do template a partir de `templateId`, do pais do destino e de quaisquer variantes localizadas ja existentes naquele template.
 
 ## Formato das chaves `i18n`
 
-As chaves do mapa usam codigos ISO de pais em lowercase, por exemplo:
+As chaves usam codigos de pais em lowercase, por exemplo:
 
 - `br`
 - `us`
 - `mx`
 
-A maior parte dos projetos hoje usa trafego `br`, mas a resolucao de locale segue o pais final do destino quando o projeto tem numeros internacionais habilitados.
-
-## Crie um template localizado
-
-```bash
-curl -X POST "https://api.rewritetoday.com/v1/templates" \
-  -H "Authorization: Bearer rw_..." \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "otp_login",
-    "content": "Rewrite: seu codigo e {{code}}",
-    "i18n": {
-      "br": "Rewrite: seu codigo e {{code}}"
-    },
-    "variables": [
-      { "name": "code", "fallback": "000000" }
-    ],
-    "description": "SMS de OTP para login"
-  }'
-```
-
-## Envie com `templateId`
-
-```bash
-curl -X POST "https://api.rewritetoday.com/v1/messages" \
-  -H "Authorization: Bearer rw_..." \
-  -H "Content-Type: application/json" \
-  -d '{
-    "to": "+5511999999999",
-    "templateId": "748395130237498600",
-    "variables": {
-      "code": "123456"
-    }
-  }'
-```
-
-## Consulte as variantes salvas
+## Consulte variantes salvas
 
 ```bash
 curl "https://api.rewritetoday.com/v1/templates/otp_login?withi18n=true" \
   -H "Authorization: Bearer rw_..."
 ```
 
+Exemplo de resposta:
+
+```json
+{
+  "ok": true,
+  "data": {
+    "id": "748395130237498600",
+    "name": "otp_login",
+    "content": "Rewrite: your code is {{code}}",
+    "i18n": {
+      "br": "Rewrite: seu codigo e {{code}}"
+    },
+    "variables": [
+      { "name": "code", "fallback": "000000" }
+    ],
+    "description": "SMS de OTP para login",
+    "tags": {
+      "flow": "otp"
+    },
+    "createdAt": "2026-05-06T18:30:00.000Z"
+  }
+}
+```
+
 ## Notas
 
 - `content` continua sendo o fallback padrao.
-- `i18n` fica no template, nao no body de `POST /messages`.
-- Mantenha os nomes das variaveis identicos em todas as variantes.
+- As rotas publicas de create/update de template nao documentam mais escrita de `i18n`.
+- Mantenha os nomes das variaveis identicos em todas as variantes salvas.

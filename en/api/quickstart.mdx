@@ -8,7 +8,7 @@ description: Send your first SMS with the public Rewrite API.
 - Create an API key in the Rewrite dashboard.
 - Keep the key server-side only.
 - Use a valid destination number in E.164 format, for example `+5511999999999`.
-- Most projects start with Brazilian `+55` traffic. If your project has international numbers enabled, other country codes are accepted too.
+- If you want deterministic test behavior, use [Sandbox](/en/sandbox/introduction).
 
 ## Send your first SMS
 
@@ -16,10 +16,13 @@ description: Send your first SMS with the public Rewrite API.
 curl -X POST "https://api.rewritetoday.com/v1/messages" \
   -H "Authorization: Bearer rw_..." \
   -H "Content-Type: application/json" \
-  -H "Idempotency-Key: msg:quickstart:2026-03-19T18:30" \
+  -H "Idempotency-Key: msg:quickstart:2026-05-06T18:30" \
   -d '{
     "to": "+5511999999999",
-    "content": "Rewrite: your verification code is 123456"
+    "content": "Rewrite: your verification code is 123456",
+    "tags": {
+      "flow": "quickstart"
+    }
   }'
 ```
 
@@ -30,7 +33,7 @@ Successful response:
   "ok": true,
   "data": {
     "id": "748395130237498500",
-    "createdAt": "2026-03-19T18:30:00.000Z",
+    "createdAt": "2026-05-06T18:30:00.000Z",
     "analysis": {
       "characters": 39,
       "encoding": "gsm7",
@@ -40,7 +43,8 @@ Successful response:
         "reason": "fits",
         "single": 160
       }
-    }
+    },
+    "sandbox": false
   }
 }
 ```
@@ -48,14 +52,15 @@ Successful response:
 ## Common next steps
 
 - Read the created resource later with `GET /messages/{id}`.
-- If you already store reusable contacts, send with `contact` instead of `to`.
-- Manage saved recipients with the `Contacts` and `Segments` groups in the API reference.
-- Add [webhooks](/en/webhooks/introduction) to receive [`message.sent`](/en/webhooks/events/message-sent), [`message.failed`](/en/webhooks/events/message-failed), [`message.scheduled`](/en/webhooks/events/message-scheduled), [`message.canceled`](/en/webhooks/events/message-canceled), [`message.batch`](/en/webhooks/events/message-batch), and [`sms.otp`](/en/webhooks/events/sms-otp).
-- Use [templates](/en/api/i18n) when you need locale-specific content.
+- Send batches with `POST /messages/batch`.
+- Add [webhooks](/en/webhooks/introduction) to receive [`message.sent`](/en/webhooks/events/message-sent), [`message.delivered`](/en/webhooks/events/message-delivered), [`message.failed`](/en/webhooks/events/message-failed), [`message.received`](/en/webhooks/events/message-received), [`message.batch`](/en/webhooks/events/message-batch), and [`sms.otp`](/en/webhooks/events/sms-otp).
+- Use [templates](/en/api/i18n) when you need locale-aware template reads and template-backed sends.
+- Use [Sandbox magic numbers](/en/sandbox/magic-numbers) to force deterministic outcomes while testing.
 
 ## Troubleshooting
 
 - `400 INVALID_JSON_BODY`: request body, phone number, or route-specific validation failed.
 - `401 INVALID_OR_MISSING_API_KEY`: bearer token is missing or invalid.
+- `403 API_KEY_MODE_MISMATCH`: your API key mode does not match the current project mode.
 - `403 PROJECT_SUBSCRIPTION_REQUIRED` or `PROJECT_BILLING_PAYMENT_REQUIRED`: project is blocked from sending.
 - `429 RATE_LIMITED`: back off and honor the retry headers.

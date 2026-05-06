@@ -8,7 +8,7 @@ description: Envie seu primeiro SMS com a API publica da Rewrite.
 - Crie uma API key no dashboard da Rewrite.
 - Mantenha a chave apenas no backend.
 - Use um numero valido em E.164, por exemplo `+5511999999999`.
-- A maior parte dos projetos comeca com trafego brasileiro `+55`. Se o seu projeto tiver numeros internacionais habilitados, outros DDI tambem sao aceitos.
+- Se quiser comportamento deterministico de testes, use [Sandbox](/pt-br/sandbox/introduction).
 
 ## Envie seu primeiro SMS
 
@@ -16,10 +16,13 @@ description: Envie seu primeiro SMS com a API publica da Rewrite.
 curl -X POST "https://api.rewritetoday.com/v1/messages" \
   -H "Authorization: Bearer rw_..." \
   -H "Content-Type: application/json" \
-  -H "Idempotency-Key: msg:quickstart:2026-03-19T18:30" \
+  -H "Idempotency-Key: msg:quickstart:2026-05-06T18:30" \
   -d '{
     "to": "+5511999999999",
-    "content": "Rewrite: seu codigo de verificacao e 123456"
+    "content": "Rewrite: seu codigo de verificacao e 123456",
+    "tags": {
+      "flow": "quickstart"
+    }
   }'
 ```
 
@@ -30,7 +33,7 @@ Resposta de sucesso:
   "ok": true,
   "data": {
     "id": "748395130237498500",
-    "createdAt": "2026-03-19T18:30:00.000Z",
+    "createdAt": "2026-05-06T18:30:00.000Z",
     "analysis": {
       "characters": 41,
       "encoding": "gsm7",
@@ -40,7 +43,8 @@ Resposta de sucesso:
         "reason": "fits",
         "single": 160
       }
-    }
+    },
+    "sandbox": false
   }
 }
 ```
@@ -48,14 +52,15 @@ Resposta de sucesso:
 ## Proximos passos comuns
 
 - Consulte a mensagem depois com `GET /messages/{id}`.
-- Se voce ja salva contatos reutilizaveis, envie com `contact` em vez de `to`.
-- Gerencie destinatarios salvos nos grupos `Contacts` e `Segments` da referencia da API.
-- Adicione [webhooks](/pt-br/webhooks/introduction) para receber [`message.sent`](/pt-br/webhooks/events/message-sent), [`message.failed`](/pt-br/webhooks/events/message-failed), [`message.scheduled`](/pt-br/webhooks/events/message-scheduled), [`message.canceled`](/pt-br/webhooks/events/message-canceled), [`message.batch`](/pt-br/webhooks/events/message-batch) e [`sms.otp`](/pt-br/webhooks/events/sms-otp).
-- Use [templates](/pt-br/api/i18n) quando precisar de conteudo por pais.
+- Envie lotes com `POST /messages/batch`.
+- Adicione [webhooks](/pt-br/webhooks/introduction) para receber [`message.sent`](/pt-br/webhooks/events/message-sent), [`message.delivered`](/pt-br/webhooks/events/message-delivered), [`message.failed`](/pt-br/webhooks/events/message-failed), [`message.received`](/pt-br/webhooks/events/message-received), [`message.batch`](/pt-br/webhooks/events/message-batch) e [`sms.otp`](/pt-br/webhooks/events/sms-otp).
+- Use [templates](/pt-br/api/i18n) quando precisar ler variantes localizadas e enviar por `templateId`.
+- Use [Sandbox magic numbers](/pt-br/sandbox/magic-numbers) para forcar resultados deterministas em testes.
 
 ## Troubleshooting
 
 - `400 INVALID_JSON_BODY`: body, telefone ou validacao especifica da rota falhou.
 - `401 INVALID_OR_MISSING_API_KEY`: bearer token ausente ou invalido.
+- `403 API_KEY_MODE_MISMATCH`: o modo da API key nao corresponde ao modo atual do projeto.
 - `403 PROJECT_SUBSCRIPTION_REQUIRED` ou `PROJECT_BILLING_PAYMENT_REQUIRED`: projeto bloqueado para envio.
 - `429 RATE_LIMITED`: faca backoff e respeite os headers de retry.

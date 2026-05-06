@@ -10,13 +10,15 @@ description: "Message accepted with a future scheduled send time."
   "id": "748395130237498914",
   "createdAt": "2026-03-19T18:42:11.000Z",
   "type": "message.scheduled",
+  "sandbox": false,
   "data": {
     "id": "748395130237498503",
     "projectId": "748395130237498412",
     "contact": "Fernanda",
     "contactId": "748395130237498515",
     "to": "+5511999999999",
-    "tags": [{ "name": "campaign", "value": "billing_reminder" }],
+    "tags": { "campaign": "billing_reminder" },
+    "sandbox": false,
     "type": "SMS",
     "status": "SCHEDULED",
     "content": "Rewrite: your invoice is due tomorrow",
@@ -38,3 +40,4 @@ Notes:
 
 - `data.scheduledAt` is non-null.
 - Later lifecycle events can be [`message.sent`](./message-sent), [`message.failed`](./message-failed), or [`message.canceled`](./message-canceled).
+- Sandbox mode does not allow scheduled messages.

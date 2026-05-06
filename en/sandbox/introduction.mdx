@@ -1,0 +1,56 @@
+---
+title: "Overview"
+description: "Understand how Rewrite sandbox mode simulates sends, webhooks, and OTP flows without real carrier traffic."
+icon: flask
+---
+
+Sandbox is Rewrite's testing mode for validating integrations without relying on a real carrier path.
+
+When a project runs in sandbox, the API still accepts sends and webhooks, but the backend uses controlled simulation instead of live dispatch.
+
+## What changes in sandbox
+
+<CardGroup cols={2}>
+  <Card title="No live traffic" icon="message" color="#C9CBD1">
+    Messages and OTP flows can be simulated without real carrier delivery.
+  </Card>
+
+  <Card title="Explicit signaling" icon="badge-check" color="#C9CBD1">
+    Responses, events, logs, and deliveries expose `sandbox: true` whenever that field is part of the public contract.
+  </Card>
+
+  <Card title="Predictable OTP" icon="shield-halved" color="#C9CBD1">
+    Sandbox OTP verification uses deterministic behavior for automated tests.
+  </Card>
+
+  <Card title="Real webhooks" icon="bell" color="#C9CBD1">
+    Events still use Svix signing and the same retry semantics as production.
+  </Card>
+</CardGroup>
+
+## Important rules
+
+- Sandbox does not allow scheduled messages.
+- API keys must match the current project mode. When they do not, the API can return `403 API_KEY_MODE_MISMATCH`.
+- The [magic numbers](/en/sandbox/magic-numbers) set lets you force `FAILED`, `QUEUED`, `SENT`, and `DELIVERED` outcomes.
+
+## Where the mode shows up
+
+- `POST /messages` and `POST /messages/batch` return `sandbox` in the create result.
+- Message webhook payloads include `sandbox`.
+- The webhook event envelope includes `sandbox`.
+- Request logs and webhook deliveries exposed by the API include `sandbox`.
+
+## Recommended workflow
+
+1. Enable sandbox for the project in the appropriate test environment.
+2. Send messages or OTP requests normally.
+3. Use [magic numbers](/en/sandbox/magic-numbers) to force specific outcomes.
+4. Validate emitted webhooks, especially `message.sent`, `message.delivered`, `message.failed`, `message.queued`, `sms.otp`, and `message.received`.
+5. Only then promote the flow to live mode.
+
+## Related pages
+
+- [Magic Numbers](/en/sandbox/magic-numbers)
+- [Webhooks](/en/webhooks/introduction)
+- [Errors & retries](/en/api/errors)

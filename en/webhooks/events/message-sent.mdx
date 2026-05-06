@@ -1,22 +1,24 @@
 ---
 title: "message.sent"
-description: "SMS accepted by the provider after dispatch."
+description: "Message accepted for provider delivery."
 ---
 
-`message.sent` is emitted when Rewrite receives provider acceptance for an SMS dispatch.
+`message.sent` is emitted when Rewrite receives provider acceptance for a message dispatch.
 
 ```json
 {
   "id": "748395130237498911",
   "createdAt": "2026-03-19T18:42:13.000Z",
   "type": "message.sent",
+  "sandbox": false,
   "data": {
     "id": "748395130237498500",
     "projectId": "748395130237498412",
     "contact": "Fernanda",
     "contactId": "748395130237498515",
     "to": "+5511999999999",
-    "tags": [{ "name": "use_case", "value": "otp_login" }],
+    "tags": { "flow": "otp_login", "origin": "checkout" },
+    "sandbox": false,
     "type": "SMS",
     "status": "SENT",
     "content": "Rewrite: your verification code is 123456",
@@ -38,5 +40,5 @@ Notes:
 
 - `data.status` is `SENT`.
 - `data.error` is `null`.
-- Immediate sends usually emit [`message.queued`](./message-queued) first.
-- Messages previously accepted with `scheduledAt` also emit `message.sent` later and can keep their original `data.scheduledAt`.
+- Immediate sends usually emit [`message.queued`](./message-queued) before this event.
+- Scheduled sends can emit `message.sent` later while preserving the original `data.scheduledAt`.

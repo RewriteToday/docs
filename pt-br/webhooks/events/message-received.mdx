@@ -1,0 +1,43 @@
+---
+title: "message.received"
+description: "Mensagem inbound recebida e normalizada pela Rewrite."
+---
+
+`message.received` e emitido quando a Rewrite registra uma mensagem inbound para o projeto.
+
+```json
+{
+  "id": "748395130237498917",
+  "createdAt": "2026-03-19T18:44:01.000Z",
+  "sandbox": false,
+  "type": "message.received",
+  "data": {
+    "id": "748395130237498600",
+    "projectId": "748395130237498412",
+    "sandbox": false,
+    "contact": "Fernanda",
+    "contactId": "748395130237498515",
+    "to": "+5511999999999",
+    "tags": { "thread": "support" },
+    "type": "SMS",
+    "status": "RECEIVED",
+    "content": "Preciso de ajuda com meu pedido",
+    "country": "br",
+    "analysis": {
+      "characters": 29,
+      "encoding": "gsm7",
+      "segments": { "concat": 153, "count": 1, "reason": "fits", "single": 160 }
+    },
+    "error": null,
+    "deliveredAt": null,
+    "scheduledAt": null,
+    "templateId": null
+  }
+}
+```
+
+Notas:
+
+- `data.status` e sempre `RECEIVED`.
+- O payload segue o mesmo formato base de mensagem usado pelos demais eventos.
+- Use esta notificacao para disparar automacoes de resposta, conciliacao de threads ou ingestao de historico.
